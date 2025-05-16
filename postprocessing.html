@@ -1,0 +1,1273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PostProcessing &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Wrappers for SBI" href="SBI_wrapper.html" />
+    <link rel="prev" title="Sample" href="sample.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="posterior_api.html">Posterior API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PostProcessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#customization">Customization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.PostProcessing.Runs"><code class="docutils literal notranslate"><span class="pre">Runs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.combined"><code class="docutils literal notranslate"><span class="pre">Runs.combined</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.get_attr"><code class="docutils literal notranslate"><span class="pre">Runs.get_attr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.likelihood"><code class="docutils literal notranslate"><span class="pre">Runs.likelihood</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.load_runs"><code class="docutils literal notranslate"><span class="pre">Runs.load_runs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.runs"><code class="docutils literal notranslate"><span class="pre">Runs.runs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.set_subset"><code class="docutils literal notranslate"><span class="pre">Runs.set_subset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.subset"><code class="docutils literal notranslate"><span class="pre">Runs.subset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.Runs.subset_to_plot"><code class="docutils literal notranslate"><span class="pre">Runs.subset_to_plot</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter"><code class="docutils literal notranslate"><span class="pre">CornerPlotter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter.KL_divergence"><code class="docutils literal notranslate"><span class="pre">CornerPlotter.KL_divergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter.evidence_error"><code class="docutils literal notranslate"><span class="pre">CornerPlotter.evidence_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter.plot"><code class="docutils literal notranslate"><span class="pre">CornerPlotter.plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter"><code class="docutils literal notranslate"><span class="pre">SignalPlotter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter.plot"><code class="docutils literal notranslate"><span class="pre">SignalPlotter.plot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter.plots"><code class="docutils literal notranslate"><span class="pre">SignalPlotter.plots</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot"><code class="docutils literal notranslate"><span class="pre">ResidualPlot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot.add_pulses"><code class="docutils literal notranslate"><span class="pre">ResidualPlot.add_pulses()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot.execute"><code class="docutils literal notranslate"><span class="pre">ResidualPlot.execute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot.expected_counts"><code class="docutils literal notranslate"><span class="pre">ResidualPlot.expected_counts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot.finalize"><code class="docutils literal notranslate"><span class="pre">ResidualPlot.finalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot.model_list"><code class="docutils literal notranslate"><span class="pre">ResidualPlot.model_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot.model_sum"><code class="docutils literal notranslate"><span class="pre">ResidualPlot.model_sum</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot"><code class="docutils literal notranslate"><span class="pre">PulsePlot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot.execute"><code class="docutils literal notranslate"><span class="pre">PulsePlot.execute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot.expected_incident"><code class="docutils literal notranslate"><span class="pre">PulsePlot.expected_incident</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot.expected_registered"><code class="docutils literal notranslate"><span class="pre">PulsePlot.expected_registered</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot.finalize"><code class="docutils literal notranslate"><span class="pre">PulsePlot.finalize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot.execute"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot.execute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot.expected_attenuated_incident"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot.expected_attenuated_incident</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot.expected_background"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot.expected_background</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot.expected_incident"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot.expected_incident</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot.expected_registered"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot.expected_registered</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot.finalize"><code class="docutils literal notranslate"><span class="pre">SpectrumPlot.finalize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#base-classes-for-development">Base classes for development</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot"><code class="docutils literal notranslate"><span class="pre">SignalPlot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor"><code class="docutils literal notranslate"><span class="pre">PostProcessor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing._backends.NestedBackend"><code class="docutils literal notranslate"><span class="pre">NestedBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing._run.Run"><code class="docutils literal notranslate"><span class="pre">Run</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata"><code class="docutils literal notranslate"><span class="pre">Metadata</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SBI_wrapper.html">Wrappers for SBI</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="posterior_api.html">Posterior API</a></li>
+      <li class="breadcrumb-item active">PostProcessing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/postprocessing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="postprocessing">
+<span id="id1"></span><h1>PostProcessing<a class="headerlink" href="#postprocessing" title="Link to this heading"></a></h1>
+<p id="module-xpsi.PostProcessing">Module for various (posterior) sample post-processing operations.</p>
+<section id="users">
+<h2>Users<a class="headerlink" href="#users" title="Link to this heading"></a></h2>
+<p>The typical usage pattern is to use the following classes:</p>
+<blockquote>
+<div><ul>
+<li><p><a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> to load a set of nested sampling
+runs on one underlying posterior distribution;</p></li>
+<li><p><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CornerPlotter</span></code></a> to plot 1D and 2D
+marginal posterior density distributions (from a set of
+<a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances) in lower-triangular
+form, and to compute various posterior estimators;</p></li>
+<li><p><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter" title="xpsi.PostProcessing.SignalPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlotter</span></code></a> to plot thematic
+X-ray signals (or, generally, derived quantities) in posterior-
+expected form or conditional-posterior form, together with ground
+truths (i.e., injected) and in component form when there are two
+or more disjoint surface hot regions;</p></li>
+<li><p>to use the <a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter" title="xpsi.PostProcessing.SignalPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlotter</span></code></a> class, a
+user must supply a set of plot class instances for each posterior
+distribution to be processed, where these native classes are</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot" title="xpsi.PostProcessing.ResidualPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidualPlot</span></code></a></p></li>
+<li><p><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot" title="xpsi.PostProcessing.PulsePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">PulsePlot</span></code></a></p></li>
+<li><p><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot" title="xpsi.PostProcessing.SpectrumPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumPlot</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>and can be configured both on a class and instance level.</p>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="customization">
+<h2>Customization<a class="headerlink" href="#customization" title="Link to this heading"></a></h2>
+<p>The aforementioned native classes can of course be subclassed if the
+aim is to wrap, modify, or add functionality too.</p>
+<p>In order to make entirely new plot type, we need to subclass the abstract
+base class <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a>, using the
+native subclasses for guidance.</p>
+<p>If new plot types are developed, please contribute to the source code via
+a pull request. Isolate the new functionality in a proposed submodule,
+adding your authorship information, and supply examples of usage in a Jupyter
+notebook (either a new tutorial or by extending an existing tutorial as
+appropriate). The subclass can then be imported from the submodule namespace
+as shown below for the native classes. Then add the submodule to the Sphinx
+doc pages. If you can include an example image in the subclass docstring,
+please do, as it will be rendered directly in the class documentation.
+Finally, if you can point to a journal article that implements the plot type,
+please do.</p>
+</section>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Runs</span></code></a>(runs, likelihood, ...)</p></td>
+<td><p>Container for nested sampling runs on a shared posterior.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.CornerPlotter</span></code></a>(posteriors)</p></td>
+<td><p>Plot marginal posterior densities and estimators.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter" title="xpsi.PostProcessing.SignalPlotter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.SignalPlotter</span></code></a>(posteriors)</p></td>
+<td><p>Plot conditional posterior distributions of thematic X-ray signals.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot" title="xpsi.PostProcessing.ResidualPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.ResidualPlot</span></code></a>([...])</p></td>
+<td><p>Plot the count data, the posterior-expected count signal, residuals, clusters and their related distributions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot" title="xpsi.PostProcessing.PulsePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.PulsePlot</span></code></a>([num_phases, ...])</p></td>
+<td><p>Plot posterior-averaged channel-summed count-rate pulse profiles.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot" title="xpsi.PostProcessing.SpectrumPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.SpectrumPlot</span></code></a>([...])</p></td>
+<td><p>Plot posterior-averaged channel count-rate spectra.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing.</span></span><span class="sig-name descname"><span class="pre">Runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata" title="xpsi.PostProcessing._metadata.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
+<p>Container for nested sampling runs on a shared posterior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>likelihood</strong> – The instance of <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> used for sampling, or a clone of
+that instance. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. If multiple likelihood functions
+are associated with the runs due to discreteness in the model space,
+one can pass a dictionary with keys matching the IDs of the runs.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.combined">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combined</span></span><a class="headerlink" href="#xpsi.PostProcessing.Runs.combined" title="Link to this definition"></a></dt>
+<dd><p>Try to get a combined run in the form of a <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code>
+backend.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.get_attr">
+<span class="sig-name descname"><span class="pre">get_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nestcheck_compatible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs.get_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.get_attr" title="Link to this definition"></a></dt>
+<dd><p>Get a list of attributes of the <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances stored as
+the current subset.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.likelihood">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">likelihood</span></span><a class="headerlink" href="#xpsi.PostProcessing.Runs.likelihood" title="Link to this definition"></a></dt>
+<dd><p>Get the likelihood instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.load_runs">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_IDs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_nestcheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mode'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs.load_runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.load_runs" title="Link to this definition"></a></dt>
+<dd><p>Construct a <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance by loading distinct runs.</p>
+<dl class="simple">
+<dt>param bool multi_mode:</dt><dd><p>Load the runs so that they are separated in different modes found
+by a MultiNest run with mmodal=True.</p>
+</dd>
+<dt>param string mode_label:</dt><dd><p>Select a label for the modes to be shown in the plots.</p>
+</dd>
+</dl>
+<p>The kwargs will be shared by nested sampling runs. The args must be
+lists that will be zipped to instantiate a set of run backends.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.runs">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">runs</span></span><a class="headerlink" href="#xpsi.PostProcessing.Runs.runs" title="Link to this definition"></a></dt>
+<dd><p>Get a copy of the list of runs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.set_subset">
+<span class="sig-name descname"><span class="pre">set_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">IDs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_combined</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_principal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs.set_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.set_subset" title="Link to this definition"></a></dt>
+<dd><p>Set a current list of <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.subset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subset</span></span><a class="headerlink" href="#xpsi.PostProcessing.Runs.subset" title="Link to this definition"></a></dt>
+<dd><p>Get the current subset of runs for plotting.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.Runs.subset_to_plot">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subset_to_plot</span></span><a class="headerlink" href="#xpsi.PostProcessing.Runs.subset_to_plot" title="Link to this definition"></a></dt>
+<dd><p>Get the current subset of runs (+ combined) for plotting.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.CornerPlotter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing.</span></span><span class="sig-name descname"><span class="pre">CornerPlotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posteriors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="xpsi.PostProcessing._postprocessor.PostProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostProcessor</span></code></a></p>
+<p>Plot marginal posterior densities and estimators.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.CornerPlotter.KL_divergence">
+<span class="sig-name descname"><span class="pre">KL_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bits'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.025,</span> <span class="pre">0.5,</span> <span class="pre">0.975]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_simulate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter.KL_divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter.KL_divergence" title="Link to this definition"></a></dt>
+<dd><p>Kullback-Leibler divergence integral jointly for all parameters.</p>
+<p>E.g., if you want the interval about the median containing divergence
+of 90% of realisations, declare <code class="docutils literal notranslate"><span class="pre">quantiles=[0.05,0.5,0.95]</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.CornerPlotter.evidence_error">
+<span class="sig-name descname"><span class="pre">evidence_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.025,</span> <span class="pre">0.5,</span> <span class="pre">0.975]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_simulate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_skew</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter.evidence_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter.evidence_error" title="Link to this definition"></a></dt>
+<dd><p>Estimate evidence error for nestcheck-compatible runs.</p>
+<p>E.g., if you want the interval about the median containing the evidence
+of 90% of realisations, declare <code class="docutils literal notranslate"><span class="pre">quantiles=[0.05,0.5,0.95]</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.CornerPlotter.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IDs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_combined</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_combined</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap_density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separate_plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxdots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter.plot" title="Link to this definition"></a></dt>
+<dd><p>Generate posterior density plots.</p>
+<p>Invokes <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> for nested sampling runs.</p>
+<p>Up to five runs can be plotted natively via <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code>; beyond
+such a number the plots generally display too much information and
+clarity is lost.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<em>list</em>) – List of parameter strings for plotting. Must be shared by all
+posteriors selected with the <code class="docutils literal notranslate"><span class="pre">IDs</span></code> argument.</p></li>
+<li><p><strong>IDs</strong> (<em>OrderedDict</em>) – Keys must be string identifiers of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances.
+Each dictionary element must be a list of string identifiers,
+each matching objects collected in <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+corresponding to the key. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, meaning attempt to
+use as many runs as possible subject to plotting restrictions.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The order of IDs is used to control the layering of posteriors.
+If there are multiple underlying posteriors (i.e., multiple
+dictionary keys), only one (combined) run per posterior is
+rendered, and the first posterior is rendered on the topmost layer.
+If there is only one underlying posterior (i.e., one dictionary
+keys), then the combined-sample posterior, if available, is plotted
+on the topmost layer, whilst the runs on that posterior are
+rendered on layers underneath in the order specified in the list.
+In either case, estimators are calculated and reported for the
+(combined) run on the topmost layer.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>combine</strong> (<em>bool</em>) – Additionally combine the runs into a single run for overplotting?
+The overriding setting if there is more than one underlying
+posterior to be plotted, is to attempt to combine runs on each
+posterior if multiple such runs are available, in order to
+reduce information density. If there is a single underlying
+posterior, the user-specified value is respected.</p></li>
+<li><p><strong>combine_all</strong> (<em>bool</em>) – Combine all runs in each <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance or only those
+for which IDs are provided? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>force_combine</strong> (<em>bool</em>) – Force recombination of elligible run sets, even if a
+combined run is already cached?</p></li>
+<li><p><strong>only_combined</strong> (<em>bool</em>) – Only plot the combined run? Only heeded if a single posterior
+is selected for plotting, and in that case is ignored if
+<code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>overwrite_combined</strong> (<em>bool</em>) – Overwrite combined-sample files on disk with the same filename?</p></li>
+<li><p><strong>split_modes</strong> (<em>bool</em>) – Split modes for plotting input multi-mode runs?</p></li>
+<li><p><strong>bootstrap</strong> (<em>bool</em>) – Use <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> and <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to bootstrap the runs for
+posterior density error estimation?</p></li>
+<li><p><strong>separate_plots</strong> (<em>bool</em>) – Generate a lower-triangle plot with <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>, and a separate
+error plot with <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> (with <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> and
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>). If <code class="docutils literal notranslate"><span class="pre">False</span></code> (default), the diagonal panels of the
+lower-triangle plot are modified by adding the nestcheck output.
+Ignored if <code class="docutils literal notranslate"><span class="pre">bootstrap</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>write</strong> (<em>bool</em>) – Export the figure?</p></li>
+<li><p><strong>root_filename</strong> (<em>str</em>) – Root filename to prepend to automatically generated name. Can be,
+e.g., a model and/or data set identifier.</p></li>
+<li><p><strong>directory</strong> (<em>str</em>) – If <code class="docutils literal notranslate"><span class="pre">None</span></code> defaults to current directory.</p></li>
+<li><p><strong>ext</strong> (<em>str</em>) – File extension for writing. E.g., <code class="docutils literal notranslate"><span class="pre">'.png'</span></code>.</p></li>
+<li><p><strong>dpi</strong> (<em>int</em>) – Dots-per-square-inch settings for exporting plots.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments for the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_plot_density_with_error()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_plot_triangle()</span></code> methods. Keyword arguments for line
+properties (width, color, and alpha) for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> contours and density
+distributions. If <code class="docutils literal notranslate"><span class="pre">bootstrap</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">separate_plots</span></code> then
+the density distribution linewidth is set to zero if not
+explicitly specified with kwarg <code class="docutils literal notranslate"><span class="pre">lw_1d</span></code>.
+In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples
+(<code class="docutils literal notranslate"><span class="pre">force_draw</span></code>, <code class="docutils literal notranslate"><span class="pre">prior_samples_fnames</span></code> and <code class="docutils literal notranslate"><span class="pre">priors_identical</span></code>).
+Param <code class="docutils literal notranslate"><span class="pre">precisions</span></code> (a list of integers or Nones) can be used to define the decimal number
+precision for each credible interval plotted. In case of 2 parameters, one can do e.g.
+precisions=[2,None] to use 2 digit decimal precision for the first parameter and use the
+default automatic precision for the second.
+Param <code class="docutils literal notranslate"><span class="pre">ci_gap</span></code> (a float) can be used to adjust the white gaps between the texts printed
+above the diagonal (the default is 0.12).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SignalPlotter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing.</span></span><span class="sig-name descname"><span class="pre">SignalPlotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posteriors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplotter.html#SignalPlotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.SignalPlotter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="xpsi.PostProcessing._postprocessor.PostProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostProcessor</span></code></a></p>
+<p>Plot conditional posterior distributions of thematic X-ray signals.</p>
+<p>Methods to plot the data and model for posterior checking.</p>
+<p>Plots are generated for each posterior selected using the associated
+likelihood object.</p>
+<p>For a given model, there may be multiple <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a>
+instances per likelihood object. If this is the case, you need to
+reduce the model down to only the objects needed for functioning of
+the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> object to be handled. To do this, simply
+remove supply to your likelihood object the references to this minimal
+set of objects. This minimises computation time and ensures explicit
+declaration of the signals to be plotted.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a model has multiple instruments, then the energy set for signal
+integration is calculated based on waveband coverage union.
+If instruments are omitted from the likelihood object in order
+to execute posterior signal plotting, the number of energies
+that span the waveband of the remaining instrument waveband should
+be set to match the number in the full model (with all instruments)
+if the likelihood factor for the remaining instrument is to be
+exactly the same.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SignalPlotter.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IDs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_combined</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplotter.html#SignalPlotter.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.SignalPlotter.plot" title="Link to this definition"></a></dt>
+<dd><p>Compute and plot signals <em>a posteriori</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plots</strong> (<em>dict</em>) – Dictionary of lists of plot objects, where each dictionary key
+must match a posterior ID.</p></li>
+<li><p><strong>IDs</strong> (<em>OrderedDict</em>) – Keys must be string identifiers of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances.
+Each dictionary element must be a list of string identifiers,
+each matching objects collected in <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+corresponding to the key. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, meaning attempt to
+use as many runs as possible subject to plotting restrictions.</p></li>
+<li><p><strong>cache</strong> (<em>bool</em>) – Cache intermediary model objects to accelerate post-processing?</p></li>
+<li><p><strong>force_cache</strong> (<em>bool</em>) – Force caching irrespective of checks of existing cache files.
+Useful if some part of the model is tweaked and the cache file with
+the same name and sample set is not manually moved from the
+designated directory..</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em>) – Number of samples to use. Equally-weighted samples are generated,
+thus introducing a additional Monte Carlo noise which is ignored.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – Number of phases to interpolate at on the interval [0,2] cycles.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Filename of cache.</p></li>
+<li><p><strong>cache_dir</strong> (<em>str</em>) – Directory to write cache to.</p></li>
+<li><p><strong>read_only</strong> (<em>bool</em>) – Do not write to cache file?</p></li>
+<li><p><strong>archive</strong> (<em>bool</em>) – If not read-only, then archive an existing cache file found at the
+same path?</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SignalPlotter.plots">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plots</span></span><a class="headerlink" href="#xpsi.PostProcessing.SignalPlotter.plots" title="Link to this definition"></a></dt>
+<dd><p>Get the dictionary of plot objects last processed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing.</span></span><span class="sig-name descname"><span class="pre">ResidualPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PuOr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_pulse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_pulse_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_realisation_per_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blur_residuals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshlim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PuOr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustdist_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PuOr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a></p>
+<p>Plot the count data, the posterior-expected count signal, residuals, clusters and their related distributions.</p>
+<p>The figure contains three upper panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the top panel displays the data count numbers in joint channel-phase
+intervals, identically split over two rotational phase cycles;</p></li>
+<li><p>the center panel displays the posterior-expected count signal
+over joint channel-phase intervals;</p></li>
+<li><p>the bottom panel displays the standardised residuals between the
+data and posterior-expected count signal over joint channel-phase
+intervals.</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>If requested by plot_clusters, the figure also contains 2 lower panels</dt><dd><ul class="simple">
+<li><p>the first panel displays two figures: the one on the left shows the
+standardised residuals for which their absolute values overpass a chosen
+threshold, and the one on the right present the estimated cluster sizes from
+these residuals.</p></li>
+<li><p>the second panel displays two figures: the one on the left is the residual distribution
+compared with an optimal gaussian one, and the one on the right shows a distribution of
+cluster sizes from residuals which have absolute values above the chosen threshold</p></li>
+</ul>
+</dd>
+</dl>
+<p>The following example is (improved) from <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. 2019</a>:</p>
+<img alt="_images/_residualplot.png" src="_images/_residualplot.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the data count numbers
+over joint channel-phase intervals.</p></li>
+<li><p><strong>model_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+count numbers over joint channel-phase intervals.</p></li>
+<li><p><strong>residual_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the residuals between
+the data and posterior-expected count numbers over joint
+channel-phase intervals. A diverging colormap is recommended.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot.add_pulses">
+<span class="sig-name descname"><span class="pre">add_pulses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot.add_pulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.add_pulses" title="Link to this definition"></a></dt>
+<dd><p>Display the pulse over the data if requested</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thetas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.execute" title="Link to this definition"></a></dt>
+<dd><p>Loop over posterior samples.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot.expected_counts">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_counts</span></span><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.expected_counts" title="Link to this definition"></a></dt>
+<dd><p>Get the estimated posterior expectation of the count numbers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.finalize" title="Link to this definition"></a></dt>
+<dd><p>Execute instructions to finish plotting.</p>
+<p>Before this method is called, the likelihood object will be updated
+so that the true (injected) signals are cached. In the body of the
+subclass implementation of this method, one can plot the injected
+signals by accessing the attributes of the signal instance.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot.model_list">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_list</span></span><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.model_list" title="Link to this definition"></a></dt>
+<dd><p>Get the current list of the count numbers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.ResidualPlot.model_sum">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_sum</span></span><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.model_sum" title="Link to this definition"></a></dt>
+<dd><p>Get the current posterior sum of the count numbers.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.PulsePlot">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing.</span></span><span class="sig-name descname"><span class="pre">PulsePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incident_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">registered_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expectation_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_expectation_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_fgivenx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incident_contour_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">registered_contour_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_truth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truth_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_truth_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a></p>
+<p>Plot posterior-averaged channel-summed count-rate pulse profiles.</p>
+<p>The figure contains four panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the first (topmost) panel displays the posterior expectation of
+the specific photon flux signal from the source, jointly resolved in
+energy and phase;</p></li>
+<li><p>the second panel displays the energy-integrated photon specific flux
+signal as function of phase for a subset of samples, optionally using
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>;</p></li>
+<li><p>the third panel displays the posterior expectation of the count-rate
+signal as a function of channel and phase;</p></li>
+<li><p>the last (bottommost) panel displays the channel-summed pulse as
+a function of phase for a subset of samples, optionally using
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>.</p></li>
+</ul>
+</div></blockquote>
+<p>The second and last panels aim to render the conditional posterior
+distribution of the associated signal as a function phase, ideally with
+contours to map out the conditional posterior mass. These panels have space
+to optionally display other elements such as: the posterior-expected total
+signal; the posterior-expected component signals; and the true total and
+component signals if the ground truth (the injected signal correpsonding
+to some model parameter vector) is known.</p>
+<p>The following example is from <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. 2019</a>:</p>
+<img alt="_images/_pulseplot.png" src="_images/_pulseplot.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_phases</strong> (<em>int</em>) – The number of phases to interpolate the pulse-profile signals at.</p></li>
+<li><p><strong>incident_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+incident signal as a function of energy and phase (top panel).</p></li>
+<li><p><strong>registered_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+registered signal as a function of channel and phase (third panel).</p></li>
+<li><p><strong>show_components</strong> (<em>bool</em>) – If the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance has multiple components,
+display the posterior expectations of those components as a
+function of phase (second and last panels).</p></li>
+<li><p><strong>expectation_line_kwargs</strong> (<em>dict</em>) – Keyword arguments for plotting the posterior-expected signal lines (in
+the second and last panels).</p></li>
+<li><p><strong>use_fgivenx</strong> (<em>bool</em>) – Use <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to plot conditional posterior contours in the
+second and last panels?</p></li>
+<li><p><strong>incident_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> incident signal contours (second
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</p></li>
+<li><p><strong>registered_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> registered signal contours (last
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</p></li>
+<li><p><strong>plot_truth</strong> – Plot the ground truth (injected) signal, if known and available, in
+the second and last panels.</p></li>
+<li><p><strong>truth_line_kwargs</strong> – Keyword arguments for plotting the ground truth signal lines (second
+and last panels).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.PulsePlot.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thetas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.execute" title="Link to this definition"></a></dt>
+<dd><p>Loop over posterior samples.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.PulsePlot.expected_incident">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_incident</span></span><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.expected_incident" title="Link to this definition"></a></dt>
+<dd><p>Get the expectations of the component incident signals.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.PulsePlot.expected_registered">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_registered</span></span><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.expected_registered" title="Link to this definition"></a></dt>
+<dd><p>Get the expectations of the component registered signals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.PulsePlot.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.finalize" title="Link to this definition"></a></dt>
+<dd><p>Execute final instructions.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing.</span></span><span class="sig-name descname"><span class="pre">SpectrumPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rel_num_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">registered_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_attenuated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expectation_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_expectation_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_fgivenx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incident_contour_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">registered_contour_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_truth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truth_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_truth_line_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a></p>
+<p>Plot posterior-averaged channel count-rate spectra.</p>
+<p>The figure contains three panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the top panel displays the specific photon flux signal
+from the source, resolved as a function of energy, optionally showing
+both unattenuated and attenuated incident spectra and optionally
+using <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>;</p></li>
+<li><p>the center panel displays the posterior expectation of the count-rate
+signal as a function of channel and phase, optionally including an
+expected background signal;</p></li>
+<li><p>the bottom panel displays the phase-integrated (averaged) count-rate
+spectum as a function of channel number, optionally including an
+expected background signal and optionally using <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>.</p></li>
+</ul>
+</div></blockquote>
+<p>The top and bottom panels aim to render the conditional posterior
+distribution of the associated signal as a function an energy (proxy)
+variable, ideally with contours to map out the conditional posterior mass.
+These panels have space to optionally display other elements such as:
+the posterior-expected total signal; the posterior-expected component
+signals; the true total and component signals if the ground truth (the
+injected signal correpsonding to some model parameter vector) is known;
+attenuated incident spectra; and the summation of posterior-expected
+total (component-summed) source count-rate signals with posterior-expected
+background count-rate signals.</p>
+<p>The following example is (improved) from <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. 2019</a>:</p>
+<img alt="_images/_spectrumplot.png" src="_images/_spectrumplot.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rel_num_energies</strong> (<em>float</em>) – The number of energies desired for interpolation as a fraction of the
+number of energies implemented for the original incident signal
+integration. The energy set will be appropriately spaced and bounded.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – The number of phases to interpolate the pulse-profile signals at for
+the center panel.</p></li>
+<li><p><strong>registered_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+registered signal as a function of channel and phase (center panel).</p></li>
+<li><p><strong>show_components</strong> (<em>bool</em>) – If the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance has multiple components (hot
+region signals), display the posterior expectations of those components
+as a function of energy (top panel) and channel (bottom panel).</p></li>
+<li><p><strong>show_attenuated</strong> (<em>bool</em>) – If the source signal is attenuated by the interstellar absorption
+processes, display the posterior-expected attenuated incident specific
+photon flux spectra? This switch also instructs <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>, if
+enabled, to generate conditional posterior contours for the attenuated
+spectrum instead of the unattenuated spectrum (top panel). If
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> is not invoked, this switch instructs the plotting
+of sample-by-sample attenuated total (component-summed) spectra to
+delineate the distribution of conditional posterior mass (top panel).</p></li>
+<li><p><strong>expectation_line_kwargs</strong> (<em>dict</em>) – Keyword arguments for plotting the posterior-expected signal lines (in
+the top and bottom panels).</p></li>
+<li><p><strong>add_background</strong> (<em>bool</em>) – Add an posterior-expected background count-rate signal to the total
+(component-summed) expected source count-rate signals in the center
+and bottom panels?</p></li>
+<li><p><strong>background_line_kwargs</strong> (<em>dict</em>) – Keyword arguments for plotting the posterior-expected spectrum in the
+bottom panel that includes the background signal.</p></li>
+<li><p><strong>use_fgivenx</strong> (<em>bool</em>) – Use <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to plot conditional posterior contours in the
+top and bottom panels?</p></li>
+<li><p><strong>incident_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> incident signal contours (top
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</p></li>
+<li><p><strong>registered_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> registered signal contours (bottom
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</p></li>
+<li><p><strong>plot_truth</strong> – Plot the ground truth (injected) signal, if known and available, in
+the top and bottom panels.</p></li>
+<li><p><strong>truth_line_kwargs</strong> – Keyword arguments for plotting the ground truth signal lines (top and
+bottom panels).</p></li>
+<li><p><strong>comp_truth_line_kwargs</strong> – Keyword arguments for plotting the component ground truth signal lines
+(top and bottom panels).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thetas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.execute" title="Link to this definition"></a></dt>
+<dd><p>Execute behaviours requiring a loop over samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thetas</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – Equally-weighted set of posterior samples.</p></li>
+<li><p><strong>wrapper</strong> (<em>callable</em>) – Wrapper function that interleaves iterative calls <cite>next(self)</cite>
+with code to update the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance from a
+cache stored on disk. The wrapper returns a callback function,
+If such a cache is unavailable, the likelihood function is
+evaluated on-the-fly when the callback is called passing a sample
+(parameter vector). In this case, signals to be plotted are
+temporarily cached in the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance.
+The signature of the wrapper function is:
+<cite>wrapper(self, delete_me=None, index=None)</cite>,
+where <cite>self</cite> is this a subclass of
+<a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a>, <cite>delete_me</cite> is an optional
+attribute name or a list of attribute name in <cite>self.__dict__</cite> to be
+deleted before iterating over samples, and <cite>index</cite> is an optional
+integer to index a tuple returned from <cite>next(self)</cite>.
+The signature of the callback function, if you need to call it
+directly (instead of an external library such as fgivenx calling
+it):
+<cite>callback(None, theta)</cite>,
+where each sample/parameter vector is a row in <cite>thetas</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot.expected_attenuated_incident">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_attenuated_incident</span></span><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_attenuated_incident" title="Link to this definition"></a></dt>
+<dd><p>Get the expectations of the incident (component) spectra.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot.expected_background">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_background</span></span><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_background" title="Link to this definition"></a></dt>
+<dd><p>Get the expectation of the background count-rate spectrum.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot.expected_incident">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_incident</span></span><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_incident" title="Link to this definition"></a></dt>
+<dd><p>Get the expectations of the incident (component) spectra.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot.expected_registered">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_registered</span></span><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_registered" title="Link to this definition"></a></dt>
+<dd><p>Get the expectations of the registered count-rate spectra.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing.SpectrumPlot.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.finalize" title="Link to this definition"></a></dt>
+<dd><p>Execute final instructions.</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="base-classes-for-development">
+<h2>Base classes for development<a class="headerlink" href="#base-classes-for-development" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._signalplot.SignalPlot</span></code></a>([...])</p></td>
+<td><p>Base class for a signal plot.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="xpsi.PostProcessing._postprocessor.PostProcessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._postprocessor.PostProcessor</span></code></a>(...)</p></td>
+<td><p>Post-process samples for inference and posterior checking.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#xpsi.PostProcessing._backends.NestedBackend" title="xpsi.PostProcessing._backends.NestedBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._backends.NestedBackend</span></code></a>(...)</p></td>
+<td><p>Container for nested samples generated by a single run, and backends for analysis of the run.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._run.Run</span></code></a>(filepath, **kwargs)</p></td>
+<td><p>Base class for a sample container.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata" title="xpsi.PostProcessing._metadata.Metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._metadata.Metadata</span></code></a>(ID, names)</p></td>
+<td><p>Base class to record basic information about sampling runs.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._signalplot.SignalPlot">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing._signalplot.</span></span><span class="sig-name descname"><span class="pre">SignalPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RdPu_r'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="Link to this definition"></a></dt>
+<dd><p>Base class for a signal plot.</p>
+<p>Interact with a single <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance to plot
+signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig_dir</strong> (<em>str</em>) – Directory to write to.</p></li>
+<li><p><strong>root_filename</strong> (<em>str</em>) – Prepended to filename automatically generated figure filename.</p></li>
+<li><p><strong>cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>
+contours. It is advisable to choose a colormap that is darker
+at lower values (in tails of conditional posterior distribution) and
+lighter at higher values (at higher densities in conditional posterior
+distribution).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._signalplot.SignalPlot.declare_settings">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">declare_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">panelsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rasterized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logspace_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tqdm_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'disable':</span> <span class="pre">False}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_ymin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_ymax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.declare_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.declare_settings" title="Link to this definition"></a></dt>
+<dd><p>Configure subclass with attributes, <em>before instantiation</em>.</p>
+<p>These attributes can in principle be safely changed during the runtime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>panelsize</strong> (<em>tuple</em>) – The approximate size, <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>, in inches <em>per panel</em>.</p></li>
+<li><p><strong>fscale</strong> (<em>float</em>) – Scale factor for the fontsize applied to the default.</p></li>
+<li><p><strong>rasterized</strong> (<em>bool</em>) – Beware that if <code class="docutils literal notranslate"><span class="pre">False</span></code>, white polygon edges may appear in figures.</p></li>
+<li><p><strong>tick_lengths</strong> (<em>tuple</em><em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – The major and minor tick lengths for all axis objects.</p></li>
+<li><p><strong>tick_width</strong> (<em>int</em>) – The width of every tick.</p></li>
+<li><p><strong>logspace_y</strong> (<em>bool</em>) – Should the <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> y-values (for which the posterior mass
+is integrated over points at lower densities than the density at y)
+be logarithimcally or linearly spaced? Appropriate for logarithmic
+y-axes of signal panels.</p></li>
+<li><p><strong>tqdm_kwargs</strong> (<em>dict</em>) – Progress bar keyword arguments.</p></li>
+<li><p><strong>scale_ymin</strong> (<em>float</em>) – The minimum y-value to use, as a fraction of the minimum sample
+value.</p></li>
+<li><p><strong>scale_ymax</strong> (<em>float</em>) – The maximum y-value to use, as a fraction of the minimum sample
+value.</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – Number of y-values to compute the posterior mass for.</p></li>
+<li><p><strong>lines_on</strong> (<em>bool</em>) – Render contour lines?</p></li>
+<li><p><strong>add_label</strong> (<em>bool</em>) – Add contour colorbar label.</p></li>
+<li><p><strong>write</strong> (<em>bool</em>) – Write figure to disk?</p></li>
+<li><p><strong>extension</strong> (<em>str</em>) – File extension for writing.</p></li>
+<li><p><strong>dpi</strong> (<em>int</em>) – Figure write resolution.</p></li>
+<li><p><strong>write_kwargs</strong> (<em>dict</em>) – Additional writing keyword arguments.</p></li>
+<li><p><strong>xticks</strong> (<em>list</em><em>(</em><em>list</em><em>(</em><em>float</em><em>)</em><em>)</em>) – Determine the x-tick values that will be labelled in each of the subplots
+(including color bars). Automatic ticks and labels are used for the
+specific subplot if providing None instead of a list of floats
+(e.g., xticks=[[0.1,0.5,1.0],None,None]).
+If xticks=None (default), automatic ticks and labels are used for all the
+subplots.</p></li>
+<li><p><strong>yticks</strong> (<em>list</em><em>(</em><em>list</em><em>(</em><em>float</em><em>)</em><em>)</em>) – Determine the y-tick values that will be labelled in each of the subplots
+(including color bars). See param xticks for more details.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._signalplot.SignalPlot.execute">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thetas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.execute" title="Link to this definition"></a></dt>
+<dd><p>Execute behaviours requiring a loop over samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thetas</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – Equally-weighted set of posterior samples.</p></li>
+<li><p><strong>wrapper</strong> (<em>callable</em>) – Wrapper function that interleaves iterative calls <cite>next(self)</cite>
+with code to update the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance from a
+cache stored on disk. The wrapper returns a callback function,
+If such a cache is unavailable, the likelihood function is
+evaluated on-the-fly when the callback is called passing a sample
+(parameter vector). In this case, signals to be plotted are
+temporarily cached in the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance.
+The signature of the wrapper function is:
+<cite>wrapper(self, delete_me=None, index=None)</cite>,
+where <cite>self</cite> is this a subclass of
+<a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a>, <cite>delete_me</cite> is an optional
+attribute name or a list of attribute name in <cite>self.__dict__</cite> to be
+deleted before iterating over samples, and <cite>index</cite> is an optional
+integer to index a tuple returned from <cite>next(self)</cite>.
+The signature of the callback function, if you need to call it
+directly (instead of an external library such as fgivenx calling
+it):
+<cite>callback(None, theta)</cite>,
+where each sample/parameter vector is a row in <cite>thetas</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._signalplot.SignalPlot.fig">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fig</span></span><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.fig" title="Link to this definition"></a></dt>
+<dd><p>Get the figure object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._signalplot.SignalPlot.finalize">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.finalize" title="Link to this definition"></a></dt>
+<dd><p>Execute instructions to finish plotting.</p>
+<p>Before this method is called, the likelihood object will be updated
+so that the true (injected) signals are cached. In the body of the
+subclass implementation of this method, one can plot the injected
+signals by accessing the attributes of the signal instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._signalplot.SignalPlot.savefig">
+<span class="sig-name descname"><span class="pre">savefig</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.savefig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.savefig" title="Link to this definition"></a></dt>
+<dd><p>Write figure to file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing._postprocessor.</span></span><span class="sig-name descname"><span class="pre">PostProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posteriors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="Link to this definition"></a></dt>
+<dd><p>Post-process samples for inference and posterior checking.</p>
+<p>Base class that functions as a container for nested sampling run objects
+representing some set of posterior distributions that share some subset of
+parameters of interest that are to be plotted. The parameters can be
+shared in the sense that their relationship is the identity relation, or
+multiple physical objects in a population context each have an instance
+of a parameter type. An example of the former is the mass of a star, for
+which there are two or more distinct posterior distributions, due, e.g.:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>to sequential inference conditional on independent data sets, where
+each posterior is an updated of the previous in the sequence;</p></li>
+<li><p>inference conditional on independent data sets, where the different
+analyses invoked same [different] prior models and one simply wants
+to overlay the posteriors e.g., to gauge the synergy of different
+experiments [and argue the priors are weakly informative/
+diffuse in the context of the likelihood functions];</p></li>
+<li><p>to analysis of a single data set but the effective existence of
+discrete hyperparameter resulting in posteriors conditional on
+the discrete label over population-level prior distributions that
+has not been marginalized over (i.e., the problem of choosing an
+appropriate the hierarchical prior model);</p></li>
+<li><p>to competing models, where models can differ in the likelihood
+function, prior density, or both.</p></li>
+</ul>
+</div></blockquote>
+<p>An example of the latter is two more (neutron) stars, each with a mass;
+these masses collectively encode interesting population-level information.</p>
+<p>Subclasses will calculate inferences, usually in the form of approximate
+integrals over the posterior distribution. They will also provide tools
+for visualisation of posterior information and derived quantities, which
+is useful for basic posterior predictive checking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>posteriors</strong> (<em>iterable</em>) – An iterable of instances of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.get_attr">
+<span class="sig-name descname"><span class="pre">get_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor.get_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.get_attr" title="Link to this definition"></a></dt>
+<dd><p>Get a list of attributes of the <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances stored as
+the current subset.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.params">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.params" title="Link to this definition"></a></dt>
+<dd><p>Get the current parameter information.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.posteriors">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">posteriors</span></span><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.posteriors" title="Link to this definition"></a></dt>
+<dd><p>Get the posteriors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.set_params">
+<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor.set_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.set_params" title="Link to this definition"></a></dt>
+<dd><p>Set current parameters for plotting, which must be shared.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.set_subset">
+<span class="sig-name descname"><span class="pre">set_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">IDs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_combined</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor.set_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.set_subset" title="Link to this definition"></a></dt>
+<dd><p>Set a current list of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances.</p>
+<p>Helper function to get and notify which runs will be plotted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>IDs</strong> (<em>OrderedDict</em>) – A dictionary of lists, where keys match <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+IDs, and list elements match <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instance IDs. If no
+key matches a <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance ID, it is assumed that
+all associated <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances are to be selected as the
+current subset for plotting applications.</p></li>
+<li><p><strong>combine</strong> (<em>bool</em>) – Additionally combine the runs into a single run for overplotting?
+The overriding setting if there is more than one underlying
+posterior to be plotted, is to attempt to combine runs on each
+posterior if multiple such runs are available, in order to
+reduce information density. If there is a single underlying
+posterior, the user-specified value is respected.</p></li>
+<li><p><strong>combine_all</strong> (<em>bool</em>) – Combine all runs in each <code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code> instance or only those
+for which IDs are provided? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>force_combine</strong> (<em>bool</em>) – Force recombination of elligible run sets, even if a
+combined run is already cached?</p></li>
+<li><p><strong>only_combined</strong> (<em>bool</em>) – Only plot the combined run? Only heeded if a single posterior
+is selected for plotting, and in that case is ignored if
+<code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite combined-sample files on disk with the same filename?</p></li>
+<li><p><strong>split_modes</strong> (<em>bool</em>) – Split posteriors by mode? Only useful for cornerplots.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.subset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subset</span></span><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.subset" title="Link to this definition"></a></dt>
+<dd><p>Get the current subset of posteriors for plotting.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._postprocessor.PostProcessor.subset_to_plot">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subset_to_plot</span></span><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.subset_to_plot" title="Link to this definition"></a></dt>
+<dd><p>Get the current subset of runs for plotting.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._backends.NestedBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing._backends.</span></span><span class="sig-name descname"><span class="pre">NestedBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_nestcheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_transformed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_backends.html#NestedBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a></p>
+<p>Container for nested samples generated by a single run, and backends
+for analysis of the run.</p>
+<p>The other keyword arguments are generic properties passed to the parent
+class, such as the identification (ID) string of the run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<em>str</em>) – The root filename of the sample file collection.</p></li>
+<li><p><strong>base_dir</strong> (<em>str</em>) – The directly containing the sample file collection.</p></li>
+<li><p><strong>use_nestcheck</strong> (<em>bool</em>) – Invoke <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> for nested sampling error analysis?</p></li>
+<li><p><strong>transform</strong> (<em>callable</em>) – A function to transform the parameter vector to another space.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._backends.NestedBackend.getdist_backend">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getdist_backend</span></span><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.getdist_backend" title="Link to this definition"></a></dt>
+<dd><p>Get the <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._backends.NestedBackend.margeStats">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">margeStats</span></span><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.margeStats" title="Link to this definition"></a></dt>
+<dd><p>Return the marginal statistics using <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._backends.NestedBackend.nestcheck_backend">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nestcheck_backend</span></span><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.nestcheck_backend" title="Link to this definition"></a></dt>
+<dd><p>Get the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> backend for the nested samples.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._run.Run">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing._run.</span></span><span class="sig-name descname"><span class="pre">Run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_run.html#Run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._run.Run" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata" title="xpsi.PostProcessing._metadata.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
+<p>Base class for a sample container.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._run.Run.contours">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contours</span></span><a class="headerlink" href="#xpsi.PostProcessing._run.Run.contours" title="Link to this definition"></a></dt>
+<dd><p>Get the dictionary of contour arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>contours</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters specifying the
+properties of the contours representing credible regions of the
+two-dimensional marginal distributions of parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._run.Run.lines">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lines</span></span><a class="headerlink" href="#xpsi.PostProcessing._run.Run.lines" title="Link to this definition"></a></dt>
+<dd><p>Get the dictionary of line arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lines</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters
+specifying the properties of the smooth lines
+representing one-dimensional marginal distributions
+of parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._run.Run.samples">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">samples</span></span><a class="headerlink" href="#xpsi.PostProcessing._run.Run.samples" title="Link to this definition"></a></dt>
+<dd><p>Get a copy of the samples array.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.PostProcessing._metadata.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">implementation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kde_settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_metadata.html#Metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata" title="Link to this definition"></a></dt>
+<dd><p>Base class to record basic information about sampling runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ID</strong> (<em>str</em>) – For identification of the object.</p></li>
+<li><p><strong>names</strong> (<em>list</em>) – An ordered list of <code class="docutils literal notranslate"><span class="pre">str</span></code> parameter names. The ordering must match
+the parameter vector ordering defined in sample backend objects.</p></li>
+<li><p><strong>bounds</strong> (<em>dict</em>) – A dictionary of one-dimensional <em>hard</em> parameter bounds. See
+<a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>; the keys must match the
+<a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata.names" title="xpsi.PostProcessing._metadata.Metadata.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a> list. For the purpose of density estimation plots these
+bounds can be viewing bounds.</p></li>
+<li><p><strong>labels</strong> (<em>list</em>) – An ordered list of (LaTeX compatible) <code class="docutils literal notranslate"><span class="pre">str</span></code> literal parameter labels.</p></li>
+<li><p><strong>implementation</strong> (<em>str</em>) – Sampling software applied to generate the samples. Known options are
+<code class="docutils literal notranslate"><span class="pre">['multinest',</span> <span class="pre">'polychord',</span> <span class="pre">'emcee']</span></code>.</p></li>
+<li><p><strong>kde_settings</strong> (<em>dict</em>) – Settings for instantiation of <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>.</p></li>
+<li><p><strong>truths</strong> (<em>dict</em>) – Optional dictionary of parameter truths, if <em>known</em>; if <em>unknown</em>
+leave as <code class="docutils literal notranslate"><span class="pre">None</span></code>. The keys must be names which match those in
+<a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata.names" title="xpsi.PostProcessing._metadata.Metadata.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.ID">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ID</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.ID" title="Link to this definition"></a></dt>
+<dd><p>Get the identification <code class="docutils literal notranslate"><span class="pre">str</span></code> of the sample set.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.bounds">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.bounds" title="Link to this definition"></a></dt>
+<dd><p>Get the parameter bounds.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.implementation">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">implementation</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.implementation" title="Link to this definition"></a></dt>
+<dd><p>Sampling software applied to generate the samples of the run.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.kde_settings">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kde_settings</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.kde_settings" title="Link to this definition"></a></dt>
+<dd><p>Get the input <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> KDE settings dictionary.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.labels">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">labels</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.labels" title="Link to this definition"></a></dt>
+<dd><p>Get the parameter labels.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.names">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">names</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.names" title="Link to this definition"></a></dt>
+<dd><p>Get the parameter names.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.parent_ID">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent_ID</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.parent_ID" title="Link to this definition"></a></dt>
+<dd><p>The ID of the parent container with which a run is associated.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.precisions">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">precisions</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.precisions" title="Link to this definition"></a></dt>
+<dd><p>Get the parameter precisions.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.prepend_ID">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prepend_ID</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.prepend_ID" title="Link to this definition"></a></dt>
+<dd><p>Prepend the run ID with the parent ID.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.truth_vector">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">truth_vector</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.truth_vector" title="Link to this definition"></a></dt>
+<dd><p>Get the parameter truths as a list.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.PostProcessing._metadata.Metadata.truths">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">truths</span></span><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.truths" title="Link to this definition"></a></dt>
+<dd><p>Get the parameter truths as a dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sample.html" class="btn btn-neutral float-left" title="Sample" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="SBI_wrapper.html" class="btn btn-neutral float-right" title="Wrappers for SBI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

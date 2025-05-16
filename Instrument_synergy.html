@@ -1,0 +1,1603 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instrument synergy &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Hot region complexity" href="Hot_region_complexity.html" />
+    <link rel="prev" title="Modeling" href="Modeling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Instrument synergy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Likelihood">Likelihood</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Instrument">Instrument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Pile-up">Pile-up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Signal">Signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Star">Star</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Synthesis">Synthesis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-format">Data format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Custom-method">Custom method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Synthesise">Synthesise</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Instrument synergy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Instrument_synergy.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Instrument-synergy">
+<h1>Instrument synergy<a class="headerlink" href="#Instrument-synergy" title="Link to this heading"></a></h1>
+<p>The purpose of this notebook is to prototype support for multiple instruments operating on the same signal incident at Earth. The instruments may have different wavebands and the data may or may not be phase resolved for each instrument.</p>
+<p>Some extra data files not available on the GitHub repository are needed to run this tutorial. They can be found in the <a class="reference external" href="https://zenodo.org/record/7094144">Zenodo</a> and should be placed in the directory <code class="docutils literal notranslate"><span class="pre">examples/examples_modeling_tutorial/model_data/</span></code> of your local xpsi directory. These are the required files:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nicer_v1.01_arf.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nicer_v1.01_rmf_matrix.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nicer_v1.01_rmf_energymap.txt</span></code></p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import os
+import numpy as np
+import math
+import time
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
+from matplotlib import gridspec
+from matplotlib import cm
+rcParams[&#39;text.usetex&#39;] = False
+rcParams[&#39;font.size&#39;] = 14.0
+
+import xpsi
+
+from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+from xpsi.utilities import PlottingLibrary as XpsiPlot
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.6               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.6
+Check your PyMultiNest installation.
+Check your installation of PyMultiNest if using the NestedSampler
+Check your UltraNest installation.
+Check your installation of UltraNest if using the UltranestSampler
+Warning: Cannot import torch and test SBI_wrapper.
+Imported GetDist version: 1.6.1
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class Telescope(object):
+    pass
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER = Telescope()
+XMM = Telescope() # fabricated toy that we&#39;ll just pretend is XMM as a placeholder!
+</pre></div>
+</div>
+</div>
+<section id="Likelihood">
+<h2>Likelihood<a class="headerlink" href="#Likelihood" title="Link to this heading"></a></h2>
+<p>Let us load a synthetic data set that we generated in advance, and know the fictitious exposure time for.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>obs_settings = dict(counts=np.loadtxt(&#39;../../examples/examples_modeling_tutorial/model_data/example_synthetic_realisation.dat&#39;, dtype=np.double),
+                    channels=np.arange(20, 201),
+                    phases=np.linspace(0.0, 1.0, 33),
+                    first=0,last=180,
+                    exposure_time=984307.6661)
+
+NICER.data = xpsi.Data(**obs_settings)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>obs_settings = dict(counts=np.loadtxt(&#39;../../examples/examples_modeling_tutorial/model_data/XMM_realisation.dat&#39;, dtype=np.double).reshape(-1,1),
+                    channels=np.arange(20, 201),
+                    phases=np.array([0.0, 1.0]),
+                    first=0,last=180,
+                    exposure_time=1818434.247359)
+
+XMM.data = xpsi.Data(**obs_settings)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<p>Now for the data:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, axs = NICER.data.plot(dpi=130, num_rot=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_11_0.png" src="_images/Instrument_synergy_11_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(f&quot;XMM data is a spectrum. The array shape is : {np.shape(XMM.data.counts)}&quot;)
+print(f&quot;NICER data is a pulse profile. They array shape is : {np.shape(NICER.data.counts)}&quot;)
+
+data_to_plot = [XMM.data.counts,
+                np.sum(NICER.data.counts, axis=1)]  # Summing the NICER pulse profile over phase-bin to make spectrum
+label_to_plot = [&#39;XMM&#39;, &#39;NICER&#39;]
+
+XpsiPlot.plot_spectrum(all_data=data_to_plot,
+                       all_labels=label_to_plot)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+XMM data is a spectrum. The array shape is : (181, 1)
+NICER data is a pulse profile. They array shape is : (181, 32)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_12_1.png" src="_images/Instrument_synergy_12_1.png" />
+</div>
+</div>
+<section id="Instrument">
+<h3>Instrument<a class="headerlink" href="#Instrument" title="Link to this heading"></a></h3>
+<p>We require a model instrument object to transform incident specific flux signals into a form which enters directly in the sampling distribution of the data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class CustomInstrument(xpsi.Instrument):
+    &quot;&quot;&quot; A model of the NICER telescope response. &quot;&quot;&quot;
+
+    def __call__(self, signal, *args):
+        &quot;&quot;&quot; Overwrite base just to show it is possible.
+
+        We loaded only a submatrix of the total instrument response
+        matrix into memory, so here we can simplify the method in the
+        base class.
+
+        &quot;&quot;&quot;
+
+        matrix = self.construct_matrix()
+
+        self._folded_signal = np.dot(matrix, signal)
+
+        return self._folded_signal
+
+    @classmethod
+    def from_response_files(cls, ARF, RMF, channel_edges, max_input, min_input=0,
+                            translate_edges=None, scaling=None, inst_name=None):
+        &quot;&quot;&quot; Constructor which converts response files into :class:`numpy.ndarray`s.
+        :param str ARF: Path to ARF which is compatible with
+                                :func:`numpy.loadtxt`.
+        :param str RMF: Path to RMF which is compatible with
+                                :func:`numpy.loadtxt`.
+        :param str channel_edges: Path to edges which is compatible with
+                                  :func:`numpy.loadtxt`.
+        :param float translate_edges: Optional translation of the energy edges (in keV).
+        :param float scaling: Optional Scaling to scale the ARF.
+
+        &quot;&quot;&quot;
+
+        if min_input != 0:
+            min_input = int(min_input)
+
+        max_input = int(max_input)
+
+        try:
+            ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
+            RMF = np.loadtxt(RMF, dtype=np.double)
+            channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
+        except:
+            print(&#39;A file could not be loaded.&#39;)
+            raise
+
+        if scaling is not None:
+            ARF[:,3] *= scaling
+
+        matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
+
+        edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
+
+        edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
+
+        for i in range(matrix.shape[0]):
+            matrix[i,:] *= ARF[min_input:max_input,3]
+
+        channels = np.arange(20, 201)
+
+        if translate_edges is not None:
+            edges += translate_edges
+
+        Inst = cls(matrix, edges, channels, channel_edges[20:202,-2])
+        Inst.name = inst_name
+        return Inst
+</pre></div>
+</div>
+</div>
+<p>Let’s construct an instance of the first instrument called <code class="docutils literal notranslate"><span class="pre">NICER</span></code>. This is made from RMF and ARF in ASCII (text) file format, but a new loader from FITS file is available (see “Modelling” tutorial).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER.instrument = CustomInstrument.from_response_files(ARF = &#39;../../examples/examples_modeling_tutorial/model_data/nicer_v1.01_arf.txt&#39;,
+                                         RMF = &#39;../../examples/examples_modeling_tutorial/model_data/nicer_v1.01_rmf_matrix.txt&#39;,
+                                         channel_edges = &#39;../../examples/examples_modeling_tutorial/model_data/nicer_v1.01_rmf_energymap.txt&#39;,
+                                         max_input = 500,
+                                         min_input = 0,
+                                         inst_name=&#39;NICER XTI&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+An empty subspace was created (no parameters were supplied).
+</pre></div></div>
+</div>
+<p>For the second instrument, called <code class="docutils literal notranslate"><span class="pre">XMM</span></code>, we use the some response files (those of <code class="docutils literal notranslate"><span class="pre">NICER</span></code>) with two additional arbitrary modifications (for the sake of the example):</p>
+<ul class="simple">
+<li><p>add a <code class="docutils literal notranslate"><span class="pre">scaling=0.5</span></code> which reduces the sensitivity by half (see <code class="docutils literal notranslate"><span class="pre">CustomInstrument</span></code> class above).</p></li>
+<li><p>add a <code class="docutils literal notranslate"><span class="pre">translate_edges=0.1</span></code> which shifts the sensitivity matrix by 0.1 keV.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.instrument = CustomInstrument.from_response_files(ARF = &#39;../../examples/examples_modeling_tutorial/model_data/nicer_v1.01_arf.txt&#39;,
+                                       RMF = &#39;../../examples/examples_modeling_tutorial/model_data/nicer_v1.01_rmf_matrix.txt&#39;,
+                                       channel_edges = &#39;../../examples/examples_modeling_tutorial/model_data/nicer_v1.01_rmf_energymap.txt&#39;,
+                                       max_input = 500,
+                                       min_input = 0,
+                                       translate_edges = 0.1,
+                                       scaling = 0.5,
+                                       inst_name=&#39;XMM&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+An empty subspace was created (no parameters were supplied).
+</pre></div></div>
+</div>
+<p>The NICER <code class="docutils literal notranslate"><span class="pre">v1.01</span></code> response matrix:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energy_inputs = np.arange(1,len( NICER.instrument.energy_edges)+1)-0.5
+channels = NICER.instrument.channel_edges * 100 - 0.5
+
+rmf_plot = XpsiPlot.plot_rmf(matrix=NICER.instrument.matrix,
+                             x=energy_inputs,
+                             y=channels,
+                             xlabel=&#39;Energy interval&#39;,
+                             ylabel=&#39;Channels&#39;
+                            )
+
+XpsiPlot.veneer((25, 100), (10, 50), rmf_plot)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_21_0.png" src="_images/Instrument_synergy_21_0.png" />
+</div>
+</div>
+<p>Summed over channel subset <span class="math notranslate nohighlight">\([20,200]\)</span>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>arfplot = XpsiPlot.plot_arf([XMM.instrument, NICER.instrument])
+XpsiPlot.veneer((0.1, 0.5), (100, 500), arfplot)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_23_0.png" src="_images/Instrument_synergy_23_0.png" />
+</div>
+</div>
+</section>
+<section id="Pile-up">
+<h3>Pile-up<a class="headerlink" href="#Pile-up" title="Link to this heading"></a></h3>
+<p>Some X-ray detectors (e.g., CCD) may suffer from <em>pile-up</em>, which happens when more than one photon is incident on the same pixel of the detectors within one read-out time (or frame time). CCD can take several seconds (e.g., up to 3.2 sec for Chandra ACIS-I) to completely read all pixels. During this time, bright X-ray sources may cause two or more X-ray photons to fall on the same pixels. The detectors will therefore account for <em>a single event</em> with energy equal to the sum of the energies of
+the incident photons during that readout time. This distorts the X-ray spectrum to higher energies. For a given readout time, the brighter the X-ray source, the stronger the effects of pile-up.</p>
+<p>Pile-up can be mitigated by reducing the CCD read-out time with a faster mode, for ex., by restricting the readout area to a sub-portion of the CCD. For Chandra, the readout time can be reduced to 0.4 sec by selecting 1/8 of the CCD to be used.</p>
+<p>Nonetheless, if the pile-up effects are still presents (e.g., 1 or 2 % of photons are piled-up), a correction to the spectral model might be necessary to limit biases in the inferred spectral parameters. To do so, a statistical accounting of piled-up photons can account for these effects. Mathematically, this is means that pile-up correction function (see <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2001ApJ...562..575D/abstract">Davis 2001</a> ) needs to be convolved first to <code class="docutils literal notranslate"><span class="pre">ARF</span> <span class="pre">*</span> <span class="pre">spectral_model</span></code> and
+the result to <code class="docutils literal notranslate"><span class="pre">RMF</span></code>. To perform this efficiently for inferrence in X-PSI, this product of convolutions is done in Fourier space.</p>
+<p>In practice, the <code class="docutils literal notranslate"><span class="pre">InstrumentPileup</span></code> class will do all this in X-PSI. It works as the <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> class, but it includes two extra parameter:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">grade_migration</span></code>, which gives the probability that an event with two or more photons was <em>not</em> rejected, i.e., that it corresponds to a piled-up event.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">psf_fraction</span></code>, which corresponds to the fraction of the telescope point spread fonction in which pile-up is consider (fixed by default at 95%, and can be fitted).</p></li>
+</ul>
+<p>So <code class="docutils literal notranslate"><span class="pre">grade_migration</span></code> is the only parameter of the pile-up model that really needs to be fitted. Two other (fixed) parameters, <code class="docutils literal notranslate"><span class="pre">frame_time</span></code> and <code class="docutils literal notranslate"><span class="pre">frac_expo</span></code>, are read directly from the header of the data file (this requires to load the data from a FITS file).</p>
+</section>
+<section id="Signal">
+<h3>Signal<a class="headerlink" href="#Signal" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
+from xpsi.likelihoods.default_background_marginalisation import precomputation
+
+class CustomSignal(xpsi.Signal):
+    &quot;&quot;&quot; A custom calculation of the logarithm of the likelihood.
+    We extend the :class:`xpsi.Signal.Signal` class to make it callable.
+    We overwrite the body of the __call__ method. The docstring for the
+    abstract method is copied.
+    &quot;&quot;&quot;
+
+    def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
+                 epsilon = 1.0e-3, sigmas = 10.0, support = None, *args, **kwargs):
+        &quot;&quot;&quot; Perform precomputation. &quot;&quot;&quot;
+
+        super(CustomSignal, self).__init__(*args, **kwargs)
+
+        try:
+            self._precomp = precomputation(self._data.counts.astype(np.int32))
+        except AttributeError:
+            print(&#39;Warning: No data... can synthesise data but cannot evaluate a &#39;
+                  &#39;likelihood function.&#39;)
+        else:
+            self._workspace_intervals = workspace_intervals
+            self._epsabs = epsabs
+            self._epsrel = epsrel
+            self._epsilon = epsilon
+            self._sigmas = sigmas
+            if support is not None:
+                self._support = support
+            else:
+                self._support = -1.0 * np.ones((self._data.counts.shape[0],2))
+                self._support[:,0] = 0.0
+
+    @property
+    def support(self):
+        return self._support
+
+    @support.setter
+    def support(self, obj):
+        self._support = obj
+
+    def __call__(self, **kwargs):
+        self.loglikelihood, self.expected_counts, self.background_signal, self.background_given_support = \
+                eval_marginal_likelihood(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          self._precomp,
+                                          self._support,
+                                          self._workspace_intervals,
+                                          self._epsabs,
+                                          self._epsrel,
+                                          self._epsilon,
+                                          self._sigmas,
+                                          kwargs.get(&#39;llzero&#39;))
+</pre></div>
+</div>
+</div>
+<p>Note that if we need an additional overall phase shift parameter for additional instruments whose recorded data are phase resolved, then it could be passed to the subclass above for the signal associated with a given telescope.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER.signal = CustomSignal(data = NICER.data,
+                              instrument = NICER.instrument,
+                              background = None,
+                              interstellar = None,
+                              workspace_intervals = 1000,
+                              epsrel = 1.0e-8,
+                              epsilon = 1.0e-3,
+                              sigmas = 10.0)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.signal = CustomSignal(data = XMM.data,
+                               instrument = XMM.instrument,
+                               background = None,
+                               interstellar = None,
+                               support = None,
+                               workspace_intervals = 1000,
+                               epsrel = 1.0e-8,
+                               epsilon = 1.0e-3,
+                               sigmas = 10.0)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+</pre></div></div>
+</div>
+</section>
+<section id="Star">
+<h3>Star<a class="headerlink" href="#Star" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(distance = (None, None),                   # (Earth) distance
+                mass = (None, None),                     # mass
+                radius = (None, None),                   # equatorial radius
+                cos_inclination = (None, None))          # (Earth) inclination to rotation axis
+
+values = dict(frequency=300.0 )                          # spin frequency
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e-03, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [1.000e+00, 2.000e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-02, 3.000e+01].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [-1.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(super_colatitude = (None, None),
+              super_radius = (None, None),
+              phase_shift = (-0.5, 0.5),
+              super_temperature = (None, None))
+
+# a simple circular, simply-connected spot
+primary = xpsi.HotRegion(bounds=bounds,
+                            values={}, # no initial values and no derived/fixed
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=64,
+                            num_leaves=100,
+                            num_rays=200,
+                            do_fast=False,
+                            prefix=&#39;p&#39;) # unique prefix needed because &gt;1 instance
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class derive(xpsi.Derive):
+    def __init__(self):
+        &quot;&quot;&quot;
+        We can pass a reference to the primary here instead
+        and store it as an attribute if there is risk of
+        the global variable changing.
+
+        This callable can for this simple case also be
+        achieved merely with a function instead of a magic
+        method associated with a class.
+        &quot;&quot;&quot;
+        pass
+
+    def __call__(self, boundto, caller = None):
+        # one way to get the required reference
+        global primary # unnecessary, but for clarity
+        return primary[&#39;super_temperature&#39;] - 0.2
+
+bounds[&#39;super_temperature&#39;] = None # declare fixed/derived variable
+
+secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
+                              values={&#39;super_temperature&#39;: derive()}, # create a callable value
+                              symmetry=True,
+                              omit=False,
+                              cede=False,
+                              concentric=False,
+                              sqrt_num_cells=32,
+                              min_sqrt_num_cells=10,
+                              max_sqrt_num_cells=100,
+                              num_leaves=100,
+                              num_rays=200,
+                              do_fast=False,
+                              is_antiphased=True,
+                              prefix=&#39;s&#39;) # unique prefix needed because &gt;1 instance
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; that is derived from ulterior variables.
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi import HotRegions
+
+hot = HotRegions((primary, secondary))
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class CustomPhotosphere(xpsi.Photosphere):
+    &quot;&quot;&quot; Implement method for imaging.&quot;&quot;&quot;
+
+    def _global_variables(self):
+
+        return np.array([self[&#39;p__super_colatitude&#39;],
+                          self[&#39;p__phase_shift&#39;] * _2pi,
+                          self[&#39;p__super_radius&#39;],
+                          self[&#39;p__super_temperature&#39;],
+                          self[&#39;s__super_colatitude&#39;],
+                          (self[&#39;s__phase_shift&#39;] + 0.5) * _2pi,
+                          self[&#39;s__super_radius&#39;],
+                          self.hot.objects[1][&#39;s__super_temperature&#39;]])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
+                                values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>likelihood = xpsi.Likelihood(star = star, signals = [NICER.signal, XMM.signal],
+                             threads = 1, externally_updated = False)
+</pre></div>
+</div>
+</div>
+<p>The instrument wavebands exhibit a high degree of overlap. The energies at which we compute incident specific flux signals are based on the union of wavebands, distributed logarithmically:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(8,8))
+plt.plot(XMM.signal.energies, &#39;kx&#39;)
+ax = plt.gca()
+ax.set_xlabel(&#39;Index&#39;)
+_ = ax.set_ylabel(&#39;Energy [keV]&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_41_0.png" src="_images/Instrument_synergy_41_0.png" />
+</div>
+</div>
+<p>This is a simple, non-adaptive protocol to ensure that signals are not computed at very nearby energies for multiple telescopes, resulting in overhead.</p>
+<p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the true model parameter values that we injected to generate the synthetic data rendered above, omitting background parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>p = [1.4,
+     12.5,
+     0.2,
+     math.cos(1.25),
+     0.0,
+     1.0,
+     0.075,
+     6.2,
+     0.025,
+     math.pi - 1.0,
+     0.2]
+
+t = time.time()
+ll = likelihood(p, force=True) # force if you want to clear parameter value caches
+
+print(&#39;ll = %.8f; time = %.3f&#39; % (ll, time.time() - t))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ll = -30069.97104377; time = 1.520
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER.signal.loglikelihood # check NICER ll ~ -26713.602 ?
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-27461.13000805687
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.signal.loglikelihood # check XMM ll ~ -2608.841 ?
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-2608.841035710167
+</pre></div></div>
+</div>
+<p>Let’s fabricate some rough prior information as the constrained support of the background parameters for XMM:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>support = np.zeros((181, 2))
+support[:,0] = XMM.signal.background_signal - 5.0 * np.sqrt(XMM.signal.background_signal)
+support[:,1] = XMM.signal.background_signal + 5.0 * np.sqrt(XMM.signal.background_signal)
+support /= XMM.data.exposure_time
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.signal.support = support
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ll = likelihood(p, force=True)
+</pre></div>
+</div>
+</div>
+<p>Let’s confirm that the XMM background-marginalised likelihood did indeed change:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.signal.loglikelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-2610.121609530978
+</pre></div></div>
+</div>
+<p>The background-marginalised likelihood function has the following form. Subscripts N denote NICER, whilst subscripts X denote XMM.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+p(d_{\rm X}, d_{\rm N}, \{b_{\rm X}\} \,|\, s)
+    \propto
+    &amp;
+    \underbrace{\mathop{\int}_{\{0\}}^{\{\mathcal{U}_{\rm N}\}}
+    p(d_{\rm N} \,|\, s, \{\mathbb{E}[b_{\rm N}]\}, \texttt{NICER})
+    d\{\mathbb{E}[b_{\rm N}]\}}_{\rm exp( \texttt{NICER.signal.loglikelihood} )}\\
+    &amp;
+    \times\underbrace{\mathop{\int}_{\{0\}}^{\{\mathcal{U}_{X}\}}
+    p(d_{\rm X} \,|\, s, \{\mathbb{E}[b_{\rm X}]\}, \texttt{XMM})
+    p(\{\mathbb{E}[b_{\rm X}]\} \,|\, \{b_{\rm X}\})d\{\mathbb{E}[b_{\rm X}]\}}_{\rm exp( \texttt{XMM.signal.loglikelihood} )}.
+\end{aligned}\end{split}\]</div>
+<p>The term <span class="math notranslate nohighlight">\(p(\{\mathbb{E}[b_{\rm X}]\} \,|\, \{b_{\rm X}\})\)</span> truncates the integral over XMM channel-by-channel background count rate variables to an interval <span class="math notranslate nohighlight">\([a,b]\)</span> in each channel, where <span class="math notranslate nohighlight">\(a,b\in\mathbb{R}^{+}\)</span>. This is the joint prior support of the variables <span class="math notranslate nohighlight">\(\{\mathbb{E}[b_{\rm X}]\}\)</span> rendered in the spectral plot below. The form of the prior density <span class="math notranslate nohighlight">\(p(\{\mathbb{E}[b_{\rm X}]\} \,|\, \{b_{\rm X}\})\)</span> is flat on this interval for each channel. This is a
+simplifying approximation to the probability of the background data <span class="math notranslate nohighlight">\(\{b_{\rm X}\}\)</span> given the variables <span class="math notranslate nohighlight">\(\{\mathbb{E}[b_{\rm X}]\}\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>support_data = [support[:,0]*XMM.data.exposure_time, support[:,1]*XMM.data.exposure_time ]
+
+data_to_plot = [XMM.signal.background_signal,
+                XMM.signal.expected_counts,
+                XMM.data.counts,
+                support_data
+               ]
+label_to_plot = [&#39;MCL background&#39;,
+                 &#39;MCL counts given support&#39;,
+                &#39;XMM data&#39;,
+                 &#39;support&#39;
+                ]
+
+XpsiPlot.plot_spectrum(data_to_plot, all_labels=label_to_plot, thickness=[2,5,2,14])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_54_0.png" src="_images/Instrument_synergy_54_0.png" />
+</div>
+</div>
+<p>The spectrum labelled <em>MCL counts given support</em> means the expected signal from the pulsar, plus the background count vector that maximises the conditional likelihood function given that pulsar signal, subject to the background vector existing in the prior support. The spectrum labelled <em>MCL background</em>, on the other hand, is the background vector that maximises the conditional likelihood function, but <em>not</em> subject to the prior support.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>likelihood[&#39;p__super_temperature&#39;] = 6.1
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>likelihood.externally_updated = True
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>likelihood()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-388123.59054938855
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.signal.loglikelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-321117.0621271163
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>support_data = [support[:,0]*XMM.data.exposure_time, support[:,1]*XMM.data.exposure_time ]
+
+data_to_plot = [XMM.signal.background_signal,
+                XMM.signal.expected_counts,
+                XMM.data.counts,
+                support_data
+               ]
+label_to_plot = [&#39;MCL background&#39;,
+                 &#39;MCL counts given support&#39;,
+                 &#39;XMM data&#39;,
+                 &#39;support&#39;
+                ]
+
+XpsiPlot.plot_spectrum(data_to_plot, all_labels=label_to_plot, thickness=[2,5,2,14])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_60_0.png" src="_images/Instrument_synergy_60_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Synthesis">
+<h2>Synthesis<a class="headerlink" href="#Synthesis" title="Link to this heading"></a></h2>
+<p>In this notebook thus far we have not generated sythetic data. However, we did condition on synthetic data. Below we outline how that data was generated.</p>
+<section id="Background">
+<h3>Background<a class="headerlink" href="#Background" title="Link to this heading"></a></h3>
+<p>The background radiation field incident on the model instrument for the purpose of generating synthetic data was a time-invariant powerlaw spectrum, and was transformed into a count-rate in each output channel using the response matrix for synthetic data generation. We would reproduce this background here by writing a custom subclass as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class CustomBackground(xpsi.Background):
+    &quot;&quot;&quot; The background injected to generate synthetic data. &quot;&quot;&quot;
+
+    def __init__(self, bounds=None, value=None):
+
+        # first the parameters that are fundemental to this class
+        doc = &quot;&quot;&quot;
+        Powerlaw spectral index.
+        &quot;&quot;&quot;
+        index = xpsi.Parameter(&#39;powerlaw_index&#39;,
+                                strict_bounds = (-3.0, -1.01),
+                                bounds = bounds,
+                                doc = doc,
+                                symbol = r&#39;$\Gamma$&#39;,
+                                value = value,
+                                permit_prepend = False) # because to be shared by multiple objects
+
+        super(CustomBackground, self).__init__(index)
+
+    def __call__(self, energy_edges, phases):
+        &quot;&quot;&quot; Evaluate the incident background field. &quot;&quot;&quot;
+
+        G = self[&#39;powerlaw_index&#39;]
+
+        temp = np.zeros((energy_edges.shape[0] - 1, phases.shape[0]))
+
+        temp[:,0] = (energy_edges[1:]**(G + 1.0) - energy_edges[:-1]**(G + 1.0)) / (G + 1.0)
+
+        for i in range(phases.shape[0]):
+            temp[:,i] = temp[:,0]
+
+        self._incident_background = temp
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>background = CustomBackground(bounds=(None, None)) # use strict bounds, but do not fix/derive
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;powerlaw_index&#34; with bounds [-3.000e+00, -1.010e+00].
+    &gt; Powerlaw spectral index.
+</pre></div></div>
+</div>
+<p>We will use this same background signal, albeit with different normalisations, for both telescopes. This is simply to generate finite background contributions.</p>
+</section>
+<section id="Data-format">
+<h3>Data format<a class="headerlink" href="#Data-format" title="Link to this heading"></a></h3>
+<p>We are also in need of a simpler data object.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class SynthesiseData(xpsi.Data):
+    &quot;&quot;&quot; Custom data container to enable synthesis. &quot;&quot;&quot;
+
+    def __init__(self, channels, phases, first, last):
+        self.channels = channels
+        self._phases = phases
+
+        try:
+            self._first = int(first)
+            self._last = int(last)
+        except TypeError:
+            raise TypeError(&#39;The first and last channels must be integers.&#39;)
+        if self._first &gt;= self._last:
+            raise ValueError(&#39;The first channel number must be lower than the &#39;
+                             &#39;the last channel number.&#39;)
+</pre></div>
+</div>
+</div>
+<p>Instantiate:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER.synth = SynthesiseData(np.arange(20,201), np.linspace(0.0, 1.0, 33), 0, 180)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XMM.synth = SynthesiseData(np.arange(20,201), np.array([0.0,1.0]), 0, 180)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+</section>
+<section id="Custom-method">
+<h3>Custom method<a class="headerlink" href="#Custom-method" title="Link to this heading"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi.tools.synthesise import synthesise_given_total_count_number as _synthesise
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def synthesise(self,
+               require_source_counts,
+               require_background_counts,
+               name=&#39;synthetic&#39;,
+               directory=&#39;./data&#39;,
+               **kwargs):
+        &quot;&quot;&quot; Synthesise data set.
+
+        &quot;&quot;&quot;
+        self._expected_counts, synthetic, _, _ = _synthesise(self._data.phases,
+                                            require_source_counts,
+                                            self._signals,
+                                            self._phases,
+                                            self._shifts,
+                                            require_background_counts,
+                                            self._background.registered_background,
+                                            gsl_seed=0)
+        try:
+            if not os.path.isdir(directory):
+                os.mkdir(directory)
+        except OSError:
+            print(&#39;Cannot create write directory.&#39;)
+            raise
+
+        np.savetxt(os.path.join(directory, name+&#39;_realisation.dat&#39;),
+                   synthetic,
+                   fmt = &#39;%u&#39;)
+
+        self._write(self.expected_counts,
+                    filename = os.path.join(directory, name+&#39;_expected_hreadable.dat&#39;),
+                    fmt = &#39;%.8e&#39;)
+
+        self._write(synthetic,
+                    filename = os.path.join(directory, name+&#39;_realisation_hreadable.dat&#39;),
+                    fmt = &#39;%u&#39;)
+
+def _write(self, counts, filename, fmt):
+    &quot;&quot;&quot; Write to file in human readable format. &quot;&quot;&quot;
+
+    rows = len(self._data.phases) - 1
+    rows *= len(self._data.channels)
+
+    phases = self._data.phases[:-1]
+    array = np.zeros((rows, 3))
+
+    for i in range(counts.shape[0]):
+        for j in range(counts.shape[1]):
+            array[i*len(phases) + j,:] = self._data.channels[i], phases[j], counts[i,j]
+
+    np.savetxt(filename, array, fmt=[&#39;%u&#39;, &#39;%.6f&#39;] + [fmt])
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>CustomSignal.synthesise = synthesise
+CustomSignal._write = _write
+</pre></div>
+</div>
+</div>
+<p>We now need to instantiate, and reconfigure the likelihood object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER.signal = CustomSignal(data = NICER.synth,
+                              instrument = NICER.instrument,
+                              background = background,
+                              interstellar = None,
+                              workspace_intervals = 1000,
+                              epsrel = 1.0e-8,
+                              epsilon = 1.0e-3,
+                              sigmas = 10.0,
+                              prefix=&#39;NICER&#39;)
+
+XMM.signal = CustomSignal(data = XMM.synth,
+                          instrument = XMM.instrument,
+                          background = background,
+                          interstellar = None,
+                          workspace_intervals = 1000,
+                          epsrel = 1.0e-8,
+                          epsilon = 1.0e-3,
+                          sigmas = 10.0,
+                          prefix=&#39;XMM&#39;)
+
+for h in hot.objects:
+    h.set_phases(num_leaves = 100)
+
+likelihood = xpsi.Likelihood(star = star, signals = [NICER.signal, XMM.signal], threads=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+Warning: No data... can synthesise data but cannot evaluate a likelihood function.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+Warning: No data... can synthesise data but cannot evaluate a likelihood function.
+</pre></div></div>
+</div>
+</section>
+<section id="Synthesise">
+<h3>Synthesise<a class="headerlink" href="#Synthesise" title="Link to this heading"></a></h3>
+<p>We proceed to synthesise. First we check the output path to write synthetic files:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!pwd
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/Users/sebastien/Research/GitHub/xpsi/docs/source
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>likelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+s__super_colatitude: The colatitude of the centre of the superseding region [radians].
+s__super_radius: The angular radius of the (circular) superseding region [radians].
+powerlaw_index: Powerlaw spectral index.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>p = [1.4,
+     12.5,
+     0.2,
+     math.cos(1.25),
+     0.0,
+     1.0,
+     0.075,
+     6.2,
+     0.025,
+     math.pi - 1.0,
+     0.2,
+     -2.0]
+
+NICER_kwargs = dict(require_source_counts = 2.0e6,
+                      require_background_counts = 2.0e6,
+                      name = &#39;new_NICER&#39;,
+                      directory = &#39;./data&#39;)
+
+XMM_kwargs = dict(require_source_counts = 1.0e6,
+                      require_background_counts = 5.0e5,
+                      name = &#39;new_XMM&#39;,
+                      directory = &#39;./data&#39;)
+
+likelihood.synthesise(p,
+                      force = True,
+                      NICER = NICER_kwargs,
+                      XMM = XMM_kwargs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Exposure time: 984282.620969 [s]
+Background normalisation: 1.89132784e-05
+Exposure time: 1818398.718453 [s]
+Background normalisation: 2.21412640e-04
+</pre></div></div>
+</div>
+<p>Notice that the normalisations, with units photons/s/cm^2/keV, are different because we require so many background counts. This detail is unimportant for this notebook, wherein we simply want some finite background contributions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XpsiPlot.plot_2d_pulse(pulse=np.loadtxt(&#39;data/new_NICER_realisation.dat&#39;, dtype=np.double),
+                       x=NICER.data.phases,
+                       y=NICER.data.channels,
+                       rotations=1,
+                       ylabel=&#39;Channel&#39;,
+                       cbar_label=&#39;Counts&#39;,)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_86_0.png" src="_images/Instrument_synergy_86_0.png" />
+</div>
+</div>
+<p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diff = XMM.data.counts - np.loadtxt(&#39;data/new_XMM_realisation.dat&#39;, dtype=np.double).reshape(-1,1)
+(diff != 0.0).any()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diff = NICER.data.counts - np.loadtxt(&#39;data/new_NICER_realisation.dat&#39;, dtype=np.double)
+(diff != 0.0).any()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>Let us then next compare the residuals between the newly created synthetic data and the synthetic data found in the GitHub examples. We see quite a large difference, especially at the lowest energy channels, because the example data were produced using significantly newer NICER response files (see “Modelling” tutorial).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x = np.loadtxt(&#39;../../examples/examples_modeling_tutorial/model_data/example_synthetic_expected_hreadable.dat&#39;)
+y = np.loadtxt(&#39;data/new_NICER_expected_hreadable.dat&#39;)
+
+xx = np.zeros(NICER.data.counts.shape)
+yy = np.zeros(NICER.data.counts.shape)
+
+for i in range(xx.shape[0]):
+    for j in range(xx.shape[1]):
+        xx[i,j] = x[i*32 + j,-1]
+        yy[i,j] = y[i*32 + j,-1]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XpsiPlot.plot_2d_pulse(pulse=yy-xx,
+                       x=NICER.data.phases,
+                       y=NICER.data.channels,
+                       rotations=1,
+                       ylabel=&#39;Channel&#39;,
+                       cbar_label=&#39;Counts&#39;,)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_92_0.png" src="_images/Instrument_synergy_92_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>_r = (yy-xx)/np.sqrt(yy)
+XpsiPlot.plot_2d_pulse(pulse=_r,
+                       x=NICER.data.phases,
+                       y=NICER.data.channels,
+                       rotations=1,
+                       ylabel=&#39;Channel&#39;,
+                       cbar_label=&#39;Standardised residuals&#39;,
+                       cmap=cm.RdBu,
+                       vmin=-np.max(np.fabs(_r)),
+                       vmax=np.max(np.fabs(_r)))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_93_0.png" src="_images/Instrument_synergy_93_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XpsiPlot.plot_2d_pulse(pulse=diff,
+                       x=NICER.data.phases,
+                       y=NICER.data.channels,
+                       rotations=1,
+                       ylabel=&#39;Channel&#39;,
+                       cbar_label=&#39;Counts&#39;,)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Instrument_synergy_94_0.png" src="_images/Instrument_synergy_94_0.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Modeling.html" class="btn btn-neutral float-left" title="Modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Hot_region_complexity.html" class="btn btn-neutral float-right" title="Hot region complexity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module generator tutorial &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example script and modules" href="Example_script_and_modules.html" />
+    <link rel="prev" title="Importance Sampling" href="Importance_sampling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Module generator tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Module_generator_tutorial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-generator-tutorial">
+<span id="id1"></span><h1>Module generator tutorial<a class="headerlink" href="#module-generator-tutorial" title="Link to this heading"></a></h1>
+<p>To develop models in X-PSI, users are recommended to to create custom derived classes for the different X-PSI model
+components (e.g. <code class="docutils literal notranslate"><span class="pre">Prior</span></code>, <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code>, etc.) that require further modification. Examples of such <cite>Custom</cite> classes
+can be found in <a class="reference internal" href="Modeling.html"><span class="doc">Modeling</span></a>. These classes are preferably to be written as distinct modules within a project
+directory rather than in a notebook as is done in <a class="reference internal" href="Modeling.html"><span class="doc">Modeling</span></a>. The modules can then be imported by a <cite>Main</cite>
+script, which can be executed using an MPI command in a shell to exploit parallelism for resource-intensive likelihood
+evaluations.</p>
+<p>The structure of these <cite>Main</cite> and <cite>Custom</cite> modules are largely the same for most user-defined models. It is usually the
+scope of these models (e.g. hotspot models, required data and instrument files, prior definitions, etc.) that are
+subject to change. Therefore, to simplify the process and avoid the user from having to create these modules every time
+for a new model, we have created the program <code class="docutils literal notranslate"><span class="pre">module_generator</span></code> which takes in arguments to define the scope of the
+model. Below, we provide instructions on how to use it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that development of this program is still in progress, and the modules generated by this tutorial cannot yet be executed without some additional modifications in them.</p>
+</div>
+<p>Create a symlink to the module generator in your project directory. You can run the help command as shown below to
+obtain details regarding its usage.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-s<span class="w"> </span>&lt;path/to/xpsi&gt;/xpsi/module_generator.py<span class="w"> </span>./
+python<span class="w"> </span>module_generator.py<span class="w"> </span>-h
+</pre></div>
+</div>
+<p>The output of the above code block is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/<span class="o">=============================================</span><span class="se">\</span>
+<span class="p">|</span><span class="w"> </span>X-PSI:<span class="w"> </span>X-ray<span class="w"> </span>Pulse<span class="w"> </span>Simulation<span class="w"> </span>and<span class="w"> </span>Inference<span class="w"> </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">                </span>Version:<span class="w"> </span><span class="m">3</span>.0.0<span class="w">               </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">      </span>https://xpsi-group.github.io/xpsi<span class="w">      </span><span class="p">|</span>
+<span class="se">\=</span><span class="o">============================================</span>/
+
+Imported<span class="w"> </span>GetDist<span class="w"> </span>version:<span class="w"> </span><span class="m">1</span>.5.3
+Imported<span class="w"> </span>nestcheck<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>.2.1
+Parsing<span class="w"> </span>configuration<span class="w"> </span>file...
+usage:<span class="w"> </span>module_generator.py<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>--generate-config-file<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--telescope<span class="w"> </span>TELESCOPE<span class="o">]</span><span class="w"> </span><span class="o">[</span>--instrument<span class="w"> </span>INSTRUMENT<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--source<span class="w"> </span>SOURCE<span class="o">]</span><span class="w"> </span>--frequency<span class="w"> </span>FREQUENCY
+<span class="w">                           </span><span class="o">[</span>--use-fits-format<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--model<span class="w"> </span>MODEL<span class="o">]</span><span class="w"> </span>--hot-region-model
+<span class="w">                           </span><span class="o">{</span>ST,CST,EST,PST,CDT,EDT,PDT<span class="o">}</span>
+<span class="w">                           </span><span class="o">[</span>--antipodal-reflection-symmetry<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--break-hot-region-exchange-degeneracy-with<span class="w"> </span>BREAK_HOT_REGION_EXCHANGE_DEGENERACY_WITH<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--is-antiphased<span class="w"> </span>IS_ANTIPHASED<span class="o">]</span><span class="w"> </span><span class="o">[</span>--prefix<span class="w"> </span>PREFIX<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--hot-atmosphere-model<span class="w"> </span>HOT_ATMOSPHERE_MODEL<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--hot-atmosphere-load<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--elsewhere-atmosphere-model<span class="w"> </span>ELSEWHERE_ATMOSPHERE_MODEL<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--elsewhere-atmosphere-load<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--attenuation-model<span class="w"> </span>ATTENUATION_MODEL<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--background-model<span class="o">]</span><span class="w"> </span><span class="o">[</span>--background-shared-instance<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--background-shared-class<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--background-parameters<span class="w"> </span><span class="o">[</span>BACKGROUND_PARAMETERS<span class="w"> </span>...<span class="o">]]</span>
+<span class="w">                           </span><span class="o">[</span>--print-MPI-rank<span class="o">]</span><span class="w"> </span><span class="o">[</span>--config-path<span class="w"> </span>CONFIG_PATH<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--module-directory-path<span class="w"> </span>MODULE_DIRECTORY_PATH<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--main-module<span class="w"> </span>MAIN_MODULE<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--custom-signal-module<span class="w"> </span>CUSTOM_SIGNAL_MODULE<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--custom-instrument-module<span class="w"> </span>CUSTOM_INSTRUMENT_MODULE<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--custom-photosphere-module<span class="w"> </span>CUSTOM_PHOTOSPHERE_MODULE<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--custom-interstellar-module<span class="w"> </span>CUSTOM_INTERSTELLAR_MODULE<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--custom-prior-module<span class="w"> </span>CUSTOM_PRIOR_MODULE<span class="o">]</span>
+<span class="w">                           </span><span class="o">[</span>--custom-background-module<span class="w"> </span>CUSTOM_BACKGROUND_MODULE<span class="o">]</span>
+
+Script<span class="w"> </span><span class="k">for</span><span class="w"> </span>automated<span class="w"> </span>generation<span class="w"> </span>of<span class="w"> </span>X-PSI<span class="w"> </span>model<span class="w"> </span>module<span class="w"> </span>set.<span class="w"> </span>Usage:<span class="w"> </span>python
+module_generator.py<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>@&lt;generate.ini&gt;
+
+options:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>--generate-config-file
+<span class="w">                        </span>Generate<span class="w"> </span>the<span class="w"> </span>meta<span class="w"> </span>configuration<span class="w"> </span>file<span class="w"> </span>template.
+<span class="w">  </span>--telescope<span class="w"> </span>TELESCOPE
+<span class="w">                        </span>Telescope<span class="w"> </span>name,<span class="w"> </span>e.g.,<span class="w"> </span>NICER.<span class="w"> </span>Use<span class="w"> </span>argument<span class="w"> </span>once<span class="w"> </span>per
+<span class="w">                        </span>telescope<span class="w"> </span>name,<span class="w"> </span>and<span class="w"> </span>no<span class="w"> </span>whitespaces.
+<span class="w">  </span>--instrument<span class="w"> </span>INSTRUMENT
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>an<span class="w"> </span>instrument<span class="w"> </span>on-board<span class="w"> </span>a<span class="w"> </span>telescope,<span class="w"> </span>e.g.,<span class="w"> </span>XTI.
+<span class="w">                        </span>Can<span class="w"> </span>use<span class="w"> </span>one<span class="w"> </span>or<span class="w"> </span>more<span class="w"> </span>instrument<span class="w"> </span>names<span class="w"> </span>per<span class="w"> </span>telescope
+<span class="w">                        </span>name,<span class="w"> </span>and<span class="w"> </span>no<span class="w"> </span>whitespaces.
+<span class="w">  </span>--source<span class="w"> </span>SOURCE<span class="w">       </span>The<span class="w"> </span>name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>star,<span class="w"> </span>e.g.,<span class="w"> </span>PSR<span class="w"> </span>J0740+6620.
+<span class="w">  </span>--frequency<span class="w"> </span>FREQUENCY
+<span class="w">                        </span>The<span class="w"> </span>coordinate<span class="w"> </span>spin<span class="w"> </span>frequency<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>star<span class="w"> </span><span class="o">(</span>Hz<span class="o">)</span>.
+<span class="w">  </span>--use-fits-format<span class="w">     </span>Are<span class="w"> </span>the<span class="w"> </span><span class="nb">source</span><span class="w"> </span>and<span class="w"> </span>instrumental<span class="w"> </span>files<span class="w"> </span>stored<span class="w"> </span><span class="k">in</span><span class="w"> </span>FITS<span class="w"> </span>format?
+<span class="w">  </span>--model<span class="w"> </span>MODEL<span class="w">         </span>A<span class="w"> </span>custom<span class="w"> </span>model<span class="w"> </span>name,<span class="w"> </span>e.g.,<span class="w"> </span>ST-U<span class="w"> </span>+<span class="w"> </span>NSX-H,<span class="w"> </span>otherwise<span class="w"> </span>the
+<span class="w">                        </span>model<span class="w"> </span>name<span class="w"> </span>is<span class="w"> </span>constructed<span class="w"> </span>from<span class="w"> </span>other<span class="w"> </span>arguments.
+<span class="w">  </span>--hot-region-model<span class="w"> </span><span class="o">{</span>ST,CST,EST,PST,CDT,EDT,PDT<span class="o">}</span>
+<span class="w">                        </span>The<span class="w"> </span>name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>hot-region<span class="w"> </span>model,<span class="w"> </span>e.g.,<span class="w"> </span>ST.<span class="w"> </span>Maximum<span class="w"> </span>of
+<span class="w">                        </span>two<span class="w"> </span>argument<span class="w"> </span>uses.
+<span class="w">  </span>--antipodal-reflection-symmetry
+<span class="w">                        </span>Are<span class="w"> </span>the<span class="w"> </span>two<span class="w"> </span>hot<span class="w"> </span>regions<span class="w"> </span>related<span class="w"> </span>via<span class="w"> </span>antipodal
+<span class="w">                        </span>reflection<span class="w"> </span>symmetry?<span class="w"> </span>E.g.,<span class="w"> </span>ST-S.
+<span class="w">  </span>--break-hot-region-exchange-degeneracy-with<span class="w"> </span>BREAK_HOT_REGION_EXCHANGE_DEGENERACY_WITH
+<span class="w">                        </span>Hot<span class="w"> </span>region<span class="w"> </span>parameter<span class="w"> </span>name<span class="w"> </span>to<span class="w"> </span><span class="k">break</span><span class="w"> </span>hot-region<span class="w"> </span>exchange
+<span class="w">                        </span>degeneracy<span class="w"> </span>with<span class="w"> </span>when<span class="w"> </span>there<span class="w"> </span>are<span class="w"> </span>two<span class="w"> </span>hot-regions<span class="w"> </span>of<span class="w"> </span>the
+<span class="w">                        </span>same<span class="w"> </span><span class="nb">type</span><span class="w"> </span>that<span class="w"> </span>are<span class="w"> </span>not<span class="w"> </span>antipodally<span class="w"> </span>reflection-
+<span class="w">                        </span>symmetric,<span class="w"> </span>e.g.,<span class="w"> </span>ST+ST<span class="w"> </span><span class="o">(</span>ST-U<span class="o">)</span>.<span class="w"> </span>An<span class="w"> </span>example<span class="w"> </span>is<span class="w"> </span>e.g.,
+<span class="w">                        </span><span class="s2">&quot;super_temperature&quot;</span>.
+<span class="w">  </span>--is-antiphased<span class="w"> </span>IS_ANTIPHASED
+<span class="w">                        </span>Specify<span class="w"> </span>whether<span class="w"> </span>the<span class="w"> </span>hot<span class="w"> </span>regions<span class="w"> </span>are<span class="w"> </span>anti-phased<span class="w"> </span>w.r.t
+<span class="w">                        </span>to<span class="w"> </span>Earth.<span class="w"> </span>If<span class="w"> </span>True,<span class="w"> </span>the<span class="w"> </span>cell<span class="w"> </span>mesh<span class="w"> </span>shifts<span class="w"> </span>by<span class="w"> </span>pi<span class="w"> </span>radians
+<span class="w">                        </span>about<span class="w"> </span>the<span class="w"> </span>stellar<span class="w"> </span>rotation<span class="w"> </span>axis<span class="w"> </span><span class="k">for</span><span class="w"> </span>pulse<span class="w"> </span>integration
+<span class="w">                        </span>and<span class="w"> </span>therefore<span class="w"> </span>the<span class="w"> </span>hot<span class="w"> </span>region<span class="w"> </span>at<span class="w"> </span>phase<span class="w"> </span>zero<span class="w"> </span>is<span class="w"> </span>aligned
+<span class="w">                        </span>with<span class="w"> </span>the<span class="w"> </span>meridian<span class="w"> </span>on<span class="w"> </span>which<span class="w"> </span>the<span class="w"> </span>observer’s<span class="w"> </span>antipode
+<span class="w">                        </span>lies.
+<span class="w">  </span>--prefix<span class="w"> </span>PREFIX<span class="w">       </span>Specify<span class="w"> </span>the<span class="w"> </span>prefixes<span class="w"> </span><span class="k">for</span><span class="w"> </span>hot<span class="w"> </span>region<span class="w"> </span>parameter<span class="w"> </span>naming.
+<span class="w">  </span>--hot-atmosphere-model<span class="w"> </span>HOT_ATMOSPHERE_MODEL
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>atmosphere<span class="w"> </span>model<span class="w"> </span>within<span class="w"> </span>hot<span class="w"> </span>regions,<span class="w"> </span>e.g.,
+<span class="w">                        </span>blackbody<span class="w"> </span>or<span class="w"> </span>NSX-H.
+<span class="w">  </span>--hot-atmosphere-load
+<span class="w">                        </span>Does<span class="w"> </span>a<span class="w"> </span>numeric<span class="w"> </span>atmosphere<span class="w"> </span>table<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>loaded<span class="w"> </span>from
+<span class="w">                        </span>disk<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>hot<span class="w"> </span>regions?
+<span class="w">  </span>--elsewhere-atmosphere-model<span class="w"> </span>ELSEWHERE_ATMOSPHERE_MODEL
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>atmosphere<span class="w"> </span>model<span class="w"> </span>elsewhere,<span class="w"> </span>e.g.,<span class="w"> </span>blackbody<span class="w"> </span>or
+<span class="w">                        </span>NSX-H.
+<span class="w">  </span>--elsewhere-atmosphere-load
+<span class="w">                        </span>Does<span class="w"> </span>a<span class="w"> </span>numeric<span class="w"> </span>atmosphere<span class="w"> </span>table<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>loaded<span class="w"> </span>from
+<span class="w">                        </span>disk<span class="w"> </span><span class="k">for</span><span class="w"> </span>elsewhere?
+<span class="w">  </span>--attenuation-model<span class="w"> </span>ATTENUATION_MODEL
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>interstellar<span class="w"> </span>attenuation<span class="w"> </span>model,<span class="w"> </span>e.g.,<span class="w"> </span>tbnew.
+<span class="w">  </span>--background-model<span class="w">    </span>Include<span class="w"> </span>an<span class="w"> </span>incident<span class="w"> </span>background<span class="w"> </span>component?
+<span class="w">  </span>--background-shared-instance
+<span class="w">                        </span>Do<span class="w"> </span>all<span class="w"> </span>instruments<span class="w"> </span>share<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>background<span class="w"> </span>model
+<span class="w">                        </span>instance?
+<span class="w">  </span>--background-shared-class
+<span class="w">                        </span>Do<span class="w"> </span>all<span class="w"> </span>instrument<span class="w"> </span>models<span class="w"> </span>share<span class="w"> </span>a<span class="w"> </span>background<span class="w"> </span>class?
+<span class="w">  </span>--background-parameters<span class="w"> </span><span class="o">[</span>BACKGROUND_PARAMETERS<span class="w"> </span>...<span class="o">]</span>
+<span class="w">                        </span>Background<span class="w"> </span>model<span class="w"> </span>parameter<span class="w"> </span>names.
+<span class="w">  </span>--print-MPI-rank<span class="w">      </span>Print<span class="w"> </span>MPI<span class="w"> </span>rank<span class="w"> </span>from<span class="w"> </span>main<span class="w"> </span>module?
+<span class="w">  </span>--config-path<span class="w"> </span>CONFIG_PATH
+<span class="w">                        </span>If<span class="w"> </span>main<span class="w"> </span>module<span class="w"> </span>is<span class="w"> </span>imported,<span class="w"> </span>use<span class="w"> </span>this<span class="w"> </span>argument<span class="w"> </span>to
+<span class="w">                        </span>specify<span class="w"> </span>the<span class="w"> </span>relative<span class="w"> </span>or<span class="w"> </span>absolute<span class="w"> </span>path<span class="w"> </span>to<span class="w"> </span>the
+<span class="w">                        </span>configuration<span class="w"> </span>file.
+<span class="w">  </span>--module-directory-path<span class="w"> </span>MODULE_DIRECTORY_PATH
+<span class="w">                        </span>Absolute<span class="w"> </span>path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>to<span class="w"> </span>write<span class="w"> </span>module<span class="w"> </span>files<span class="w"> </span>to.
+<span class="w">  </span>--main-module<span class="w"> </span>MAIN_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>main<span class="w"> </span>module.
+<span class="w">  </span>--custom-signal-module<span class="w"> </span>CUSTOM_SIGNAL_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>module<span class="w"> </span>containing<span class="w"> </span>the<span class="w"> </span>CustomSignal
+<span class="w">                        </span>subclass.
+<span class="w">  </span>--custom-instrument-module<span class="w"> </span>CUSTOM_INSTRUMENT_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>module<span class="w"> </span>containing<span class="w"> </span>the<span class="w"> </span>CustomInstrument
+<span class="w">                        </span>subclass.
+<span class="w">  </span>--custom-photosphere-module<span class="w"> </span>CUSTOM_PHOTOSPHERE_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>module<span class="w"> </span>containing<span class="w"> </span>the<span class="w"> </span>CustomPhotosphere
+<span class="w">                        </span>subclass.
+<span class="w">  </span>--custom-interstellar-module<span class="w"> </span>CUSTOM_INTERSTELLAR_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>module<span class="w"> </span>containing<span class="w"> </span>the<span class="w"> </span>CustomInterstellar
+<span class="w">                        </span>subclass.
+<span class="w">  </span>--custom-prior-module<span class="w"> </span>CUSTOM_PRIOR_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>module<span class="w"> </span>containing<span class="w"> </span>the<span class="w"> </span>CustomPrior
+<span class="w">                        </span>subclass.
+<span class="w">  </span>--custom-background-module<span class="w"> </span>CUSTOM_BACKGROUND_MODULE
+<span class="w">                        </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>module<span class="w"> </span>containing<span class="w"> </span>the<span class="w"> </span>CustomBackground
+<span class="w">                        </span>subclass<span class="o">(</span>es<span class="o">)</span>.
+</pre></div>
+</div>
+<p>Most of the flags displayed above describe the command-line arguments that the user needs to pass to define the kind of
+model to generate. The user can choose to have these arguments written into a <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> file for the module
+generator to read, instead of passing them individually from the command line.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> file can be created as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>module_generator.py<span class="w"> </span>--generate-config-file
+</pre></div>
+</div>
+<p>The corresponding output is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/<span class="o">=============================================</span><span class="se">\</span>
+<span class="p">|</span><span class="w"> </span>X-PSI:<span class="w"> </span>X-ray<span class="w"> </span>Pulse<span class="w"> </span>Simulation<span class="w"> </span>and<span class="w"> </span>Inference<span class="w"> </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">                </span>Version:<span class="w"> </span><span class="m">3</span>.0.0<span class="w">               </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">      </span>https://xpsi-group.github.io/xpsi<span class="w">      </span><span class="p">|</span>
+<span class="se">\=</span><span class="o">============================================</span>/
+
+Imported<span class="w"> </span>GetDist<span class="w"> </span>version:<span class="w"> </span><span class="m">1</span>.5.3
+Imported<span class="w"> </span>nestcheck<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>.2.1
+Parsing<span class="w"> </span>configuration<span class="w"> </span>file...
+Configuration<span class="w"> </span>file<span class="w"> </span>generated.
+</pre></div>
+</div>
+<p>Let’s take a look at the <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> file created:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>generate.ini
+</pre></div>
+</div>
+<p>It should look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">##----------------------------##</span>
+<span class="c1">## telescope instrument flags ##</span>
+<span class="c1">##----------------------------##</span>
+--telescope<span class="o">=</span>
+<span class="c1">#--telescope=</span>
+--instrument<span class="o">=</span>
+<span class="c1">#--instrument=</span>
+
+
+<span class="c1">##---------------------##</span>
+<span class="c1">## target source flags ##</span>
+<span class="c1">##---------------------##</span>
+--source<span class="o">=</span>
+--frequency<span class="o">=</span>
+
+<span class="c1">##----------------------------##</span>
+<span class="c1">## Input data in FITS format? ##</span>
+<span class="c1">##----------------------------##</span>
+<span class="c1">#--use-fits-format</span>
+
+
+<span class="c1">##-------------##</span>
+<span class="c1">## model flags ##</span>
+<span class="c1">##-------------##</span>
+<span class="c1">#--model=</span>
+--hot-region-model<span class="o">=</span>
+<span class="c1">#--hot-region-model=</span>
+<span class="c1">#--antipodal-reflection-symmetry</span>
+<span class="c1">#--break-hot-region-exchange-degeneracy-with=super_colatitude</span>
+--is-antiphased<span class="o">=</span>
+<span class="c1">#--is-antiphased=</span>
+--prefix<span class="o">=</span>
+<span class="c1">#--prefix=</span>
+--hot-atmosphere-model<span class="o">=</span>
+<span class="c1">#--hot-atmosphere-load</span>
+--elsewhere-atmosphere-model<span class="o">=</span>
+<span class="c1">#--elsewhere-atmosphere-load</span>
+--attenuation-model<span class="o">=</span>
+
+
+<span class="c1">#--background-model</span>
+--background-shared-instance
+--background-shared-class
+<span class="c1">#--background-parameters ## enter one name per line below</span>
+<span class="c1">#powerlaw_index</span>
+<span class="c1">#powerlaw_normalization</span>
+
+
+
+
+
+<span class="c1">##---------------------##</span>
+<span class="c1">## miscellaneous flags ##</span>
+<span class="c1">##---------------------##</span>
+--print-MPI-rank
+
+
+<span class="c1">##-------------##</span>
+<span class="c1">## write flags ##</span>
+<span class="c1">##-------------##</span>
+--config-path<span class="o">=</span>
+--module-directory-path<span class="o">=</span>
+--main-module<span class="o">=</span>main
+--custom-signal-module<span class="o">=</span>CustomSignal
+--custom-instrument-module<span class="o">=</span>CustomInstrument
+--custom-photosphere-module<span class="o">=</span>CustomPhotosphere
+--custom-interstellar-module<span class="o">=</span>CustomInterstellar
+--custom-prior-module<span class="o">=</span>CustomPrior
+--custom-background-module<span class="o">=</span>CustomBackground
+</pre></div>
+</div>
+<p>We can modify the <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> file as per our need by filling up, commenting and/or removing the arguments provided.
+An example of a filled out (and slightly modified) <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> file is present in <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_module_generator/">../examples/examples_module_generator</a> which creates a <cite>CST+PDT</cite> hot-region model for PSR J0030+0451 using <cite>NSX-H</cite> atmosphere model.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that in the example above, the source and instrumental response functions are expected to be loaded in TXT format. In the latest versions of X-PSI, the <code class="docutils literal notranslate"><span class="pre">module_generator</span></code> can create <cite>Main</cite> and <cite>Custom</cite> files that can load inputs files (source and instrumental response functions) in FITS format. This  functionality can be enabled by uncommenting the <cite>–use-fits-format</cite> option in <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code>.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> file can then be used to create the required <cite>Main</cite> and <cite>Custom</cite> modules as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>module_generator.py<span class="w"> </span>@generate.ini
+</pre></div>
+</div>
+<p>The corresponding output below reflects the arguments passed. Note that any empty arguments that aren’t commented out
+will take in the default value specified.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/<span class="o">=============================================</span><span class="se">\</span>
+<span class="p">|</span><span class="w"> </span>X-PSI:<span class="w"> </span>X-ray<span class="w"> </span>Pulse<span class="w"> </span>Simulation<span class="w"> </span>and<span class="w"> </span>Inference<span class="w"> </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">                </span>Version:<span class="w"> </span><span class="m">3</span>.0.0<span class="w">               </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">      </span>https://xpsi-group.github.io/xpsi<span class="w">      </span><span class="p">|</span>
+<span class="se">\=</span><span class="o">============================================</span>/
+
+Imported<span class="w"> </span>GetDist<span class="w"> </span>version:<span class="w"> </span><span class="m">1</span>.5.3
+Imported<span class="w"> </span>nestcheck<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>.2.1
+Parsing<span class="w"> </span>configuration<span class="w"> </span>file...
+--telescope<span class="o">=</span>NICER
+--instrument<span class="o">=</span>XTI
+--source<span class="o">=</span>PSR<span class="w"> </span>J0030+0451
+--frequency<span class="o">=</span><span class="m">205</span>
+--model<span class="o">=</span>CST+PDT
+--hot-region-model<span class="o">=</span>CST
+--hot-region-model<span class="o">=</span>PDT
+--is-antiphased<span class="o">=</span>False
+--is-antiphased<span class="o">=</span>False
+--prefix<span class="o">=</span>p
+--prefix<span class="o">=</span>s
+--hot-atmosphere-model<span class="o">=</span>NSX-H
+--hot-atmosphere-load
+--attenuation-model<span class="o">=</span>tbnew
+--print-MPI-rank
+--config-path<span class="o">=</span>./config.ini
+--module-directory-path<span class="o">=</span>./_auto_modules
+--main-module<span class="o">=</span>main
+--custom-signal-module<span class="o">=</span>CustomSignal
+--custom-instrument-module<span class="o">=</span>CustomInstrument
+--custom-photosphere-module<span class="o">=</span>CustomPhotosphere
+--custom-interstellar-module<span class="o">=</span>CustomInterstellar
+--custom-prior-module<span class="o">=</span>CustomPrior
+Configuration<span class="w"> </span>file<span class="w"> </span>parsed.
+</pre></div>
+</div>
+<p>Let’s take a look at the files generated.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>_auto_modules
+</pre></div>
+</div>
+<p>In the output below we can see the <cite>Main</cite> and <cite>Custom</cite> files that have been created in the <code class="docutils literal notranslate"><span class="pre">_auto_module</span></code> directory as
+prompted in <code class="docutils literal notranslate"><span class="pre">generate.ini</span></code> (except CustomBackground that was removed for this example).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CustomInstrument.py
+CustomInterstellar.py
+CustomPhotosphere.py
+CustomPrior.py
+CustomSignal.py
+__init__.py
+main.py
+</pre></div>
+</div>
+<p>Now that the necessary modules for the model have been generated, we need to pass command-line arguments to specify the
+external files required (e.g. for data, instrument, interstellar extinction, atmosphere model, background, etc.),
+provide additional details required to read these files, and specify our prior definitions.</p>
+<p>The list of arguments we can pass to the modules and their details can be obtained by running the help command for
+<code class="docutils literal notranslate"><span class="pre">main.py</span></code> as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>_auto_modules/main.py<span class="w"> </span>-h
+</pre></div>
+</div>
+<p>Here we do not display the output of the help command given the large number of potential arguments that the modules can
+accept. Again, in order to avoid passing individual arguments, we can make a <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file for the modules to
+read.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file can be created as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>_auto_modules/main.py<span class="w"> </span>--generate-config-file
+</pre></div>
+</div>
+<p>The corresponding output is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/<span class="o">=============================================</span><span class="se">\</span>
+<span class="p">|</span><span class="w"> </span>X-PSI:<span class="w"> </span>X-ray<span class="w"> </span>Pulse<span class="w"> </span>Simulation<span class="w"> </span>and<span class="w"> </span>Inference<span class="w"> </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">                </span>Version:<span class="w"> </span><span class="m">3</span>.0.0<span class="w">               </span><span class="p">|</span>
+<span class="p">|</span>---------------------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w">      </span>https://xpsi-group.github.io/xpsi<span class="w">      </span><span class="p">|</span>
+<span class="se">\=</span><span class="o">============================================</span>/
+
+Imported<span class="w"> </span>GetDist<span class="w"> </span>version:<span class="w"> </span><span class="m">1</span>.5.3
+Imported<span class="w"> </span>nestcheck<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>.2.1
+Parsing<span class="w"> </span>configuration<span class="w"> </span>file...
+Configuration<span class="w"> </span>file<span class="w"> </span>generated.
+</pre></div>
+</div>
+<p>You can confirm that the <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> has been generated by running the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>config.ini
+</pre></div>
+</div>
+<p>You can check the content of the empty <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>config.ini
+</pre></div>
+</div>
+<p>Again, we don’t display the empty <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file in here given the large number of potential arguments to pass to
+the modules. We can modify the <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file as per our need by filling up, commenting and/or removing the
+arguments provided. An example of a filled out <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> file is present in <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_module_generator/">../examples/examples_module_generator</a>.
+The files specified in the examples config file can be found on <a class="reference external" href="https://zenodo.org/record/7113931#.Y90fHi8w35k">Zenodo</a>.</p>
+<p>The generated modules cannot be immediately run, because the default CustomInstrument is not compatible with the provided example instrument files. After commenting and uncommenting a few lines in <code class="docutils literal notranslate"><span class="pre">CustomInstrument.py</span></code> (as already done in <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_module_generator/_auto_modules/">../examples/examples_module_generator/_auto_modules/</a>) the modules can then be run as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>_auto_modules/main.py<span class="w"> </span>@config.ini<span class="w"> </span><span class="o">[</span>--multinest<span class="o">]</span><span class="w"> </span><span class="o">[</span>-emcee<span class="o">]</span>
+</pre></div>
+</div>
+<p>The additional flags specify the sampler to be used. Note that any empty arguments that aren’t commented out
+will take in the default value(s) specified.</p>
+<p>It is possible to load an X-PSI defined model generated by the module generator, or any other model using a configuration file in input or not, in a notebook or another python script for Post-Processing for example. To do so, and avoid problems with imports, it is recommended to use the model loader as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>from<span class="w"> </span>xpsi.utilities.ModelLoader<span class="w"> </span>import<span class="w"> </span>load_model
+<span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>load_model<span class="o">(</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span>model_path<span class="w"> </span>,<span class="w"> </span><span class="nv">config_path</span><span class="o">=</span>config_path,<span class="w"> </span><span class="nv">execution_path</span><span class="o">=</span>execution_path<span class="w"> </span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">model_path</span></code> is the path to the main, <code class="docutils literal notranslate"><span class="pre">config_path</span></code> is the path to the configuration file used, if any is required, and <code class="docutils literal notranslate"><span class="pre">execution_path</span></code> is the path for executing the import. This last parameter is important for model scripts relying on imports defined by relative path. Variables made in this script, such as the likelihood, can now be accessed with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">likelihood</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>model.likelihood
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Importance_sampling.html" class="btn btn-neutral float-left" title="Importance Sampling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Example_script_and_modules.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

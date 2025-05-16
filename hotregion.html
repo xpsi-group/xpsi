@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HotRegion &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HotRegions" href="hotregions.html" />
+    <link rel="prev" title="Photosphere" href="photosphere.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">HotRegion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.HotRegion.HotRegion"><code class="docutils literal notranslate"><span class="pre">HotRegion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.__compute_cellParamVecs"><code class="docutils literal notranslate"><span class="pre">HotRegion.__compute_cellParamVecs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.__compute_rays"><code class="docutils literal notranslate"><span class="pre">HotRegion.__compute_rays()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.__construct_cellMesh"><code class="docutils literal notranslate"><span class="pre">HotRegion.__construct_cellMesh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.cede"><code class="docutils literal notranslate"><span class="pre">HotRegion.cede</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.concentric"><code class="docutils literal notranslate"><span class="pre">HotRegion.concentric</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.embed"><code class="docutils literal notranslate"><span class="pre">HotRegion.embed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.integrate"><code class="docutils literal notranslate"><span class="pre">HotRegion.integrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.integrate_stokes"><code class="docutils literal notranslate"><span class="pre">HotRegion.integrate_stokes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.leaves"><code class="docutils literal notranslate"><span class="pre">HotRegion.leaves</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.num_cells"><code class="docutils literal notranslate"><span class="pre">HotRegion.num_cells</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.num_rays"><code class="docutils literal notranslate"><span class="pre">HotRegion.num_rays</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.phases"><code class="docutils literal notranslate"><span class="pre">HotRegion.phases</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.phases_in_cycles"><code class="docutils literal notranslate"><span class="pre">HotRegion.phases_in_cycles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.print_settings"><code class="docutils literal notranslate"><span class="pre">HotRegion.print_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.psi"><code class="docutils literal notranslate"><span class="pre">HotRegion.psi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.set_phases"><code class="docutils literal notranslate"><span class="pre">HotRegion.set_phases()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.HotRegion.HotRegion.sqrt_num_cells"><code class="docutils literal notranslate"><span class="pre">HotRegion.sqrt_num_cells</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.HotRegion.RayError"><code class="docutils literal notranslate"><span class="pre">RayError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.HotRegion.PulseError"><code class="docutils literal notranslate"><span class="pre">PulseError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">HotRegion</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/hotregion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hotregion">
+<span id="module-xpsi.HotRegion"></span><span id="id1"></span><h1>HotRegion<a class="headerlink" href="#hotregion" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a> are objects representing radiatively
+intense regions of the source photosphere.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/super_cede_omit.png"><img alt="_images/super_cede_omit.png" src="_images/super_cede_omit.png" style="width: 600px;" />
+</a>
+</figure>
+<p>Representation of the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class instantiation options <code class="docutils literal notranslate"><span class="pre">omit</span></code> and <code class="docutils literal notranslate"><span class="pre">cede</span></code>. The image also shows the prefixes used for the instance attributes associated with each type of region constituting a <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> object.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/HotRegion_parameters.png"><img alt="_images/HotRegion_parameters.png" src="_images/HotRegion_parameters.png" style="width: 600px;" />
+</a>
+</figure>
+<p>Representation of a <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> instance configuration, when <code class="docutils literal notranslate"><span class="pre">omit</span></code> or <code class="docutils literal notranslate"><span class="pre">cede</span></code> are set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. A description of these parameters is also presented below. If <code class="docutils literal notranslate"><span class="pre">is_antiphased</span> <span class="pre">=</span> <span class="pre">True</span></code>, the parameter <code class="docutils literal notranslate"><span class="pre">phase_shift</span></code> is added to <span class="math notranslate nohighlight">\(\pi\)</span> radians. For example, if <code class="docutils literal notranslate"><span class="pre">phase_shift</span> <span class="pre">=</span> <span class="pre">0</span></code>, the omission or the superseding region (respectively on the left and right side of the image) is in anti-phase with the observer meridian (i.e., its azimuth is <span class="math notranslate nohighlight">\(\pi\)</span>).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.HotRegion.</span></span><span class="sig-name descname"><span class="pre">HotRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cede</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concentric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_leaves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_min_sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_max_sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_num_rays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_num_leaves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_antiphased</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_order_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a></p>
+<p>A photospheric hot region that is contiguously radiating.</p>
+<p>Instances of this class can take the following forms:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a circular, simply-connected region;</p></li>
+<li><p>a ceding region with a non-radiating superseding region;</p></li>
+<li><p>a ceding region with a radiating superseding region.</p></li>
+</ul>
+</div></blockquote>
+<p>For the first option, set <code class="docutils literal notranslate"><span class="pre">omit=False</span></code> and <code class="docutils literal notranslate"><span class="pre">cede=False</span></code>.
+For the third option, set <code class="docutils literal notranslate"><span class="pre">omit=False</span></code> and <code class="docutils literal notranslate"><span class="pre">cede=True</span></code>.</p>
+<p>For the second option, set <code class="docutils literal notranslate"><span class="pre">omit=True</span></code> and <code class="docutils literal notranslate"><span class="pre">cede=False</span></code>. Yes, this is
+counter-intuitive. These settings produce a superseding region with a
+non-radiating omission region, which is <em>equivalent</em> to a ceding region with
+a non-radiating superseding region. The <em>omission</em> region may not strictly
+always be a hole, because it behaves as a superseding region that does
+not radiate. A superseding region can exist partially outside its relative
+ceding region, so the non-superseded subset of the ceding region is
+then simply-connected (i.e., does not have a hole).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Setting <code class="docutils literal notranslate"><span class="pre">omit=True</span></code> and <code class="docutils literal notranslate"><span class="pre">cede=True</span></code> ignores the omission setting.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">concentric</span></code> setting defines whether the superseding region is
+concentric with the ceding region or a omission region, supposing either
+<code class="docutils literal notranslate"><span class="pre">omit=True</span></code> or <code class="docutils literal notranslate"><span class="pre">cede=True</span></code>.</p>
+<p>These helper settings simply set up the <em>optional</em> parameter definitions
+so you do not have to do so more manually by providing keys-value pairs
+in the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> and <code class="docutils literal notranslate"><span class="pre">values</span></code> dictionaries (see below).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>dict</em>) – <p>Hard prior parameter bounds for the free parameters. The dictionary
+keys must match the required parameter names, at least. If a required
+name is omitted as a key, the parameter is interpreted as <em>fixed</em> or
+<em>derived</em>. A key-value pair can take the following forms:</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'name':</span> <span class="pre">None</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'name':</span> <span class="pre">(None,</span> <span class="pre">None)</span></code>, <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">x)</span></code>, <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">None)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'name':</span> <span class="pre">(x,</span> <span class="pre">y)</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>where if a bound is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set equal to a strict
+hard-coded bound. We note that the bounds for parameters used in the
+atmosphere model should be restricted (by the user) to be within the
+tabulated values, in case a numerical atmosphere extension is used.</p>
+</p></li>
+<li><p><strong>values</strong> (<em>dict</em>) – Initial values of <em>free</em> parameters, fixed values of <em>fixed</em> parameters,
+and callables for <em>derived</em> parameters. If a key is omitted for a free
+parameter, the initial value is <code class="docutils literal notranslate"><span class="pre">None</span></code> by default. A key cannot be
+omitted for a required name that appears in the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> dictionary
+with value <code class="docutils literal notranslate"><span class="pre">None</span></code>, or a required name that is omitted from the bounds
+dictionary.</p></li>
+<li><p><strong>split</strong> (<em>bool</em>) – If True, a <code class="docutils literal notranslate"><span class="pre">CellMesh</span></code> integrator compatible with 3+2 dimensional atmosphere
+interpolation is deployed. This option is currently only effective if
+setting symmetry=True. When used, it also ignores the atmosphere choices
+made using the atm_ext and beam_opt arguments.</p></li>
+<li><p><strong>symmetry</strong> (<em>bool</em>) – Is the radiation field axisymmetric (w.r.t the stellar rotation
+axis) within superseding (and ceding) member regions? This determines
+which <code class="docutils literal notranslate"><span class="pre">CellMesh</span></code> integrator to deploy based on this safety check.</p></li>
+<li><p><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth which form a regular
+mesh over a subset of the surface spanning a hot region. This is the
+square-root of the approximate number of cells whose centres should
+lie within a hot region. The total number of cells is approximately
+the square of this argument value. The mesh suffers from squeezing in
+the polar regions, leading to a high degree of non-congruence in cell
+shape for meshes that extend from a polar region to the equatorial
+region.</p></li>
+<li><p><strong>min_sqrt_num_cells</strong> – Sets the minimum number of cells per <em>subregion</em>, discretised to
+the same degree in colatitude and azimuth. This setting has an
+effect only when the hot region has two temperature components, in
+the form of a superseding region and a ceding region.</p></li>
+<li><p><strong>max_sqrt_num_cells</strong> – Sets the maximum number of cells per <em>subregion</em>, discretised to
+the same degree in colatitude and azimuth. This setting has an
+effect even when there is only one temperature component.</p></li>
+<li><p><strong>num_rays</strong> – Number of rays to trace (integrate) at each colatitude,
+distributed in angle subtended between ray tangent
+4-vector and radial outward unit vector w.r.t a local
+orthonormal tetrad.</p></li>
+<li><p><strong>num_leaves</strong> (<em>int</em>) – Number of leaves mesh motion is discretised into.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – Number of phases in a discrete representation of the specific flux
+pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</span>.</p></li>
+<li><p><strong>phases</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases
+for a discrete representation of the specific flux
+pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</span>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(default), the <code class="xref py py-obj docutils literal notranslate"><span class="pre">num_phases</span></code> argument is utilised.</p></li>
+<li><p><strong>do_fast</strong> (<em>bool</em>) – Activate fast precomputation to guide cell distribution between
+two radiating regions at distinct temperatures.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For each of the resolution parameters listed above, there is
+a corresponding parameter whose value is respected if the
+fast precomputation mode is activated.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>is_antiphased</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, shifts the cell mesh by <span class="math notranslate nohighlight">\(\pi\)</span> radians about
+the stellar rotation axis for pulse integration. This is merely
+a choice that can be made, and is not crucial. Note that the
+(fast) phase-shifting applied near the end of the likelihood
+evaluation is related to this choice and thus phase-shift parameter
+prior support can be chosen accordingly. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the hot region
+at phase zero is aligned with the observer meridian. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the
+hot region at phase zero is aligned with the meridian on which
+the observer’s antipode lies. Alignment also depends on the structure
+of the hot region. As a rule, if the hot region has a superseding
+region (<code class="docutils literal notranslate"><span class="pre">super</span></code> region or an <code class="docutils literal notranslate"><span class="pre">omit</span></code> region) then the centre
+of that region is the point that is <em>aligned</em> to a meridian.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The parameters are as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>super colatitude</p></li>
+<li><p>super angular radius</p></li>
+<li><p>cede <em>or</em> omit colatitude</p></li>
+<li><p>cede <em>or</em> omit angular radius</p></li>
+<li><p>cede <em>or</em> omit relative azimuth</p></li>
+<li><p>parameters controlling the local comoving radiation field over
+the photospheric 2-surface (entirely the user’s responsibility
+unless defaulting with <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">is</span> <span class="pre">None</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>If the ceding region or the omission region are concentric with the
+superseding region, the colatitude and relative azimuth of the
+ceding region or omission region are not parameters.</p>
+<p>These bounds might not be actually used, depending the user’s
+implementation of the joint prior, and the user can in that case
+specify <code class="docutils literal notranslate"><span class="pre">(None,None)</span></code> for bounds pertaining to the ceding region
+or the omission region. These bounds will be set to strict bounds,
+and the user can implement more complicated prior support boundaries
+in a <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> subclass instance.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atm_ext</strong> (<em>str</em>) – Used to determine which atmospheric extension to use.
+Options at the moment:
+“BB”: Analytical blackbody (default),
+“Num4D”: Numerical atmosphere using 4D-interpolation from the provided
+atmosphere data,
+“Pol_BB_burst”: Polarized analytical blackbody+burst approximation,
+“Pol_Num2D”: Polarized numerical atmosphere using 2D-interpolation from the provided
+atmosphere data,
+“user”: A user-provided extension which can be set up by replacing the contents of 
+the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+(if not changed, “user” is the same as “BB”).</p></li>
+<li><p><strong>beam_opt</strong> (<em>int</em>) – Used to determine which atmospheric beaming modification model to use.
+Options at the moment:
+0: No modification (default),
+1: Original*beaming_correction without re-normalization,
+2: Original*beaming_correction with analytical re-normalization estimate,
+3: Original*beaming_correction with numerical re-normalization.</p></li>
+<li><p><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
+supply custom parameter definitions, you need to overwrite the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">__compute_cellParamVecs()</span></code> method to
+handle your custom behaviour. This custom behaviour can only
+target the radiation field within the hot regions as defined
+above.</p></li>
+<li><p><strong>image_order_limit</strong> (<em>int</em>) – The highest-order image to sum over. A value of <em>one</em> means primary
+images only (deflections <span class="math notranslate nohighlight">\(&lt;\pi\)</span>) whilst a value of <em>two</em> means
+primary and secondary images (deflections <span class="math notranslate nohighlight">\(&lt;2pi\)</span>) where visible,
+and so on. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), there is no hard limit. In this
+case the limit is determined quasi-naturally for each mesh element,
+meaning that images will be summed over until higher order images are
+not visible or the visibility limit is truncated due to lack of
+numerical precision (e.g. for rays that orbit very close to the
+Schwarzschild photon sphere three times or more).  Higher-order images
+generally contribute less and less due to geometric projection effects
+(higher-order images become more tangential), and the images of
+elements get squeezed in solid angle at the stellar limb. In principle,
+effects such as relativistic beaming can counter this effect to a
+degree for certain source-receiver configurations, by increasing
+brightness whilst solid angle decreases, and thus the flux contribution
+relative to that from a primary image can be greater than suggested
+simply by geometric project effects. Nevertheless, inclusion of these
+images is more computationally expensive. If, when iterating through
+image orders, an image is not visible because the deflection required
+is greater than the highest deflection permitted at a given colatitude
+on a surface (accounting for the surface tilt due to rotation), then
+the iteration over image orders terminates.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Required parameter names:</dt><dd><ul class="simple">
+<li><p>super_colatitude</p></li>
+<li><p>super_radius</p></li>
+<li><p>phase_shift</p></li>
+<li><p>super_temperature (if no custom specification)</p></li>
+</ul>
+</dd>
+<dt>Optional parameter names:</dt><dd><ul class="simple">
+<li><p>omit_colatitude</p></li>
+<li><p>omit_radius</p></li>
+<li><p>omit_azimuth</p></li>
+<li><p>cede_colatitude</p></li>
+<li><p>cede_radius</p></li>
+<li><p>cede_azimuth</p></li>
+<li><p>cede_temperature</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.__compute_cellParamVecs">
+<span class="sig-name descname"><span class="pre">__compute_cellParamVecs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.__compute_cellParamVecs" title="Link to this definition"></a></dt>
+<dd><p>Precompute photospheric source radiation field parameter vectors
+cell-by-cell. Free model parameters and derived (fixed) variables can
+be transformed into local comoving radiation field variables.</p>
+<p>Subclass and overwrite with custom functionality if you desire.</p>
+<p>Designed here simply for uniform effective temperature superseding
+and ceding regions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.__compute_rays">
+<span class="sig-name descname"><span class="pre">__compute_rays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.__compute_rays" title="Link to this definition"></a></dt>
+<dd><p>Integrate rays.</p>
+<p>These rays represent a null mapping from photosphere to a point at
+some effective infinity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for ray integration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.__construct_cellMesh">
+<span class="sig-name descname"><span class="pre">__construct_cellMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_total_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.__construct_cellMesh" title="Link to this definition"></a></dt>
+<dd><p>Call a low-level routine to construct a mesh representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for mesh construction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.cede">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cede</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.cede" title="Link to this definition"></a></dt>
+<dd><p>Does the hot region have a ceding member?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.concentric">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">concentric</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.concentric" title="Link to this definition"></a></dt>
+<dd><p>Is the superseding region concentric with ceding member?</p>
+<p>If not, is the superseding region concentric with an omission member?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_total_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.embed" title="Link to this definition"></a></dt>
+<dd><p>Embed the hot region of the photosphere into the ambient spacetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Correct the integral over the radiation field <em>elsewhere</em> by
+accounting for the time-dependent component arising from the
+presence of the hot region.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hot_atmosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elsewhere_atmosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_ext_else</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.integrate" title="Link to this definition"></a></dt>
+<dd><p>Integrate over the photospheric radiation field.</p>
+<p>Calls the CellMesh integrator, with or without exploitation of
+azimuthal invariance of the radiation field of the hot region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies
+in keV.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for pulse
+integration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.integrate_stokes">
+<span class="sig-name descname"><span class="pre">integrate_stokes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hot_atmosphere_I</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hot_atmosphere_Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elsewhere_atmosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_ext_else</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.integrate_stokes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.integrate_stokes" title="Link to this definition"></a></dt>
+<dd><p>Integrate Stokes parameters over the photospheric radiation field.</p>
+<p>Calls the CellMesh Stokes integrators, with or without exploitation of
+azimuthal invariance of the radiation field of the hot region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies
+in keV.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for pulse
+integration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.leaves">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">leaves</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.leaves" title="Link to this definition"></a></dt>
+<dd><p>Get the leaves of the photospheric foliation.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.num_cells">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_cells</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.num_cells" title="Link to this definition"></a></dt>
+<dd><p>Get the total number of cells in the mesh.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.num_rays">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rays</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.num_rays" title="Link to this definition"></a></dt>
+<dd><p>Get the number of rays integrated per parallel.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.phases">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phases</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.phases" title="Link to this definition"></a></dt>
+<dd><p>Get the leaves of the photospheric foliation.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.phases_in_cycles">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phases_in_cycles</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.phases_in_cycles" title="Link to this definition"></a></dt>
+<dd><p>Get the phases (in cycles) the pulse is interpolated at.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.print_settings">
+<span class="sig-name descname"><span class="pre">print_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.print_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.print_settings" title="Link to this definition"></a></dt>
+<dd><p>Print numerical settings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.psi">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">psi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colatitude</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.psi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.psi" title="Link to this definition"></a></dt>
+<dd><p>Coordinates of cell centres in rotated spherical coordinate system.</p>
+<p>Transformation is anticlockwise rotation about y-axis of Cartesian
+basis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.set_phases">
+<span class="sig-name descname"><span class="pre">set_phases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_leaves</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_num_leaves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.set_phases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.set_phases" title="Link to this definition"></a></dt>
+<dd><p>Construct the set of interpolation phases and foliation leaves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_leaves</strong> (<em>int</em>) – Number of leaves mesh motion is discretised into.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – Number of phases in a discrete representation of
+the specific flux pulses on the interval
+<span class="math notranslate nohighlight">\([0,1]\)</span>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the number of phases
+interpolated at is set equal to the number of
+leaves.</p></li>
+<li><p><strong>phases</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases
+for a discrete representation of the specific flux
+pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</span>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(default), the <code class="xref py py-obj docutils literal notranslate"><span class="pre">num_phases</span></code> argument is utilised.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.HotRegion.HotRegion.sqrt_num_cells">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sqrt_num_cells</span></span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.sqrt_num_cells" title="Link to this definition"></a></dt>
+<dd><p>Get the number of cell parallels.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.HotRegion.RayError">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.HotRegion.</span></span><span class="sig-name descname"><span class="pre">RayError</span></span><a class="reference internal" href="_modules/xpsi/HotRegion.html#RayError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.RayError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsiError</span></code></p>
+<p>Raised if a problem was encountered during ray integration.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.HotRegion.PulseError">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.HotRegion.</span></span><span class="sig-name descname"><span class="pre">PulseError</span></span><a class="reference internal" href="_modules/xpsi/HotRegion.html#PulseError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.HotRegion.PulseError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsiError</span></code></p>
+<p>Raised if a problem was encountered during signal integration.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="photosphere.html" class="btn btn-neutral float-left" title="Photosphere" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hotregions.html" class="btn btn-neutral float-right" title="HotRegions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

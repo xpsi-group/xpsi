@@ -1,0 +1,507 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Likelihoods &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tools" href="tools.html" />
+    <link rel="prev" title="Surface radiation field" href="surface_radiation_field.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extension_modules.html">Extension modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Likelihoods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extensions">Extensions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.likelihoods.precomputation"><code class="docutils literal notranslate"><span class="pre">precomputation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.likelihoods.eval_marginal_likelihood"><code class="docutils literal notranslate"><span class="pre">eval_marginal_likelihood()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.likelihoods.poisson_likelihood_given_background"><code class="docutils literal notranslate"><span class="pre">poisson_likelihood_given_background()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="extension_modules.html">Extension modules</a></li>
+      <li class="breadcrumb-item active">Likelihoods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/likelihood_implementations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="likelihoods">
+<span id="id1"></span><h1>Likelihoods<a class="headerlink" href="#likelihoods" title="Link to this heading"></a></h1>
+<p id="module-xpsi.likelihoods">Likelihood function implementations.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Users and developers can implement the final phase of likelihood function
+evaluation as an extension module.</p>
+<p>These functions must operate on a channel-phase resolved set of signals
+(one per hot region). Each component will have an associated phase shift to
+account for. An exposure time must be invoked to scale the signal to yield the
+expected count numbers.</p>
+<p>A phase-resolved signal means that the signal is evaluated at a sequence
+of phase points, and thus the signal is to be integrated over a sequence of
+phase intervals if the data (event) space in each channel is discrete. If
+one desires an unbinned likelihood function, this can be approximated with
+a high number of phase bins using existing extensions, or a new extension
+module can be straighforwardly developed to loop over events at greater
+computational expense.</p>
+<p>Lastly, a background model is required. If a physical background model is
+condition upon, an extension can operate with the expected background count
+(rate or number) signal. In lieu of such a model, one can invoke the default
+background marginalisation protocol; channel-by-channel
+background count rate variables will be numerically and rapidly marginalised
+over. See the discussion in <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. 2019</a> and the
+X-PSI technical notes to evaluate whether this is appropriate for coupling
+with a given model for target source signal.</p>
+</section>
+<section id="extensions">
+<h2>Extensions<a class="headerlink" href="#extensions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.likelihoods.precomputation">
+<span class="sig-prename descclassname"><span class="pre">xpsi.likelihoods.</span></span><span class="sig-name descname"><span class="pre">precomputation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">::1]</span> <span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.precomputation" title="Link to this definition"></a></dt>
+<dd><p>Compute negative of sum of log-factorials of data count numbers.</p>
+<p>Use this function to perform precomputation before repeatedly calling
+<a class="reference internal" href="#xpsi.likelihoods.eval_marginal_likelihood" title="xpsi.likelihoods.eval_marginal_likelihood"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval_marginal_likelihood()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>int</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – Phase-channel resolved count numbers (integers). Phase increases with
+column number.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> information, one element per channel. Each
+element is the negative of the sum (over phase intervals) of
+log-factorials of data count numbers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.likelihoods.eval_marginal_likelihood">
+<span class="sig-prename descclassname"><span class="pre">xpsi.likelihoods.</span></span><span class="sig-name descname"><span class="pre">eval_marginal_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">exposure_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">::1]</span> <span class="pre">counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_shifts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">neg_sum_ln_data_factorial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">::1]</span> <span class="pre">support</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_t</span> <span class="pre">workspace_intervals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">epsabs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">epsrel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">llzero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_negative=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slim=20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.eval_marginal_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the Poisson likelihood.</p>
+<p>The count rate is integrated over phase intervals.</p>
+<p>A Newton iteration procedure is implemented channel-by-channel to
+approximate the conditional-ML background count-rate variable given
+a fiducial estimate. Marginalisation over each background variable (in each
+channel) is then executed numerically between bounds centred on the ML
+background estimate. The bounds are based on a Gaussian expansion of the
+conditional likelihood function, and are <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigmas</span></code> standard deviations
+above and below the ML estimate. The marginalisation is with respect to a
+flat bounded or unbounded prior density function of each background
+variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exposure_time</strong> (<em>double</em>) – Exposure time in seconds by which to scale the expected count rate
+in each phase interval.</p></li>
+<li><p><strong>phases</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phase interval edges in cycles.</p></li>
+<li><p><strong>counts</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of observed number of counts in energy and phase bins.</p></li>
+<li><p><strong>components</strong> (<em>tuple</em>) – Component signals, each a C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+signal count rates where phase increases with column number.</p></li>
+<li><p><strong>component_phases</strong> (<em>tuple</em>) – For each component, a C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases
+in cycles at which the model <code class="xref py py-obj docutils literal notranslate"><span class="pre">signal</span></code> is evaluated on
+the interval <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>.</p></li>
+<li><p><strong>phase_shifts</strong> (<em>array-like</em>) – Phase shifts in cycles, such as on the interval <code class="docutils literal notranslate"><span class="pre">[-0.5,0.5]</span></code>, for
+the component signals.</p></li>
+<li><p><strong>neg_sum_ln_data_factorial</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – The precomputed output of <a class="reference internal" href="#xpsi.likelihoods.precomputation" title="xpsi.likelihoods.precomputation"><code class="xref py py-func docutils literal notranslate"><span class="pre">precomputation()</span></code></a> given the data count
+numbers.</p></li>
+<li><p><strong>support</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – The prior support of the background <em>count-rate</em> variables. The first
+column contains lower-bounds as a function of channel number. Lower-
+bounds must be greater than or equal to zero. The second column contains
+the upper-bounds as a function of channel number. Upper-bounds for a
+proper prior must be greater than zero and greater than the
+corresponding lower-bound but finite. If the upper-bound is less than
+zero the prior is semi-unbounded and thus improper. Must be a
+C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.</p></li>
+<li><p><strong>workspace_intervals</strong> (<em>size_t</em>) – The size of the workspace to allocate for marginalisation via numerical
+quadrature using the GSL <code class="docutils literal notranslate"><span class="pre">cquad</span></code> integration routine.</p></li>
+<li><p><strong>epsabs</strong> (<em>double</em>) – The absolute tolerance for marginalisation via numerical quadrature
+using the GSL <code class="docutils literal notranslate"><span class="pre">cquad</span></code> integration routine.</p></li>
+<li><p><strong>epsrel</strong> (<em>double</em>) – The relative tolerance for marginalisation via numerical quadrature
+using the GSL <code class="docutils literal notranslate"><span class="pre">cquad</span></code> integration routine.</p></li>
+<li><p><strong>epsilon</strong> (<em>double</em>) – The fraction of the standard deviation of the approximating Gaussian
+function to tolerate when a new step of the quadratic maximisation
+scheme is proposed. This fraction should be some adequately small
+number. The standard deviation is recalculated with each iteration
+as the position (in each background variable) evolves.</p></li>
+<li><p><strong>sigmas</strong> (<em>double</em>) – The number of approximating Gaussian standard deviations to expand
+the integration domain about the point estimated to maximise the
+conditional likelihood function in each channel. This number should
+probably be at least five but no more than ten.</p></li>
+<li><p><strong>llzero</strong> (<em>double</em>) – The log-likelihood that a MultiNest process treats as zero and thus
+ignores points with smaller log-likelihood. This number will be <em>very</em>
+negative. This is useful because if the likelihood is predicted, in
+advance of full executation of this function, to be incredibly small,
+computation can be avoided, returning a number slightly above this
+zero-threshold.</p></li>
+<li><p><strong>allow_negative</strong> (<em>obj</em>) – A boolean or an array of booleans, one per component, declaring whether
+to allow negative phase interpolant integrals. If the interpolant is
+not a Steffen spline, then the interpolant of a non-negative function
+can be negative due to oscillations. For the default Akima Periodic
+spline from GSL, such oscillations should manifest as small relative
+to those present in cubic splines, for instance, because it is
+designed to handle a rapidly changing second-order derivative.</p></li>
+<li><p><strong>slim</strong> (<em>double</em>) – The number that determines how many sigmas below the signal from the star
+can the data be at most (at any channel) before skipping the exact
+likelihood calculation and returning a random likelihood only slightly
+above the logZero level of MultiNest (no expected counts or background
+are returned in that case). By default a value of 20.0 is used.
+If a negative value is provided, no limit is applied.</p></li>
+<li><p><strong>background</strong> (<em>obj</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+background count rates where phase interval increases with column
+number. Useful for phase-dependent backgrounds, or a phase-independent
+background if the channel-by-channel background variable prior support
+is restricted.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple <code class="docutils literal notranslate"><span class="pre">(double,</span> <span class="pre">2D</span> <span class="pre">ndarray,</span> <span class="pre">1D</span> <span class="pre">ndarray,</span> <span class="pre">1D</span> <span class="pre">ndarray)</span></code>. The first element is
+the logarithm of the marginal likelihood. The second element is the
+expected count numbers in joint phase-channel intervals from the star
+(the target source). The third element is the vector of background
+count numbers that are estimated to maximise the conditional
+likelihood function, one per channel. The last element is the vector of background
+count numbers, within the given support, that are estimated to maximise the conditional
+likelihood function, one per channel.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.likelihoods.poisson_likelihood_given_background">
+<span class="sig-prename descclassname"><span class="pre">xpsi.likelihoods.</span></span><span class="sig-name descname"><span class="pre">poisson_likelihood_given_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">exposure_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">::1]</span> <span class="pre">counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_shifts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">::1]</span> <span class="pre">background</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_negative=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.poisson_likelihood_given_background" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the Poisson likelihood.</p>
+<p>The count rate is integrated over phase intervals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exposure_time</strong> (<em>double</em>) – Exposure time in seconds by which to scale the expected count rate
+in each phase interval.</p></li>
+<li><p><strong>phases</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phase interval edges in cycles.</p></li>
+<li><p><strong>components</strong> (<em>tuple</em>) – Component signals, each a C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+signal count rates where phase increases with column number.</p></li>
+<li><p><strong>component_phases</strong> (<em>tuple</em>) – For each component, a C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases
+in cycles at which the model <code class="xref py py-obj docutils literal notranslate"><span class="pre">signal</span></code> is evaluated on
+the interval <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>.</p></li>
+<li><p><strong>phase_shifts</strong> (<em>array-like</em>) – Phase shifts in cycles, such as on the interval <code class="docutils literal notranslate"><span class="pre">[-0.5,0.5]</span></code>, for
+the component signals.</p></li>
+<li><p><strong>background</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – A C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of background expected
+<em>counts</em>, whose shape matches the number of channels in each element
+of <code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code> and the number of phase intervals constructed
+from <code class="xref py py-obj docutils literal notranslate"><span class="pre">phases</span></code>.</p></li>
+<li><p><strong>allow_negative</strong> (<em>obj</em>) – A boolean or an array of booleans, one per component, declaring whether
+to allow negative phase interpolant integrals. If the interpolant is
+not a Steffen spline, then the interpolant of a non-negative function
+can be negative due to oscillations. For the default Akima Periodic
+spline from GSL, such oscillations should manifest as small relative
+to those present in cubic splines, for instance, because it is
+designed to handle a rapidly changing second-order derivative.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple <code class="docutils literal notranslate"><span class="pre">(double,</span> <span class="pre">2D</span> <span class="pre">ndarray)</span></code>. The first element is
+the logarithm of the marginal likelihood. The second element is the
+expected count numbers in joint phase-channel intervals from the star
+(the target source).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<p>The following is an example of a custom extension module to evaluate a
+simple likelihood function based on Poisson sampling distribution of count
+data.</p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="c">#cython: cdivision=True</span>
+<span class="c">#cython: boundscheck=False</span>
+<span class="c">#cython: nonecheck=False</span>
+<span class="c">#cython: wraparound=False</span>
+<span class="c">#cython: embedsignature=True</span>
+
+<span class="k">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="k">import</span> <span class="n">division</span>
+
+<span class="k">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.math</span><span class="w"> </span><span class="k">cimport</span> <span class="nb">pow</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">floor</span>
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.stdlib</span><span class="w"> </span><span class="k">cimport</span> <span class="n">malloc</span><span class="p">,</span> <span class="n">free</span>
+
+<span class="k">from</span><span class="w"> </span><span class="nn">GSL</span><span class="w"> </span><span class="k">cimport</span> <span class="p">(</span><span class="n">gsl_interp</span><span class="p">,</span>
+                   <span class="n">gsl_interp_alloc</span><span class="p">,</span>
+                   <span class="n">gsl_interp_init</span><span class="p">,</span>
+                   <span class="n">gsl_interp_free</span><span class="p">,</span>
+                   <span class="n">gsl_interp_eval</span><span class="p">,</span>
+                   <span class="n">gsl_interp_eval_integ</span><span class="p">,</span>
+                   <span class="n">gsl_interp_steffen</span><span class="p">,</span>
+                   <span class="n">gsl_interp_accel</span><span class="p">,</span>
+                   <span class="n">gsl_interp_accel_alloc</span><span class="p">,</span>
+                   <span class="n">gsl_interp_accel_free</span><span class="p">,</span>
+                   <span class="n">gsl_interp_accel_reset</span><span class="p">)</span>
+
+<span class="k">ctypedef</span> <span class="n">gsl_interp_accel</span> <span class="n">accel</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">poisson_likelihood_given_background</span><span class="p">(</span><span class="n">double</span> <span class="n">exposure_time</span><span class="p">,</span>
+                                        <span class="n">double</span><span class="p">[::</span><span class="mf">1</span><span class="p">]</span> <span class="n">phases</span><span class="p">,</span>
+                                        <span class="n">double</span><span class="p">[:,::</span><span class="mf">1</span><span class="p">]</span> <span class="n">counts</span><span class="p">,</span>
+                                        <span class="n">components</span><span class="p">,</span>
+                                        <span class="n">component_phases</span><span class="p">,</span>
+                                        <span class="n">phase_shifts</span><span class="p">,</span>
+                                        <span class="n">double</span><span class="p">[:,::</span><span class="mf">1</span><span class="p">]</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Evaluate the Poisson likelihood.</span>
+
+<span class="sd">    The count rate is integrated over phase intervals.</span>
+
+<span class="sd">    :param double exposure_time:</span>
+<span class="sd">        Exposure time in seconds by which to scale the expected count rate</span>
+<span class="sd">        in each phase interval.</span>
+
+<span class="sd">    :param phases:</span>
+<span class="sd">        A C-contiguous :class:`numpy.ndarray` of phase interval edges in cycles.</span>
+
+<span class="sd">    :param tuple components:</span>
+<span class="sd">        Component signals, each a C-contiguous :class:`numpy.ndarray` of</span>
+<span class="sd">        signal count rates where phase increases with column number.</span>
+
+<span class="sd">    :param tuple component_phases:</span>
+<span class="sd">        For each component, a C-contiguous :class:`numpy.ndarray` of phases</span>
+<span class="sd">        in cycles at which the model :obj:`signal` is evaluated on</span>
+<span class="sd">        the interval ``[0,1]``.</span>
+
+<span class="sd">    :param array-like phase_shifts:</span>
+<span class="sd">        Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for</span>
+<span class="sd">        the component signals.</span>
+
+<span class="sd">    :param background:</span>
+<span class="sd">        A C-contiguous :class:`numpy.ndarray` of background expected</span>
+<span class="sd">        *counts*, whose shape matches the number of channels in each element</span>
+<span class="sd">        of :obj:`components` and the number of phase intervals constructed</span>
+<span class="sd">        from :obj:`phases`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">cdef</span><span class="p">:</span>
+        <span class="n">size_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">num_components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+        <span class="n">double</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+
+        <span class="n">double</span><span class="p">[:,::</span><span class="mf">1</span><span class="p">]</span> <span class="n">STAR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">components</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span> <span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">-</span><span class="mf">1</span><span class="p">),</span>
+                                       <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> *<span class="nf">phases_ptr</span><span class="w"> </span><span class="o">=</span> <span class="bp">NULL</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> *<span class="nf">signal_ptr</span><span class="w"> </span><span class="o">=</span> <span class="bp">NULL</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span>[<span class="p">:,::</span><span class="mf">1</span><span class="p">]</span> <span class="n">signal</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span>[<span class="p">::</span><span class="mf">1</span><span class="p">]</span> <span class="n">signal_phase_set</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">phase_shift</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">gsl_interp</span> **<span class="nf">interp</span><span class="w"> </span><span class="o">=</span> <span class="o">&lt;</span><span class="n">gsl_interp</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">num_components</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">gsl_interp</span><span class="o">*</span><span class="p">))</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">accel</span> **<span class="nf">acc</span><span class="w"> </span><span class="o">=</span>  <span class="o">&lt;</span><span class="n">accel</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">num_components</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">accel</span><span class="o">*</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_components</span><span class="p">):</span>
+        <span class="n">signal_phase_set</span> <span class="o">=</span> <span class="n">component_phases</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+        <span class="n">interp</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">gsl_interp_alloc</span><span class="p">(</span><span class="n">gsl_interp_steffen</span><span class="p">,</span> <span class="n">signal_phase_set</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+        <span class="n">acc</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">gsl_interp_accel_alloc</span><span class="p">()</span>
+        <span class="n">gsl_interp_accel_reset</span><span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">gsl_interp</span> *<span class="nf">inter_ptr</span><span class="w"> </span><span class="o">=</span> <span class="bp">NULL</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">accel</span> *<span class="nf">acc_ptr</span><span class="w"> </span><span class="o">=</span> <span class="bp">NULL</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">STAR</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_components</span><span class="p">):</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="n">signal_phase_set</span> <span class="o">=</span> <span class="n">component_phases</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">phase_shifts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+            <span class="n">interp_ptr</span> <span class="o">=</span> <span class="n">interp</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="n">acc_ptr</span> <span class="o">=</span> <span class="n">acc</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="n">phases_ptr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">(</span><span class="n">signal_phase_set</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+            <span class="n">signal_ptr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mf">0</span><span class="p">])</span>
+
+            <span class="n">gsl_interp_init</span><span class="p">(</span><span class="n">interp_ptr</span><span class="p">,</span> <span class="n">phases_ptr</span><span class="p">,</span> <span class="n">signal_ptr</span><span class="p">,</span>
+                            <span class="n">signal_phase_set</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1</span><span class="p">):</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
+
+                <span class="n">a</span> <span class="o">-=</span> <span class="n">floor</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">b</span> <span class="o">-=</span> <span class="n">floor</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">:</span>
+                    <span class="n">STAR</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gsl_interp_eval_integ</span><span class="p">(</span><span class="n">interp_ptr</span><span class="p">,</span>
+                                                       <span class="n">phases_ptr</span><span class="p">,</span>
+                                                       <span class="n">signal_ptr</span><span class="p">,</span>
+                                                       <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span>
+                                                       <span class="n">acc_ptr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">STAR</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gsl_interp_eval_integ</span><span class="p">(</span><span class="n">interp_ptr</span><span class="p">,</span>
+                                                       <span class="n">phases_ptr</span><span class="p">,</span>
+                                                       <span class="n">signal_ptr</span><span class="p">,</span>
+                                                       <span class="n">a</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span>
+                                                       <span class="n">acc_ptr</span><span class="p">)</span>
+
+                    <span class="n">STAR</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gsl_interp_eval_integ</span><span class="p">(</span><span class="n">interp_ptr</span><span class="p">,</span>
+                                                       <span class="n">phases_ptr</span><span class="p">,</span>
+                                                       <span class="n">signal_ptr</span><span class="p">,</span>
+                                                       <span class="mf">0.0</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span>
+                                                       <span class="n">acc_ptr</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_components</span><span class="p">):</span>
+        <span class="n">gsl_interp_accel_free</span><span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+        <span class="n">gsl_interp_free</span><span class="p">(</span><span class="n">interp</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">acc</span><span class="p">)</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">interp</span><span class="p">)</span>
+
+    <span class="k">cdef</span><span class="p">:</span>
+        <span class="n">double</span> <span class="n">LOGLIKE</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">EXPEC</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">double</span> <span class="n">n</span> <span class="o">=</span> <span class="p">&lt;</span><span class="kt">double</span><span class="p">&gt;(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">STAR</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">STAR</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">1</span><span class="p">]):</span>
+            <span class="n">EXPEC</span> <span class="o">=</span> <span class="p">(</span><span class="n">STAR</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">background</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">exposure_time</span>
+            <span class="n">LOGLIKE</span> <span class="o">-=</span> <span class="n">EXPEC</span>
+            <span class="n">LOGLIKE</span> <span class="o">+=</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">EXPEC</span><span class="p">)</span>
+
+            <span class="n">STAR</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">background</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">n</span>
+            <span class="n">STAR</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="n">exposure_time</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">LOGLIKE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">STAR</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="surface_radiation_field.html" class="btn btn-neutral float-left" title="Surface radiation field" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

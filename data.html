@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Star" href="star.html" />
+    <link rel="prev" title="Instrument" href="instrument.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Data.Data"><code class="docutils literal notranslate"><span class="pre">Data</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Data.Data.channels"><code class="docutils literal notranslate"><span class="pre">Data.channels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Data.Data.exposure_time"><code class="docutils literal notranslate"><span class="pre">Data.exposure_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Data.Data.index_range"><code class="docutils literal notranslate"><span class="pre">Data.index_range</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Data.Data.phase_bin__event_list"><code class="docutils literal notranslate"><span class="pre">Data.phase_bin__event_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Data.Data.phases"><code class="docutils literal notranslate"><span class="pre">Data.phases</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data">
+<span id="module-xpsi.Data"></span><span id="id1"></span><h1>Data<a class="headerlink" href="#data" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> are X-ray photon data containers.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Data.Data">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Data.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Data.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Data.Data" title="Link to this definition"></a></dt>
+<dd><p>A container for event data.</p>
+<p>The working assumption is that the sampling distribution of this event data
+can be written in terms of a set of channel-by-channel <em>count</em>-rate
+signals. The instrument associated with this data in an instance of
+<a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> must transform incident signals into a structure
+congruent to that of the event data. The attributes and methods of this
+class and any derived classes must therefore store information required for
+this operation.</p>
+<p>The initialiser assigns observation settings to attributes which are
+required for the treating the incident specific flux signals using the
+model instrument. The body of the initialiser may be changed, but to ensure
+inter-module compatibility, only the phase handling should really be
+modified, for instance if you want to implement an unbinned likelihood
+function with respect to phase; the phase bins defined in this concrete
+implementation are only used by a custom implementation of the
+likelihood function (i.e., by a subclass of <a class="reference internal" href="signal.html#module-xpsi.Signal" title="xpsi.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Signal</span></code></a>), and
+not by the other concrete classes used to construct the likelihood
+callable. The initialiser can also be extended if appropriate using a call
+to <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>. Specialist constructors can be defined in a
+subclass using the <code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> decorator, for instance to load event
+data from disk into a compatible data structure in memory; an example of
+this may be found below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can subclass in order to tailor the handling of the event data, for
+instance to implement a likelihood functions for unbinned event data.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>counts</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of count numbers. The columns must map to
+the phase intervals given by <a class="reference internal" href="#xpsi.Data.Data.phases" title="xpsi.Data.Data.phases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phases</span></code></a>. The rows of the array map
+to some subset of instrument channels.</p></li>
+<li><p><strong>channels</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – Instrument channel numbers which must be equal in number to the first
+dimension of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code>: the number of channels must be
+<span class="math notranslate nohighlight">\(p\)</span>. These channels will correspond to the nominal response
+matrix and any deviation from this matrix (see above). In common usage
+patterns, the channel numbers will increase monotonically with row
+number, and usually increment by one (but this is not necessary). It is
+advisable that these numbers are the actual instrument channel numbers
+so that plots generated by the post-processing module using these
+labels are clear.</p></li>
+<li><p><strong>phases</strong> (<em>ndarray</em><em>[</em><em>m+1</em><em>]</em>) – A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of phase interval edges, where events are
+binned into these same intervals in each instrument channel.</p></li>
+<li><p><strong>first</strong> (<em>int</em>) – The index of the first row of the loaded response matrix containing
+events (see note below).</p></li>
+<li><p><strong>last</strong> (<em>int</em>) – The index of the last row of the loaded response matrix containing
+events (see note below).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">counts</span></code> matrix rows  <em>must</em> span a contiguous subset of the
+rows of the loaded response matrix, but in general can span an
+arbitrary subset and order of instrument channels. Note that the
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">first</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">last+1</span></code> numbers are used to index the loaded
+instrument response matrix.  Therefore, if you load only a submatrix of
+the full instrument response matrix, these indices must be appropriate
+for the loaded submatrix, and must not be the true channel numbers
+(this information is instead loaded in the <a class="reference internal" href="instrument.html#module-xpsi.Instrument" title="xpsi.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Instrument</span></code></a>).
+Of course, in all sensible usage patterns the order of the instrument
+channels, when mapped to matrix rows, will be such that channel number
+increases with matrix row number monotonically because, then the
+nominal event energy increases monotonically with row number, which is
+important for visualisation of data and model (because spatial order
+matches energy order and correlations in space can be discerned easily).
+However, there could in principle be channel cuts that mean an increment
+of more than one channel between matrix adjacent rows, and the
+response matrix needs to be manipulated before or during a custom
+loading phase such that its rows match the channel numbers assigned to
+the <code class="xref py py-obj docutils literal notranslate"><span class="pre">counts</span></code> matrix rows.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exposure_time</strong> (<em>float</em>) – The exposure time, in seconds, to acquire this set of event data.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Data.Data.channels">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">channels</span></span><a class="headerlink" href="#xpsi.Data.Data.channels" title="Link to this definition"></a></dt>
+<dd><p>Get the array of channels that the event data spans.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Data.Data.exposure_time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exposure_time</span></span><a class="headerlink" href="#xpsi.Data.Data.exposure_time" title="Link to this definition"></a></dt>
+<dd><p>Get the total exposure time in seconds.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Data.Data.index_range">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index_range</span></span><a class="headerlink" href="#xpsi.Data.Data.index_range" title="Link to this definition"></a></dt>
+<dd><p>Get a 2-tuple of the bounding response-matrix row indices.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Data.Data.phase_bin__event_list">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phase_bin__event_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_column=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_averaged=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_shift=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_edges=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skiprows=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eV=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.int32'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Data.html#Data.phase_bin__event_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Data.Data.phase_bin__event_list" title="Link to this definition"></a></dt>
+<dd><p>Load a phase-folded event list and bin the events in phase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to event list file containing two columns, where the first
+column contains phases on the unit interval, and the second
+column contains the channel number.</p></li>
+<li><p><strong>channels</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – An (ordered) subset of instrument channels. It is advisable that
+these channels are a contiguous subset of instrument channels, but
+this not a strict requirement if you are comfortable with the
+handling the instrument response matrix and count number matrix to
+match in row-to-channel definitions.</p></li>
+<li><p><strong>phases</strong> (<em>list</em>) – An ordered sequence of phase-interval edges on the unit interval.
+The first and last elements will almost always be zero and unity
+respectively.</p></li>
+<li><p><strong>phase_shift</strong> (<em>float</em>) – A phase-shift in cycles to be applied when binning the events in
+phase.</p></li>
+<li><p><strong>phase_column</strong> (<em>int</em>) – The column in the loaded file containing event phases.</p></li>
+<li><p><strong>phase_averaged</strong> (<em>bool</em>) – Is the event data phase averaged?</p></li>
+<li><p><strong>channel_column</strong> (<em>int</em>) – The column in the loaded file containing event channels.</p></li>
+<li><p><strong>channel_edges</strong> (<em>ndarray</em><em>[</em><em>n+1</em><em>]</em>) – The nominal energy edges of the instrument channels, assumed to
+be contiguous if binning event energies in channel number.</p></li>
+<li><p><strong>skiprows</strong> (<em>int</em>) – The number of top rows to skip when loading the events from file.
+The top row of couple of rows will typically be reserved for
+column headers.</p></li>
+<li><p><strong>eV</strong> (<em>bool</em>) – Are event energies in eV, instead of channel number?</p></li>
+<li><p><strong>dtype</strong> (<em>type</em>) – The type of the count data. Sensible options are <code class="docutils literal notranslate"><span class="pre">numpy.int</span></code> (the
+default) or a <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> floating point type. The choice here
+only matters when executing custom likelihood evaluation code, which
+might expect a type without checking or casting.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Data.Data.phases">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phases</span></span><a class="headerlink" href="#xpsi.Data.Data.phases" title="Link to this definition"></a></dt>
+<dd><p>Get the phases.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="instrument.html" class="btn btn-neutral float-left" title="Instrument" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="star.html" class="btn btn-neutral float-right" title="Star" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

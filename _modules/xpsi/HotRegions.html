@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.HotRegions &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.HotRegions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.HotRegions</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.HotRegion</span><span class="w"> </span><span class="kn">import</span> <span class="n">HotRegion</span>
+
+<div class="viewcode-block" id="HotRegions">
+<a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HotRegions</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Two or more photospheric hot regions, where the hot regions are objects.</span>
+
+<span class="sd">    The hot regions can be equal or different in parametrisation complexity.</span>
+
+<span class="sd">    In principle you can construct multiple hot regions, but the computational</span>
+<span class="sd">    expense scales ~linearly with number. Applications thus far have used two</span>
+<span class="sd">    distinct hot regions with equal and unequal complexities.</span>
+
+<span class="sd">    :param tuple hotregions:</span>
+<span class="sd">        Iterable container of :class:`.HotRegion.HotRegion` instances.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hotregions</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="n">hotregions</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hotregions</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an iterable of hot region objects. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span>
+
+    <span class="nd">@objects</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid type for hot-region object.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Hot-region container must be iterable.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="o">=</span> <span class="n">objs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">phases_in_cycles</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;  &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Should fast-mode be invoked for some subset of hot regions. &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Is fast-mode currently activated? &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">fast_mode</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@fast_mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Activate or deactivate fast-mode. &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">fast_mode</span> <span class="o">=</span> <span class="n">activate</span>
+
+<div class="viewcode-block" id="HotRegions.print_settings">
+<a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.print_settings">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Print numerical settings. &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">print_settings</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the number of hot region objects referenced.</span>
+
+<span class="sd">        Overwrites the base class magic method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HotRegions.embed">
+<a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.embed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Embed the hot regions. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">fast_total_counts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">fast</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                      <span class="n">photosphere</span><span class="p">,</span>
+                      <span class="n">fast</span><span class="p">,</span>
+                      <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HotRegions.integrate">
+<a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.integrate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span>
+                  <span class="n">hot_atmosphere</span><span class="p">,</span> <span class="n">elsewhere_atmosphere</span><span class="p">,</span> <span class="n">atm_ext_else</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
+
+<span class="sd">        Calls the CellMesh integrator, with or without exploitation of</span>
+<span class="sd">        azimuthal invariance of the radiation field.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param energies:</span>
+<span class="sd">            A one-dimensional :class:`numpy.ndarray` of energies in keV.</span>
+
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads for pulse integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">energies</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">signals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">E</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+            <span class="n">signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span>
+                                         <span class="n">threads</span><span class="p">,</span>
+                                         <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                         <span class="n">elsewhere_atmosphere</span><span class="p">,</span>
+                                         <span class="n">atm_ext_else</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span></div>
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate_stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span>
+                  <span class="n">hot_atmosphere_I</span><span class="p">,</span> <span class="n">hot_atmosphere_Q</span><span class="p">,</span> <span class="n">elsewhere_atmosphere</span><span class="p">,</span> <span class="n">atm_ext_else</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Integrate Stokes parameters over the photospheric radiation field.</span>
+
+<span class="sd">        Calls the CellMesh integrator, with or without exploitation of</span>
+<span class="sd">        azimuthal invariance of the radiation field.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param energies:</span>
+<span class="sd">            A one-dimensional :class:`numpy.ndarray` of energies in keV.</span>
+
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads for pulse integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">energies</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">signals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">signalsQ</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">signalsU</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">E</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+            <span class="n">sigs</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">integrate_stokes</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span>
+                                         <span class="n">threads</span><span class="p">,</span>
+                                         <span class="n">hot_atmosphere_I</span><span class="p">,</span>
+                                         <span class="n">hot_atmosphere_Q</span><span class="p">,</span>
+                                         <span class="n">elsewhere_atmosphere</span><span class="p">,</span>
+                                         <span class="n">atm_ext_else</span><span class="p">)</span>
+            <span class="n">signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">signalsQ</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">signalsU</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">signals</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">signalsQ</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">signalsU</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

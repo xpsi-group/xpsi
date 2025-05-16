@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.PostProcessing._runs &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.PostProcessing._runs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.PostProcessing._runs</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">Likelihood</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nestcheck.ns_run_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">combine_ns_runs</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nestcheck.write_polychord_output</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_run_output</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_warning</span><span class="p">(</span><span class="s1">&#39;Cannot use nestcheck to combine runs.&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">Metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._run</span><span class="w"> </span><span class="kn">import</span> <span class="n">Run</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">NestedBackend</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ParameterError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Thrown if inconsistent parameter names are specified for plotting. &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Runs">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Runs">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Runs</span><span class="p">(</span><span class="n">Metadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Container for nested sampling runs on a shared posterior.</span>
+
+<span class="sd">    :param likelihood:</span>
+<span class="sd">        The instance of :class:`~.Likelihood` used for sampling, or a clone of</span>
+<span class="sd">        that instance. Defaults to ``None``. If multiple likelihood functions</span>
+<span class="sd">        are associated with the runs due to discreteness in the model space,</span>
+<span class="sd">        one can pass a dictionary with keys matching the IDs of the runs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runs</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Runs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">iter</span><span class="p">(</span><span class="n">runs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span> <span class="n">Run</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span> <span class="o">=</span> <span class="p">[</span><span class="n">runs</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Run objects must be instances of the ``Run`` &#39;</span>
+                                <span class="s1">&#39;class.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">runs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;No objects of type ``Run`` supplied.&#39;</span><span class="p">)</span>
+            <span class="n">run_IDs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">runs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">Run</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Run objects must be instances of the &#39;</span>
+                                    <span class="s1">&#39;``Run`` class.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">run</span><span class="o">.</span><span class="n">ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">run_IDs</span><span class="p">:</span>
+                    <span class="n">run_IDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">AmbiguityError</span><span class="p">(</span><span class="s1">&#39;Use distinct IDs for distinct sets &#39;</span>
+                                         <span class="s1">&#39;of samples.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">runs</span><span class="p">:</span>
+                <span class="n">run</span><span class="o">.</span><span class="n">parent_ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ID</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span> <span class="o">=</span> <span class="n">runs</span>
+
+        <span class="k">if</span> <span class="n">likelihood</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">likelihood</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">runs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a copy of the list of runs. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the likelihood instance. &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@likelihood</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the likelihood object. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Likelihood</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">else</span><span class="p">:</span>
+             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The likelihood object needs to derive from &#39;</span>
+                             <span class="s1">&#39;xpsi.Likelihood.Likelihood.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># weak check that all likelihood free parameters have associated</span>
+        <span class="c1"># name in sample set; doesn&#39;t check that all names in self match</span>
+        <span class="c1"># a parameter referenced by the likelihood object because of</span>
+        <span class="c1"># derived parameters calculated and given names in the sample sets</span>
+        <span class="c1"># that are not free parameters referenced by the likelihood object</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s1">&#39;The likelihood object must have free &#39;</span>
+                                     <span class="s1">&#39;parameters that share a name with a &#39;</span>
+                                     <span class="s1">&#39;parameter in the sample set.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Runs.load_runs">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Runs.load_runs">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_runs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">run_IDs</span><span class="p">,</span> <span class="n">roots</span><span class="p">,</span> <span class="n">base_dirs</span><span class="p">,</span> <span class="n">use_nestcheck</span><span class="p">,</span>
+                  <span class="n">likelihood</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multi_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode_label</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Construct a :class:`~.Runs` instance by loading distinct runs.</span>
+
+<span class="sd">        param bool multi_mode:</span>
+<span class="sd">            Load the runs so that they are separated in different modes found</span>
+<span class="sd">            by a MultiNest run with mmodal=True.</span>
+
+<span class="sd">        param string mode_label:</span>
+<span class="sd">            Select a label for the modes to be shown in the plots.</span>
+
+<span class="sd">        The kwargs will be shared by nested sampling runs. The args must be</span>
+<span class="sd">        lists that will be zipped to instantiate a set of run backends.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if there is a transform method available, try to wrap it</span>
+        <span class="c1"># so that error due to a mismatch in parameter order is bypassed</span>
+        <span class="k">if</span> <span class="n">likelihood</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">transform</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">transform</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="c1"># quietly assume no transformation desired</span>
+                <span class="n">_transform</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">_overwrite</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">)</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">_transform</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">_q</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">likelihood</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)]]</span>
+                    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">_q</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">):]))</span>
+                <span class="n">_overwrite</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;overwrite_transformed&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_transform</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">_overwrite</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">multi_mode</span><span class="p">:</span>
+            
+            <span class="c1"># Initialize variables</span>
+            <span class="n">len_modes</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">is_multimode_run</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">mode_label</span> <span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">mode_label</span>
+
+            <span class="c1"># Loop over the runs</span>
+            <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)):</span>
+
+                <span class="c1"># If the run is multimodal, load the modes</span>
+                <span class="n">filerootpath</span> <span class="o">=</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dirs</span><span class="p">[</span><span class="n">vec</span><span class="p">],</span> <span class="n">roots</span><span class="p">[</span><span class="n">vec</span><span class="p">])</span>
+                <span class="n">ismultimode</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span> <span class="n">filerootpath</span><span class="o">+</span><span class="s2">&quot;post_separate.dat&quot;</span> <span class="p">)</span>
+                <span class="n">is_multimode_run</span><span class="p">[</span><span class="n">run_IDs</span><span class="p">[</span><span class="n">vec</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ismultimode</span>
+                <span class="k">if</span> <span class="n">ismultimode</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filerootpath</span><span class="o">+</span><span class="s2">&quot;post_separate.dat&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                        <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+                    <span class="c1"># Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                        <span class="n">stripped</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">stripped</span><span class="p">:</span>  <span class="c1"># Non-blank line</span>
+                            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">stripped</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Blank line</span>
+                            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+                    <span class="c1"># Separate modes based on None markers</span>
+                    <span class="n">modes</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">current_mode</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">current_mode</span><span class="p">:</span>
+                                <span class="n">modes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_mode</span><span class="p">))</span>
+                                <span class="n">current_mode</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">current_mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+                    <span class="c1"># Append the last mode if not empty</span>
+                    <span class="k">if</span> <span class="n">current_mode</span><span class="p">:</span>
+                        <span class="n">modes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_mode</span><span class="p">))</span>
+
+                    <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modes</span><span class="p">)):</span>
+                        <span class="n">_np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filerootpath</span><span class="o">+</span><span class="sa">f</span><span class="s2">&quot;mode</span><span class="si">{</span><span class="n">mode</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="n">modes</span><span class="p">[</span><span class="n">mode</span><span class="p">])</span>
+                        <span class="n">roots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roots</span><span class="p">[</span><span class="n">vec</span><span class="p">]</span><span class="o">+</span><span class="sa">f</span><span class="s2">&quot;mode</span><span class="si">{</span><span class="n">mode</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">run_IDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_IDs</span><span class="p">[</span><span class="n">vec</span><span class="p">]</span><span class="o">+</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mode_label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mode</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">base_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_dirs</span><span class="p">[</span><span class="n">vec</span><span class="p">])</span>
+                        <span class="n">use_nestcheck</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">use_nestcheck</span><span class="p">[</span><span class="n">vec</span><span class="p">])</span>
+
+                    <span class="c1"># Save useful information</span>
+                    <span class="n">len_modes</span><span class="p">[</span><span class="n">run_IDs</span><span class="p">[</span><span class="n">vec</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">len_modes</span><span class="p">[</span><span class="n">run_IDs</span><span class="p">[</span><span class="n">vec</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">runs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">run_ID</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">check</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">roots</span><span class="p">,</span> <span class="n">run_IDs</span><span class="p">,</span>
+                                                 <span class="n">base_dirs</span><span class="p">,</span>
+                                                 <span class="n">use_nestcheck</span><span class="p">):</span>
+            <span class="n">runs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NestedBackend</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span>
+                                      <span class="n">ID</span><span class="o">=</span><span class="n">run_ID</span><span class="p">,</span>
+                                      <span class="n">use_nestcheck</span><span class="o">=</span><span class="n">check</span><span class="p">,</span>
+                                      <span class="n">transform</span><span class="o">=</span><span class="n">_transform</span><span class="p">,</span>
+                                      <span class="n">overwrite_transformed</span><span class="o">=</span><span class="n">_overwrite</span><span class="p">,</span>
+                                      <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">Runs</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Runs</span><span class="o">.</span><span class="n">multi_mode</span> <span class="o">=</span> <span class="n">multi_mode</span>
+
+        <span class="k">if</span> <span class="n">multi_mode</span><span class="p">:</span>
+            <span class="n">Runs</span><span class="o">.</span><span class="n">len_modes</span> <span class="o">=</span> <span class="n">len_modes</span>
+            <span class="n">Runs</span><span class="o">.</span><span class="n">mode_label</span> <span class="o">=</span> <span class="n">mode_label</span>
+            <span class="n">Runs</span><span class="o">.</span><span class="n">is_multimode_run</span> <span class="o">=</span> <span class="n">is_multimode_run</span>
+
+        <span class="k">return</span> <span class="n">Runs</span></div>
+
+
+<div class="viewcode-block" id="Runs.set_subset">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Runs.set_subset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">combine_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">force_combine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">only_combined</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">only_principal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_modes</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set a current list of :class:`~.Run` instances.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">IDs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_mode</span> <span class="ow">and</span> <span class="n">split_modes</span><span class="p">:</span>
+                <span class="n">old_IDs</span><span class="o">=</span><span class="n">IDs</span>
+                <span class="n">IDs</span><span class="o">=</span><span class="p">[]</span>
+                <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span>  <span class="n">old_IDs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode_label</span> <span class="ow">in</span> <span class="n">ID</span><span class="p">:</span>
+                        <span class="n">IDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">ID</span> <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multimode_run</span><span class="p">[</span> <span class="n">ID</span> <span class="p">]:</span>
+                            <span class="n">root_ID</span><span class="o">=</span><span class="n">ID</span>
+                            <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">len_modes</span><span class="p">[</span><span class="n">root_ID</span><span class="p">]</span> <span class="p">):</span>
+                                <span class="n">IDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root_ID</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mode</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">IDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">ID</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span> <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">IDs</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">combine</span> <span class="ow">and</span> <span class="n">force_combine</span><span class="p">:</span> <span class="c1"># create new run object</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_combine</span><span class="p">(</span><span class="n">combine_all</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">combine</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_combined&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_combine</span><span class="p">(</span><span class="n">combine_all</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_only_combined</span> <span class="o">=</span> <span class="n">only_combined</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_only_principal</span> <span class="o">=</span> <span class="n">only_principal</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_combine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combine_all</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Helper method. &quot;&quot;&quot;</span>
+
+        <span class="n">IDs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span>
+                            <span class="n">current</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">combine_all</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="n">nestcheck_compatible</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">IDs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span>
+
+        <span class="n">str_IDs</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span> <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">IDs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">run</span><span class="o">.</span><span class="n">use_nestcheck</span><span class="p">:</span>
+                <span class="k">break</span> <span class="c1"># found nestcheck-compatible run</span>
+
+        <span class="c1"># write combined run to the same directory</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">nestcheck_backend</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;base_dir&#39;</span><span class="p">]</span>
+        <span class="n">file_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">+</span> <span class="s1">&#39;_combined_IDs_</span><span class="si">%s</span><span class="s1">_&#39;</span> <span class="o">%</span> <span class="n">str_IDs</span>
+        <span class="n">_exists</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">file_root</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_exists</span> <span class="ow">or</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">run</span> <span class="o">=</span> <span class="n">combine_ns_runs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;nestcheck_backend&#39;</span><span class="p">,</span>
+                                    <span class="n">current</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">combine_all</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">nestcheck_compatible</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="n">run</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;base_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">base_dir</span>
+            <span class="n">run</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;file_root&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_root</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1">#use MultiNest initial likelihood (logl_init) instead of the default PolyChord</span>
+                <span class="n">write_run_output</span><span class="p">(</span><span class="n">run</span><span class="p">,</span>
+                                 <span class="n">write_dead</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">write_stats</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">posteriors</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">stats_means_errs</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">n_simulate</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                                 <span class="n">logl_init</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.179769313486231571E+309</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Unexpected **kwargs: {&#39;logl_init&#39;: -1.7976931348623157e+308}&quot;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The used nestcheck version does not support combining &quot;</span>
+                    <span class="s2">&quot;MultiNest runs in X-PSI. To use this feature, nestcheck version newer &quot;</span>
+                    <span class="s2">&quot;than in this commit: &quot;</span>
+                    <span class="s2">&quot;https://github.com/ejhigson/nestcheck/commit/513ef962ef7b0d66377686f9fe0a9e354dad48b3 &quot;</span>
+                    <span class="s2">&quot;should be used (see installation instructions for installing it from github).&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kde_settings&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">kde_settings</span><span class="p">,</span>
+                  <span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="s1">&#39;combined&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;implementation&#39;</span><span class="p">:</span> <span class="s1">&#39;polychord&#39;</span><span class="p">,</span> <span class="c1"># match nestcheck output format</span>
+                  <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">,</span>
+                  <span class="s1">&#39;bounds&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
+                  <span class="s1">&#39;truths&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">truths</span><span class="p">,</span>
+                  <span class="s1">&#39;precisions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">precisions</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span> <span class="o">=</span> <span class="n">NestedBackend</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span>
+                                       <span class="n">base_dir</span> <span class="o">=</span> <span class="n">base_dir</span><span class="p">,</span>
+                                       <span class="n">use_nestcheck</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span><span class="o">.</span><span class="n">parent_ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ID</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the current subset of runs for plotting. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subset_to_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the current subset of runs (+ combined) for plotting. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_only_combined</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_combined</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_combined</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_only_principal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a :class:`~.Run` instance using the associated ID. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">_six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ID</span> <span class="o">==</span> <span class="n">run</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">run</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span>
+
+        <span class="c1"># if get this far there was lookup error</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No run with ID matching request : </span><span class="si">{</span><span class="n">ID</span><span class="si">}</span><span class="s1">. Available ID values : </span><span class="si">{</span><span class="p">[</span><span class="w"> </span><span class="n">r</span><span class="o">.</span><span class="n">ID</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">combined</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Try to get a combined run in the form of a :mod:`nestcheck`</span>
+<span class="sd">            backend. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No combined run available. Set the run-subset and combine.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combined</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must combine runs.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Runs.get_attr">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Runs.get_attr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nestcheck_compatible</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a list of attributes of the :class:`~.Run` instances stored as</span>
+<span class="sd">            the current subset. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">nestcheck_compatible</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> \
+                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="k">if</span> <span class="n">current</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">)</span> <span class="k">if</span> <span class="n">run</span><span class="o">.</span><span class="n">use_nestcheck</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> \
+                                     <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="k">if</span> <span class="n">current</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">)]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

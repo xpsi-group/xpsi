@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Everywhere &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Interstellar" href="interstellar.html" />
+    <link rel="prev" title="Elsewhere" href="elsewhere.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Everywhere</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Everywhere.Everywhere"><code class="docutils literal notranslate"><span class="pre">Everywhere</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere._compute_cellParamVecs"><code class="docutils literal notranslate"><span class="pre">Everywhere._compute_cellParamVecs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere._compute_rays"><code class="docutils literal notranslate"><span class="pre">Everywhere._compute_rays()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere._construct_cellMesh"><code class="docutils literal notranslate"><span class="pre">Everywhere._construct_cellMesh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.embed"><code class="docutils literal notranslate"><span class="pre">Everywhere.embed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.integrate"><code class="docutils literal notranslate"><span class="pre">Everywhere.integrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.num_cells"><code class="docutils literal notranslate"><span class="pre">Everywhere.num_cells</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.num_rays"><code class="docutils literal notranslate"><span class="pre">Everywhere.num_rays</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.phases_in_cycles"><code class="docutils literal notranslate"><span class="pre">Everywhere.phases_in_cycles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.print_settings"><code class="docutils literal notranslate"><span class="pre">Everywhere.print_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.set_phases"><code class="docutils literal notranslate"><span class="pre">Everywhere.set_phases()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Everywhere.Everywhere.sqrt_num_cells"><code class="docutils literal notranslate"><span class="pre">Everywhere.sqrt_num_cells</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Everywhere.RayError"><code class="docutils literal notranslate"><span class="pre">RayError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Everywhere.IntegrationError"><code class="docutils literal notranslate"><span class="pre">IntegrationError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">Everywhere</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/everywhere.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="everywhere">
+<span id="module-xpsi.Everywhere"></span><span id="id1"></span><h1>Everywhere<a class="headerlink" href="#everywhere" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a> represents the global photosphere.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Everywhere.</span></span><span class="sig-name descname"><span class="pre">Everywhere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_invariant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sqrt_num_cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_leaves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_order_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_integrator_toggle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a></p>
+<p>The photospheric radiation field represented by a global mesh.</p>
+<p>An instance of this class <em>cannot</em> be used in conjuction with hot region
+objects nor with an elsewhere instance.</p>
+<p>The local comoving radiation field properties are <em>not</em> assumed to be
+azimuthally invariant, so a time-dependent signal can be generated upon
+integration over the image.</p>
+<p>However, if you want to generate a time-dependent signal, you need
+to customise the parameters that control the radiation field w.r.t. surface
+local comoving frames. By default a single temperature parameter is
+defined which is globally invariant and thus the radiation field is
+azimuthally invariant and the image subtended on a distant observer’s sky
+is phase-invariant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_invariant</strong> (<em>bool</em>) – See above. Is the radiation field azimuthally invariant, thus
+generating a phase-invariant signal? Although the default configuration
+is simple and azimuthally invariant, we do not provide a default
+value for this argument to force the user to verify their intentions.</p></li>
+<li><p><strong>bounds</strong> (<em>dict</em>) – If <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">is</span> <span class="pre">None</span></code>, these bounds are supplied for instantiation
+of a temperature parameter. The parameter name
+<code class="docutils literal notranslate"><span class="pre">'temperature'</span></code> must be a key in the dictionary unless the
+parameter is <em>fixed</em> or <em>derived</em>. If a bound is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound
+is set equal to a strict hard-coded bound. We note that the bounds for
+parameters used in the atmosphere model should be restricted (by the user)
+to be within the tabulated values, in case a numerical atmosphere extension is used.</p></li>
+<li><p><strong>values</strong> (<em>dict</em>) – Either the fixed value of the temperature, a callable if the
+temperature is <em>derived</em>, or a value upon initialisation if the
+temperature is free. The dictionary must have a key with name
+<code class="docutils literal notranslate"><span class="pre">'temperature'</span></code> if it is <em>fixed</em> or <em>derived</em>.</p></li>
+<li><p><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth which form a regular
+mesh on the surface. Must be an even number such that half of the cells
+are exactly in one hemisphere. The total number of cells is the square
+of this argument value. The mesh suffers from squeezing in the polar
+regions, leading to a high degree of non-congruence in cell shape over
+the surface.</p></li>
+<li><p><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each colatitude, distributed
+in angle subtended between ray tangent 4-vector and radial outward unit
+vector w.r.t a local orthonormal tetrad.</p></li>
+<li><p><strong>num_leaves</strong> (<em>int</em>) – Number of stellar rotation phases to rotate a moving mesh through
+during signal integration.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – Number of phases to resolve the signal at if the signal is time-
+dependent.</p></li>
+<li><p><strong>ndarray</strong><strong>[</strong><strong>m</strong><strong>]</strong> – Array of phases to resolve a time-dependent signal at.</p></li>
+<li><p><strong>atm_ext</strong> (<em>str</em>) – Used to determine which atmospheric extension to use.
+Options at the moment:
+“BB”: Analytical blackbody (default),
+“Num4D”: Numerical atmosphere using 4D-interpolation from the provided
+atmosphere data,
+“user”: A user-provided extension which can be set up by replacing the contents of 
+the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+(if not changed, “user” is the same as “BB”).</p></li>
+<li><p><strong>beam_opt</strong> (<em>int</em>) – Used to determine which atmospheric beaming modification model to use.
+Options at the moment:
+0: No modification (default),
+1: Original*beaming_correction without re-normalization,
+2: Original*beaming_correction with analytical re-normalization estimate,
+3: Original*beaming_correction with numerical re-normalization.</p></li>
+<li><p><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
+supply custom parameter definitions, you need to overwrite the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_compute_cellParamVecs()</span></code> method to
+implement your custom behaviour.</p></li>
+<li><p><strong>image_order_limit</strong> (<em>int</em>) – The highest-order image to sum over. A value of <em>one</em> means primary
+images only (deflections <span class="math notranslate nohighlight">\(&lt;\pi\)</span>) whilst a value of <em>two</em> means
+primary and secondary images (deflections <span class="math notranslate nohighlight">\(&lt;2pi\)</span>) where visible,
+and so on. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), there is no hard limit. In this
+case the limit is determined quasi-naturally for each mesh element,
+meaning that images will be summed over until higher order images are
+not visible or the visibility limit is truncated due to lack of
+numerical precision (e.g. for rays that orbit very close to the
+Schwarzschild photon sphere three times or more).  Higher-order images
+generally contribute less and less due to geometric projection effects
+(higher-order images become more tangential), and the images of
+elements get squeezed in solid angle at the stellar limb. In principle,
+effects such as relativistic beaming can counter this effect to a
+degree for certain source-receiver configurations, by increasing
+brightness whilst solid angle decreases, and thus the flux contribution
+relative to that from a primary image can be greater than suggested
+simply by geometric project effects. Nevertheless, inclusion of these
+images is more computationally expensive. If, when iterating through
+image orders, an image is not visible because the deflection required
+is greater than the highest deflection permitted at a given colatitude
+on a surface (accounting for the surface tilt due to rotation), then
+the iteration over image orders terminates.</p></li>
+<li><p><strong>_integrator_toggle</strong> (<em>bool</em>) – For testing purposes, toggle the integrator for time-dependent signals.
+If left as the default (<code class="docutils literal notranslate"><span class="pre">False</span></code>) the general-purpose integrator is
+called. If toggled, an integrator is called that assumes the surface
+radiation field is azimuthally invariant, which combined with the
+default global mesh (i.e., no subclassing) results in a time-invariant
+signal.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Required parameter names:</dt><dd><ul class="simple">
+<li><p>temperature (if no custom specification)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere._compute_cellParamVecs">
+<span class="sig-name descname"><span class="pre">_compute_cellParamVecs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere._compute_cellParamVecs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere._compute_cellParamVecs" title="Link to this definition"></a></dt>
+<dd><p>Precompute photospheric source radiation field parameter vectors
+cell-by-cell. Free model parameters and derived (fixed) variables can
+be transformed into local comoving radiation field variables.</p>
+<p>Subclass and overwrite with custom functionality if you desire.</p>
+<p>Designed here simply for uniform effective temperature (assuming
+it is the first parameter in self.vector).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere._compute_rays">
+<span class="sig-name descname"><span class="pre">_compute_rays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere._compute_rays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere._compute_rays" title="Link to this definition"></a></dt>
+<dd><p>Trace (integrate) a set of rays.</p>
+<p>These rays represent a null mapping from photosphere to a point at
+some effective infinity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for ray integration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere._construct_cellMesh">
+<span class="sig-name descname"><span class="pre">_construct_cellMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere._construct_cellMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere._construct_cellMesh" title="Link to this definition"></a></dt>
+<dd><p>Call a low-level routine to construct a mesh representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for mesh construction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere.embed" title="Link to this definition"></a></dt>
+<dd><p>Embed the photosphere everywhere.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">atmosphere</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere.integrate" title="Link to this definition"></a></dt>
+<dd><p>Integrate over the photospheric radiation field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies
+in keV.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads the integrator is
+permitted to spawn.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.num_cells">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_cells</span></span><a class="headerlink" href="#xpsi.Everywhere.Everywhere.num_cells" title="Link to this definition"></a></dt>
+<dd><p>Get the total number of cells in the mesh.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.num_rays">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rays</span></span><a class="headerlink" href="#xpsi.Everywhere.Everywhere.num_rays" title="Link to this definition"></a></dt>
+<dd><p>Get the number of rays integrated per colatitude.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.phases_in_cycles">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phases_in_cycles</span></span><a class="headerlink" href="#xpsi.Everywhere.Everywhere.phases_in_cycles" title="Link to this definition"></a></dt>
+<dd><p>Get the phases (in cycles) the pulse is interpolated at.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.print_settings">
+<span class="sig-name descname"><span class="pre">print_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere.print_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere.print_settings" title="Link to this definition"></a></dt>
+<dd><p>Print numerical settings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.set_phases">
+<span class="sig-name descname"><span class="pre">set_phases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_leaves</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere.set_phases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere.set_phases" title="Link to this definition"></a></dt>
+<dd><p>Construct the set of interpolation phases and foliation leaves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_leaves</strong> (<em>int</em>) – Number of leaves mesh motion is discretised into.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – Number of phases in a discrete representation of the specific flux
+pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</span>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the number of
+phases interpolated at is set equal to the number of leaves.</p></li>
+<li><p><strong>phases</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases for a discrete
+representation of the specific flux pulses on the interval
+<span class="math notranslate nohighlight">\([0,1]\)</span>. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the <code class="xref py py-obj docutils literal notranslate"><span class="pre">num_phases</span></code>
+argument is utilised.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Everywhere.Everywhere.sqrt_num_cells">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sqrt_num_cells</span></span><a class="headerlink" href="#xpsi.Everywhere.Everywhere.sqrt_num_cells" title="Link to this definition"></a></dt>
+<dd><p>Get the number of cell colatitudes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Everywhere.RayError">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Everywhere.</span></span><span class="sig-name descname"><span class="pre">RayError</span></span><a class="reference internal" href="_modules/xpsi/Everywhere.html#RayError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.RayError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsiError</span></code></p>
+<p>Raised if a problem was encountered during ray integration.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Everywhere.IntegrationError">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Everywhere.</span></span><span class="sig-name descname"><span class="pre">IntegrationError</span></span><a class="reference internal" href="_modules/xpsi/Everywhere.html#IntegrationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Everywhere.IntegrationError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsiError</span></code></p>
+<p>Raised if a problem was encountered during signal integration.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="elsewhere.html" class="btn btn-neutral float-left" title="Elsewhere" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="interstellar.html" class="btn btn-neutral float-right" title="Interstellar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

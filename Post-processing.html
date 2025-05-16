@@ -1,0 +1,1913 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post-processing &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Emitting Patterns 2D Projection" href="Emitting_patterns_2Dprojection.html" />
+    <link rel="prev" title="Polarization" href="Polarization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Post-processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Check-the-convergence">Check the convergence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Geometry-plot">Geometry plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Background-plot">Background plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Load-the-run-for-PostProcessor">Load the run for PostProcessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Corner-plots">Corner plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Residual-plot">Residual plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Signal-plots">Signal plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#P-P-plot">P-P plot</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Post-processing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Post-processing.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Post-processing">
+<h1>Post-processing<a class="headerlink" href="#Post-processing" title="Link to this heading"></a></h1>
+<p>In this tutorial we demonstrate the functionality and posterior operations supported by the <a class="reference internal" href="postprocessing.html"><span class="doc">PostProcessing</span></a> module by operating with the example posterior samples found in <code class="docutils literal notranslate"><span class="pre">examples/examples_fast/Outputs</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Importing relevant modules
+
+%matplotlib inline
+
+from __future__ import division
+
+from collections import OrderedDict
+from scipy.stats import binom
+import sys
+import os
+import matplotlib.pyplot as plt
+import math
+import numpy as np
+
+import warnings
+warnings.simplefilter(action=&#39;ignore&#39;, category=FutureWarning)
+
+import xpsi
+from xpsi import PostProcessing
+
+# choose a seed for the notebook if you want caching to be useful
+# and the notebook exactly reproducible
+PostProcessing.set_random_seed(42)
+
+from xpsi.global_imports import gravradius
+from xpsi.utilities.ProjectionTool import plot_projection_general
+from xpsi.utilities.BackgroundTools import readSummary, plotBackgroundSpectrum
+from xpsi.utilities.ConvergenceTool import plotConvergence
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.6               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.4
+Imported PyMultiNest.
+Imported UltraNest.
+Warning: Cannot import torch and test SBI_wrapper.
+Imported GetDist version: 1.4.7
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<p>The model can be imported with the model loader:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi.utilities.ModelLoader import load_model
+path=&quot;../../examples/examples_fast/Modules/&quot;
+ST = load_model( model_path=os.path.join( path ,&quot;main.py&quot;) , execution_path=path )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+No parameters supplied... empty subspace created.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.140e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 1.600e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [1.000e+01, 1.300e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [5.000e-01, 2.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [1.000e-03, 1.570e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [1.000e-03, 1.570e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [6.000e+00, 7.000e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.140e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+No parameters supplied... empty subspace created.
+Checking likelihood and prior evaluation before commencing sampling...
+Not using ``allclose`` function from NumPy.
+Using fallback implementation instead.
+Checking closeness of likelihood arrays:
+-3.1603740790e+04 | -3.1603740790e+04 .....
+Closeness evaluated.
+Log-likelihood value checks passed on root process.
+Checks passed.
+Model located at ../../examples/examples_fast/Modules/main.py has been sucessfully loaded
+</pre></div></div>
+</div>
+<p>In this case, the model_loader is equivalent to the following commands:</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sys.path.append(</span> <span class="pre">path</span> <span class="pre">)</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">main</span> <span class="pre">as</span> <span class="pre">ST</span></code></div>
+</div>
+<p>However, this model loader is especially useful for loading models that use configuration file as input (see Module_generator tutorial). It is also useful to avoid cache issues when different imports share the same name, which happens when loading different models generated with the module generator. These multiple imports can be done like this for example:</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">model_names</span> <span class="pre">=</span> <span class="pre">['ST','PDT']</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">models</span> <span class="pre">=</span> <span class="pre">{}</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">model_path_dict</span> <span class="pre">=</span> <span class="pre">{'ST':path-to-ST-main,'PDT':path-to-PDT-main}</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">config_path_dict</span> <span class="pre">=</span> <span class="pre">{'ST':path-to-ST-config,'PDT':path-to-PDT-config}</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">execution_path_dict</span> <span class="pre">=</span> <span class="pre">{'ST':path-to-ST-execution-folder,'PDT':path-to-PDT-execution-folder}</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">m</span> <span class="pre">in</span> <span class="pre">model_names:</span></code></div>
+<div class="line">         <code class="docutils literal notranslate"><span class="pre">models[m]</span> <span class="pre">=</span> <span class="pre">load_model(</span> <span class="pre">model_path=model_path_dict[m],</span> <span class="pre">config_path=config_path_dict[m],</span> <span class="pre">execution_path=execution_path_dict[m]</span> <span class="pre">)</span></code></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">execution_path</span></code> parameter allows to choose the execution folder of the import, so the relative path used by the imported module can be resolved when it is needed.</p>
+<p>Now, let’s see the free parameters for the our model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ST.likelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<p>Now let’s set the names, the bounds and the labels of the free parameters for later use</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Settings names, bounds and labels
+ST.names=[&#39;mass&#39;,&#39;radius&#39;,&#39;distance&#39;,&#39;cos_inclination&#39;,&#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,&#39;p__super_radius&#39;,&#39;p__super_temperature&#39;]
+
+# We need to use the same bounds used during sampling
+# They can be changed in the posterior using the param_plot_lims parameter, for example it can be set to {&#39;radius&#39;: (9.0,12.0)} to restrict the plotting of the radius.
+ST.bounds = {&#39;mass&#39;:(1.0,1.6),
+             &#39;radius&#39;:(10,13),
+             &#39;distance&#39;:(0.5,2.0),
+             &#39;cos_inclination&#39;:(0,1),
+             &#39;p__phase_shift&#39;:(-0.25, 0.75),
+             &#39;p__super_colatitude&#39;:(0.001, math.pi/2 - 0.001),
+             &#39;p__super_radius&#39;:(0.001, math.pi/2.0 - 0.001),
+             &#39;p__super_temperature&#39;:(6., 7.)}
+
+# Now the labels
+ST.labels = {&#39;mass&#39;: r&quot;M\;\mathrm{[M}_{\odot}\mathrm{]}&quot;,
+              &#39;radius&#39;: r&quot;R_{\mathrm{eq}}\;\mathrm{[km]}&quot;,
+              &#39;distance&#39;: r&quot;D \;\mathrm{[kpc]}&quot;,
+              &#39;cos_inclination&#39;: r&quot;\cos(i)&quot;,
+              &#39;p__phase_shift&#39;: r&quot;\phi_{p}\;\mathrm{[cycles]}&quot;,
+              &#39;p__super_colatitude&#39;: r&quot;\Theta_{\mathrm{spot}}\;\mathrm{[rad]}&quot;,
+              &#39;p__super_radius&#39;: r&quot;\zeta_{\mathrm{spot}}\;\mathrm{[rad]}&quot;,
+              &#39;p__super_temperature&#39;: r&quot;\mathrm{log10}(T_{\mathrm{spot}}\;[\mathrm{K}])&quot;}
+</pre></div>
+</div>
+</div>
+<p>Let’s also add the compactness because we also added that extra parameter to be derived</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ST.names +=[&#39;compactness&#39;]
+ST.bounds[&#39;compactness&#39;]=(gravradius(1.0)/16.0, 1.0/3.0)
+ST.labels[&#39;compactness&#39;]= r&quot;M/R_{\mathrm{eq}}&quot;
+</pre></div>
+</div>
+</div>
+<p>Getdist settings, usually no need to be changed</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>getdist_kde_settings = {&#39;ignore_rows&#39;: 0,
+                         &#39;min_weight_ratio&#39;: 1.0e-10,
+                         &#39;contours&#39;: [0.683, 0.954, 0.997],
+                         &#39;credible_interval_threshold&#39;: 0.001,
+                         &#39;range_ND_contour&#39;: 0,
+                         &#39;range_confidence&#39;: 0.001,
+                         &#39;fine_bins&#39;: 1024,
+                         &#39;smooth_scale_1D&#39;: 0.4,
+                         &#39;num_bins&#39;: 100,
+                         &#39;boundary_correction_order&#39;: 1,
+                         &#39;mult_bias_correction_order&#39;: 1,
+                         &#39;smooth_scale_2D&#39;: 0.4,
+                         &#39;max_corr_2D&#39;: 0.99,
+                         &#39;fine_bins_2D&#39;: 512,
+                         &#39;num_bins_2D&#39;: 40}
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ST.likelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<section id="Check-the-convergence">
+<h2>Check the convergence<a class="headerlink" href="#Check-the-convergence" title="Link to this heading"></a></h2>
+<p>Check the convergence with a plot. There should be a mountain before a sharp rise at the end which correspond to the accumulation of the evidence followed by the addition of the left over points after sampling ended.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Get the path and plot
+samples_path = os.path.join( &#39;../../examples/examples_fast/Outputs&#39;, &#39;ST_live_1000_eff_0.3_seed0&#39; )
+fig, ax = plotConvergence( samples_path=samples_path , threshold=1e-10)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_15_0.png" src="_images/Post-processing_15_0.png" />
+</div>
+</div>
+</section>
+<section id="Geometry-plot">
+<h2>Geometry plot<a class="headerlink" href="#Geometry-plot" title="Link to this heading"></a></h2>
+<p>Looking at the inferred best fit geometry</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Get the parameters
+samples_path = os.path.join( &#39;../../examples/examples_fast/Outputs&#39;, &#39;ST_live_1000_eff_0.3_seed0_v2&#39; )
+AverageP ,SigmaP, BestFitP, MAP_P = readSummary(samples_path,verbose=False)
+
+# Do the plot
+ST.likelihood(BestFitP,reinitialise=True)
+ax = plot_projection_general(ST.likelihood, &#39;ST&#39;, &quot;I&quot;,&quot;SP&quot;, antiphase=False, SaveFlag = False, Name = &#39;BestFit&#39; )
+
+# Do the prints
+print (&quot;########################&quot;)
+print (&quot;MODE:0 &quot;)
+print(f&quot;Maximum Likelihood value : {ST.likelihood(BestFitP, reinitialise=True)}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+########################
+MODE:0
+Maximum Likelihood value : -55464.76752000764
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_17_1.png" src="_images/Post-processing_17_1.png" />
+</div>
+</div>
+</section>
+<section id="Background-plot">
+<h2>Background plot<a class="headerlink" href="#Background-plot" title="Link to this heading"></a></h2>
+<p>Plot the inferred background. Since the example is simple, we do not have all the samples needed in <code class="docutils literal notranslate"><span class="pre">post_equal_weight.dat</span></code> and the background distribution cannot be plotted.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>samples_path = os.path.join( &#39;../../examples/examples_fast/Outputs&#39;, &#39;ST_live_1000_eff_0.3_seed0_v2&#39; )
+fig, ax = plotBackgroundSpectrum( XPSI_model=ST,
+                        samples_path=samples_path,
+                        InstrumentName=None,
+                        plot_params=None,
+                        Nsamples=200,
+                        plot_range=False,
+                        yscale=&#39;linear&#39;,
+                        plot_support=False)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loaded the only existing signal. Please check that it is from the required instrument
+Loaded the only existing signal. Please check that it is from the required instrument
+WARNING: signal.background_signal_given_support does not exist, falling back to background_signal. Please check that it is correct
+Maximum counts in an energy bin : 2382.092233371737
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_19_1.png" src="_images/Post-processing_19_1.png" />
+</div>
+</div>
+</section>
+<section id="Load-the-run-for-PostProcessor">
+<h2>Load the run for PostProcessor<a class="headerlink" href="#Load-the-run-for-PostProcessor" title="Link to this heading"></a></h2>
+<p>Let’s now load the run</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ST.runs = xpsi.Runs.load_runs(ID=&#39;ST&#39;,
+                               run_IDs=[&#39;run&#39;],
+                               roots=[&#39;ST_live_1000_eff_0.3_seed0&#39;],
+                               base_dirs=[&#39;../../examples/examples_fast/Outputs/&#39;],
+                               use_nestcheck=[False],
+                               kde_settings=getdist_kde_settings,
+                               likelihood=ST.likelihood,
+                               names=ST.names,
+                               bounds=ST.bounds,
+                               labels=ST.labels,
+                               implementation=&#39;multinest&#39;,
+                               overwrite_transformed=True)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Corner-plots">
+<h2>Corner plots<a class="headerlink" href="#Corner-plots" title="Link to this heading"></a></h2>
+<p>Looking now at all the inferred parameters</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp = xpsi.PostProcessing.CornerPlotter([ST.runs])
+_ = pp.plot(
+     params=ST.names,
+
+     IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;,]),]),
+     prior_density=True,
+     KL_divergence=True,
+     ndraws=5e4,
+     combine=False, combine_all=True, only_combined=False, overwrite_combined=True,
+     param_plot_lims={},
+     bootstrap_estimators=False,
+     bootstrap_density=False,
+     n_simulate=200,
+     crosshairs=False,
+     write=False,
+     ext=&#39;.png&#39;,
+     maxdots=3000,
+     root_filename=&#39;run&#39;,
+     credible_interval_1d=True,
+     annotate_credible_interval=True,
+     compute_all_intervals=False,
+     sixtyeight=True,
+     axis_tick_x_rotation=45.0,
+     num_plot_contours=3,
+     subplot_size=4.0,
+     legend_corner_coords=(0.675,0.8),
+     legend_frameon=False,
+     scale_attrs=OrderedDict([(&#39;legend_fontsize&#39;, 2.0),
+                              (&#39;axes_labelsize&#39;, 1.35),
+                              (&#39;axes_fontsize&#39;, &#39;axes_labelsize&#39;),
+                             ]
+                            ),
+     colormap=&#39;Reds&#39;,
+     shaded=-1,
+     rasterized_shade=True,
+     no_ylabel=True,
+     no_ytick=True,
+     lw=1.0,
+     lw_1d=1.0,
+     filled=False,
+     normalize=True,
+     veneer=True,
+     #contour_colors=[&#39;orange&#39;],
+     tqdm_kwargs={&#39;disable&#39;: False},
+     lengthen=2.0,
+     embolden=1.0,
+     nx=500)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Executing posterior density estimation...
+Curating set of runs for posterior plotting...
+Run set curated.
+Constructing lower-triangle posterior density plot via Gaussian KDE:
+plotting:  [&#39;mass&#39;, &#39;radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;distance&#39;]
+plotting:  [&#39;mass&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;mass&#39;, &#39;compactness&#39;]
+plotting:  [&#39;radius&#39;, &#39;distance&#39;]
+plotting:  [&#39;radius&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;radius&#39;, &#39;compactness&#39;]
+plotting:  [&#39;distance&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;distance&#39;, &#39;compactness&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_radius&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__super_radius&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_temperature&#39;, &#39;compactness&#39;]
+Adding 1D marginal prior density functions...
+Plotting prior for posterior ST...
+Drawing samples from the joint prior...
+Samples drawn.
+Estimating 1D marginal KL-divergences in bits...
+mass KL-divergence = 1.6920...
+radius KL-divergence = 1.2603...
+distance KL-divergence = 0.7114...
+cos_inclination KL-divergence = 0.8743...
+p__phase_shift KL-divergence = 8.4478...
+p__super_colatitude KL-divergence = 0.8839...
+p__super_radius KL-divergence = 3.9751...
+p__super_temperature KL-divergence = 6.7775...
+compactness KL-divergence = 2.8594...
+Estimated 1D marginal KL-divergences.
+Added 1D marginal prior density functions.
+Veneering spines and axis ticks...
+Veneered.
+Adding 1D marginal credible intervals...
+Plotting credible regions for posterior ST...
+Added 1D marginal credible intervals.
+Constructed lower-triangle posterior density plot.
+Posterior density estimation complete.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_25_1.png" src="_images/Post-processing_25_1.png" />
+</div>
+</div>
+<p>Now let’s plot a subset of those parameters, say : Mass, Radius and Compactness</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>_ = pp.plot(
+     params=[&quot;mass&quot;, &quot;radius&quot;, &quot;compactness&quot;],
+
+     IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;,]),]),
+     prior_density=True,
+     KL_divergence=True,
+     ndraws=5e4,
+     combine=False, combine_all=True, only_combined=False, overwrite_combined=True,
+     param_plot_lims={},
+     bootstrap_estimators=False,
+     bootstrap_density=False,
+     n_simulate=200,
+     crosshairs=False,
+     write=False,
+     ext=&#39;.png&#39;,
+     maxdots=3000,
+     root_filename=&#39;run&#39;,
+     credible_interval_1d=True,
+     annotate_credible_interval=True,
+     compute_all_intervals=False,
+     sixtyeight=True,
+     axis_tick_x_rotation=45.0,
+     num_plot_contours=3,
+     subplot_size=4.0,
+     legend_corner_coords=(0.675,0.8),
+     legend_frameon=False,
+     scale_attrs=OrderedDict([(&#39;legend_fontsize&#39;, 2.0),
+                              (&#39;axes_labelsize&#39;, 1.35),
+                              (&#39;axes_fontsize&#39;, &#39;axes_labelsize&#39;),
+                             ]
+                            ),
+      colormap=&#39;Reds&#39;,
+     shaded=-1,
+     rasterized_shade=True,
+     no_ylabel=True,
+     no_ytick=True,
+     lw=1.0,
+     lw_1d=1.0,
+     filled=False,
+     normalize=True,
+     veneer=True,
+     #contour_colors=[&#39;orange&#39;],
+     tqdm_kwargs={&#39;disable&#39;: False},
+     lengthen=2.0,
+     embolden=1.0,
+     #Adjusting the decimal precision for the reported mass interval (and automatic precision for the others):
+     precisions=[2,None,None],
+     nx=500)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Executing posterior density estimation...
+Curating set of runs for posterior plotting...
+Run set curated.
+Constructing lower-triangle posterior density plot via Gaussian KDE:
+plotting:  [&#39;mass&#39;, &#39;radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;compactness&#39;]
+plotting:  [&#39;radius&#39;, &#39;compactness&#39;]
+Adding 1D marginal prior density functions...
+Plotting prior for posterior ST...
+Drawing samples from the joint prior...
+Samples drawn.
+Estimating 1D marginal KL-divergences in bits...
+mass KL-divergence = 1.6920...
+radius KL-divergence = 1.2603...
+compactness KL-divergence = 2.8594...
+Estimated 1D marginal KL-divergences.
+Added 1D marginal prior density functions.
+Veneering spines and axis ticks...
+Veneered.
+Adding 1D marginal credible intervals...
+Plotting credible regions for posterior ST...
+Added 1D marginal credible intervals.
+Constructed lower-triangle posterior density plot.
+Posterior density estimation complete.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_27_1.png" src="_images/Post-processing_27_1.png" />
+</div>
+</div>
+<p>For the sake of example, let’s assume one has multiple runs for the same model and wants to plots them all on a same plot.</p>
+<p>Here, we have two runs, one performed fixing multinest seed to 0, and the second fixing the seed to 42.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Loading the runs
+
+ST.runs = xpsi.Runs.load_runs(ID=&#39;ST&#39;,
+                               run_IDs=[&#39;run_seed0&#39;,&#39;run_seed42&#39;],
+                               roots=[&#39;ST_live_1000_eff_0.3_seed0&#39;,&#39;ST_live_1000_eff_0.3_seed42&#39;],
+                               base_dirs=[&#39;../../examples/examples_fast/Outputs/&#39;,
+                                         &#39;../../examples/examples_fast/Outputs/&#39;],
+                               use_nestcheck=[True]*2,#[True]*2,
+                               kde_settings=getdist_kde_settings,
+                               likelihood=ST.likelihood,
+                               names=ST.names,
+                               bounds=ST.bounds,
+                               labels=ST.labels,
+                               implementation=&#39;multinest&#39;,
+                               overwrite_transformed=True)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp = xpsi.PostProcessing.CornerPlotter([ST.runs])
+_ = pp.plot(
+     params=ST.names,
+     IDs=OrderedDict([(&#39;ST&#39;, [&#39;run_seed0&#39;,&#39;run_seed42&#39;,]),]),
+     prior_density=True,
+     KL_divergence=True,
+     ndraws=5e4,
+     combine=False, combine_all=True, only_combined=False, overwrite_combined=True,
+     param_plot_lims={},
+     bootstrap_estimators=False,
+     bootstrap_density=False,
+     n_simulate=200,
+     crosshairs=False,
+     write=False,
+     ext=&#39;.png&#39;,
+     maxdots=3000,
+     root_filename=&#39;run&#39;,
+     credible_interval_1d=True,
+     credible_interval_1d_all_show=True, # To show credible intervals for all runs/models
+     show_vband=[0,1],                   # To list which vertical colored bands are shown in 1D-posteriors
+                                         #  0 for run_seed0,  1 for run_seed42
+     annotate_credible_interval=True,
+     compute_all_intervals=False,
+     sixtyeight=True,
+     axis_tick_x_rotation=45.0,
+     num_plot_contours=3,
+     subplot_size=4.0,
+     legend_corner_coords=(0.675,0.8),
+     legend_frameon=False,
+     scale_attrs=OrderedDict([(&#39;legend_fontsize&#39;, 2.0),
+                              (&#39;axes_labelsize&#39;, 1.35),
+                              (&#39;axes_fontsize&#39;, &#39;axes_labelsize&#39;),
+                             ]
+                            ),
+     colormap=&#39;Reds&#39;,
+     shaded=-1,
+     rasterized_shade=True,
+     no_ylabel=True,
+     no_ytick=True,
+     lw=1.0,
+     lw_1d=1.0,
+     filled=False,
+     normalize=True,
+     veneer=True,
+     tqdm_kwargs={&#39;disable&#39;: False},
+     lengthen=2.0,
+     embolden=1.0,
+     nx=500)
+
+# If you have multiple runs/models, you can increase the legend linewidth
+for legobj in _.legend.legend_handles:
+        legobj.set_linewidth(5.0)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Executing posterior density estimation...
+Curating set of runs for posterior plotting...
+Run set curated.
+Constructing lower-triangle posterior density plot via Gaussian KDE:
+plotting:  [&#39;mass&#39;, &#39;radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;distance&#39;]
+plotting:  [&#39;mass&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;mass&#39;, &#39;compactness&#39;]
+plotting:  [&#39;radius&#39;, &#39;distance&#39;]
+plotting:  [&#39;radius&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;radius&#39;, &#39;compactness&#39;]
+plotting:  [&#39;distance&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;distance&#39;, &#39;compactness&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_radius&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__super_radius&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_temperature&#39;, &#39;compactness&#39;]
+Adding 1D marginal prior density functions...
+Plotting prior for posterior ST...
+Drawing samples from the joint prior...
+Samples drawn.
+Added 1D marginal prior density functions.
+Veneering spines and axis ticks...
+Veneered.
+Adding 1D marginal credible intervals...
+Plotting credible regions for posterior ST...
+Added 1D marginal credible intervals.
+Adding 1D marginal credible intervals...
+Plotting credible regions for posterior ST...
+Added 1D marginal credible intervals.
+Constructed lower-triangle posterior density plot.
+Posterior density estimation complete.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_30_1.png" src="_images/Post-processing_30_1.png" />
+</div>
+</div>
+<p>We can also obtain the credible intervals shown on the plot in the form of a list:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>credible_intervals=pp.credible_intervals
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Printing the first one:
+print(credible_intervals[&quot;ST_run_seed0&quot;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[ 1.434e+00 -4.300e-02  4.700e-02]
+ [ 1.141e+01 -3.000e-01  3.000e-01]
+ [ 9.960e-01 -4.200e-02  4.000e-02]
+ [ 3.200e-01 -1.900e-01  1.300e-01]
+ [ 1.160e-03 -6.300e-04  7.300e-04]
+ [ 1.220e+00 -1.900e-01  1.400e-01]
+ [ 7.830e-01 -2.500e-02  2.300e-02]
+ [ 6.709e+00 -2.100e-03  2.300e-03]
+ [ 1.857e-01 -2.800e-03  3.000e-03]]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Printing the second one:
+print(credible_intervals[&quot;ST_run_seed42&quot;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[ 1.43800e+00 -3.80000e-02  4.20000e-02]
+ [ 1.14400e+01 -2.70000e-01  2.80000e-01]
+ [ 1.00096e+00 -3.84800e-02  4.01800e-02]
+ [ 3.00000e-01 -1.60000e-01  1.50000e-01]
+ [ 1.07000e-03 -6.30000e-04  7.00000e-04]
+ [ 1.21000e+00 -1.60000e-01  1.70000e-01]
+ [ 7.84000e-01 -2.30000e-02  2.50000e-02]
+ [ 6.70900e+00 -2.10000e-03  2.10000e-03]
+ [ 1.85800e-01 -2.80000e-03  2.60000e-03]]
+</pre></div></div>
+</div>
+<p>Assuming that one knows the values that have been used to produce the data and wants to show them:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Our case:
+ST.truths={&#39;mass&#39;: 1.4,                               # Mass in solar Mass
+          &#39;radius&#39;: 12.,                              # Equatorial radius in km
+          &#39;distance&#39;: 1.0,                            # Distance in kpc
+          &#39;cos_inclination&#39;: math.cos(60*np.pi/180),  # Cosine of Earth inclination to rotation axis
+          &#39;p__phase_shift&#39;: 0.0,                    # Phase shift
+          &#39;p__super_colatitude&#39;: 70*np.pi/180,      # Colatitude of the centre of the superseding region
+          &#39;p__super_radius&#39;: 0.75,                  # Angular radius of the (circular) superseding region
+          &#39;p__super_temperature&#39;:6.7}               # Temperature in log
+
+ST.truths[&#39;compactness&#39;]=gravradius(ST.truths[&#39;mass&#39;])/ST.truths[&#39;radius&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Loading the run again :)
+
+ST.runs = xpsi.Runs.load_runs(ID=&#39;ST&#39;,
+                               run_IDs=[&#39;run&#39;],
+                               roots=[&#39;ST_live_1000_eff_0.3_seed0&#39;],
+                               base_dirs=[&#39;../../examples/examples_fast/Outputs/&#39;],
+                               use_nestcheck=[True],
+                               kde_settings=getdist_kde_settings,
+                               likelihood=ST.likelihood,
+                               names=ST.names,
+                               bounds=ST.bounds,
+                               labels=ST.labels,
+                               truths=ST.truths, # Adding this line
+                               implementation=&#39;multinest&#39;,
+                               overwrite_transformed=True)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp = xpsi.PostProcessing.CornerPlotter([ST.runs])
+_ = pp.plot(
+     params=ST.names,
+
+     IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;,]),]),
+     prior_density=True,
+     KL_divergence=True,
+     ndraws=5e4,
+     combine=False, combine_all=True, only_combined=False, overwrite_combined=True,
+     param_plot_lims={},
+     labels_2D = True,
+     bootstrap_estimators=False,
+     bootstrap_density=False,
+     n_simulate=200,
+     crosshairs=True, # Turn this to true
+     write=False,
+     ext=&#39;.png&#39;,
+     maxdots=3000,
+     root_filename=&#39;run&#39;,
+     credible_interval_1d=True,
+     credible_interval_1d_show_all=True,
+     annotate_credible_interval=True,
+     compute_all_intervals=False,
+     sixtyeight=True,
+     axis_tick_x_rotation=45.0,
+     num_plot_contours=3,
+     subplot_size=4.0,
+     legend_corner_coords=(0.675,0.8),
+     legend_frameon=False,
+     scale_attrs=OrderedDict([(&#39;legend_fontsize&#39;, 2.0),
+                              (&#39;axes_labelsize&#39;, 1.35),
+                              (&#39;axes_fontsize&#39;, &#39;axes_labelsize&#39;),
+                             ]
+                            ),
+      colormap=&#39;Reds&#39;,
+     shaded=-1,
+     rasterized_shade=True,
+     no_ylabel=True,
+     no_ytick=True,
+     lw=1.0,
+     lw_1d=1.0,
+     filled=False,
+     normalize=True,
+     veneer=True,
+     #contour_colors=[&#39;orange&#39;],
+     tqdm_kwargs={&#39;disable&#39;: False},
+     lengthen=2.0,
+     embolden=1.0,
+     nx=500)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Executing posterior density estimation...
+Curating set of runs for posterior plotting...
+Run set curated.
+Constructing lower-triangle posterior density plot via Gaussian KDE:
+plotting:  [&#39;mass&#39;, &#39;radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;distance&#39;]
+plotting:  [&#39;mass&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;mass&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;mass&#39;, &#39;compactness&#39;]
+plotting:  [&#39;radius&#39;, &#39;distance&#39;]
+plotting:  [&#39;radius&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;radius&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;radius&#39;, &#39;compactness&#39;]
+plotting:  [&#39;distance&#39;, &#39;cos_inclination&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;distance&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;distance&#39;, &#39;compactness&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__phase_shift&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;cos_inclination&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_colatitude&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__phase_shift&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;p__super_radius&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__super_colatitude&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_radius&#39;, &#39;p__super_temperature&#39;]
+plotting:  [&#39;p__super_radius&#39;, &#39;compactness&#39;]
+plotting:  [&#39;p__super_temperature&#39;, &#39;compactness&#39;]
+Adding 1D marginal prior density functions...
+Plotting prior for posterior ST...
+Drawing samples from the joint prior...
+Samples drawn.
+Estimating 1D marginal KL-divergences in bits...
+mass KL-divergence = 1.6920...
+radius KL-divergence = 1.2603...
+distance KL-divergence = 0.7114...
+cos_inclination KL-divergence = 0.8743...
+p__phase_shift KL-divergence = 8.4478...
+p__super_colatitude KL-divergence = 0.8839...
+p__super_radius KL-divergence = 3.9751...
+p__super_temperature KL-divergence = 6.7775...
+compactness KL-divergence = 2.8594...
+Estimated 1D marginal KL-divergences.
+Added 1D marginal prior density functions.
+Veneering spines and axis ticks...
+Veneered.
+Adding parameter truth crosshairs...
+Added crosshairs.
+Adding 1D marginal credible intervals...
+Plotting credible regions for posterior ST...
+Added 1D marginal credible intervals.
+Constructed lower-triangle posterior density plot.
+Posterior density estimation complete.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_38_1.png" src="_images/Post-processing_38_1.png" />
+</div>
+</div>
+</section>
+<section id="Residual-plot">
+<h2>Residual plot<a class="headerlink" href="#Residual-plot" title="Link to this heading"></a></h2>
+<p>Now let’s plot the standardised Poissonian residuals of the first run. You have different options of what to plot that are proposed here. You can choose to plot the bolometric pulse (data and model with the errorbars), the clustering information and to blur the residuals.</p>
+<p>The posterior predictive model is plotted and the errorbars represents the 16th and 84th percentile of the distribution. If computing many samples for the posterior predictive is too long, you can also choose a number of Poisson realisation (default is 1) for each sample to artificially increase your sample size. Bear in mind that it is recommended for this value not to be too high, otherwise the posterior predictive uncertainty will loose information of the parameters distribution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Now let&#39;s plot the resudual of the first run.
+pp = xpsi.SignalPlotter([ST.runs])
+# Setting next the yticks for the 3 plots, alternating the main plot and the color bar y-ticks.
+# (None if using automatic tikcs)
+xpsi.ResidualPlot.declare_settings(yticks=[[10,30,100],None,[10,30,100],None,[10,30,100],None])
+plots = {&#39;ST&#39;: xpsi.ResidualPlot(
+                 parameters_vector= None, #list( ST.truths.values())[:-1],
+                 plot_pulse=True,
+                 legend_pulse_coords=( 0.65, 0.3 ),
+                 n_realisation_per_sample=5, # Number of realisation of each model to compute posterior predictive error
+                 blur_residuals=True,
+                 plot_clusters=True,
+                 threshlim=2.0,
+                 mu=0.0,
+                 sigma=1.0,
+                 nbins=50,
+                 yscale=&#39;log&#39;,
+)}
+pp.plot(IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;]),
+                        ]),
+        combine=False, # use these controls if more than one run for a posterior
+        combine_all=False,
+        force_combine=False,
+        only_combined=False,
+        force_cache=True,
+        nsamples=100,
+        plots = plots )
+
+pp.plots[&quot;ST&quot;].fig
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Declaring plot class settings...
+Settings declared.
+Instantiating a residual plotter for posterior checking...
+Residual plotter instantiated.
+Plotting signals for posterior checking...
+Curating set of runs for posterior plotting...
+Run set curated.
+Handling posterior ST...
+Checking whether an existing cache can be read:
+Creating new cache file...
+Attempting to archive existing cache file in a subdirectory...
+Targeting subdirectory: ./archive.
+Exisiting cache file archived in subdirectory ./archive.
+Initialising cache file...
+Cache file initialised.
+Cache file created.
+Cache state determined.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "4b6459a015e5437abe093af7787299bd", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ResidualPlot object iterating over samples...
+ResidualPlot object finished iterating.
+ResidualPlot object finalizing...
+ResidualPlot object finalized.
+Writing plot to disk...
+ResidualPlot instance plot will be written to path ./ST.run__signalplot_residuals.pdf...
+Written.
+Handled posterior ST.
+Plotted signals for posterior checking.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_41_3.png" src="_images/Post-processing_41_3.png" />
+</div>
+</div>
+<p>The bolometric <span class="math notranslate nohighlight">\(\chi^2\)</span>, ie the <span class="math notranslate nohighlight">\(\chi^2\)</span> value of the pulse model plotted, can be obtained by a simple call.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp.plots[&quot;ST&quot;].bolometric_chi2
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+29.906795539788472
+</pre></div></div>
+</div>
+<p>For all the post processing you can also choose a specific parameter vector <code class="docutils literal notranslate"><span class="pre">parameters_vector</span></code> to make the associated plot instead of drawing random samples from the posterior. In this case, and when the number of sample is low (&lt;100), we plot the Poisson error of the model instead of the posterior predictive error. Here we set the parameter vector to the ground truth - this can be done for any of the following plots :</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Now let&#39;s plot the resudual of the first run.
+pp = xpsi.SignalPlotter([ST.runs])
+# Setting next the yticks for the 3 plots, alternating the main plot and the color bar y-ticks.
+# (None if using automatic tikcs)
+xpsi.ResidualPlot.declare_settings(yticks=[[10,30,100],None,[10,30,100],None,[10,30,100],None])
+plots = {&#39;ST&#39;: xpsi.ResidualPlot(
+                 parameters_vector= list( ST.truths.values())[:-1],
+                 plot_pulse=True,
+                 legend_pulse_coords=( 0.75, 0.3 ),
+                 n_realisation_per_sample=1, # Number of realisation of each model to compute posterior predictive error
+                 blur_residuals=False,
+                 plot_clusters=False,
+                 threshlim=2.0,
+                 mu=0.0,
+                 sigma=1.0,
+                 nbins=50,
+                 yscale=&#39;log&#39;,
+)}
+pp.plot(IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;]),
+                        ]),
+        combine=False, # use these controls if more than one run for a posterior
+        combine_all=False,
+        force_combine=False,
+        only_combined=False,
+        force_cache=True,
+        plots = plots )
+
+pp.plots[&quot;ST&quot;].fig
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Declaring plot class settings...
+Settings declared.
+Instantiating a residual plotter for posterior checking...
+Residual plotter instantiated.
+Plotting signals for posterior checking...
+Curating set of runs for posterior plotting...
+Run set curated.
+Handling posterior ST...
+Plotting the model for the provided parameters vector.
+Checking whether an existing cache can be read:
+Creating new cache file...
+Attempting to archive existing cache file in a subdirectory...
+Targeting subdirectory: ./archive.
+Exisiting cache file archived in subdirectory ./archive.
+Initialising cache file...
+Cache file initialised.
+Cache file created.
+Cache state determined.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "17f658c2a8bf431a909719c693f987f8", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ResidualPlot object iterating over samples...
+ResidualPlot object finished iterating.
+ResidualPlot object finalizing...
+WARNING : Not enough realizations for posterior predictive errorbars. Using Poisson error of the model instead
+ResidualPlot object finalized.
+Writing plot to disk...
+ResidualPlot instance plot will be written to path ./ST.run__signalplot_residuals.pdf...
+Written.
+Handled posterior ST.
+Plotted signals for posterior checking.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_45_3.png" src="_images/Post-processing_45_3.png" />
+</div>
+</div>
+<p>The histogram of 2D residuals can also be plotted on its own. This is useful to check the residuals distribution of data with and without phase information.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Now let&#39;s plot the resudual of the first run.
+pp = xpsi.SignalPlotter([ST.runs])
+# Setting next the yticks for the 3 plots, alternating the main plot and the color bar y-ticks.
+# (None if using automatic tikcs)
+plots = {&#39;ST&#39;: xpsi.Residual1DPlot(
+                 parameters_vector= None, #list( ST.truths.values())[:-1],
+                 nbins=50,
+                 plot_fit=True
+)}
+pp.plot(IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;]),
+                        ]),
+        combine=False, # use these controls if more than one run for a posterior
+        combine_all=False,
+        force_combine=False,
+        only_combined=False,
+        force_cache=True,
+        nsamples=100,
+        plots = plots )
+
+pp.plots[&quot;ST&quot;].fig
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Instantiating a 1D residual plotter for residual distribution checking...
+Declaring plot class settings...
+Settings declared.
+Residual plotter instantiated.
+Plotting signals for posterior checking...
+Curating set of runs for posterior plotting...
+Run set curated.
+Handling posterior ST...
+Checking whether an existing cache can be read:
+Creating new cache file...
+Attempting to archive existing cache file in a subdirectory...
+Targeting subdirectory: ./archive.
+Exisiting cache file archived in subdirectory ./archive.
+Initialising cache file...
+Cache file initialised.
+Cache file created.
+Cache state determined.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "76a41391d05548b0952442f25aa386d2", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Residual1DPlot object iterating over samples...
+Residual1DPlot object finished iterating.
+ResidualPlot object finalizing...
+ResidualPlot object finalized.
+Writing plot to disk...
+Residual1DPlot instance plot will be written to path ./ST.run__signalplot_1dresiduals.pdf...
+Written.
+Handled posterior ST.
+Plotted signals for posterior checking.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_47_3.png" src="_images/Post-processing_47_3.png" />
+</div>
+</div>
+</section>
+<section id="Signal-plots">
+<h2>Signal plots<a class="headerlink" href="#Signal-plots" title="Link to this heading"></a></h2>
+<p>Now let’s plot pulse and spectrum plots for the inferred signals.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ST.likelihood.clear_cache()
+p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
+ST.likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Checking likelihood and prior evaluation before commencing sampling...
+Not using ``allclose`` function from NumPy.
+Using fallback implementation instead.
+Checking closeness of likelihood arrays:
+-3.1603740790e+04 | -3.1603740790e+04 .....
+Closeness evaluated.
+Log-likelihood value checks passed on root process.
+Checks passed.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;Log-likelihood value checks passed on root process.&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp = xpsi.SignalPlotter([ST.runs])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Setting next the yticks: First to the 4 main plots and then to the 4 color bars.
+xpsi.PulsePlot.declare_settings(extension=&#39;.png&#39;,yticks=[[0.2,0.5,1.0],None,[10,30,100],None,None,None,None,None])
+pp.plot(
+     IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;,]),]),
+   nsamples=200,
+   plots = {
+            &#39;ST&#39;: xpsi.PulsePlot(use_fgivenx=True,
+                                        comp_expectation_line_kwargs=dict(color=&#39;b&#39;,
+                                                                           ls=&#39;-.&#39;,
+                                                                           lw=0.75,
+                                                                           alpha=1.0),
+                                        show_components=True,
+                                        fig_dir=&#39;.&#39;,
+                                        write=True,
+                                        root_filename= &#39;ST_model_signal&#39;,),
+            }
+       )
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Declaring plot class settings...
+Settings declared.
+Instantiating a pulse-profile plotter for posterior checking...
+Pulse-profile plotter instantiated.
+Plotting signals for posterior checking...
+Curating set of runs for posterior plotting...
+Run set curated.
+Handling posterior ST...
+Checking whether an existing cache can be read:
+Cache state determined.
+PulsePlot object iterating over samples...
+Adding credible intervals on the incident photon flux signal as function of phase...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "06c406132f4148149748ac926e330810", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "1268fc40134b43baab5ddfb0de15352b", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Credible intervals added.
+Added conditional posterior contours for incident signal.
+Adding credible intervals on the count-rate signal as function of phase...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_signalplot.py:443: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1600 with 8 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  cb = plt.colorbar(cb, cax=ax_cb, ticks=[1,2,3]) # ticks units = sigmas
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7468424262cc4e1c88f28f09ea157581", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8b81c8452d1048fe87bd8c9c4d0101a5", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_signalplot.py:443: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1600 with 8 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  cb = plt.colorbar(cb, cax=ax_cb, ticks=[1,2,3]) # ticks units = sigmas
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_pulse.py:460: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1600 with 8 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  self._incident_cb = plt.colorbar(incident, cax=self._ax_cb,
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_pulse.py:540: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1600 with 8 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  self._registered_cb = plt.colorbar(registered,
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Credible intervals added.
+Added conditional posterior contours for registered signal.
+PulsePlot object finished iterating.
+PulsePlot object finalizing...
+PulsePlot object finalized.
+Writing plot to disk...
+PulsePlot instance plot will be written to path ./ST_model_signal__ST.run__signalplot_pulse.png...
+Written.
+Handled posterior ST.
+Plotted signals for posterior checking.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp.plots[&#39;ST&#39;].fig
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_53_0.png" src="_images/Post-processing_53_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Setting next both the xticks and yticks: First to the 3 main plots and then to the 3 color bars.
+xpsi.SpectrumPlot.declare_settings(extension=&#39;.png&#39;,xticks=[[0.2,0.5,1.0],[10,30,100],[10,30,100],\
+                                                            None,None,None],\
+                                   yticks=[[0.1,0.2],None,[0.5,1.0,2.0],None,None,None]
+                                  )
+pp.plot(
+     IDs=OrderedDict([(&#39;ST&#39;, [&#39;run&#39;,]),]),
+   nsamples=200,
+   plots = {
+            &#39;ST&#39;: xpsi.SpectrumPlot(use_fgivenx=True,
+                                        expectation_line_kwargs=dict(color=&#39;k&#39;,
+                                                                      ls=&#39;-&#39;,
+                                                                      lw=1.0,
+                                                                      alpha=1.0),
+                                         sample_line_kwargs=dict(color=&#39;pink&#39;,
+                                                                 ls=&#39;-&#39;,
+                                                                 lw=0.05,
+                                                                 alpha=1.0),
+                                         comp_expectation_line_kwargs=dict(color=&#39;b&#39;,
+                                                                        ls=&#39;-.&#39;,
+                                                                        lw=0.75,
+                                                                        alpha=1.0),
+                                         show_attenuated=False,#True,
+                                         show_components=True,
+                                         fig_dir=&#39;.&#39;,
+                                         write=True,
+                                         root_filename= &#39;ST_spectra&#39;,
+                                       ),
+           }
+       )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Declaring plot class settings...
+Settings declared.
+Instantiating a spectrum plotter for posterior checking...
+Spectrum plotter instantiated.
+Plotting signals for posterior checking...
+Curating set of runs for posterior plotting...
+Run set curated.
+Handling posterior ST...
+Checking whether an existing cache can be read:
+Creating new cache file...
+Attempting to archive existing cache file in a subdirectory...
+Targeting subdirectory: ./archive.
+Exisiting cache file archived in subdirectory ./archive.
+Initialising cache file...
+Cache file initialised.
+Cache file created.
+Cache state determined.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "338518e940814ef29cd2ac9da32f821b", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+SpectrumPlot object iterating over samples...
+Adding credible intervals on the incident specific photon flux spectrum...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "4c18b8e0dbd440e09494eb9a66759dae", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ec1f60424ffd4153abcb975b120504a9", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Credible intervals added.
+Adding credible intervals on the count-rate spectrum...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_signalplot.py:443: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1200 with 6 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  cb = plt.colorbar(cb, cax=ax_cb, ticks=[1,2,3]) # ticks units = sigmas
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6c7752b5f04747b2b0066c96b56d1f18", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c1d1315de8b043219e7a885b7b95fc58", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_signalplot.py:443: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1200 with 6 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  cb = plt.colorbar(cb, cax=ax_cb, ticks=[1,2,3]) # ticks units = sigmas
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/xpsi-3.0.4-py3.12-linux-x86_64.egg/xpsi/PostProcessing/_spectrum.py:804: UserWarning: Adding colorbar to a different Figure &lt;Figure size 800x1200 with 6 Axes&gt; than &lt;Figure size 640x480 with 0 Axes&gt; which fig.colorbar is called on.
+  self._registered_cb = plt.colorbar(registered,
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Credible intervals added.
+Added conditional posterior contours for incident spectrum.
+SpectrumPlot object finished iterating.
+SpectrumPlot object finalizing...
+SpectrumPlot object finalized.
+Writing plot to disk...
+SpectrumPlot instance plot will be written to path ./ST_spectra__ST.run__signalplot_spectrum.png...
+Written.
+Handled posterior ST.
+Plotted signals for posterior checking.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pp.plots[&#39;ST&#39;].fig
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_55_0.png" src="_images/Post-processing_55_0.png" />
+</div>
+</div>
+</section>
+<section id="P-P-plot">
+<h2>P-P plot<a class="headerlink" href="#P-P-plot" title="Link to this heading"></a></h2>
+<p>In order to show if the inference is unbiased, a P-P plot can be made where P could stand for probability, percent or proportion. This is something that is often done is graviational wave science (see for example Figure A1 from <a class="reference external" href="https://arxiv.org/pdf/2006.00714">this</a> paper). The gray regions cover the cumulative 1-, 2-, and 3-<span class="math notranslate nohighlight">\(\sigma\)</span> credible intervals in order of decreasing opacity (their “size” is thus dependent on the amount of inference runs used). Each colored line tracks the
+cumulative fraction of events within this credible interval for a different parameter. For unbiased recovery, the lines should lie perfectly along the diagonal.</p>
+<p>The function below demonstrates how to generate a P-P plot. In this example, the P-P plot is created for a single parameter across just two inference runs. Note that in practice, P-P plots are often generated using a larger number of inference runs to improve statistical robustness.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_credible_interval(filepath: str, param_to_plot: str, params_data: list, truth: float):
+    &quot;&quot;&quot;
+    Calculate the credible interval for a parameter in an inference run.
+
+    This function computes the percentage of inferred parameter values
+    that fall below a given true value, weighted by the sampling weights.
+
+    Parameters
+    ----------
+    filepath : str
+        Path to the output `.txt` file containing the sampling weights and parameter data.
+    param_to_plot : str
+        Name of the parameter for which the credible interval is to be calculated.
+    params_data : list
+        List of parameter names in the same order as they appear in the output file.
+    truth : float
+        The true value of the parameter.
+
+    Returns
+    -------
+    float
+        The credible interval, expressed as the weighted fraction of samples
+        with parameter values less than the true value.
+    &quot;&quot;&quot;
+    # load the data and its weights
+    data = np.loadtxt(filepath)
+    weights = data[:,0]
+
+    # get the samples. Add 2, because column 0 is weights
+    # and column 1 is -2*loglikelihood
+    idx_param = params_data.index(param_to_plot) + 2
+    data_param = data[:,idx_param]
+
+    # get indices of all samples that fall below the true value
+    filter = np.where(data_param &lt; truth)
+
+    # get corresponding weights
+    weights_below_true_val = weights[filter]
+
+    credible_interval = np.sum(weights_below_true_val)/np.sum(weights)
+
+    return credible_interval
+
+def make_pp_plot(credible_intervals: list):
+    &quot;&quot;&quot;
+    Create a PP-plot for a single parameter. The PP-plot is generated
+    from multiple inference runs, all sharing the same true value. The
+    plot visualizes how well the inferred credible intervals recover
+    the true parameter value. Credible intervals (68%, 95%, and 99.7%)
+    are shaded in the plot to indicate expected variations under ideal condition
+
+    Parameters
+    ----------
+    credible_intervals : list
+        List of credible intervals from various inference runs, representing the
+        fraction of inferred parameter values below the true value for each run.
+    &quot;&quot;&quot;
+    fig, ax = plt.subplots(figsize=(6,6))
+
+    x_values = np.linspace(0., 0.999, 1001)
+
+    # plot grey area
+    credible_interval=[0.68, 0.95, 0.997]
+    credible_interval_alpha = [0.3,0.3/2,0.3/3]
+
+    # determine number of credible intervals to plot
+    N = len(credible_intervals)
+
+    for ci, alpha in zip(credible_interval, credible_interval_alpha):
+
+        edge_of_bound = (1. - ci) / 2.
+        lower = binom.ppf(1 - edge_of_bound, N, x_values) / N
+        upper = binom.ppf(edge_of_bound, N, x_values) / N
+        # The binomial point percent function doesn&#39;t always return 0 @ 0,
+        # so set those bounds explicitly to be sure
+        lower[0] = 0
+        upper[0] = 0
+        ax.fill_between(x_values, lower, upper, alpha=alpha, color=&#39;grey&#39;)
+
+    # plot lines
+    x_values = np.linspace(0., 0.999, 1001)
+
+    # now, plot the credible intervals
+    pp = np.array([sum(credible_intervals &lt; xx)/len(credible_intervals) for xx in x_values])
+    ax.plot(x_values, pp)
+
+    ax.set_xlabel(&quot;Credible interval&quot;)
+    ax.set_ylabel(&quot;Fraction of events in credible interval&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>files = [&#39;../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0.txt&#39;,
+         &#39;../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed42.txt&#39;]
+
+credible_intervals = []
+for file in files:
+    credible_interval = get_credible_interval(file, &#39;mass&#39;, ST.names, ST.truths[&#39;mass&#39;])
+    credible_intervals.append(credible_interval)
+
+make_pp_plot(credible_intervals)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Post-processing_58_0.png" src="_images/Post-processing_58_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Polarization.html" class="btn btn-neutral float-left" title="Polarization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Emitting_patterns_2Dprojection.html" class="btn btn-neutral float-right" title="Emitting Patterns 2D Projection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

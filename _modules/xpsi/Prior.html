@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Prior &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Prior</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Prior</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Prior&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi</span><span class="w"> </span><span class="kn">import</span> <span class="n">_comm</span><span class="p">,</span> <span class="n">_size</span><span class="p">,</span> <span class="n">_rank</span> <span class="c1"># of MPI.COMM_WORLD</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_verbose</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">qmc</span>
+
+<div class="viewcode-block" id="Prior">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Prior</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; The joint prior distribution of parameters (including hyperparameters).</span>
+
+<span class="sd">    Methods to both evaluate the distribution (required by MCMC) and</span>
+<span class="sd">    draw uniformly from the distribution (required for nested sampling, and</span>
+<span class="sd">    by default is used to initialise an ensemble of MCMC chains).</span>
+
+<span class="sd">    The distribution must be integrable (proper) and is thus</span>
+<span class="sd">    *usually* bounded (compactly supported on a space).</span>
+
+<span class="sd">    In the ``__call__()`` method the parameter values are checked against the</span>
+<span class="sd">    hard parameter bounds of the prior support.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        If you wish to check bounds manually, implement the ``__init__()`` and</span>
+<span class="sd">        ``__call__()`` methods, and do not access the default code (e.g., via</span>
+<span class="sd">        ``super()``) or only use the default code for some parameters.</span>
+
+<span class="sd">    :param obj parameters:</span>
+<span class="sd">        An optional instance of :class:`~.ParameterSubspace.ParameterSubspace`.</span>
+
+<span class="sd">    :param obj hyperparameters:</span>
+<span class="sd">        Positional arguments that are hyperparameters (parameters of the prior</span>
+<span class="sd">        distribution), or iterables of hyperparameters.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__derived_names__</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">__draws_from_support__</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">hyperparameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        You might want to overwrite this initialiser to do some custom</span>
+<span class="sd">        setup for priors whose handling is more involved.</span>
+
+<span class="sd">        If you overwrite this initialiser, you do not need to take parameters</span>
+<span class="sd">        as an argument if you prefer not to. When the instance is passed to</span>
+<span class="sd">        a likelihood object, the likelihood object will use itself to store</span>
+<span class="sd">        a reference to the parameters to ensure interoperability.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Prior</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">hyperparameters</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">hyperparameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">hyperparameter</span><span class="o">.</span><span class="n">is_hyperparameter</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parameter is not declared as a &#39;</span>
+                                 <span class="s1">&#39;hyperparameter but is a parameter of the &#39;</span>
+                                 <span class="s1">&#39;prior distribution.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of parameter + hyperparameter dimensions. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">)</span> <span class="c1"># redirect, overwriting base class</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get parameter subspace object. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span>
+
+    <span class="nd">@parameters</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ParameterSubspace</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;A ParameterSubspace object is required.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="Prior.__call__">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.__call__">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Evaluate distribution at :obj:`p` and store it as a property.</span>
+
+<span class="sd">        :param list p:</span>
+<span class="sd">            Vector of model parameter values, but typically unused. If you</span>
+<span class="sd">            use it, handle it in a custom implementation of this method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">param</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="Prior.inverse_sample">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.inverse_sample">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Draw sample uniformly from the distribution via inverse sampling.</span>
+
+<span class="sd">        By default, implements a flat density between bounds. If ``None`` is</span>
+<span class="sd">        in a tuple of bounds, ``None`` is assigned to the corresponding</span>
+<span class="sd">        coordinate and the user must handle in a custom subclass.</span>
+
+<span class="sd">        :param iterable hypercube:</span>
+<span class="sd">            A pseudorandom point in an n-dimensional hypercube.</span>
+
+<span class="sd">        :returns: A parameter *list*.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            If you call this base method via the ``super()`` built-in, the</span>
+<span class="sd">            current parameter values will be cached when new values are</span>
+<span class="sd">            assigned. If you then assign to a parameter again, the current</span>
+<span class="sd">            value will be automatically cached, thus overwriting the cache</span>
+<span class="sd">            established in the body of this present method. If you want to</span>
+<span class="sd">            call this present method and then assign again to a parameter,</span>
+<span class="sd">            you can restore the cached value so that it is pushed to the</span>
+<span class="sd">            cache when you reassign.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hypercube</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hypercube</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
+            <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">hypercube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Compact support required.&#39;</span><span class="p">)</span>
+
+            <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="Prior.inverse_sample_and_transform">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.inverse_sample_and_transform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_sample_and_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Inverse sample and then transform.</span>
+
+<span class="sd">        This method is useful for drawing from the prior when overplotting</span>
+<span class="sd">        posterior and prior density functions.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">hypercube</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="Prior.transform">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.transform">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; A transformation for post-processing.</span>
+
+<span class="sd">        A subclass can implement this attribute as an instance method: it</span>
+<span class="sd">        does not need to be a static method.</span>
+
+<span class="sd">        :param list p:</span>
+<span class="sd">            Parameter vector.</span>
+<span class="sd">        :kwargs:</span>
+<span class="sd">            A key sometimes passed is ``old_API``, which flags whether a</span>
+<span class="sd">            transformation needs to account for a parameter vector written to</span>
+<span class="sd">            file by an older software version, which might be different in</span>
+<span class="sd">            due to transformations of parameters defined in the current</span>
+<span class="sd">            software version.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            As an example, the `Riley et al. 2019 &lt;https://ui.adsabs.harvard</span>
+<span class="sd">            .edu/abs/2019ApJ...887L..21R/abstract&gt;`_ samples are in inclination</span>
+<span class="sd">            :math:`i` instead of :math:`\cos(i)` which is the current inclination</span>
+<span class="sd">            parameter in the API. Therefore the transformation needed depends</span>
+<span class="sd">            on the source of the parameter vector. If the vector is from the</span>
+<span class="sd">            original sample files, then it needs to be transformed to have</span>
+<span class="sd">            the same parameter definitions as the current API. However, when</span>
+<span class="sd">            drawing samples from the prior in the current API, no such</span>
+<span class="sd">            transformation needs to be performed because these are the</span>
+<span class="sd">            definitions we need to match. Refer to the dummy example code</span>
+<span class="sd">            in the method body.</span>
+
+<span class="sd">        :returns: Transformed vector ``p`` where ``len(p) &gt; len(self)``.</span>
+<span class="sd">        :rtype: *list*</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># it is suggested that you copy like this when you overwrite</span>
+        <span class="c1"># to make a mutable container that can be appended to and returned</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="c1"># example transformation of parameters to match API definitions if</span>
+        <span class="c1"># this method is bound</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_API</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">)</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+
+        <span class="c1"># used ordered names and values if this method is bound</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">p</span><span class="p">)))</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Define a transformation.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">p</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">derived_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__derived_names__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;A transformation has been implemented &#39;</span>
+                                     <span class="s1">&#39;in class </span><span class="si">%s</span><span class="s1">, but no names have been &#39;</span>
+                                     <span class="s1">&#39;declared for the derived parameters.&#39;</span>
+                                     <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__derived_names__</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Prior.draw">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.draw">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Drawing samples from the joint prior&#39;</span><span class="p">,</span><span class="s1">&#39;Samples drawn&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndraws</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">LHS_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Draw samples uniformly from the prior via inverse sampling.</span>
+
+<span class="sd">        :param int ndraws: Number of draws.</span>
+<span class="sd">        :return: (samples, acceptance fraction)</span>
+<span class="sd">        :rtype: (*ndarray[ndraws, len(self)]*, *float*)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Create a Latin Hypercube sampler</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">qmc</span><span class="o">.</span><span class="n">LatinHypercube</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> 
+                                     <span class="n">seed</span><span class="o">=</span><span class="n">LHS_seed</span><span class="p">)</span>
+
+        <span class="c1"># Generate Latin Hypercube samples in the range [0, 1]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">ndraws</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample_and_transform</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="s1">&#39;Cannot transform... falling back to default...&#39;</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span>
+                                <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;An error occurred when handling the output of a custom &#39;</span>\
+                  <span class="s1">&#39;method&#39;</span>
+
+        <span class="n">finite_counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">=</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">finite_counter</span> <span class="o">&lt;</span> <span class="n">ndraws</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample_and_transform</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span> <span class="c1"># use estimate to draw more from hypercube</span>
+                <span class="k">if</span> <span class="n">finite_counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">redraw</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="o">*</span> <span class="n">ndraws</span> <span class="o">/</span> <span class="n">finite_counter</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">redraw</span> <span class="o">=</span> <span class="n">ndraws</span>
+                <span class="n">redraw</span> <span class="o">-=</span> <span class="n">finite_counter</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">redraw</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample_and_transform</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+
+            <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
+                <span class="n">samples</span><span class="p">[</span><span class="n">finite_counter</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">p</span>
+                <span class="n">finite_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">yield</span> <span class="n">samples</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_counter</span><span class="p">)</span> <span class="o">/</span> <span class="n">counter</span></div>
+
+
+<div class="viewcode-block" id="Prior.estimate_hypercube_frac">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.estimate_hypercube_frac">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Estimating fractional hypervolume of the unit hypercube &#39;</span>
+                  <span class="s1">&#39;with finite prior density:&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Fractional hypervolume estimated&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_hypercube_frac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndraws</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">LHS_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimate using Monte Carlo integration the fractional hypervolume</span>
+<span class="sd">        within a unit hypercube at which prior density is finite.</span>
+
+<span class="sd">        :param optional[int] ndraws:</span>
+<span class="sd">            Base-10 logarithm of number of draws from the prior to require</span>
+<span class="sd">            at which the density is finite.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ndraws</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">ndraws</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Requiring %.E draws from the prior support &#39;</span>
+                   <span class="s1">&#39;for Monte Carlo estimation&#39;</span> <span class="o">%</span> <span class="n">ndraws</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">ndraws</span><span class="p">,</span> 
+                                                  <span class="n">LHS_seed</span><span class="o">=</span><span class="n">LHS_seed</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">bcast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span><span class="p">,</span>
+                                                    <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;The support occupies an estimated &#39;</span>
+               <span class="s1">&#39;</span><span class="si">%.1f%%</span><span class="s1"> of the hypervolume within the unit hypercube&#39;</span>
+               <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span><span class="o">*</span><span class="mf">100.0</span><span class="p">))</span>
+
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span></div>
+
+
+<div class="viewcode-block" id="Prior.unit_hypercube_frac">
+<a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.unit_hypercube_frac">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unit_hypercube_frac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">LHS_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the fractional hypervolume with finite prior density. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">estimate_hypercube_frac</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__draws_from_support__</span><span class="p">,</span> 
+                                             <span class="n">LHS_seed</span><span class="o">=</span><span class="n">LHS_seed</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cannot locate method for estimating fraction.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_hypercube_frac</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

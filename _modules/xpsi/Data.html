@@ -1,0 +1,774 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Data &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Data</h1><div class="highlight"><pre>
+<span></span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Data&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_verbose</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Instrument</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChannelError</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+
+<div class="viewcode-block" id="Data">
+<a class="viewcode-back" href="../../data.html#xpsi.Data.Data">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; A container for event data.</span>
+
+<span class="sd">    The working assumption is that the sampling distribution of this event data</span>
+<span class="sd">    can be written in terms of a set of channel-by-channel *count*\ -rate</span>
+<span class="sd">    signals. The instrument associated with this data in an instance of</span>
+<span class="sd">    :class:`~.Signal.Signal` must transform incident signals into a structure</span>
+<span class="sd">    congruent to that of the event data. The attributes and methods of this</span>
+<span class="sd">    class and any derived classes must therefore store information required for</span>
+<span class="sd">    this operation.</span>
+
+<span class="sd">    The initialiser assigns observation settings to attributes which are</span>
+<span class="sd">    required for the treating the incident specific flux signals using the</span>
+<span class="sd">    model instrument. The body of the initialiser may be changed, but to ensure</span>
+<span class="sd">    inter-module compatibility, only the phase handling should really be</span>
+<span class="sd">    modified, for instance if you want to implement an unbinned likelihood</span>
+<span class="sd">    function with respect to phase; the phase bins defined in this concrete</span>
+<span class="sd">    implementation are only used by a custom implementation of the</span>
+<span class="sd">    likelihood function (i.e., by a subclass of :class:`xpsi.Signal`), and</span>
+<span class="sd">    not by the other concrete classes used to construct the likelihood</span>
+<span class="sd">    callable. The initialiser can also be extended if appropriate using a call</span>
+<span class="sd">    to ``super().__init__``. Specialist constructors can be defined in a</span>
+<span class="sd">    subclass using the ``@classmethod`` decorator, for instance to load event</span>
+<span class="sd">    data from disk into a compatible data structure in memory; an example of</span>
+<span class="sd">    this may be found below.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        You can subclass in order to tailor the handling of the event data, for</span>
+<span class="sd">        instance to implement a likelihood functions for unbinned event data.</span>
+
+<span class="sd">    :param ndarray[n,m] counts:</span>
+<span class="sd">        A :class:`~numpy.ndarray` of count numbers. The columns must map to</span>
+<span class="sd">        the phase intervals given by :obj:`phases`. The rows of the array map</span>
+<span class="sd">        to some subset of instrument channels.</span>
+
+<span class="sd">    :param ndarray[n] channels:</span>
+<span class="sd">        Instrument channel numbers which must be equal in number to the first</span>
+<span class="sd">        dimension of the :attr:`matrix`: the number of channels must be</span>
+<span class="sd">        :math:`p`. These channels will correspond to the nominal response</span>
+<span class="sd">        matrix and any deviation from this matrix (see above). In common usage</span>
+<span class="sd">        patterns, the channel numbers will increase monotonically with row</span>
+<span class="sd">        number, and usually increment by one (but this is not necessary). It is</span>
+<span class="sd">        advisable that these numbers are the actual instrument channel numbers</span>
+<span class="sd">        so that plots generated by the post-processing module using these</span>
+<span class="sd">        labels are clear.</span>
+
+<span class="sd">    :param ndarray[m+1] phases:</span>
+<span class="sd">        A :class:`~numpy.ndarray` of phase interval edges, where events are</span>
+<span class="sd">        binned into these same intervals in each instrument channel.</span>
+
+<span class="sd">    :param int first:</span>
+<span class="sd">        The index of the first row of the loaded response matrix containing</span>
+<span class="sd">        events (see note below).</span>
+
+<span class="sd">    :param int last:</span>
+<span class="sd">        The index of the last row of the loaded response matrix containing</span>
+<span class="sd">        events (see note below).</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The :obj:`counts` matrix rows  *must* span a contiguous subset of the</span>
+<span class="sd">        rows of the loaded response matrix, but in general can span an</span>
+<span class="sd">        arbitrary subset and order of instrument channels. Note that the</span>
+<span class="sd">        :obj:`first` and :obj:`last+1` numbers are used to index the loaded</span>
+<span class="sd">        instrument response matrix.  Therefore, if you load only a submatrix of</span>
+<span class="sd">        the full instrument response matrix, these indices must be appropriate</span>
+<span class="sd">        for the loaded submatrix, and must not be the true channel numbers</span>
+<span class="sd">        (this information is instead loaded in the :class:`xpsi.Instrument`).</span>
+<span class="sd">        Of course, in all sensible usage patterns the order of the instrument</span>
+<span class="sd">        channels, when mapped to matrix rows, will be such that channel number</span>
+<span class="sd">        increases with matrix row number monotonically because, then the</span>
+<span class="sd">        nominal event energy increases monotonically with row number, which is</span>
+<span class="sd">        important for visualisation of data and model (because spatial order</span>
+<span class="sd">        matches energy order and correlations in space can be discerned easily).</span>
+<span class="sd">        However, there could in principle be channel cuts that mean an increment</span>
+<span class="sd">        of more than one channel between matrix adjacent rows, and the</span>
+<span class="sd">        response matrix needs to be manipulated before or during a custom</span>
+<span class="sd">        loading phase such that its rows match the channel numbers assigned to</span>
+<span class="sd">        the :obj:`counts` matrix rows.</span>
+
+<span class="sd">    :param float exposure_time:</span>
+<span class="sd">        The exposure time, in seconds, to acquire this set of event data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">counts</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Counts object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Counts must be in a one- or two-dimensional &#39;</span>
+                            <span class="s1">&#39;array.&#39;</span><span class="p">)</span>
+
+        <span class="c1">#if (counts &lt; 0.0).any():</span>
+        <span class="c1">#    raise ValueError(&#39;Negative count numbers are invalid.&#39;)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">phases</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">phases</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phases must form a one-dimensional sequence.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The first and last channels must be integers.&#39;</span><span class="p">)</span>
+
+        <span class="c1">#if self._first &gt;= self._last:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span><span class="p">:</span>        
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The first channel number must be equal or lower &#39;</span>
+                             <span class="s1">&#39;than the last channel number.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of rows must be compatible &#39;</span>
+                             <span class="s1">&#39;with the first and last channel numbers.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of columns must be compatible &#39;</span>
+                             <span class="s1">&#39;with the number of phases. Note that the phases array are &#39;</span>
+                             <span class="s1">&#39;the phase bin edges (i.e., number of phases bins + 1)&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">counts</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">exposure_time</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Exposure time must be a float.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exposure_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the total exposure time in seconds. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the photon count data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the phases. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">index_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a 2-tuple of the bounding response-matrix row indices. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_first</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># plus one for array indexing</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channel_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Deprecated property name. To be removed for v1.0. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_range</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the array of channels that the event data spans. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span>
+
+    <span class="nd">@channels</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Setting channels for event data&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Channels set&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in a &#39;</span>
+                                   <span class="s1">&#39;one-dimensional array, and must all be &#39;</span>
+                                   <span class="s1">&#39;positive integers including zero.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">array</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in a &#39;</span>
+                               <span class="s1">&#39;one-dimensional array, and must all be &#39;</span>
+                               <span class="s1">&#39;positive integers including zero.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Number of channels does&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># if synthesising there will not be any counts loaded here</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">array</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: Channel numbers do not uniformly increment by one.&#39;</span>
+                   <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">         Please check for correctness.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">array</span>
+
+        <span class="k">yield</span>
+
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Trimming event data&#39;</span><span class="p">,</span> <span class="s1">&#39;Event data trimmed&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">trim_data</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> 
+                  <span class="n">min_channel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="n">max_channel</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Trim the event data to the specified channel range. </span>
+<span class="sd">        </span>
+<span class="sd">        :param int min_channel:</span>
+<span class="sd">            The minimum channel number to include in the trimmed data.</span>
+
+<span class="sd">        :param int max_channel:</span>
+<span class="sd">            The maximum channel number to include in the trimmed data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+         <span class="c1"># Make the table of required channels</span>
+        <span class="k">assert</span> <span class="n">min_channel</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+        <span class="k">assert</span> <span class="n">max_channel</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">new_channels</span> <span class="o">=</span> <span class="p">[</span> <span class="n">min_channel</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="n">max_channel</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">]</span>
+
+        <span class="c1"># Trim the counts and channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">new_channels</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">counts</span><span class="p">[</span><span class="n">new_channels</span><span class="p">]</span>
+
+        <span class="c1"># Change first and last</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">max_channel</span> <span class="o">-</span> <span class="n">min_channel</span>
+
+
+<div class="viewcode-block" id="Data.phase_bin__event_list">
+<a class="viewcode-back" href="../../data.html#xpsi.Data.Data.phase_bin__event_list">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading event list and phase binning&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Events loaded and binned&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phase_bin__event_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span>
+                              <span class="n">channel_column</span><span class="p">,</span>
+                              <span class="n">phase_column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">phase_averaged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">phase_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                              <span class="n">channel_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">eV</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span>
+                              <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Load a phase-folded event list and bin the events in phase.</span>
+
+<span class="sd">        :param str path:</span>
+<span class="sd">            Path to event list file containing two columns, where the first</span>
+<span class="sd">            column contains phases on the unit interval, and the second</span>
+<span class="sd">            column contains the channel number.</span>
+
+<span class="sd">        :param ndarray[n] channels:</span>
+<span class="sd">            An (ordered) subset of instrument channels. It is advisable that</span>
+<span class="sd">            these channels are a contiguous subset of instrument channels, but</span>
+<span class="sd">            this not a strict requirement if you are comfortable with the</span>
+<span class="sd">            handling the instrument response matrix and count number matrix to</span>
+<span class="sd">            match in row-to-channel definitions.</span>
+
+<span class="sd">        :param list phases:</span>
+<span class="sd">            An ordered sequence of phase-interval edges on the unit interval.</span>
+<span class="sd">            The first and last elements will almost always be zero and unity</span>
+<span class="sd">            respectively.</span>
+
+<span class="sd">        :param float phase_shift:</span>
+<span class="sd">            A phase-shift in cycles to be applied when binning the events in</span>
+<span class="sd">            phase.</span>
+
+<span class="sd">        :param int phase_column:</span>
+<span class="sd">            The column in the loaded file containing event phases.</span>
+
+<span class="sd">        :param bool phase_averaged:</span>
+<span class="sd">            Is the event data phase averaged?</span>
+
+<span class="sd">        :param int channel_column:</span>
+<span class="sd">            The column in the loaded file containing event channels.</span>
+
+<span class="sd">        :param ndarray[n+1] channel_edges:</span>
+<span class="sd">            The nominal energy edges of the instrument channels, assumed to</span>
+<span class="sd">            be contiguous if binning event energies in channel number.</span>
+
+<span class="sd">        :param int skiprows:</span>
+<span class="sd">            The number of top rows to skip when loading the events from file.</span>
+<span class="sd">            The top row of couple of rows will typically be reserved for</span>
+<span class="sd">            column headers.</span>
+
+<span class="sd">        :param bool eV:</span>
+<span class="sd">            Are event energies in eV, instead of channel number?</span>
+
+<span class="sd">        :param type dtype:</span>
+<span class="sd">            The type of the count data. Sensible options are ``numpy.int`` (the</span>
+<span class="sd">            default) or a :mod:`numpy` floating point type. The choice here</span>
+<span class="sd">            only matters when executing custom likelihood evaluation code, which</span>
+<span class="sd">            might expect a type without checking or casting.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">)</span>
+
+        <span class="n">channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="s1">&#39;Total number of events: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">_channel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">eV</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">channel_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">channel_column</span><span class="p">]</span><span class="o">/</span><span class="mf">1.0e3</span> <span class="o">&lt;</span> <span class="n">channel_edges</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">_channel</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_channel</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">channel_column</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">_channel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_averaged</span><span class="p">:</span>
+                    <span class="n">_temp</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">phase_column</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
+                    <span class="n">_temp</span> <span class="o">-=</span> <span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">_temp</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_temp</span> <span class="o">&lt;=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_column</span><span class="p">])),</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_channel</span><span class="p">)),</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">yield</span> <span class="s1">&#39;Number of events constituting data set: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phases</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin__event_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">phase_bin__event_list</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading OGIP compliant file&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Data loaded&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span>
+             <span class="n">n_phases</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> 
+             <span class="n">channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+             <span class="n">phase_column</span><span class="o">=</span><span class="s1">&#39;PULSE_PHASE&#39;</span><span class="p">,</span>
+             <span class="n">channel_column</span><span class="o">=</span><span class="s1">&#39;PI&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Load an OGIP compliant event list (EVT) or spectrum (PHA) fits file by redirecting to more specific class methods.</span>
+<span class="sd">        </span>
+<span class="sd">        :param str path:</span>
+<span class="sd">            Path to EVT or PHA fits file to extract the data from.</span>
+
+<span class="sd">        :param int n_phases:</span>
+<span class="sd">            The number of phase bins to use, if the data has phase information.</span>
+
+<span class="sd">        :param ndarray[n] | None channels:</span>
+<span class="sd">            The energy channels to extract the data from. Should be the same as the channels of the instrument to use. </span>
+<span class="sd">            If None, extract all channels in the event list.</span>
+
+<span class="sd">        :param str phase_column:</span>
+<span class="sd">            If the file is a EVT file, column containing event phases.</span>
+
+<span class="sd">        :param str channel_column:</span>
+<span class="sd">            If the file is a EVT file, column containing event channels.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Check whether event file or PHA</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">HDUCLAS1</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;HDUCLAS1&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Select the case based on HDUCLAS1</span>
+        <span class="k">if</span> <span class="n">HDUCLAS1</span> <span class="o">==</span> <span class="s1">&#39;SPECTRUM&#39;</span><span class="p">:</span>
+            <span class="n">Data</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_pha</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">channels</span> <span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="n">HDUCLAS1</span> <span class="o">==</span> <span class="s1">&#39;EVENTS&#39;</span><span class="p">:</span>
+            <span class="n">Data</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_evt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> 
+                 <span class="n">n_phases</span><span class="o">=</span><span class="n">n_phases</span><span class="p">,</span> 
+                 <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span> 
+                 <span class="n">phase_column</span><span class="o">=</span><span class="n">phase_column</span><span class="p">,</span>
+                 <span class="n">channel_column</span><span class="o">=</span><span class="n">channel_column</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;HDUCLAS1 of Header does not match PHA or EVT files values. Could not load.&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Write the name of the instrument</span>
+        <span class="n">Data</span><span class="o">.</span><span class="n">instrument</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">Data</span>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading event list and phase binning&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Events loaded and binned&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_evt</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> 
+                 <span class="n">n_phases</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> 
+                 <span class="n">channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">phase_column</span><span class="o">=</span><span class="s1">&#39;PULSE_PHASE&#39;</span><span class="p">,</span>
+                 <span class="n">channel_column</span><span class="o">=</span><span class="s1">&#39;PI&#39;</span><span class="p">,</span>
+                 <span class="n">phase_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Load an OGIP compliant event list EVT fits file.</span>
+<span class="sd">        </span>
+<span class="sd">        :param str path:</span>
+<span class="sd">            Path to event list fits file to extract the data from.</span>
+
+<span class="sd">        :param int n_phases:</span>
+<span class="sd">            The number of phase bins to use.</span>
+
+<span class="sd">        :param ndarray[n] channels:</span>
+<span class="sd">            The energy channels to extract the data from. Should be the same as the channels of the instrument to use. </span>
+<span class="sd">            If None, extract all channels in the event list.</span>
+
+<span class="sd">        :param str phase_column:</span>
+<span class="sd">            The column in the OGIP EVT file containing event phases.</span>
+
+<span class="sd">        :param str channel_column:</span>
+<span class="sd">            The column in the OGIP EVT file containing event channels.</span>
+
+<span class="sd">        :param float phase_shift:</span>
+<span class="sd">            A common phase shift to apply to the event phases.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read the fits file</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">Header</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;EVENTS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+            <span class="n">EvtList</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;EVENTS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># Extract useful data</span>
+        <span class="n">exposure</span> <span class="o">=</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">]</span>
+        <span class="n">channel_data</span> <span class="o">=</span> <span class="n">EvtList</span><span class="p">[</span><span class="n">channel_column</span><span class="p">]</span>
+        <span class="n">phases_data</span> <span class="o">=</span> <span class="p">(</span> <span class="n">EvtList</span><span class="p">[</span> <span class="n">phase_column</span> <span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span> <span class="p">)</span> <span class="o">%</span> <span class="mf">1.0</span> 
+
+        <span class="c1"># No channels specified, use everything</span>
+        <span class="k">if</span> <span class="n">channels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">min_channel</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span> <span class="n">channel_data</span> <span class="p">)</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span> <span class="n">channel_data</span> <span class="p">)</span>
+            <span class="n">channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_channel</span><span class="p">,</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">min_channel</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">channel_borders</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_channel</span><span class="p">,</span> <span class="n">max_channel</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mf">0.5</span>
+
+         <span class="c1"># Get intrinsinc values</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">max_channel</span> <span class="o">-</span> <span class="n">min_channel</span>
+        <span class="n">phases_borders</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span> <span class="mf">0.0</span> <span class="p">,</span> <span class="mf">1.0</span> <span class="p">,</span> <span class="n">n_phases</span><span class="o">+</span><span class="mi">1</span> <span class="p">)</span>
+
+        <span class="c1"># Make the 2D histogram</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">[</span> <span class="n">ch</span><span class="o">&gt;=</span><span class="n">min_channel</span> <span class="ow">and</span> <span class="n">ch</span><span class="o">&lt;=</span><span class="n">max_channel</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channel_data</span> <span class="p">]</span>
+        <span class="n">counts_histogram</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span> <span class="n">channel_data</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="p">,</span> <span class="n">phases_data</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> 
+                                                 <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">channel_borders</span><span class="p">,</span> <span class="n">phases_borders</span><span class="p">])</span>
+
+        <span class="c1"># Instatiate the class</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span> <span class="n">counts_histogram</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span> <span class="p">),</span>
+                    <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
+                    <span class="n">phases</span><span class="o">=</span><span class="n">phases_borders</span><span class="p">,</span>
+                    <span class="n">first</span><span class="o">=</span><span class="n">first</span><span class="p">,</span>
+                    <span class="n">last</span><span class="o">=</span><span class="n">last</span><span class="p">,</span>
+                    <span class="n">exposure_time</span><span class="o">=</span><span class="n">exposure</span> <span class="p">)</span>
+    
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading PHA spectrum and phase binning&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Spectrum loaded&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_pha</span><span class="p">(</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> 
+                  <span class="n">channels</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Load an OGIP compliant spectrum PHA fits file.</span>
+<span class="sd">        </span>
+<span class="sd">        :param str path:</span>
+<span class="sd">            Path to PHA fits file to extract the data from.</span>
+
+<span class="sd">        :param ndarray[n] channels:</span>
+<span class="sd">            The energy channels to extract the data from. Should be the same as the channels of the instrument to use.</span>
+<span class="sd">            If None, extract all channels in the PHA file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read the fits files</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">Header</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;SPECTRUM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span> 
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;SPECTRUM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># Extract useful data</span>
+        <span class="n">exposure</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">(</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">channel_data</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;CHANNEL&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">counts_data</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;COUNTS&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">counts_data</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;RATE&#39;</span><span class="p">]</span>
+            <span class="n">exposure</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="c1"># No channels specified, use everything</span>
+        <span class="k">if</span> <span class="n">channels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">min_channel</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span> <span class="n">channel_data</span> <span class="p">)</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span> <span class="n">channel_data</span> <span class="p">)</span>
+            <span class="n">channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_channel</span><span class="p">,</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">min_channel</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+         <span class="c1"># Get intrinsinc values</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">max_channel</span> <span class="o">-</span> <span class="n">min_channel</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+        <span class="c1"># Match channels</span>
+        <span class="n">channel_counts_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">channel_data</span><span class="p">,</span> <span class="n">counts_data</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">ch</span> <span class="ow">in</span> <span class="n">channel_counts_map</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all channels exist in channel_data.&quot;</span><span class="p">)</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">channel_counts_map</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">]]</span> <span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        
+        <span class="n">Data</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span> <span class="n">counts</span><span class="p">,</span>
+                    <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
+                    <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">,</span>
+                    <span class="n">first</span><span class="o">=</span><span class="n">first</span><span class="p">,</span>
+                    <span class="n">last</span><span class="o">=</span><span class="n">last</span><span class="p">,</span>
+                    <span class="n">exposure_time</span><span class="o">=</span><span class="n">exposure</span> <span class="p">)</span>
+        
+        <span class="c1"># Add useful paths</span>
+        <span class="n">Data</span><span class="o">.</span><span class="n">backscal</span> <span class="o">=</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;BACKSCAL&#39;</span><span class="p">]</span>
+        <span class="n">Data</span><span class="o">.</span><span class="n">ancrfile</span> <span class="o">=</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;ANCRFILE&#39;</span><span class="p">]</span>
+        <span class="n">Data</span><span class="o">.</span><span class="n">respfile</span> <span class="o">=</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;RESPFILE&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;HDUCLAS2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;TOTAL&#39;</span><span class="p">:</span>
+                <span class="n">Data</span><span class="o">.</span><span class="n">backfile</span> <span class="o">=</span> <span class="n">Header</span><span class="p">[</span><span class="s1">&#39;BACKFILE&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Keyword BACKFILE not found in file &#39;</span><span class="p">,</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Data</span>
+        
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">spectra_support</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">source_backscal</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Compute the spectrum support, if the data instance is background, assuming Poisson statistics. </span>
+<span class="sd">        </span>
+<span class="sd">        :param int n:</span>
+<span class="sd">            The width, in sigma, to compute the support for.</span>
+
+<span class="sd">        :param float source_backscal:</span>
+<span class="sd">            The source scaling backscal parameter, to apply rescaling to the background spectrum so the background extraction area matches the source&#39;s.</span>
+<span class="sd">            This value can be found using Data.backscal on the source&#39;s Data instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the background counts prior</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">counts_support</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">counts</span><span class="o">-</span><span class="n">n</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">counts</span><span class="p">),</span><span class="n">counts</span><span class="o">+</span><span class="n">n</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">counts</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">counts_support</span><span class="p">[</span><span class="n">counts_support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Correct for null support upper, values which make the background marginalisation go wrong (interval of integration is then [0,0])</span>
+        <span class="c1"># Does it by getting the nearest strictly positive value of the upper support bound</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counts_support</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">counts_support</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">counts_support</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">break</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">-</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts_support</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">break</span>
+        
+        <span class="c1"># Apply the scaling</span>
+        <span class="n">count_rate_support</span> <span class="o">=</span> <span class="n">counts_support</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">count_rate_support</span> <span class="o">*=</span> <span class="p">(</span> <span class="n">source_backscal</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">backscal</span> <span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;No BACKSCAL was provided for source. Could not compute the support of the spectrum&#39;</span><span class="p">)</span>
+
+        <span class="c1"># If channels, extract the reight values</span>
+        <span class="k">if</span> <span class="n">channels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">channel_indexes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">==</span> <span class="n">ch</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span> <span class="p">]</span> 
+            <span class="n">count_rate_support</span> <span class="o">=</span> <span class="n">count_rate_support</span><span class="p">[</span> <span class="n">channel_indexes</span> <span class="p">,</span> <span class="p">:]</span>
+
+        <span class="c1"># Clean</span>
+        <span class="n">count_rate_support</span> <span class="o">=</span> <span class="n">_contig</span><span class="p">(</span> <span class="n">count_rate_support</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">count_rate_support</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_rot</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Plot the data in a convenient way.</span>
+
+<span class="sd">        :param int num_rot:</span>
+<span class="sd">            The number of rotations to plot.</span>
+
+<span class="sd">        :param int dpi:</span>
+<span class="sd">            The resolution of the plot.</span>
+
+<span class="sd">        :param str colormap:</span>
+<span class="sd">            The colormap to use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the counts</span>
+        <span class="n">counts_list</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rot</span><span class="p">)</span> <span class="p">]</span>
+        <span class="n">phase_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">phases</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rot</span><span class="p">)]</span> 
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span> <span class="p">(</span><span class="n">counts_list</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span> <span class="p">)</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_list</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span> <span class="p">)</span>
+
+        <span class="c1"># Do the plot</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">_mpl</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span> <span class="mi">2</span><span class="p">,</span><span class="mi">2</span> <span class="p">,</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">],</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mf">1.5</span><span class="p">],</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">,</span><span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Plot the 2D data</span>
+        <span class="n">ax2</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span> <span class="n">phases</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">colormap</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Phase $\phi$ [cycles]&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;PI channel&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Plot the pulse</span>
+        <span class="n">ax1</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span> <span class="n">ax2</span> <span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">ax1</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span> <span class="n">x</span><span class="o">=</span><span class="n">phases</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">yerr</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="p">),</span> <span class="n">ds</span><span class="o">=</span><span class="s1">&#39;steps-mid&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span> <span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Plot the spectrum</span>
+        <span class="n">ax3</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">sharey</span><span class="p">(</span> <span class="n">ax2</span> <span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">ax3</span><span class="o">.</span><span class="n">step</span><span class="p">(</span> <span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Cts/chan.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Add the colorbar    </span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span> <span class="n">im</span> <span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span> <span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="n">dpi</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

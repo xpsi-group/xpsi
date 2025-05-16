@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FAQs and common problems" href="FAQ.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-simulation">Model (simulation)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#likelihood-function">Likelihood function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#priors">Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#posteriors">Posteriors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallelisation-and-compute-requirements">Parallelisation and compute requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h1>
+<p>Here we review the basic astrophysical and statistical aspects of modeling within X-PSI.  X-PSI is designed for the statistical analysis of <em>X-ray data</em> due to surface emission from rotating neutron stars, particularly for cases where this surface emission is not uniform, and  can therefore be <em>pulsed</em> due to rotational modulation.  This is then analysed within a Bayesian inference framework.   To do this we first need a physical model for <em>simulation</em> of data sets.   Together the data and model are then used as a basis for <em>likelihood function evaluation</em> and open-source software is then used for <em>posterior sampling</em>.</p>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Link to this heading"></a></h2>
+<img alt="_images/Example_pulseprofile.png" src="_images/Example_pulseprofile.png" />
+<p>Above is an example pulse profile data set, of the sort that X-PSI is typically used to analyse.  A pulse profile like this is created in the following way.  For every X-ray photon (or count) detected, the telescope records both its time of arrival and the energy channel in which it was detected.  Using the spin ephemeris of the pulsar, arrival time is mapped to rotational phase (the <cite>clock</cite> of the pulsar), and the photon assigned to a phase bin.  Over time the photons build up in phase bins and energy channels to form a pulse profile.  For further details of the process by which pulse profiles are generated from real telescope data, see for example <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..25B/abstract">Bogdanov et al. (2019a)</a>.</p>
+<p>Note that data sets may be built up over long periods of time, often from separate observations. In this case one needs to decide whether to combine data to form a single pulse profile (which may be reasonable if stellar properties do not change) or whether to analyse pulse profiles from individual data sets separately, allowing some parameters to vary.  Joint analysis of multiple X-ray data sets - both phase-resolved and phase-averaged - is possible within X-PSI (see e.g. <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract">Riley et al. 2021</a> for a joint analysis of phase-resolved NICER and phase-averaged XMM-Newton data).</p>
+</section>
+<section id="model-simulation">
+<h2>Model (simulation)<a class="headerlink" href="#model-simulation" title="Link to this heading"></a></h2>
+<p>We also need a model, encapsulating the relevant physical processes, that can simulate pulse profiles for a given set of model parameters.   Pulse profile modeling relies on the fact that emission from the stellar surface picks up imprints of the neutron star space-time - determined by mass, radius and spin - due to various relativistic effects.  The model therefore includes relativistic ray-tracing, describing how photons propagate from the surface of the neutron star through the space-time towards the distant observer. Mass and radius are two of the key unknown parameters (the spin, for pulsars, is known). For more details of the neutron star space-time model currently implemented in X-PSI, the Oblate Schwarzschild approximation of  <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2007ApJ...663.1244M/abstract">Morsink et al. (2007)</a>, see <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..26B/abstract">Bogdanov et al. (2019b)</a>.</p>
+<p>However there are many other factors that determine the form of the pulse profile and which also need to be modelled:  e.g. the surface emission pattern (size, shape, temperature and location of the hot emitting regions), atmospheric beaming, observer inclination, distance and interstellar absorption.   To compare to real data we also need to know how the telescope records an instrument signal - its <em>response matrix</em>. Finally, we need to have a way of incorporating any source of emission that contributes to the pulse profile but which is not generated at the neutron star surface, such as astrophysical or instrumental background. For more information on how one builds a model for a specific astrophysical problem, see for example  <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021ApJ...914L..15B/abstract">Bogdanov et al. (2021)</a>, which discusses the case of the rotation-powered millisecond pulsars observed by NICER.</p>
+<p>A good model has to be sufficiently complex to explain the data adequately (something that can be tested using posterior checking, see below). However the elements of the model must also be implemented in a way that is sufficiently fast for parameter estimation to be tractable on a high-performance computing system.</p>
+</section>
+<section id="likelihood-function">
+<h2>Likelihood function<a class="headerlink" href="#likelihood-function" title="Link to this heading"></a></h2>
+<p>A key element of Bayesian inference is the <em>likelihood function</em>, which is constructed from data and model. So let’s translate the astrophysical issues mentioned above into more statistical language. The likelihood function has domain <span class="math notranslate nohighlight">\(\mathbb{R}^{n}\)</span>, defined for each (model) parameter vector <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> (optionally with finite local prior probability density) by a parametrised sampling distribution on the space of the data evaluated at the <em>fixed</em> dataset <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>. The likelihood is defined by</p>
+<div class="math notranslate nohighlight">
+\[L(\boldsymbol{\theta};\mathcal{M})\mathrel{:=}\mathcal{P}(\mathcal{D}\;|\;\boldsymbol{\theta},\mathcal{M}),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{M}\)</span> is the global (hierarchical) model.  We first need to consider our data set <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>: in general let it be constituted by some union of data subsets <span class="math notranslate nohighlight">\(\mathcal{D}=\cup_{i}\mathcal{D}_{i}\)</span>, such that <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\cap\mathcal{D}_{j}=\emptyset\)</span> for <span class="math notranslate nohighlight">\(i\neq j\)</span> (e.g. one NICER and one XMM-Newton data set), and the subsets are statistically independent—i.e., the joint sampling distribution conditional on the model is separable. We also assume that the data subsets <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> are acquired during mutually disjoint time intervals.  We describe the stochastic generation of this data via observations—with a model X-ray telescope—of a single model star, whose parameters (e.g. mass, radius, properties of the hot emitting regions) we are interested in constraining.  Poisson noise (a feature of X-ray detection) is also incorporated here.  For an example of how a likelihood function is formed in X-PSI, including details of how we typically handle background (via marginalization), see e.g. <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract">Riley et al. (2021)</a>.</p>
+<p>We define a data subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> as having a parametrised model sampling distribution that is written in terms of a <em>single pulse</em>
+generated by a rotating non-axisymmetric surface radiation field.<a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> Further, let the radiation field be everywhere invariant in surface local comoving frames
+(which need not necessarily be photospheric rest frames).  Photon events constituting <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> need not be acquired within a single
+period of rotation of the star— while the stars of interest are of galactic origin they are sufficiently distant that the incident flux of photons can be very small.</p>
+<p>The photon events which comprise <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> can span an arbitrarily long time interval, but over that time interval the surface
+radiation field is assumed to be stable. Each subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> is acquired with some model instrument with a response matrix (a photon energy redistribution matrix combined with an energy-dependent effective area vector) which is used to transform a radiation field incident on the telescope into a form which enters directly in the sampling distribution of <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span>.</p>
+</section>
+<section id="priors">
+<h2>Priors<a class="headerlink" href="#priors" title="Link to this heading"></a></h2>
+<p>Our <em>model</em> has many parameters (such as mass, radius, distance, inclination, and parameters that describe the hot regions).  We may also have other information, such as constraints on the background.  These are incorporated by defining priors.   Some may be very informative:  for pulsars in a binary system, for example, we may have excellent prior constraints on the mass from radio timing (see e.g.  <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2024ApJ...971L..18R/abstract">Reardon et al. 2024</a>).  Others may be much less informative.  For radius we typically use a joint flat prior formulation that encompasses the range permitted by all current equation of state models (<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2018MNRAS.478.1093R/abstract">Riley, Raaijmakers &amp; Watts 2018</a>), with the goal of enabling unrestricted follow-on dense matter analysis (e.g. <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2024ApJ...971L..19R/abstract">Rutherford et al. 2024</a>).   And for hot emitting region properties we often consider a very wide range of prior space due to e.g. a lack of constraints from pulsar emission theory.  Determining the priors is an integral part of parameter estimation with X-PSI (but can be neglected if you only want to carry out pulse simulation).</p>
+</section>
+<section id="posteriors">
+<h2>Posteriors<a class="headerlink" href="#posteriors" title="Link to this heading"></a></h2>
+<p>Finally, we arrive at the computation of posterior distributions for the model parameters.  For this, X-PSI couples to existing open source samplers such as <a class="reference external" href="https://github.com/JohannesBuchner/MultiNest">MultiNest</a> and <a class="reference external" href="https://johannesbuchner.github.io/UltraNest/">UltraNest</a>.   The joint posterior distribution on parameter space is the joint probability density distribution proportional to the integrable product of the likelihood function with a joint prior distribution:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{D},\mathcal{M},\mathcal{I})=\frac{L(\boldsymbol{\theta};\mathcal{M})\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{M},\mathcal{I})}{\mathcal{P}(\mathcal{D}\;|\;\mathcal{M},\mathcal{I})}\]</div>
+<p>The normalisation is the prior predictive distribution on the space of the data evaluated at <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{P}(\mathcal{D}\;|\;\mathcal{M},\mathcal{I})
+=\mathop{\int}\mathcal{P}(\mathcal{D}\;|\;\boldsymbol{\theta},\mathcal{M})\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{M},\mathcal{I})d^{n}\boldsymbol{\theta}.\]</div>
+<p>Also termed the <em>evidence</em> or <em>fully marginal likelihood</em>, this normalisation can be approximated by a nested sampler such as MultiNest. Note however that the interpretation and robustness of the evidence in the context of model comparison is problem-dependent and a subject of much debate in the literature!   This also a good moment to assess the quality of the physical model, by looking at the pulse profiles resulting from e.g. the maximum posterior or maximum likelihood parameter vector.  If there are significant deviations from the data, this may indicate a problem in the model.</p>
+</section>
+<section id="parallelisation-and-compute-requirements">
+<h2>Parallelisation and compute requirements<a class="headerlink" href="#parallelisation-and-compute-requirements" title="Link to this heading"></a></h2>
+<p>X-PSI inherits the MPI parallelisation of an external sampling package. In general it is necessary to run X-PSI posterior sampling/integration on
+distributed memory architectures (e.g., a cluster or a supercomputer) because likelihood evaluation times are slow, of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\,s\)</span>.</p>
+<p>In addition, the source code for pulse simulation (required for likelihood evaluation) is OpenMP-enabled, meaning that in principle one can
+explore hybrid parallelisation paradigms—in particular, enabling multithreaded computation on shared memory nodes of distributed architectures.</p>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">1</a><span class="fn-bracket">]</span></span>
+<p>Note that X-PSI can also be used to simulate an axisymmetric surface radiation field - in which case the resulting emission would not be pulsed, but would incorporate relativistic effects due to rotation.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="FAQ.html" class="btn btn-neutral float-right" title="FAQs and common problems" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,722 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Everywhere &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Everywhere</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Everywhere</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.cellmesh.global_mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_closed_cellMesh</span> <span class="k">as</span> <span class="n">_construct_closed_cellMesh</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.cellmesh.rays</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rays</span> <span class="k">as</span> <span class="n">_compute_rays</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Parameter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AtmosError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if the numerical atmosphere data were not preloaded. &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RayError">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.RayError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RayError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if a problem was encountered during ray integration. &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="IntegrationError">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.IntegrationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IntegrationError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if a problem was encountered during signal integration. &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Everywhere">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Everywhere</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; The photospheric radiation field represented by a global mesh.</span>
+
+<span class="sd">    An instance of this class *cannot* be used in conjuction with hot region</span>
+<span class="sd">    objects nor with an elsewhere instance.</span>
+
+<span class="sd">    The local comoving radiation field properties are *not* assumed to be</span>
+<span class="sd">    azimuthally invariant, so a time-dependent signal can be generated upon</span>
+<span class="sd">    integration over the image.</span>
+
+<span class="sd">    However, if you want to generate a time-dependent signal, you need</span>
+<span class="sd">    to customise the parameters that control the radiation field w.r.t. surface</span>
+<span class="sd">    local comoving frames. By default a single temperature parameter is</span>
+<span class="sd">    defined which is globally invariant and thus the radiation field is</span>
+<span class="sd">    azimuthally invariant and the image subtended on a distant observer&#39;s sky</span>
+<span class="sd">    is phase-invariant.</span>
+
+<span class="sd">    :param bool time_invariant:</span>
+<span class="sd">        See above. Is the radiation field azimuthally invariant, thus</span>
+<span class="sd">        generating a phase-invariant signal? Although the default configuration</span>
+<span class="sd">        is simple and azimuthally invariant, we do not provide a default</span>
+<span class="sd">        value for this argument to force the user to verify their intentions.</span>
+
+<span class="sd">    :param dict bounds:</span>
+<span class="sd">        If ``custom is None``, these bounds are supplied for instantiation</span>
+<span class="sd">        of a temperature parameter. The parameter name</span>
+<span class="sd">        ``&#39;temperature&#39;`` must be a key in the dictionary unless the</span>
+<span class="sd">        parameter is *fixed* or *derived*. If a bound is ``None`` that bound</span>
+<span class="sd">        is set equal to a strict hard-coded bound. We note that the bounds for</span>
+<span class="sd">        parameters used in the atmosphere model should be restricted (by the user)</span>
+<span class="sd">        to be within the tabulated values, in case a numerical atmosphere extension is used.</span>
+
+<span class="sd">    :param dict values:</span>
+<span class="sd">        Either the fixed value of the temperature, a callable if the</span>
+<span class="sd">        temperature is *derived*, or a value upon initialisation if the</span>
+<span class="sd">        temperature is free. The dictionary must have a key with name</span>
+<span class="sd">        ``&#39;temperature&#39;`` if it is *fixed* or *derived*.</span>
+
+<span class="sd">    :param int sqrt_num_cells:</span>
+<span class="sd">        Number of cells in both colatitude and azimuth which form a regular</span>
+<span class="sd">        mesh on the surface. Must be an even number such that half of the cells</span>
+<span class="sd">        are exactly in one hemisphere. The total number of cells is the square</span>
+<span class="sd">        of this argument value. The mesh suffers from squeezing in the polar</span>
+<span class="sd">        regions, leading to a high degree of non-congruence in cell shape over</span>
+<span class="sd">        the surface.</span>
+
+<span class="sd">    :param int num_rays:</span>
+<span class="sd">        Number of rays to trace (integrate) at each colatitude, distributed</span>
+<span class="sd">        in angle subtended between ray tangent 4-vector and radial outward unit</span>
+<span class="sd">        vector w.r.t a local orthonormal tetrad.</span>
+
+<span class="sd">    :param int num_leaves:</span>
+<span class="sd">        Number of stellar rotation phases to rotate a moving mesh through</span>
+<span class="sd">        during signal integration.</span>
+
+<span class="sd">    :param int num_phases:</span>
+<span class="sd">        Number of phases to resolve the signal at if the signal is time-</span>
+<span class="sd">        dependent.</span>
+
+<span class="sd">    :param ndarray[m]:</span>
+<span class="sd">        Array of phases to resolve a time-dependent signal at.</span>
+
+<span class="sd">    :param str atm_ext:</span>
+<span class="sd">        Used to determine which atmospheric extension to use.</span>
+<span class="sd">        Options at the moment:</span>
+<span class="sd">        &quot;BB&quot;: Analytical blackbody (default),</span>
+<span class="sd">        &quot;Num4D&quot;: Numerical atmosphere using 4D-interpolation from the provided</span>
+<span class="sd">        atmosphere data,</span>
+<span class="sd">        &quot;user&quot;: A user-provided extension which can be set up by replacing the contents of </span>
+<span class="sd">        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI</span>
+<span class="sd">        (if not changed, &quot;user&quot; is the same as &quot;BB&quot;).</span>
+
+<span class="sd">    :param int beam_opt:</span>
+<span class="sd">        Used to determine which atmospheric beaming modification model to use.</span>
+<span class="sd">        Options at the moment:</span>
+<span class="sd">        0: No modification (default),</span>
+<span class="sd">        1: Original*beaming_correction without re-normalization,</span>
+<span class="sd">        2: Original*beaming_correction with analytical re-normalization estimate,</span>
+<span class="sd">        3: Original*beaming_correction with numerical re-normalization.</span>
+
+<span class="sd">    :param iterable custom:</span>
+<span class="sd">        Iterable over :class:`~.Parameter.Parameter` instances. If you</span>
+<span class="sd">        supply custom parameter definitions, you need to overwrite the</span>
+<span class="sd">        :func:`~.Everywhere.Everwhere._compute_cellParamVecs` method to</span>
+<span class="sd">        implement your custom behaviour.</span>
+
+<span class="sd">    :param int image_order_limit:</span>
+<span class="sd">        The highest-order image to sum over. A value of *one* means primary</span>
+<span class="sd">        images only (deflections :math:`&lt;\pi`) whilst a value of *two* means</span>
+<span class="sd">        primary and secondary images (deflections :math:`&lt;2pi`) where visible,</span>
+<span class="sd">        and so on. If ``None`` (the default), there is no hard limit. In this</span>
+<span class="sd">        case the limit is determined quasi-naturally for each mesh element,</span>
+<span class="sd">        meaning that images will be summed over until higher order images are</span>
+<span class="sd">        not visible or the visibility limit is truncated due to lack of</span>
+<span class="sd">        numerical precision (e.g. for rays that orbit very close to the</span>
+<span class="sd">        Schwarzschild photon sphere three times or more).  Higher-order images</span>
+<span class="sd">        generally contribute less and less due to geometric projection effects</span>
+<span class="sd">        (higher-order images become more tangential), and the images of</span>
+<span class="sd">        elements get squeezed in solid angle at the stellar limb. In principle,</span>
+<span class="sd">        effects such as relativistic beaming can counter this effect to a</span>
+<span class="sd">        degree for certain source-receiver configurations, by increasing</span>
+<span class="sd">        brightness whilst solid angle decreases, and thus the flux contribution</span>
+<span class="sd">        relative to that from a primary image can be greater than suggested</span>
+<span class="sd">        simply by geometric project effects. Nevertheless, inclusion of these</span>
+<span class="sd">        images is more computationally expensive. If, when iterating through</span>
+<span class="sd">        image orders, an image is not visible because the deflection required</span>
+<span class="sd">        is greater than the highest deflection permitted at a given colatitude</span>
+<span class="sd">        on a surface (accounting for the surface tilt due to rotation), then</span>
+<span class="sd">        the iteration over image orders terminates.</span>
+
+<span class="sd">    :param bool _integrator_toggle:</span>
+<span class="sd">        For testing purposes, toggle the integrator for time-dependent signals.</span>
+<span class="sd">        If left as the default (``False``) the general-purpose integrator is</span>
+<span class="sd">        called. If toggled, an integrator is called that assumes the surface</span>
+<span class="sd">        radiation field is azimuthally invariant, which combined with the</span>
+<span class="sd">        default global mesh (i.e., no subclassing) results in a time-invariant</span>
+<span class="sd">        signal.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">required_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;temperature (if no custom specification)&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">time_invariant</span><span class="p">,</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+                 <span class="n">num_rays</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+                 <span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                 <span class="n">num_phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">atm_ext</span><span class="o">=</span><span class="s2">&quot;BB&quot;</span><span class="p">,</span>
+                 <span class="n">beam_opt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">custom</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">image_order_limit</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">_integrator_toggle</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span> <span class="o">=</span> <span class="n">num_rays</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="n">sqrt_num_cells</span>
+
+        <span class="k">if</span> <span class="n">time_invariant</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">num_leaves</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num_phases</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning : with time_invariant=True, num_leaves and num_phases are automatically set to 1&#39;</span><span class="p">)</span>
+            <span class="n">num_leaves</span><span class="o">=</span><span class="mi">1</span>
+            <span class="n">num_phases</span><span class="o">=</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">,</span> <span class="n">num_phases</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_order_limit</span> <span class="o">=</span> <span class="n">image_order_limit</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">atm_ext</span> <span class="o">=</span> <span class="n">atm_ext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam_opt</span> <span class="o">=</span> <span class="n">beam_opt</span>
+
+        <span class="c1">#Do-fast option is not supported for Everywhere.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom</span><span class="p">:</span> <span class="c1"># setup default temperature parameter</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
+                          <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">7.6</span><span class="p">),</span> <span class="c1"># very cold --&gt; very hot</span>
+                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                          <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;log10(effective temperature [K] everywhere)&#39;</span><span class="p">,</span>
+                          <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\log_</span><span class="si">{10}</span><span class="s1">(T\;[\rm</span><span class="si">{K}</span><span class="s1">])$&#39;</span><span class="p">,</span>
+                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># let the custom subclass handle definitions; ignore bounds</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">#An extra phase_shift parameter fixed to 0 just to be able use the standard</span>
+        <span class="c1">#Likelihood class when fitting data with Everywhere objects.</span>
+        <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span>
+                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">),</span>
+                                <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Everywhere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">phase_shift</span><span class="p">,</span> <span class="n">custom</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_invariant</span> <span class="o">=</span> <span class="n">time_invariant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_integrator_toggle</span> <span class="o">=</span> <span class="n">_integrator_toggle</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">atm_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atm_ext</span>
+
+    <span class="nd">@atm_ext</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">atm_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">extension</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">extension</span><span class="o">==</span><span class="s2">&quot;BB&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atm_ext</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">extension</span><span class="o">==</span><span class="s2">&quot;Num4D&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atm_ext</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">extension</span><span class="o">==</span><span class="s2">&quot;user&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atm_ext</span>  <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Got an unrecognised atm_ext argument. Note that the only allowed &#39;</span>
+                            <span class="s1">&#39;atmosphere options are at the moment &quot;BB&quot;, &quot;Num4D&quot;, and &quot;user&quot;.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beam_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beam_opt</span>
+
+    <span class="nd">@beam_opt</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beam_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">option</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_beam_opt</span> <span class="o">=</span> <span class="n">option</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Got an unrecognised beam_opt argument. Note that the only allowed &#39;</span>
+                            <span class="s1">&#39;beam_opt options are 0, 1, 2, 3 (see documentation).&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_integrator_toggle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the toggle setting. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intoggle</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@_integrator_toggle</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_integrator_toggle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toggle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">toggle</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_intoggle</span> <span class="o">=</span> <span class="n">toggle</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># silently default</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_intoggle</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_invariant</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_invariant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the declared state of time-invariance. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span>
+
+    <span class="nd">@time_invariant</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_invariant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invariant</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Declare whether the signal is time-invariant. &quot;&quot;&quot;</span>
+        <span class="c1"># find the required integrator</span>
+        <span class="k">if</span> <span class="n">invariant</span><span class="p">:</span> <span class="c1"># can we safely assume azimuthal invariance?</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.cellmesh.integrator_for_time_invariance</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># more general purpose</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator_toggle</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.cellmesh.integrator</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.cellmesh.integrator_for_azimuthal_invariance</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span> <span class="o">=</span> <span class="n">_integrator</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the number of rays integrated per colatitude. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
+
+    <span class="nd">@num_rays</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the number of rays integrated per colatitude. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of rays must be an integer.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the number of cell colatitudes. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span>
+
+    <span class="nd">@sqrt_num_cells</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the number of cell colatitudes. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+             <span class="n">_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of cells must be an integer.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_n</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="ow">or</span> <span class="n">_n</span><span class="o">%</span><span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of cells must be a positive even &#39;</span>
+                                 <span class="s1">&#39;integer greater than or equal to ten.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span> <span class="o">=</span> <span class="n">_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span> <span class="o">=</span> <span class="n">_n</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the total number of cells in the mesh. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_order_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the image order limit. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span>
+
+    <span class="nd">@image_order_limit</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_order_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the image order limit. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Image order limit must be an positive integer &#39;</span>
+                                <span class="s1">&#39;if not None.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span> <span class="o">=</span> <span class="n">limit</span>
+
+<div class="viewcode-block" id="Everywhere.print_settings">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere.print_settings">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Print numerical settings. &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Base number of cell parallels: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rays per parallel: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of photospheric leaves: &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of interpolation phases: &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Everywhere.set_phases">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere.set_phases">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_leaves</span><span class="p">,</span>
+                   <span class="n">num_phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Construct the set of interpolation phases and foliation leaves.</span>
+
+<span class="sd">        :param int num_leaves:</span>
+<span class="sd">            Number of leaves mesh motion is discretised into.</span>
+
+<span class="sd">        :param int num_phases:</span>
+<span class="sd">            Number of phases in a discrete representation of the specific flux</span>
+<span class="sd">            pulses on the interval :math:`[0,1]`. If ``None``, the number of</span>
+<span class="sd">            phases interpolated at is set equal to the number of leaves.</span>
+
+<span class="sd">        :param phases:</span>
+<span class="sd">            If not ``None``, a :class:`numpy.ndarray` of phases for a discrete</span>
+<span class="sd">            representation of the specific flux pulses on the interval</span>
+<span class="sd">            :math:`[0,1]`. If ``None`` (default), the :obj:`num_phases`</span>
+<span class="sd">            argument is utilised.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_phases</span> <span class="o">=</span> <span class="n">num_leaves</span>
+
+        <span class="k">if</span> <span class="n">phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_phases</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of phases must be an integer.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">phases</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="n">phases</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">phases</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">assert</span> <span class="n">phases</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">phases</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases must be a one-dimensional &#39;</span>
+                                <span class="s1">&#39;ndarray with monotonically increasing &#39;</span>
+                                <span class="s1">&#39;elements on the interval [0,1].&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span> <span class="o">=</span> <span class="n">phases</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">_2pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_2pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of leaves must be an integer.&#39;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the phases (in cycles) the pulse is interpolated at. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span>
+
+<div class="viewcode-block" id="Everywhere._construct_cellMesh">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere._construct_cellMesh">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_construct_cellMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Call a low-level routine to construct a mesh representation.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads for mesh construction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_cellArea</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_maxAlpha</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_cos_gamma</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_effGrav</span><span class="p">)</span> <span class="o">=</span> <span class="n">_construct_closed_cellMesh</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span><span class="p">,</span>
+                                                     <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                                     <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                                     <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                                     <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                                     <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                                     <span class="n">st</span><span class="o">.</span><span class="n">star_shape_ind</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calibrate_lag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calibrate lag for cell mesh and normalise by pulse period. &quot;&quot;&quot;</span>
+
+        <span class="n">R_i</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">R_r_s</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_s_over_r</span> <span class="o">-</span> <span class="n">R_i</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">+=</span> <span class="n">_log</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_s_over_r</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_i</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">C</span> <span class="o">*=</span> <span class="n">st</span><span class="o">.</span><span class="n">r_s</span> <span class="o">/</span> <span class="n">_c</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lag</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lag</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="n">C</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lag</span> <span class="o">*=</span> <span class="n">photosphere</span><span class="p">[</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span>
+
+<div class="viewcode-block" id="Everywhere._compute_rays">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere._compute_rays">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Trace (integrate) a set of rays.</span>
+
+<span class="sd">        These rays represent a null mapping from photosphere to a point at</span>
+<span class="sd">        some effective infinity.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads for ray integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_s_over_r</span> <span class="o">=</span> <span class="n">_contig</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">r_s</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="p">(</span><span class="n">terminate_calculation</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_deflection</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_cos_alpha</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_lag</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_maxDeflection</span><span class="p">)</span> <span class="o">=</span> <span class="n">_compute_rays</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span><span class="p">,</span>
+                                              <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_r_s_over_r</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_maxAlpha</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calibrate_lag</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">terminate_calculation</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RayError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical problem during ray integration.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Everywhere._compute_cellParamVecs">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere._compute_cellParamVecs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_cellParamVecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Precompute photospheric source radiation field parameter vectors</span>
+<span class="sd">        cell-by-cell. Free model parameters and derived (fixed) variables can</span>
+<span class="sd">        be transformed into local comoving radiation field variables.</span>
+
+<span class="sd">        Subclass and overwrite with custom functionality if you desire.</span>
+
+<span class="sd">        Designed here simply for uniform effective temperature (assuming</span>
+<span class="sd">        it is the first parameter in self.vector).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># all radiate, but can be changed with overwrite</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cellRadiates</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                        <span class="mi">2</span><span class="p">),</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effGrav</span></div>
+
+
+<div class="viewcode-block" id="Everywhere.embed">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere.embed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Embed the photosphere everywhere. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_rays</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Everywhere.integrate">
+<a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere.integrate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">atmosphere</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param energies: A one-dimensional :class:`numpy.ndarray` of energies</span>
+<span class="sd">                         in keV.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads the integrator is</span>
+<span class="sd">                            permitted to spawn.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">atm_ext</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atmosphere</span> <span class="o">==</span> <span class="p">():</span>
+                <span class="k">raise</span> <span class="n">AtmosError</span><span class="p">(</span><span class="s1">&#39;The numerical atmosphere data were not preloaded, &#39;</span>
+                                 <span class="s1">&#39;even though that is required by the current atmosphere extension.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cellArea</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_r_s_over_r</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_deflection</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cos_alpha</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_maxDeflection</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cos_gamma</span><span class="p">,</span>
+                                   <span class="n">energies</span><span class="p">,</span>
+                                   <span class="n">atmosphere</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">atm_ext</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                   <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                   <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cellArea</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_r_s_over_r</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cellRadiates</span><span class="p">,</span>
+                                   <span class="kc">None</span><span class="p">,</span> <span class="c1"># no intensity correction required</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_deflection</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cos_alpha</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_lag</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_maxDeflection</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_cos_gamma</span><span class="p">,</span>
+                                   <span class="n">energies</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
+                                   <span class="n">atmosphere</span><span class="p">,</span>
+                                   <span class="kc">None</span><span class="p">,</span> <span class="c1"># no other atmosphere needed</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">atm_ext</span><span class="p">,</span>
+                                   <span class="kc">None</span><span class="p">,</span> <span class="c1"># no other atmosphere needed</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">beam_opt</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegrationError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during integration.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+</div>
+
+
+<span class="n">Everywhere</span><span class="o">.</span><span class="n">_update_doc</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

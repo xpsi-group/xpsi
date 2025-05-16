@@ -1,0 +1,548 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Sample &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Sample</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Sample</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;run_multinest&quot;</span><span class="p">,</span> <span class="s2">&quot;run_emcee&quot;</span><span class="p">,</span> <span class="s2">&quot;run_ultranest&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi</span><span class="w"> </span><span class="kn">import</span> <span class="n">_comm</span><span class="p">,</span> <span class="n">_rank</span><span class="p">,</span> <span class="n">_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_verbose</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Likelihood</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Posterior</span><span class="w"> </span><span class="kn">import</span> <span class="n">Posterior</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.EmceeSampler</span><span class="w"> </span><span class="kn">import</span> <span class="n">EmceeSampler</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Check your installation of emcee if using the EmceeSampler&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.MultinestSampler</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultinestSampler</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Check your installation of PyMultiNest if using the MultinestSampler&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.UltranestSampler</span><span class="w"> </span><span class="kn">import</span> <span class="n">UltranestSampler</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Check your installation of UltraNest if using the UltranestSampler&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">posterior</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># Function defined on the module-level for function and module name pickling</span>
+<span class="c1"># during point-to-point MPI comminications. The global variable is set in</span>
+<span class="c1"># emcee() function before creation of an MPIPool.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">posterior</span>
+    <span class="k">return</span> <span class="n">posterior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="run_emcee">
+<a class="viewcode-back" href="../../sample.html#xpsi.Sample.run_emcee">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_emcee</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">MPI</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Initialise `emcee &lt;http://dfm.io/emcee/current/&gt;`_ and sample.</span>
+
+<span class="sd">    :param likelihood:</span>
+<span class="sd">        An instance of :class:`~.Likelihood.Likelihood`.</span>
+
+<span class="sd">    :param prior:</span>
+<span class="sd">        An instance of :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    :param bool MPI:</span>
+<span class="sd">        Parallelise with MPI? If calling script not lauched with an MPI</span>
+<span class="sd">        directive, sampling will not commence because there is only one</span>
+<span class="sd">        process. Default is ``True`` since only in testing is it justifiable to</span>
+<span class="sd">        use a single process.</span>
+
+<span class="sd">    :param kwargs:</span>
+<span class="sd">        Passed to initialisers of appropriate classes:</span>
+
+<span class="sd">            * boolean to resume, under keyword :obj:`resume`;</span>
+<span class="sd">            * number of steps, under keyword :obj:`nsteps`;</span>
+<span class="sd">            * number of walkers, under keyword :obj:`nwalkers`;</span>
+<span class="sd">            * moments of initial walker multivariate Gaussian distribution,</span>
+<span class="sd">              under keyword :obj:`walker_dist_moments` (can be ``None``);</span>
+<span class="sd">            * root directory for output, under keyword :obj:`root_dir`.</span>
+
+<span class="sd">    The above objects are used to instantiate :class:`~.Posterior.Posterior`.</span>
+
+<span class="sd">    :return: An instance of :class:`emcee.backends.HDFBackend`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># use the globally scoped variable</span>
+    <span class="k">global</span> <span class="n">posterior</span>
+    <span class="c1"># Callable instance of the posterior</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">Posterior</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span>
+                          <span class="n">prior</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">MPI</span> <span class="ow">or</span> <span class="n">_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">schwimmbad</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPIPool</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Check your schwimmbad package installation.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the MPI-based pool used for parallelisation.</span>
+        <span class="k">with</span> <span class="n">MPIPool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
+                <span class="c1"># Wait for instructions from the master process.</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="n">_sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Initialise emcee sampler</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">EmceeSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
+                                      <span class="n">posterior</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span>
+                                      <span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">,</span>
+                                      <span class="n">_posterior</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">,</span>
+                                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Commence emcee sampling process</span>
+            <span class="n">sampler</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Initialise emcee sampler</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">EmceeSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
+                                  <span class="n">posterior</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">,</span>
+                                  <span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Commence emcee sampling process</span>
+        <span class="n">sampler</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">sampler</span><span class="o">.</span><span class="n">backend</span></div>
+
+<div class="viewcode-block" id="run_multinest">
+<a class="viewcode-back" href="../../sample.html#xpsi.Sample.run_multinest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_multinest</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">check_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Initialise MultiNest and integrate.</span>
+
+<span class="sd">    :param dict likelihood:</span>
+<span class="sd">        Keyword arguments required for instantiation of</span>
+<span class="sd">        :class:`~.Likelihood.Likelihood`.</span>
+
+<span class="sd">    :param dict prior:</span>
+<span class="sd">        Keyword arguments required for instantiation of</span>
+<span class="sd">        :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    :param dict check_kwargs:</span>
+<span class="sd">        Keywords for likelihood function checker. Passed to checker before</span>
+<span class="sd">        commencement of sampling.</span>
+
+<span class="sd">    :param kwargs: Keyword arguments for PyMultiNest.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">check_kwargs</span><span class="p">:</span>
+        <span class="n">likelihood</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="o">**</span><span class="n">check_kwargs</span><span class="p">)</span>
+
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">MultinestSampler</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
+                               <span class="n">likelihood</span><span class="p">,</span>
+                               <span class="n">prior</span><span class="p">)</span>
+    <span class="n">sampler</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="run_ultranest">
+<a class="viewcode-back" href="../../sample.html#xpsi.Sample.run_ultranest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_ultranest</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span>
+                  <span class="n">prior</span><span class="p">,</span>
+                  <span class="n">sampler_params</span><span class="o">=</span><span class="p">{},</span>
+                  <span class="n">runtime_params</span><span class="o">=</span><span class="p">{},</span>
+                  <span class="n">use_stepsampler</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">stepsampler_params</span><span class="o">=</span><span class="p">{},</span>
+                  <span class="n">out_filename</span><span class="o">=</span><span class="s2">&quot;weighted_post_ultranest_xpsi&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/)</span>
+<span class="sd">        package (Buchner 2021).</span>
+
+<span class="sd">    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.</span>
+
+<span class="sd">    :param prior: An instance of :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    :param sampler_params: A dictionary of the keyword arguments passed to the</span>
+<span class="sd">        instance of :class:`~.UltranestSampler` to initialise the sampler.</span>
+
+<span class="sd">    :param runtime_params:  A dictionary of the keyword arguments passed to the</span>
+<span class="sd">        instance of :class:`~.UltranestSampler` to run the sampler.</span>
+
+<span class="sd">    :param use_stepsampler: Boolean indicating if the step sampler is used. In this</span>
+<span class="sd">        case the :class:`ultranest.stepsampler.SliceSampler` is used.</span>
+
+<span class="sd">    :param stepsampler_params: A dictionary of the keyword arguments passed to the</span>
+<span class="sd">        to the instance of :class:`~.UltranestSampler` specifying the step sampler</span>
+<span class="sd">        runtime parameters.</span>
+
+<span class="sd">    :param out_filename: String specifying the name of the output file.</span>
+
+<span class="sd">    :returns: An instance of :class:`~.UltranestSampler`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># initialise the sampler</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">UltranestSampler</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">sampler_params</span><span class="p">,</span> <span class="n">use_stepsampler</span><span class="p">,</span> <span class="n">stepsampler_params</span><span class="p">)</span>
+
+    <span class="c1"># start sampling</span>
+    <span class="n">sampler</span><span class="p">(</span><span class="n">runtime_params</span><span class="p">)</span>
+
+    <span class="c1"># print results</span>
+    <span class="n">sampler</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">use_stepsampler</span><span class="p">:</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">stepsampler</span><span class="o">.</span><span class="n">print_diagnostic</span><span class="p">()</span>
+
+    <span class="c1"># store output</span>
+    <span class="n">sampler</span><span class="o">.</span><span class="n">write_results</span><span class="p">(</span><span class="n">sampler_params</span><span class="p">,</span> <span class="n">out_filename</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sampler</span></div>
+
+
+
+<span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Importance sampling commencing&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Importance sampling completed&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">importance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">importance</span><span class="p">,</span>
+               <span class="n">sample_root</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span>
+               <span class="n">weight_threshold</span><span class="o">=</span><span class="mf">1.0e-3</span><span class="p">,</span>
+               <span class="n">likelihood_change</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">prior_change</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Importance sample from target using approximative distribution.</span>
+
+<span class="sd">    :param obj target:</span>
+<span class="sd">        A :class:`~.Likelihood` object for the target posterior distribution.</span>
+
+<span class="sd">    :param obj importance:</span>
+<span class="sd">        A :class:`~.Likelihood` object for the importance posterior</span>
+<span class="sd">        distribution. This distribution should be some sufficient approxmation</span>
+<span class="sd">        to the target distribution for validity.</span>
+
+<span class="sd">    :param str sample_root:</span>
+<span class="sd">        Path to sample files, with the file root but without the file extension.</span>
+
+<span class="sd">    :param list names:</span>
+<span class="sd">        The parameter names for the samples on disk. These names must match</span>
+<span class="sd">        the parameter names in the :class:`~.Likelihood` objects.</span>
+
+<span class="sd">    :param float weight_threshold:</span>
+<span class="sd">        Only use samples with weight greater than this fraction of the maximum</span>
+<span class="sd">        weight amongst samples.</span>
+
+<span class="sd">    :param bool likelihood_change:</span>
+<span class="sd">        Declare whether the likelihood function has changed. If so, it is</span>
+<span class="sd">        recommended that workload is distributed amongst a world of MPI</span>
+<span class="sd">        processes on a cluster.</span>
+
+<span class="sd">    :param bool prior_change:</span>
+<span class="sd">         Declare whether the prior density function has changed. Generally,</span>
+<span class="sd">         this reweighting factor is inexpensive to evaluate and can be</span>
+<span class="sd">         executed on a desktop in minutes.</span>
+
+<span class="sd">    :param bool overwrite:</span>
+<span class="sd">        Overwrite an existing importance sample file on disk?</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">likelihood_change</span> <span class="p">:</span>
+        <span class="n">surf</span><span class="o">=</span><span class="s2">&quot;likelihood_change&quot;</span>
+    <span class="k">if</span> <span class="n">prior_change</span><span class="p">:</span>
+        <span class="n">surf</span><span class="o">=</span><span class="s2">&quot;prior_change&quot;</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Cross-checking parameter names&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">importance</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Every target distribution parameter must &#39;</span>
+                        <span class="s1">&#39;be an importance distribution parameter.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Every target distribution parameter must be &#39;</span>
+                            <span class="s1">&#39;an importance sample space dimension.&#39;</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">importance</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;The importance samples must be &#39;</span>
+                                           <span class="s1">&#39;draws from the the importance &#39;</span>
+                                           <span class="s1">&#39;distribution&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">importance</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Every importance distribution parameter must be &#39;</span>
+                            <span class="s1">&#39;an importance sample space dimension.&#39;</span><span class="p">)</span>
+
+    <span class="n">_target_state_to_restore</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">externally_updated</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">_importance_state_to_restore</span> <span class="o">=</span> <span class="n">importance</span><span class="o">.</span><span class="n">externally_updated</span>
+    <span class="n">importance</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Loading samples&#39;</span>
+    <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">sample_root</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="n">_max</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">samples</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">_ref</span> <span class="o">=</span> <span class="n">importance_sampled</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">samples</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">_max</span> <span class="o">&gt;=</span> <span class="n">weight_threshold</span><span class="p">,:]</span>
+
+        <span class="k">yield</span> <span class="s1">&#39;Importance sample fraction = </span><span class="si">%.3f%%</span><span class="s1">.&#39;</span><span class="o">%</span><span class="p">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Helper function for to break conditional statement. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;prior&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">importance</span><span class="p">,</span> <span class="s1">&#39;prior&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">1.0</span> <span class="c1"># silently terminate</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">1.0</span> <span class="c1"># silently terminate</span>
+
+        <span class="n">_target_theta</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="n">_importance_theta</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">importance</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">likelihood_change</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">_target_theta</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">importance</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">_importance_theta</span><span class="p">)</span>
+
+        <span class="n">_target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">_target_theta</span><span class="p">)</span>
+        <span class="n">_importance</span> <span class="o">=</span> <span class="n">importance</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">_importance_theta</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">likelihood_change</span><span class="p">:</span> <span class="c1"># memoization: revert parameter value cache</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">importance</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">importance</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_target</span><span class="o">/</span><span class="n">_importance</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Distributing workload amongst </span><span class="si">%i</span><span class="s1"> MPI processes&#39;</span><span class="o">%</span><span class="n">_size</span>
+    <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># number of MPI scatterings</span>
+        <span class="n">_iterations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_m</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">_size</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_iterations</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">_iterations</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">bcast</span><span class="p">(</span><span class="n">_iterations</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_iterations</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_remaining</span> <span class="o">=</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">2</span><span class="p">:]]</span>
+                <span class="n">theta</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">_size</span> <span class="o">-</span> <span class="n">_remaining</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">_size</span><span class="p">,</span><span class="mi">2</span><span class="p">:]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_target</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+                <span class="n">_target</span> <span class="o">=</span> <span class="n">target</span><span class="p">([</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">])</span>
+                <span class="n">_importance</span> <span class="o">=</span> <span class="n">importance</span><span class="p">([</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">importance</span><span class="o">.</span><span class="n">names</span><span class="p">])</span>
+                <span class="c1"># objects return logarithm of likelihood</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">_target</span> <span class="o">-</span> <span class="n">_importance</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">prior_change</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">weight</span> <span class="o">*=</span> <span class="n">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">weight</span> <span class="o">=</span> <span class="n">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+            <span class="n">_target</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">_target</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weight</span><span class="p">[:</span><span class="n">_remaining</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+                    <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_target</span><span class="p">[:</span><span class="n">_remaining</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">_size</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+                    <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">_size</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_target</span><span class="p">)</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Renormalising weights&#39;</span>
+    <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># renormalise</span>
+        <span class="n">_ref</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">_ref</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">_file</span> <span class="o">=</span> <span class="n">sample_root</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;_importance_sampled_</span><span class="si">{</span><span class="n">surf</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span>
+        <span class="k">if</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_file</span><span class="p">):</span>
+            <span class="n">_write</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_write</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">_write</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;Writing to disk&#39;</span>
+            <span class="n">_np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">_file</span><span class="p">,</span> <span class="n">_ref</span><span class="p">)</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Restoring likelihood-object parameter update protocol attributes&#39;</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">_target_state_to_restore</span>
+    <span class="n">importance</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">_importance_state_to_restore</span>
+
+    <span class="k">yield</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ensemble</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">MPI</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;ensemble() is deprecated and will be removed in X-PSI v4.0 &quot;</span>
+        <span class="s2">&quot;Please use run_emcee() instead.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">run_emcee</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">MPI</span> <span class="o">=</span> <span class="n">MPI</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">nested</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">check_kwargs</span><span class="o">=</span><span class="p">{},</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;nested() is deprecated and will be removed in X-PSI v4.0 &quot;</span>
+        <span class="s2">&quot;Please use run_multinest() instead.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">run_multinest</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">check_kwargs</span><span class="o">=</span><span class="n">check_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ultranested</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span>
+                <span class="n">prior</span><span class="p">,</span>
+                <span class="n">sampler_params</span><span class="o">=</span><span class="p">{},</span>
+                <span class="n">runtime_params</span><span class="o">=</span><span class="p">{},</span>
+                <span class="n">use_stepsampler</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">stepsampler_params</span><span class="o">=</span><span class="p">{},</span>
+                <span class="n">out_filename</span><span class="o">=</span><span class="s2">&quot;weighted_post_ultranest_xpsi&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;ensemble() is deprecated and will be removed in X-PSI v4.0 &quot;</span>
+        <span class="s2">&quot;Please use run_ultranest() instead.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">run_ultranest</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span>
+                         <span class="n">prior</span><span class="p">,</span>
+                         <span class="n">sampler_params</span><span class="o">=</span><span class="n">sampler_params</span><span class="p">,</span>
+                         <span class="n">runtime_params</span><span class="o">=</span><span class="n">runtime_params</span><span class="p">,</span>
+                         <span class="n">use_stepsampler</span><span class="o">=</span><span class="n">use_stepsampler</span><span class="p">,</span>
+                         <span class="n">stepsampler_params</span><span class="o">=</span><span class="n">stepsampler_params</span><span class="p">,</span>
+                         <span class="n">out_filename</span><span class="o">=</span><span class="n">out_filename</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Posterior Inference using SBI &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Likelihood API" href="likelihood_api.html" />
+    <link rel="prev" title="Example job" href="Example_job.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Posterior Inference using SBI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Initialization">Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Preparing-for-SBI">Preparing for SBI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Training-SBI">Training SBI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Plotting-posteriors">Plotting posteriors</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Posterior Inference using SBI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/x_p_sbi.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Posterior-Inference-using-SBI">
+<h1>Posterior Inference using SBI<a class="headerlink" href="#Posterior-Inference-using-SBI" title="Link to this heading"></a></h1>
+<p>Simulation-Based Inference (SBI) with Neural Posterior Estimation (NPE) is a statistical framework for parameter inference in complex models. Instead of relying on an explicit likelihood function, NPE uses simulations to generate synthetic data and trains neural networks to learn an approximate posterior distribution of the parameters given observed data. This approach is typically used when the likelihood is intractable or expensive to compute, making traditional methods impractical. For pulse
+profile modelling, while the likelihood computation is tractable, sampling complex high-dimensioinal parameter spaces can get computationally expensive. SBI provides a potentially lucrative alternative to this problem.</p>
+<p>In this example notebook, we utilize the <code class="docutils literal notranslate"><span class="pre">sbi</span></code> package to perform this. Refer to the installation instructions for additional dependencies required to run this notebook.</p>
+<section id="Initialization">
+<h2>Initialization<a class="headerlink" href="#Initialization" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>## IMPORTANT: Import sequence - torch, sbi, and xpsi.
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from sbi import utils as utils
+from sbi import analysis as analysis
+from sbi.neural_nets import posterior_nn
+from sbi.inference import SNPE, simulate_for_sbi
+from sbi.utils.user_input_checks import prepare_for_sbi
+
+import numpy as np
+import math
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+rc = {&quot;font.family&quot; : &quot;serif&quot;,
+      &quot;mathtext.fontset&quot; : &quot;stix&quot;}
+plt.rcParams.update(rc)
+plt.rcParams[&quot;font.serif&quot;] = [&quot;Times New Roman&quot;] + plt.rcParams[&quot;font.serif&quot;]
+plt.rcParams.update({&#39;font.size&#39;: 18})
+plt.rcParams.update({&#39;legend.fontsize&#39;: 15})
+
+import xpsi
+
+import sys
+## Add your path to the example modules to run this notebook
+sys.path.append(&#39;../../examples/examples_fast/Modules/&#39;)
+
+
+import xpsi.SBI_wrapper as SBI_wrapper
+from xpsi.SBI_wrapper import xpsi_wrappers
+import xpsi.utilities.Example_CNNs as CNNs
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.0               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.6
+Imported PyMultiNest.
+Imported UltraNest.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Check that cuda is available
+print( &#39;cuda is available: &#39; , torch.cuda.is_available() )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+cuda is available:  False
+</pre></div></div>
+</div>
+<p>Importing modules from <code class="docutils literal notranslate"><span class="pre">examples_fast</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import main
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+No parameters supplied... empty subspace created.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.140e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 1.600e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [1.000e+01, 1.300e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [5.000e-01, 2.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [1.000e-03, 1.570e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [1.000e-03, 1.570e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [6.000e+00, 7.000e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.140e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+No parameters supplied... empty subspace created.
+Checking likelihood and prior evaluation before commencing sampling...
+Not using ``allclose`` function from NumPy.
+Using fallback implementation instead.
+Checking closeness of likelihood arrays:
+-3.1603740790e+04 | -3.1603740790e+04 .....
+Closeness evaluated.
+Log-likelihood value checks passed on root process.
+Checks passed.
+</pre></div></div>
+</div>
+</section>
+<section id="Preparing-for-SBI">
+<h2>Preparing for SBI<a class="headerlink" href="#Preparing-for-SBI" title="Link to this heading"></a></h2>
+<p>First we follow procedures for synthetic data generation that will be used by SBI to generate training data. The <code class="docutils literal notranslate"><span class="pre">SBI_wrapper</span></code> module consists of multiple classes and functions, including the usual data synthesis process but with some extended functionalities.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>_data = SBI_wrapper.SynthesiseData(main.Instrument.channels,
+                                   main.data.phases,
+                                   0,
+                                   len(main.Instrument.channels) - 1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>main.CustomSignal.synthesise = SBI_wrapper.synthesise
+signal = main.CustomSignal(data = _data,
+                           instrument = main.Instrument,
+                           background = None,
+                           interstellar = None,
+                           prefix=&#39;instr&#39;,
+                           cache=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+No data... can synthesise data but cannot evaluate a likelihood function.
+</pre></div></div>
+</div>
+<p>In the code block above, the background has been set to <code class="docutils literal notranslate"><span class="pre">None</span></code>. In its current form, it’s recommended to either fix the background or use a parameterized functional background model since the <code class="docutils literal notranslate"><span class="pre">default_background_marginalisation</span></code> is only utilized during the likelihood computation process that SBI skips.</p>
+<p>In principle, one may leave the background free and then allow the neural network to simply learn what the background is for any given dataset. However, performance in such a scenario has not been tested, and one may expect that to introduce too much degeneracy in the parameter space for SBI to work meaningfully.</p>
+<p>In the code block below, we are using a <code class="docutils literal notranslate"><span class="pre">Custom_SBI_Likelihood</span></code> that inherits fromt the <code class="docutils literal notranslate"><span class="pre">xpsi.Likelihood</span></code> class and modifies that <code class="docutils literal notranslate"><span class="pre">_driver</span></code> and <code class="docutils literal notranslate"><span class="pre">synthesise</span></code> methods to return <code class="docutils literal notranslate"><span class="pre">model_flux</span></code> that is the synthesised signal, which then constitutes the training dataset.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>likelihood = SBI_wrapper.Custom_SBI_Likelihood(star = main.star,
+                                               signals = signal,
+                                               prior = main.prior,
+                                               num_energies = 64,
+                                               threads = 1)
+print(likelihood)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+
+</pre></div></div>
+</div>
+<p>During training, SBI learns the joint data and model space <span class="math notranslate nohighlight">\(P(\theta; D)\)</span>, where the model is defined by the free parameters (the ones shown above in this example). In this process, it essentially also approximates the likelihood <span class="math notranslate nohighlight">\(P(D|\theta)\)</span> without explicitly calculating it.</p>
+</section>
+<section id="Training-SBI">
+<h2>Training SBI<a class="headerlink" href="#Training-SBI" title="Link to this heading"></a></h2>
+<p>With our prerequisites in place, we first instantiate our <code class="docutils literal notranslate"><span class="pre">simulator</span></code> and <code class="docutils literal notranslate"><span class="pre">prior</span></code> for SBI. To do so, we need to inform the <code class="docutils literal notranslate"><span class="pre">sbi</span></code> package about our pulse profile generator (defined by <code class="docutils literal notranslate"><span class="pre">SBI_wrapper.xpsi_wrappers.simulator</span></code>) and prior distributions (defined by <code class="docutils literal notranslate"><span class="pre">SBI_wrapper.xpsi_wrappers.sample</span></code> and <code class="docutils literal notranslate"><span class="pre">SBI_wrapper.xpsi_wrappers.log_prob</span></code>) for our free model parameters. These methods are in compliance with the requirements of the <code class="docutils literal notranslate"><span class="pre">sbi</span></code> package for training.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">SBI_wrapper.xpsi_wrappers.simulator</span></code> calls the <code class="docutils literal notranslate"><span class="pre">synthesise</span></code> method that we bound to <code class="docutils literal notranslate"><span class="pre">main.CustomSignal</span></code> above, which in turn requires information about the <code class="docutils literal notranslate"><span class="pre">exposure_time</span></code> (or <code class="docutils literal notranslate"><span class="pre">expected_source_counts</span></code>), <code class="docutils literal notranslate"><span class="pre">nchannels</span></code> and <code class="docutils literal notranslate"><span class="pre">nphases</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">prepare_for_sbi</span></code> functionality of <code class="docutils literal notranslate"><span class="pre">sbi</span></code> then checks whether its internal requirements are met, reshapes and typecasts them into usable products for training.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>instr_kwargs = dict(exposure_time = 1.0E+06,    # alternatively input
+                                                # expected_source_counts
+                    nchannels = len(main.Instrument.channels),
+                    nphases = len(main.data.phases))
+
+wrapped = xpsi_wrappers(prior = main.prior,
+                        likelihood = likelihood,
+                        instr_kwargs = instr_kwargs,
+                        train_using_CNNs = True)
+
+simulator, prior = prepare_for_sbi(wrapped.simulator, wrapped)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_36371/4002819185.py:11: DeprecationWarning: This method is deprecated as of sbi version v0.23.0. and will be removed in a         future release.Please use `process_prior` and `process_simulator` in the future.
+  simulator, prior = prepare_for_sbi(wrapped.simulator, wrapped)
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/sbi/utils/user_input_checks_utils.py:28: UserWarning: No prior bounds were passed, consider passing lower_bound and / or upper_bound if your prior has bounded support.
+  self.custom_support = build_support(lower_bound, upper_bound)
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/sbi/utils/user_input_checks_utils.py:30: UserWarning: Prior is lacking mean attribute, estimating prior mean from samples.
+  self._set_mean_and_variance()
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/saltuomo/.conda/envs/xpsi_py3/lib/python3.12/site-packages/sbi/utils/user_input_checks_utils.py:30: UserWarning: Prior is lacking variance attribute, estimating prior variance from samples.
+  self._set_mean_and_variance()
+</pre></div></div>
+</div>
+<p>Now, we generate training samples. Here we are using 1000 samples for training. This is insufficient for the complexity of the given model and is only used for tutorial purposes. (Tip: Save the training samples for future use. Not done here.)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>theta, x = simulate_for_sbi(simulator,
+                            proposal=prior,
+                            num_simulations=100, #1000,    # Reduced for quick testing
+                            num_workers=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Drawing samples from the joint prior...
+Samples drawn.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "413bb9dfa4be421fb229e8bbde7487c2", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>Phase-energy-resolved pulse profiles are equivalent to 2D (grayscale) images. Therefore, Convolutional Neural Networks (CNNs) can be utilized, in principle, to better capture neighbouring information between adjacent sets of pixels. <code class="docutils literal notranslate"><span class="pre">xpsi.utilities.Example_CNNs</span></code> provides a set of CNN architectures, including pre-trained architectures from PyTorch <code class="docutils literal notranslate"><span class="pre">ResNet</span></code> and <code class="docutils literal notranslate"><span class="pre">ResNeXt</span></code>.</p>
+<p>Below we use the relatively simple CNN architecture <code class="docutils literal notranslate"><span class="pre">C2P1_FC1</span></code> to pass onto <code class="docutils literal notranslate"><span class="pre">sbi</span></code> as an <code class="docutils literal notranslate"><span class="pre">embedding_net</span></code> for feature retrieval during training. One may also choose to not use any <code class="docutils literal notranslate"><span class="pre">embedding_net</span></code> and simply pass a flattened 1D pulse profile (or a 1D bolometric pulse profile).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>embedding_net = CNNs.C2P1_FC1(nchannels = len(main.Instrument.channels),
+                              nphases = len(main.data.phases) - 1)
+</pre></div>
+</div>
+</div>
+<p>We now instantiate the neural posterior estimator <code class="docutils literal notranslate"><span class="pre">SNPE</span></code>, using our sbi-compatible <code class="docutils literal notranslate"><span class="pre">prior</span></code> and a <code class="docutils literal notranslate"><span class="pre">density_estimator</span></code> where we specify NN-architecture for this. In this notebook, we have used a Masked Autoregressive Flow (MAF) model architecture. The <code class="docutils literal notranslate"><span class="pre">sbi</span></code> package documentation details other model architectures that we can use in this regard.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>neural_posterior = posterior_nn(model=&quot;maf&quot;,    # Masked Autoregressive Flow
+                                embedding_net=embedding_net,  # skip if not using CNN
+                                hidden_features=10,
+                                num_transforms=2)
+device = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;    # cuda for training on Nvidia GPUs
+inference = SNPE(prior=prior, density_estimator=neural_posterior, device=device)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Drawing samples from the joint prior...
+Samples drawn.
+</pre></div></div>
+</div>
+<p>Time to train! 🏃‍♂️💪</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>density_estimator = inference.append_simulations(theta, x).train()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ Neural network successfully converged after 754 epochs.
+</pre></div></div>
+</div>
+<p>Hooray! 🎉</p>
+<p>Note that the number of epochs required for training can vary quite a lot upon re-running this notebook since we are using too few training samples.</p>
+</section>
+<section id="Plotting-posteriors">
+<h2>Plotting posteriors<a class="headerlink" href="#Plotting-posteriors" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>posterior = inference.build_posterior(density_estimator)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Drawing samples from the joint prior...
+Samples drawn.
+Drawing samples from the joint prior...
+Samples drawn.
+</pre></div></div>
+</div>
+<p>Finally, we plot the posteriors corresponding to an input test observation. We draw 10k samples from the posterior to plot the distribution, using the native plotter in the <code class="docutils literal notranslate"><span class="pre">sbi</span></code> package.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>p = [1.4,  # mass
+     12,   # radius
+     1.0,  # distance
+     math.cos(np.radians(60)),  # inclination
+     0.5,  # phase shift
+     np.radians(70),  # super colatitude
+     0.75, # super radius
+     6.7]  # super temperature
+test_observation = torch.Tensor(likelihood.synthesise(p, force=True, instr=instr_kwargs))
+if torch.cuda.is_available():
+    test_observation = test_observation.cuda()
+
+samples = posterior.sample((10000,), x=test_observation)
+
+_ = analysis.pairplot(samples.cpu(),
+                      limits=[[1, 3.0], [3, 20], [0.0, 2.0], [0.0, math.pi], [0.0, 1.0], [0.0, math.pi], [0.0, math.pi/2.0], [5.0, 7.0]],
+                      figsize=(10, 10),
+                      points=np.array(p),
+                      labels=[r&#39;M$_{\odot}$&#39;, r&#39;R [km]&#39;, r&#39;D [pc]&#39;, r&#39;cos $i$&#39;, r&#39;$\phi$ [cycles]&#39;, r&#39;$\theta$ [rad]&#39;, r&#39;$\zeta$ [rad]&#39;, r&#39;T [K]&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "3cd3341a7220450eb316715bab52d0b3", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/x_p_sbi_30_1.png" src="_images/x_p_sbi_30_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Example_job.html" class="btn btn-neutral float-left" title="Example job" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="likelihood_api.html" class="btn btn-neutral float-right" title="Likelihood API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

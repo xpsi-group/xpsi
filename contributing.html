@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History" href="history.html" />
+    <link rel="prev" title="Code of Conduct" href="code_of_conduct.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#git-workflow">Git workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#advisory-workflow-for-contributing">Advisory workflow for contributing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-request-handling-and-development-workflow">Pull Request Handling and Development Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contributing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/contributing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing">
+<span id="id1"></span><h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
+<p>We outline below the workflow we use for developing X-PSI.</p>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Link to this heading"></a></h2>
+<p>You are welcome to contact members of the X-PSI team directly if you have
+any questions about the software or its use (for the current active list see
+the <a class="reference internal" href="acknowledgements.html#acknowledgements"><span class="std std-ref">Team and acknowledgements</span></a> page).
+To get in touch with us regarding bugs and issues the easiest way is via the
+github <a class="reference external" href="https://github.com/xpsi-group/xpsi/issues/">Issues</a> page.</p>
+</section>
+<section id="id2">
+<h2>Contributing<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>To contribute to this project you can do so whilst being recognised as either
+a community member or a team member. If you contribute to feature development
+publicly on GitHub, you may well be invited to be recognised as a team member in
+the <a class="reference internal" href="acknowledgements.html#acknowledgements"><span class="std std-ref">Team and acknowledgements</span></a>.</p>
+<p>Past developers are recognised as team members unless they no longer wish to be.
+Aside from acknowledging your contribution, this is useful for feature
+maintenance and as a contact point for questions, if permission is granted.
+Past team members will be acknowledged as such.</p>
+<p>If you wish to base a major research project on the
+development and/or application of X-PSI, we invite you to discuss you (and your
+group where applicable) joining the X-PSI team in order to collaborate. If you
+find this idea interesting then please contact Anna Watts (contact details
+are on the <a class="reference internal" href="acknowledgements.html#acknowledgements"><span class="std std-ref">Team and acknowledgements</span></a> page).</p>
+</section>
+<section id="git-workflow">
+<span id="workflow"></span><h2>Git workflow<a class="headerlink" href="#git-workflow" title="Link to this heading"></a></h2>
+<section id="advisory-workflow-for-contributing">
+<h3>Advisory workflow for contributing<a class="headerlink" href="#advisory-workflow-for-contributing" title="Link to this heading"></a></h3>
+<p>X-PSI is an open-source project and we aspire that all X-PSI versions required
+for reproducibility of publications have release tags on GitHub.</p>
+<p>End-users and community contributors can interact with the project freely on
+GitHub. If you wish to contribute code, either in the form of a patch, a tweak,
+or a feature, but you are uncertain about the workflow, we now provide an
+advisory workflow.</p>
+<ul class="simple">
+<li><p>Clone the <code class="docutils literal notranslate"><span class="pre">xpsi</span></code> repository to your local computer:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/xpsi-group/xpsi.git<span class="w"> </span>&lt;path/to/xpsi&gt;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>You will be on the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch by default; this branch by default tracks
+the official (or central) <code class="docutils literal notranslate"><span class="pre">origin/main</span></code> branch. Moreover, <code class="docutils literal notranslate"><span class="pre">main</span></code>
+is merely to act as an image of <code class="docutils literal notranslate"><span class="pre">origin/main</span></code>, meaning that official
+upstream commits can always be applied to <code class="docutils literal notranslate"><span class="pre">main</span></code> via a fast-foward merge.</p></li>
+<li><p>Checkout a local branch for your work, which we’ll assume is some patch, but
+could be a feature or otherwise:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>patch/fix_something
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Commit your work to <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s1">&#39;patch something&#39;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Check to see if any there are any new upstream commits, which would mean
+that <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code> and <code class="docutils literal notranslate"><span class="pre">origin/main</span></code> have diverged:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>fetch<span class="w"> </span>origin<span class="w"> </span>main:main
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If the branches have diverged, you can either rebase <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code>
+on <code class="docutils literal notranslate"><span class="pre">main</span></code> or merge <code class="docutils literal notranslate"><span class="pre">main</span></code> into <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code>, in either case
+resolving any conflicts:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>rebase<span class="w"> </span>main<span class="w"> </span>&lt;or&gt;<span class="w"> </span>git<span class="w"> </span>merge<span class="w"> </span>main
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Note that if you have already pushed <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code> to a remote
+repository you own (such as a fork of <code class="docutils literal notranslate"><span class="pre">xpsi</span></code>; see below), and especially if
+this is accessible by others (e.g., via  submitted pull request), you should
+only consider merging <code class="docutils literal notranslate"><span class="pre">main</span></code> into <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code> in order to
+preserve the branch history.</p></li>
+<li><p>After integrating upstream changes, you might decide to continue working on
+your branch. Alternatively, you could work on another branch for a different
+patch or feature. In either case you should repeat the process of integrating
+upstream changes as appropriate, and as a requirement if preparing for a pull
+request (although there could be exceptional corner cases wherein an X-PSI
+team member assists with this merging process).</p></li>
+<li><p>Once you are ready to contribute your work to the <code class="docutils literal notranslate"><span class="pre">xpsi</span></code> repository,
+generally meaning that you have integrated any upsteam changes from <code class="docutils literal notranslate"><span class="pre">xpsi</span></code>,
+you need a fork of the <code class="docutils literal notranslate"><span class="pre">xpsi</span></code> repository on the same hosting platform
+(GitHub). You can create a fork using the GitHub GUI.</p></li>
+<li><p>With the address of your <code class="docutils literal notranslate"><span class="pre">fork</span></code> you can add it as a remote to your local
+repository:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>fork<span class="w"> </span>https://github.com/&lt;username&gt;/xpsi.git
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Now push <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code> to <code class="docutils literal notranslate"><span class="pre">fork</span></code>, creating a remote branch
+<code class="docutils literal notranslate"><span class="pre">fork/patch/fix_something</span></code> that <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code> tracks:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>fork
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Now you can submit a pull request, using the GitHub GUI, from
+<code class="docutils literal notranslate"><span class="pre">fork/patch/fix_something</span></code> to <code class="docutils literal notranslate"><span class="pre">xpsi/main</span></code>. Please reference any open
+issues that are to be closed or are relevant to the proposed changes.</p></li>
+<li><p>You can update the pull-request topic branch by pushing additional commits
+from <code class="docutils literal notranslate"><span class="pre">patch/fix_something</span></code> to <code class="docutils literal notranslate"><span class="pre">fork/patch/fix_something</span></code>, which will
+update the pull request automatically:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push
+</pre></div>
+</div>
+</section>
+<section id="pull-request-handling-and-development-workflow">
+<h3>Pull Request Handling and Development Workflow<a class="headerlink" href="#pull-request-handling-and-development-workflow" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Pull request review and outcome:</strong> The pull request will then be reviewed
+and discussed. The proposed changes will either be  merged or a merge will be
+pending because we request additional commits on the pull-request topic
+branch. Your pull request may be declined in some instances because the work
+reproduces development work that has already been performed but not published;
+your pull request may also be ultimately declined if it contains changes or
+implementations that we do not support or cannot maintain, and which cannot
+for some reason be separated from changes we do support and could maintain.
+Your intellectual contribution to the project will be gratefully acknowledged
+in the <a class="reference internal" href="acknowledgements.html#acknowledgements"><span class="std std-ref">Team and acknowledgements</span></a> and/or in the project <a class="reference internal" href="changelog_docs.html#history"><span class="std std-ref">[v3.0.6] - 2025-05-12</span></a> if this
+interaction leads to some form of merged development/implementation by another
+community member, even if your pull request is ultimately declined.</p></li>
+<li><p><strong>Acknowledging co-authors:</strong> If you co-authored a pull request with one or
+more collaborators, you can acknowledge them using the GitHub pull-request GUI
+as you would for a single commit. When a pull request is accepted, it is
+typically going to be via a merge-squash unless the history is clean or work
+will continue to be commited on the topic branch after the merge (where
+applicable). In this case it is the responsiblity of the X-PSI team member
+executing the merge to replicate the list of co-authors from the original pull
+request in the squash message.</p></li>
+<li><p><strong>Handling merge conflicts:</strong> When a pull request is merged, conflicts will
+either need to be resolved locally by you as suggested above, ending in a pull
+request update, or by an X-PSI team member locally and then merged with or
+without a pull request.</p></li>
+<li><p><strong>Developing new features or patches:</strong> If you are ready to start development
+on a distinct patch or feature that is not conditional on your open pull
+requests being merged, then you can apply the workflow above by branching
+(again) off of an up-to-date <code class="docutils literal notranslate"><span class="pre">main</span></code>. If your work <em>is</em> conditional on your
+open pull requests, you are free to continue your development by commiting to
+the relevant topic branch (or according to some other branching scheme).
+However, there is a risk that more work will be needed if the open pull
+request is not merged into the central repository; or if only a subset of
+proposed changes are merged; or conflict resolution does not favour all of the
+changes you proposed. Of course, such work may nevertheless remain useful in
+your own applications even if it is never all merged into the central
+repository. If the pull request is merged after your continuation, and the
+plan is submit a future pull request, you will have to merge in the
+<code class="docutils literal notranslate"><span class="pre">xpsi/main</span></code> branch before opening another pull request so that the merge
+conflicts that were already resolved are not raised again.</p></li>
+<li><p><strong>Working with non-main branches:</strong> The above workflow also applies to remote
+branches other than <code class="docutils literal notranslate"><span class="pre">main</span></code> that might exist in the <code class="docutils literal notranslate"><span class="pre">xpsi</span></code> repository that
+you wish to contribute to, but this should be a less common pattern.</p></li>
+</ul>
+<p>If you want to contribute a feature, you are welcome to communicate with us
+either on GitHub via issues and pull-requests, or by contacting a team member
+directly.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="code_of_conduct.html" class="btn btn-neutral float-left" title="Code of Conduct" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="history.html" class="btn btn-neutral float-right" title="History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

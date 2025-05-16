@@ -1,0 +1,2151 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emitting Patterns 2D Projection &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Accretion disk" href="Accretion_disk.html" />
+    <link rel="prev" title="Post-processing" href="Post-processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Emitting Patterns 2D Projection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#TEST-A)-1-hot-spot-models">TEST A) 1-hot spot models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#TEST-B)-2-hot-spot-models">TEST B) 2-hot spot models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Emitting Patterns 2D Projection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Emitting_patterns_2Dprojection.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Emitting-Patterns-2D-Projection">
+<h1>Emitting Patterns 2D Projection<a class="headerlink" href="#Emitting-Patterns-2D-Projection" title="Link to this heading"></a></h1>
+<p>In this tutorial we show how to use the 2D projection tool.</p>
+<p>The function used below needs the file <code class="docutils literal notranslate"><span class="pre">xpsi/utilities/ProjectionTool.py</span></code>. You can also use this file and the corresponding functions without having X-PSI installed.</p>
+<h4><p>WARNING! If the code exits too many times through IpyExit, it will return an error and you may need to re-start the ipython notebook kernel</p>
+</h4><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+import numpy as np
+import math
+
+from matplotlib import pyplot as plt
+</pre></div>
+</div>
+</div>
+<p>If you installed X-PSI, run the code below</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import xpsi
+from xpsi.utilities.ProjectionTool import plot_projection_general
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.0               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.6
+Imported PyMultiNest.
+Imported UltraNest.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#Else run the code below
+# uncomment the lines below and substitute &lt;root&gt; with your path to your local clone of the X-PSI git repository
+#!ln -s ../../xpsi/utilities/ProjectionTool.py .
+#from ProjectionTool import plot_projection_general
+</pre></div>
+</div>
+</div>
+<p>X-PSI models have one or two hot spots. According to the X-PSI naming convention we refer to them as the primary (‘p’) and secondary (‘s’), if two hot spots are modeled.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">plot_projection_general</span></code> function takes at least 3 arguments:</p>
+<ul><li><p><strong>Input parameters [dict]</strong>: in the form of X-PSI likelihood object or dictionary (for examples on use of the former see <a class="reference external" href="Modeling.html">Modeling tutorial</a>);</p>
+</li><li><p><strong>model [string]</strong>: model describing the emission (this information overwrite the information given by the set of passed parameters);</p>
+</li><li><p><strong>Point Of View [string/list/vector]</strong>: the projection requires the definition of a point of view. This is given as a string argument or as a 3D vector. The string argument describes points of view associated with the model. One that is common for every model is “I”, this takes as entry the value associated to ‘cos_incliation’ as colatitude defining the center of the projection; in this case the phase is set to the X-PSI defined 0.0 phase. Other string possibilities depend on the model and could
+be “PE”, origin of the projection set to the primary emitting component (when the primary has also an omitting component) or “P” or “S” if respectively the primary or the secondary has a single component. If the wrong entry is provided, suggestions are given; in general: the first letter P/S stands for primary/secondary; the second letter S/C stands for super/cede component (if a ceding component is present); E/O stand for emitting/omitting component (if an omitting component is present). It is
+also possible to give a vector (describing a point of the surface from the origin=center of the unitary sphere) as a point of view; that would direct the center of the projection to that point.</p>
+</li></ul><p>Additional optional arguments are:</p>
+<ul><li><p><strong>ThetaDisplay [string]</strong>: plots in one hemisphere some circles, at equal distance in colatitude, to give an idea of the colatitude values, “SP” and “NP” for plotting them respectively with center “South pole” or “North pole”; if no argument is given, it takes the origin of the projection as reference point for drawing colatitude circles;</p>
+<li><p><strong>antiphase [bool]</strong>: replies to the question “Is the secondary hot spot defined with <em>anti-phase</em> on (i.e. defined from an origine 0.5 a cycle away from the origin of the primary hot spot)?” (yes=True; no = False -default)</p>
+<li><p><strong>SaveFlag [bool]</strong>: replies to the question “Do you want to save the figure?” (yes=True; no = False - default)</p>
+<li><p><strong>dir [string]</strong>: name of the directory where to save the image, if SaveFlag = True (default “”)</p>
+<li><p><strong>Name [string]</strong>: additional string to add to the name of the figure, if SaveFlag = True (default “”)</p>
+<li><p><strong>POVname [string]</strong>: string specifying the point of view, added to the name of the figure, if SaveFlag = True (default “”)</p>
+<li><p><strong>extension [string]</strong>: string specifying the extension of the figure (default “.png”)</p>
+<li><p><strong>antipodal [bool]</strong>: replies to the question “Do you want to also plot a fictitious hot spot antipodal to the primary?” (yes=True; no = False - default)</p>
+</ul><h4><p>Please note that warnings produced with this tool do not cover all the extensive checks and conditions in place within X-PSI</p>
+</h4><p>For example there are no checks requiring the overlap of two components of the same hot spot and similarly there is no specific test (and therefore warning) checking if the superseding component is indeed in an “eccentric” location, if so specified by the model name. There are also no tests checking if the superseding or the omitting region completely covers the other component, unless the model is specified to be concentric.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+</pre></div>
+</div>
+</div>
+<section id="TEST-A)-1-hot-spot-models">
+<h2>TEST A) 1-hot spot models<a class="headerlink" href="#TEST-A)-1-hot-spot-models" title="Link to this heading"></a></h2>
+<h3><p>TEST A.1) Testing 1 hot spot made of a single component</p>
+</h3><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>### setting the dictionary with a normal X-PSI set of parameters describing the likelihood objectd
+### single temperature hot spot (more details over models and parameters can be found Riley et al. 2019)
+
+labels_1hs = [
+          &#39;mass&#39;,                 # will not be used for the projection
+          &#39;radius&#39;,               # will not be used for the projection
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;beta&#39;,                 # will not be used for the projection
+          &#39;column_density&#39;]       # will not be used for the projection
+
+values_1hs = [ 1.2, 11,  0.8  ,  0.6,  1.9,
+        0.08,  6.1,  9.3, 0.8]
+
+
+
+P_dictionary_1hs =  dict(list(zip(labels_1hs, values_1hs)))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_1hs
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.2,
+ &#39;radius&#39;: 11,
+ &#39;cos_inclination&#39;: 0.8,
+ &#39;p__phase_shift&#39;: 0.6,
+ &#39;p__super_colatitude&#39;: 1.9,
+ &#39;p__super_radius&#39;: 0.08,
+ &#39;p__super_temperature&#39;: 6.1,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<p>Let us visualise the single temperature (“ST”) hot spot, from the North Pole (POV in coordinate = [0,0,1]), with contours marking equal intervals in colatitude plotted on the north hemisphere (“NP”).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,[0,0,1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_18_2.png" src="_images/Emitting_patterns_2Dprojection_18_2.png" />
+</div>
+</div>
+<p>Here the hot spot has a dimmer color than in the legend to signify it is located on the hemisphere opposite to the observer, assuming this point of view. To see the hot spot from the other hemisphere, let us choose as center of the projection the South Pole.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,[0.,0.,-1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_20_2.png" src="_images/Emitting_patterns_2Dprojection_20_2.png" />
+</div>
+</div>
+<p>We can also change perspective, assuming as center of the projection the point identified by phase =0.0 (according to X-PSI definition) and colatitude correspondent to the Earth point of view.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,&quot;I&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_22_2.png" src="_images/Emitting_patterns_2Dprojection_22_2.png" />
+</div>
+</div>
+<p>If instead we assume as center of the projection the center of the hot spot, we see the following.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,&quot;P&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_24_2.png" src="_images/Emitting_patterns_2Dprojection_24_2.png" />
+</div>
+</div>
+<p>Note that in all these plots the purple dotted lines always connect two points on the surface (at different phases, to show direction of rotation) to the center of the sphere (i.e. cutting through the star).</p>
+<p>The contours at equally distanced colatitude can also be plotted on the South hemisphere, as shown below</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,&quot;P&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_27_2.png" src="_images/Emitting_patterns_2Dprojection_27_2.png" />
+</div>
+</div>
+<p>We can also change these contours to start from the center of the projection, instead of from the poles, by leaving the argument empty.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,&quot;P&quot;,&quot;&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_29_2.png" src="_images/Emitting_patterns_2Dprojection_29_2.png" />
+</div>
+</div>
+<p>If we want to check where a second, antipodal hot spot should be on the surface, we can adopt the <code class="docutils literal notranslate"><span class="pre">antipodal</span></code> option.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST&quot;,&quot;I&quot;,&quot;SP&quot;,antipodal = True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_31_2.png" src="_images/Emitting_patterns_2Dprojection_31_2.png" />
+</div>
+</div>
+<p>The antipodal hot spot is then drawn with a dash-dotted line of the same color of the primary (its antipodal hot spot).</p>
+<h3><p>TEST A.2) Testing 1 hot spot made of two emitting components</p>
+</h3><p>Let us now see the options and behaviour when the hot spot is composed of two different emitting components:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># setting the dictionary including the necessary parameters
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;p__cede_colatitude&#39;,
+          &#39;p__cede_radius&#39;,
+          &#39;p__cede_azimuth&#39;,
+          &#39;p__cede_temperature&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_1hsDT = [ 1.2, 12,  0.8  ,  0.3,  0.1,  1.0,
+        6.1,  0.5,  0.9, -0.4, 6.13, 9.3,
+        0.8]
+
+P_dictionary_1hsDT =  dict(list(zip(labels, values_1hsDT)))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_1hsDT
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.2,
+ &#39;radius&#39;: 12,
+ &#39;cos_inclination&#39;: 0.8,
+ &#39;p__phase_shift&#39;: 0.3,
+ &#39;p__super_colatitude&#39;: 0.1,
+ &#39;p__super_radius&#39;: 1.0,
+ &#39;p__super_temperature&#39;: 6.1,
+ &#39;p__cede_colatitude&#39;: 0.5,
+ &#39;p__cede_radius&#39;: 0.9,
+ &#39;p__cede_azimuth&#39;: -0.4,
+ &#39;p__cede_temperature&#39;: 6.13,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<p>According to our naming convention, this hot spot is a “PDT” = Protruding Double Temperature</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsDT),&quot;PDT&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_38_2.png" src="_images/Emitting_patterns_2Dprojection_38_2.png" />
+</div>
+</div>
+<p>Other names for hot spots with two emitting components are “EDT” (‘E’ for Eccentric) and “CDT” (‘C’ for concentric). In this case none of these could be our model, according to the configurations allowed by X-PSI, as the superseding component should have a smaller radius than the ceding one in those cases. This is also confirmed by the warning that appears if we try to set the model to “EDT”.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsDT),&quot;EDT&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+WARNING: hot spot declared ECCENTRIC, but parameters will render a PROTRUDING configuration
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_40_2.png" src="_images/Emitting_patterns_2Dprojection_40_2.png" />
+</div>
+</div>
+<p>Let us also try to see what happens if we declare that the two emitting components of the hot spot are concentric (model=”CDT”).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsDT),&quot;CDT&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+WARNING! there are info for a complex geometry, but they are not being used
+WARNING: ceding component is completely masked by the superseding one
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_42_2.png" src="_images/Emitting_patterns_2Dprojection_42_2.png" />
+</div>
+</div>
+<p>Note that in this case the configuration has changed: the two components are concentric as declared with the model name and the additional information given by the parameters are discarded. This is also shown by the first warning, which is telling us that there is some unused information. The second warning instead tells us that within X-PSI this configuration would not be possible since the superseding component completely masks the ceding one (making this more complex model equivalent to an
+“ST” model). If we now change the radius of the superseding region, one of the warnings disappears.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_1hsDT[&#39;p__super_radius&#39;] = 0.2
+plot_projection_general((P_dictionary_1hsDT),&quot;CDT&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+WARNING! there are info for a complex geometry, but they are not being used
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_44_2.png" src="_images/Emitting_patterns_2Dprojection_44_2.png" />
+</div>
+</div>
+<p>With this dual temperature hot spot, we have different possibilities as points of view: “I”(inclination - from Earth),”PS” (primary superseding), “PC” (primary ceding).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># if we insert a wrong option, in the error message we get some suggestions:
+# uncomment and run the code below to see the error message
+#plot_projection_general((P_dictionary_1hsDT),&quot;PDT&quot;,&quot;P&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsDT),&quot;PDT&quot;,&quot;PS&quot;,&quot;SP&quot;)
+plot_projection_general((P_dictionary_1hsDT),&quot;PDT&quot;,&quot;PC&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_47_2.png" src="_images/Emitting_patterns_2Dprojection_47_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_47_3.png" src="_images/Emitting_patterns_2Dprojection_47_3.png" />
+</div>
+</div>
+<h3><p>TEST A.3) Testing 1 hot spot made of one emitting and one omitting component</p>
+</h3><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># setting the dictionary including the necessary parameters
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;p__omit_colatitude&#39;,
+          &#39;p__omit_radius&#39;,
+          &#39;p__omit_azimuth&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_1hsPST = [ 1.2, 14,  0.8  ,  0.3,  0.1,  1.0,
+        6.3,  0.5,  0.8, -0.4, 9.3,
+        0.8]
+
+P_dictionary_1hsPST =  dict(list(zip(labels, values_1hsPST)))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_1hsPST
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.2,
+ &#39;radius&#39;: 14,
+ &#39;cos_inclination&#39;: 0.8,
+ &#39;p__phase_shift&#39;: 0.3,
+ &#39;p__super_colatitude&#39;: 0.1,
+ &#39;p__super_radius&#39;: 1.0,
+ &#39;p__super_temperature&#39;: 6.3,
+ &#39;p__omit_colatitude&#39;: 0.5,
+ &#39;p__omit_radius&#39;: 0.8,
+ &#39;p__omit_azimuth&#39;: -0.4,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<p>According to our naming convention, this hot spot is a “PST” = Protruding Single Temperature</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsPST),&quot;PST&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_52_2.png" src="_images/Emitting_patterns_2Dprojection_52_2.png" />
+</div>
+</div>
+<p>The omitting region is drawn in black. Note that these parameter values lead to the formation of an emitting arc, represented by the part of the blue circle not covered by the black one.</p>
+<p>Again if we change declare a “CST” (Concentric Single Temperature) model, the information concerning the location if the omitting component on the surface will be discarded.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsPST),&quot;CST&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+WARNING! there are info for a complex geometry, but they are not being used
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_55_2.png" src="_images/Emitting_patterns_2Dprojection_55_2.png" />
+</div>
+</div>
+<p>and we get informed about it by the warning. Also in this case if the angular radius of the omitting region is larger then the emitting one, and the two components are concentric we get a warning telling us that the emitting region is all masked by the omitting region.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_1hsPST[&#39;p__omit_radius&#39;] = 1.2
+plot_projection_general((P_dictionary_1hsPST),&quot;CST&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+WARNING: emitting component is completely masked by the omitting one
+WARNING! there are info for a complex geometry, but they are not being used
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_57_2.png" src="_images/Emitting_patterns_2Dprojection_57_2.png" />
+</div>
+</div>
+<p>Similarly to the case of the two emitting components, if we declare that this is an eccentric model (“EST” Eccentric Single Temperature), a warning will appear telling us that it does not reflect the criteria for being an eccentric configuration.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsPST),&quot;EST&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+WARNING: hot spot declared ECCENTRIC, but parameters will render a PROTRUDING configuration
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_59_2.png" src="_images/Emitting_patterns_2Dprojection_59_2.png" />
+</div>
+</div>
+<p>A hot spot composed of a single emitting component and a masking one has different possibilities as points of view: “I”(inclination - from Earth),”PE” (primary emitting), “PO” (primary omitting). Again if the wrong point of view is used, the error message tells us that these are the possibilities.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsPST),&quot;PST&quot;,&quot;PE&quot;,&quot;SP&quot;)
+plot_projection_general((P_dictionary_1hsPST),&quot;PST&quot;,&quot;PO&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING 1 HOT SPOT MODEL
+YOU ARE USING 1 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_61_2.png" src="_images/Emitting_patterns_2Dprojection_61_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_61_3.png" src="_images/Emitting_patterns_2Dprojection_61_3.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># uncomment the code below to see error message
+# plot_projection_general((P_dictionary_1hsPST),&quot;PST&quot;,&quot;PC&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="TEST-B)-2-hot-spot-models">
+<h2>TEST B) 2-hot spot models<a class="headerlink" href="#TEST-B)-2-hot-spot-models" title="Link to this heading"></a></h2>
+<p>In X-PSI we can also define models with 2 hot spots, a primary one and a secondary one. According to the X-PSI naming convention, there are two ways to build a two hot spot model:</p>
+<ul><li><p>using two hot spots with different associated names, e.g. ST and PST, that becomes ST+PST model;</p>
+</li><li><p>using the same geometry for both the hot spots, with the possible addition of restrictions on the parameter values of the secondary. We define them adding after the name of the hot spot:</p>
+</li><ul><li><p>-S: this means that all the properties of the secondary hot spot are derived from the properties of the primary hot spot; in particular we assume the secondary to have the same temperature and angular radius of the primary and to be antipodal respect to the primary.</p>
+</li><li><p>-Ua: models ending in this way (as in <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2022ApJ...941..150S/abstract">Salmi et al. 2022</a>) constrain the secondary location to be antipodal to the primary but leave the angular radius and temperature free.</p>
+</li><li><p>-U: models ending in this way have no constraints on the properties of the secondary based on the ones of the primary.</p>
+</li></ul></ul><p>Below we show some examples.</p>
+<h3><p>TEST B.1) Testing 2 hot spot models composed of different types of hot spots</p>
+</h3><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># EXAMPLE: ST+PDT (primary composed of a single temperature component and
+#          secondary of a double temperature hot spot with protruding superseding component)
+# setting the dictionary including the necessary parameters
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;s__cede_colatitude&#39;,
+          &#39;s__cede_radius&#39;,
+          &#39;s__cede_azimuth&#39;,
+          &#39;s__cede_temperature&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsSTPDT = [ 1.2, 12,  0.2,  -0.05,  1.9,
+        0.3,  6.1,  0.3,  2.9,  0.9,
+        6.1,  2.5,  0.9, -0.4, 6.13, 9.3,
+        0.8]
+
+P_dictionary_2hsSTPDT =  dict(list(zip(labels, values_2hsSTPDT)))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsSTPDT
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.2,
+ &#39;radius&#39;: 12,
+ &#39;cos_inclination&#39;: 0.2,
+ &#39;p__phase_shift&#39;: -0.05,
+ &#39;p__super_colatitude&#39;: 1.9,
+ &#39;p__super_radius&#39;: 0.3,
+ &#39;p__super_temperature&#39;: 6.1,
+ &#39;s__phase_shift&#39;: 0.3,
+ &#39;s__super_colatitude&#39;: 2.9,
+ &#39;s__super_radius&#39;: 0.9,
+ &#39;s__super_temperature&#39;: 6.1,
+ &#39;s__cede_colatitude&#39;: 2.5,
+ &#39;s__cede_radius&#39;: 0.9,
+ &#39;s__cede_azimuth&#39;: -0.4,
+ &#39;s__cede_temperature&#39;: 6.13,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># from Earth and phase 0.
+plot_projection_general((P_dictionary_2hsSTPDT),&quot;ST+PDT&quot;,&quot;I&quot;,&quot;SP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_68_2.png" src="_images/Emitting_patterns_2Dprojection_68_2.png" />
+</div>
+</div>
+<p>Now the allowed strings to set points of view are: “I” (Earth),”P” (primary center), “SS” (secondary superseding center) and “SC” (secondary ceding center). Below we show an example with “SS” and the antipodal function turned on.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTPDT),&quot;ST+PDT&quot;,&quot;SS&quot;,&quot;SP&quot;, antipodal = True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_70_2.png" src="_images/Emitting_patterns_2Dprojection_70_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># ANOTHER EXAMPLE: ST+CST (primary composed of a single temperature component and
+#          secondary of a single temperature with two components one emitting and one omitting,
+#          concentric to the emitting one)
+# setting the dictionary including the necessary parameters
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;s__omit_radius&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsSTCST = [ 1.4, 15,  0.25,  0.3,  0.7,
+        0.3,  6.15,  -0.1,  1.8,  0.9,
+        6.1,  0.4, 9.3,
+        0.8]
+
+P_dictionary_2hsSTCST =  dict(zip(labels, values_2hsSTCST))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsSTCST
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.4,
+ &#39;radius&#39;: 15,
+ &#39;cos_inclination&#39;: 0.25,
+ &#39;p__phase_shift&#39;: 0.3,
+ &#39;p__super_colatitude&#39;: 0.7,
+ &#39;p__super_radius&#39;: 0.3,
+ &#39;p__super_temperature&#39;: 6.15,
+ &#39;s__phase_shift&#39;: -0.1,
+ &#39;s__super_colatitude&#39;: 1.8,
+ &#39;s__super_radius&#39;: 0.9,
+ &#39;s__super_temperature&#39;: 6.1,
+ &#39;s__omit_radius&#39;: 0.4,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTCST),&quot;ST+CST&quot;,&quot;I&quot;,&quot;SP&quot;, antipodal = True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_73_2.png" src="_images/Emitting_patterns_2Dprojection_73_2.png" />
+</div>
+</div>
+<p>So here we see for example that the secondary hot spot has the shape of a ring (this is the topology associated with CST hot spots). The image also shows that the antipodal image of the primary hot spot would overlap with the secondary.</p>
+<p>And again the allowed strings to set points of view are: “I” (Earth),”P” (primary center), “SE” (secondary emitting center) and “SO” (secondary omitting center).</p>
+<p>We can also exchange the primary with the secondary. Below an example where we then allowed the antipodal to be also drawn.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># setting the dictionary including the necessary parameters
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;p__omit_radius&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsSTCST_2 = [ 1.4, 15,  0.25,  0.3,  0.7,
+        0.3,  6.15,  -0.1,  1.8,  0.9,
+        6.1,  0.4, 9.3,
+        0.8]
+
+P_dictionary_2hsSTCST_2 =  dict(zip(labels, values_2hsSTCST_2))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTCST_2),&quot;CST+ST&quot;,&quot;I&quot;,&quot;SP&quot;, antipodal = True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_78_2.png" src="_images/Emitting_patterns_2Dprojection_78_2.png" />
+</div>
+</div>
+<p>Let us transform the CST into PST.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># uncomment and run the code below to see the error message
+#plot_projection_general((P_dictionary_2hsSTCST_2),&quot;PST+ST&quot;,&quot;I&quot;,&quot;SP&quot;, antipodal = True)
+</pre></div>
+</div>
+</div>
+<p>Of course we get an error, as we have not defined the colatitude and the azimouth of the omitting region!</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># setting azimuth and colatitude for omitting component
+
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;p__omit_colatitude&#39;,
+          &#39;p__omit_radius&#39;,
+          &#39;p__omit_azimuth&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsPSTST = [ 1.4, 15,  0.25,  0.3,  0.7,
+        0.3,  6.15,  -0.1,  1.8,  0.9,
+        6.1,  0.7, 0.4, -0.2, 9.3,
+        0.8]
+
+P_dictionary_2hsPSTST =  dict(zip(labels, values_2hsPSTST))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsPSTST
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.4,
+ &#39;radius&#39;: 15,
+ &#39;cos_inclination&#39;: 0.25,
+ &#39;s__phase_shift&#39;: 0.3,
+ &#39;s__super_colatitude&#39;: 0.7,
+ &#39;s__super_radius&#39;: 0.3,
+ &#39;s__super_temperature&#39;: 6.15,
+ &#39;p__phase_shift&#39;: -0.1,
+ &#39;p__super_colatitude&#39;: 1.8,
+ &#39;p__super_radius&#39;: 0.9,
+ &#39;p__super_temperature&#39;: 6.1,
+ &#39;p__omit_colatitude&#39;: 0.7,
+ &#39;p__omit_radius&#39;: 0.4,
+ &#39;p__omit_azimuth&#39;: -0.2,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsPSTST),&quot;PST+ST&quot;,&quot;I&quot;,&quot;SP&quot;, antipodal = True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_84_2.png" src="_images/Emitting_patterns_2Dprojection_84_2.png" />
+</div>
+</div>
+<h3><p>TEST B.2.1) Testing 2 hot spot models composed of the same type of hot spot: symmetric case</p>
+</h3><p>In this case, the string inputs recognised as points of view are only the ones relative to the primary hot spot.</p>
+<p>Let us try to produce a 2 “ST” hot spot model. For this we can just use our initial 1 “ST” hot spot model and add to the model specification the “-S”, since no further properties are needed.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hs),&quot;ST-S&quot;,[0,0,1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_87_2.png" src="_images/Emitting_patterns_2Dprojection_87_2.png" />
+</div>
+</div>
+<p>Below is an example with a 1 “PST” hot spot model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsPST),&quot;PST-S&quot;,[0,0,1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_89_2.png" src="_images/Emitting_patterns_2Dprojection_89_2.png" />
+</div>
+</div>
+<p>The point of view allowed follows the same logic as if the model was “PST+PST”, so we have: “I” (from Earth), “PE” (primary emitting center), “PO” (primary omitting center), “SE” (secondary emitting center) and “SO” (secondary omitting center. When in doubt you can still type “P” or “S” and if those do not work, the option will appear in the error message.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># uncomment and run the code below to see the error message
+#plot_projection_general((P_dictionary_1hsPST),&quot;PST-S&quot;,&quot;P&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_1hsPST),&quot;PST-S&quot;,&quot;PE&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_92_2.png" src="_images/Emitting_patterns_2Dprojection_92_2.png" />
+</div>
+</div>
+<p>And if more parameter values are given, they will simply be discarded. For example if we use the “ST+PDT” model and we declare a “ST-S”, below is what we get.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTPDT),&quot;ST-S&quot;,&quot;I&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+WARNING! there are info for a complex geometry, but they are not being used
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_94_2.png" src="_images/Emitting_patterns_2Dprojection_94_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Example of not allowed point of view as center of the secondary hot spot
+# uncomment and run the code below to see the error message
+# plot_projection_general((P_dictionary_1hsPST),&quot;ST-S&quot;,&quot;S&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<h3><p>TEST B.2.2) Testing 2 hot spot models composed of the same type of hot spot: antipodal case</p>
+</h3><p>This case represents the 2 hot spot model where the secondary hot spot is constrained to be located at the antipode of the primary. Let us first define a 2 “ST” hot spot model, where the hot spots have independent properties from each other. Also in this case the string entries accepted as points of view are limited to the ones allowed by the configuration of the primary.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># setting azinouth and colatitude for omitting component
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsSTUa = [ 1.4, 15,  0.25,
+        0.3,  6.15,  -0.1,  1.8,  0.9,
+        6.1, 9.3, 0.8]
+
+P_dictionary_2hsSTUa =  dict(zip(labels, values_2hsSTUa))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsSTUa
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.4,
+ &#39;radius&#39;: 15,
+ &#39;cos_inclination&#39;: 0.25,
+ &#39;s__super_radius&#39;: 0.3,
+ &#39;s__super_temperature&#39;: 6.15,
+ &#39;p__phase_shift&#39;: -0.1,
+ &#39;p__super_colatitude&#39;: 1.8,
+ &#39;p__super_radius&#39;: 0.9,
+ &#39;p__super_temperature&#39;: 6.1,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTUa),&quot;ST-Ua&quot;,&quot;I&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+WARNING: the hot spot whose colatitude and phase are derived is assumed to be the secondary; if it is not we suggest the user to redefine the dictionary and the model as an ST-U
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_100_2.png" src="_images/Emitting_patterns_2Dprojection_100_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Example of point of view not allowed (in the error message you see that for this specific case the only)
+# string entries allowed as points of view are &quot;P&quot; and &quot;I&quot;.
+# Uncomment and run the code below to see the error message
+#plot_projection_general((P_dictionary_2hsSTUa),&quot;ST-S&quot;,&quot;S&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># And here is an example of a point of view another allowed
+# (note that you do not see the secondary as it is completely covered by the primary).
+plot_projection_general((P_dictionary_2hsSTUa),&quot;ST-S&quot;,&quot;P&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+WARNING! there are info for a complex geometry, but they are not being used
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_102_2.png" src="_images/Emitting_patterns_2Dprojection_102_2.png" />
+</div>
+</div>
+<p>If we do not specify temperature and/or angular radius of the secondary, the code will not allow us to still try to use the “-Ua” vector.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># uncomment and run the code below to see the error message
+#plot_projection_general((P_dictionary_1hs),&quot;ST-Ua&quot;,[0,0,1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<h3><p>TEST B.2.3) Testing 2 hot spot models composed of the same type of hot spot: uncorrelated case</p>
+</h3><p>In this case, the two hot spots of the model have the same name but their properties are completely uncorrelated. This is equivalent to writing the hot spot name twice, joined by “+” (e.g. “ST-U” is equivalent to “ST+ST”). If there are more different derived parameters for the two hot spots, the suggestion is to add the corresponding parameters in the dictionary and effectively convert your model to a “-U” model. In this case the points of view allowed include centers of the primary as well of
+the secondary components.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># EXAMPLE: ST-U, setting parameter values
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsSTU = [ 1.4, 15,  0.25,  0.3,  0.7,
+        0.3,  6.15,  -0.1,  1.8,  0.9,
+        6.1, 9.3, 0.8]
+
+P_dictionary_2hsSTU =  dict(zip(labels, values_2hsSTU))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsSTU
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.4,
+ &#39;radius&#39;: 15,
+ &#39;cos_inclination&#39;: 0.25,
+ &#39;s__phase_shift&#39;: 0.3,
+ &#39;s__super_colatitude&#39;: 0.7,
+ &#39;s__super_radius&#39;: 0.3,
+ &#39;s__super_temperature&#39;: 6.15,
+ &#39;p__phase_shift&#39;: -0.1,
+ &#39;p__super_colatitude&#39;: 1.8,
+ &#39;p__super_radius&#39;: 0.9,
+ &#39;p__super_temperature&#39;: 6.1,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTU),&quot;ST+ST&quot;,&quot;S&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_109_2.png" src="_images/Emitting_patterns_2Dprojection_109_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTU),&quot;ST-U&quot;,[0,0,1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_110_2.png" src="_images/Emitting_patterns_2Dprojection_110_2.png" />
+</div>
+</div>
+<h4><p>CHECK THAT ST-U DOES THE SAME AS ST+ST</p>
+</h4><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTU),&quot;ST+ST&quot;,[0,0,1],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_112_2.png" src="_images/Emitting_patterns_2Dprojection_112_2.png" />
+</div>
+</div>
+<h3><p>EXAMPLE: Circle of Hell (new prior on PST + another hot spot made by only emitting components), previously not allowed configurations that are now permitted</p>
+</h3><p>Below we show a couple of configurations that in <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. 2019</a> were not allowed by the X-PSI prior for ST+PST; but which are now included in our priors.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># EXAMPLE: ST+PST
+# settings parameter values
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;s__omit_colatitude&#39;,
+          &#39;s__omit_radius&#39;,
+          &#39;s__omit_azimuth&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsSTPST = [ 1.4, 15,  0.25,  0.95,  0.7,
+        0.3,  6.15,  -0.1,  1.8,  0.9,
+        6.1,  1.5, 0.8, -0.2, 9.3,
+        0.8]
+
+P_dictionary_2hsSTPST =  dict(zip(labels, values_2hsSTPST))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsSTPST
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.4,
+ &#39;radius&#39;: 15,
+ &#39;cos_inclination&#39;: 0.25,
+ &#39;p__phase_shift&#39;: 0.95,
+ &#39;p__super_colatitude&#39;: 0.7,
+ &#39;p__super_radius&#39;: 0.3,
+ &#39;p__super_temperature&#39;: 6.15,
+ &#39;s__phase_shift&#39;: -0.1,
+ &#39;s__super_colatitude&#39;: 1.8,
+ &#39;s__super_radius&#39;: 0.9,
+ &#39;s__super_temperature&#39;: 6.1,
+ &#39;s__omit_colatitude&#39;: 1.5,
+ &#39;s__omit_radius&#39;: 0.8,
+ &#39;s__omit_azimuth&#39;: -0.2,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsSTPST),&quot;ST+PST&quot;,&quot;I&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_117_2.png" src="_images/Emitting_patterns_2Dprojection_117_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsSTPST[&#39;s__omit_radius&#39;]=0.35
+P_dictionary_2hsSTPST[&#39;p__super_colatitude&#39;]=1.6
+P_dictionary_2hsSTPST[&#39;p__super_radius&#39;]=0.08
+P_dictionary_2hsSTPST[&#39;p__phase_shift&#39;]=-0.13
+plot_projection_general((P_dictionary_2hsSTPST),&quot;ST+PST&quot;,&quot;I&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_118_2.png" src="_images/Emitting_patterns_2Dprojection_118_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># EXAMPLE: PDT+PST
+# settings parameter values
+labels = [&#39;mass&#39;,
+          &#39;radius&#39;,
+          &#39;cos_inclination&#39;,
+          &#39;p__phase_shift&#39;,
+          &#39;p__super_colatitude&#39;,
+          &#39;p__super_radius&#39;,
+          &#39;p__super_temperature&#39;,
+          &#39;p__cede_colatitude&#39;,
+          &#39;p__cede_radius&#39;,
+          &#39;p__cede_azimuth&#39;,
+          &#39;p__cede_temperature&#39;,
+          &#39;s__phase_shift&#39;,
+          &#39;s__super_colatitude&#39;,
+          &#39;s__super_radius&#39;,
+          &#39;s__super_temperature&#39;,
+          &#39;s__omit_colatitude&#39;,
+          &#39;s__omit_radius&#39;,
+          &#39;s__omit_azimuth&#39;,
+          &#39;beta&#39;,
+          &#39;column_density&#39;]
+
+values_2hsPDTPST = [ 1.4, 15,  0.25,  0.95,  0.7,
+        0.3,  6.15, 0.85, 0.31, 0.001, 5.85,  -0.1,  1.8,  0.9,
+        6.1,  1.5, 0.8, -0.2, 9.3,
+        0.8]
+
+P_dictionary_2hsPDTPST =  dict(zip(labels, values_2hsPDTPST))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>P_dictionary_2hsPDTPST
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mass&#39;: 1.4,
+ &#39;radius&#39;: 15,
+ &#39;cos_inclination&#39;: 0.25,
+ &#39;p__phase_shift&#39;: 0.95,
+ &#39;p__super_colatitude&#39;: 0.7,
+ &#39;p__super_radius&#39;: 0.3,
+ &#39;p__super_temperature&#39;: 6.15,
+ &#39;p__cede_colatitude&#39;: 0.85,
+ &#39;p__cede_radius&#39;: 0.31,
+ &#39;p__cede_azimuth&#39;: 0.001,
+ &#39;p__cede_temperature&#39;: 5.85,
+ &#39;s__phase_shift&#39;: -0.1,
+ &#39;s__super_colatitude&#39;: 1.8,
+ &#39;s__super_radius&#39;: 0.9,
+ &#39;s__super_temperature&#39;: 6.1,
+ &#39;s__omit_colatitude&#39;: 1.5,
+ &#39;s__omit_radius&#39;: 0.8,
+ &#39;s__omit_azimuth&#39;: -0.2,
+ &#39;beta&#39;: 9.3,
+ &#39;column_density&#39;: 0.8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsPDTPST),&quot;PDT+PST&quot;,&quot;I&quot;,&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_121_2.png" src="_images/Emitting_patterns_2Dprojection_121_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_projection_general((P_dictionary_2hsPDTPST),&quot;PDT+PST&quot;,[-0.8,-0.2,0.],&quot;NP&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+YOU ARE USING A 2 HOT SPOT MODEL
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Emitting_patterns_2Dprojection_122_2.png" src="_images/Emitting_patterns_2Dprojection_122_2.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Post-processing.html" class="btn btn-neutral float-left" title="Post-processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Accretion_disk.html" class="btn btn-neutral float-right" title="Accretion disk" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

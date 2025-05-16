@@ -1,0 +1,1036 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Signal &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Signal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Signal</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Signal&quot;</span><span class="p">,</span> <span class="s2">&quot;LikelihoodError&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Instrument</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">ChannelError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Background</span><span class="w"> </span><span class="kn">import</span> <span class="n">Background</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Interstellar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Interstellar</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.tools.energy_integrator</span><span class="w"> </span><span class="kn">import</span> <span class="n">energy_integrator</span>
+<span class="c1">#from xpsi.tools.energy_interpolator import energy_interpolator</span>
+<span class="c1">#from xpsi.tools.phase_integrator import phase_integrator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Parameter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+
+<div class="viewcode-block" id="LikelihoodError">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.LikelihoodError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LikelihoodError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if there is a problem with the value of the log-likelihood. &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Signal">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.Signal">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Signal</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A signal is constituted by some X-ray dataset, a model instrument</span>
+<span class="sd">    with which that data was acquired, a model background, and an object for</span>
+<span class="sd">    modelling interstellar processes.</span>
+
+<span class="sd">    The methods in this class must transform incident specific flux signals</span>
+<span class="sd">    into a structure congruent to that of the data for the purpose of</span>
+<span class="sd">    evaluation of the custom likelihood implemented via subclassing.</span>
+
+<span class="sd">    :param obj data:</span>
+<span class="sd">        An instance of :class:`~.Data.Data`.</span>
+
+<span class="sd">    :param obj instrument:</span>
+<span class="sd">        An instance of :class:`~.Instrument.Instrument`.</span>
+
+<span class="sd">    :param obj background:</span>
+<span class="sd">        If not ``None``, an instance of :class:`~.Background.Background`.</span>
+<span class="sd">        It is assumed if one constructs a model using instances of</span>
+<span class="sd">        :class:`~.Background.Background` that the background needs to be</span>
+<span class="sd">        registered by a model instrument. If ``None``, it is still possible</span>
+<span class="sd">        for one to define and use background parameters in a custom subclass</span>
+<span class="sd">        of :class:`~.Signal`. In particular, background parameters for some</span>
+<span class="sd">        model which directly specifies background contribution in units of</span>
+<span class="sd">        count/s per *output* channels. These background parameters can even</span>
+<span class="sd">        *be* the counts/s in output channels.</span>
+
+<span class="sd">    :param obj interstellar:</span>
+<span class="sd">        If not ``None``, an instance of :class:`~.Interstellar.Interstellar`.</span>
+<span class="sd">        To be applied to the incident signal as a callable that modifies the</span>
+<span class="sd">        signal in place.</span>
+
+<span class="sd">    :param str photosphere_prefix:</span>
+<span class="sd">        The ``str`` prefix of the photosphere object with which this signal</span>
+<span class="sd">        object is associated.</span>
+
+<span class="sd">    :param bool cache:</span>
+<span class="sd">        Cache intermediary signals during likelihood evalation? When performing</span>
+<span class="sd">        post-processing, this needs to be activated for full functionality of</span>
+<span class="sd">        the :mod:`~.xpsi.PostProcessing` module. For likelihood function</span>
+<span class="sd">        evaluation during sampling, caching should be deactivated because it is</span>
+<span class="sd">        not used. It might be useful to activate caching also when preparing a</span>
+<span class="sd">        model for a sampling application, to check the likelihood function</span>
+<span class="sd">        works as intended.</span>
+
+<span class="sd">    :param bool store:</span>
+<span class="sd">        Deprecated. You can use this or ``cache``, which has the same effect.</span>
+<span class="sd">        </span>
+<span class="sd">    :param str stokes:</span>
+<span class="sd">        Define the type of the signal. Options are Stokes &quot;I&quot; (default), &quot;Q&quot;,</span>
+<span class="sd">        &quot;U&quot;, &quot;Qn&quot; (Q/I), and &quot;Un&quot; (U/I).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">data</span><span class="p">,</span>
+                 <span class="n">instrument</span><span class="p">,</span>
+                 <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">interstellar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">support</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">photosphere_prefix</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cache</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">stokes</span> <span class="o">=</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span>
+                 <span class="n">min_channel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="n">max_channel</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isI</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isQ</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isU</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isQn</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isUn</span> <span class="o">=</span> <span class="kc">False</span>        
+
+        <span class="k">if</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isI</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isQ</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s2">&quot;U&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isU</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s2">&quot;Qn&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isQn</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s2">&quot;Un&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isUn</span> <span class="o">=</span> <span class="kc">True</span>            
+            
+        <span class="k">else</span><span class="p">:</span>
+             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;param stokes for likelihood must be either &quot;I&quot;, &quot;Q&quot;, &quot;U&quot;, &quot;Qn&quot;, or &quot;Un&quot;.&#39;</span><span class="p">)</span>
+             
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Data</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a data object.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_original_data</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="n">Instrument</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an instrument object.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span> <span class="o">=</span> <span class="n">instrument</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_original_instrument</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span> <span class="n">instrument</span> <span class="p">)</span>
+
+        <span class="c1"># Trimming the data and response so they fit together</span>
+        <span class="k">if</span> <span class="n">min_channel</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">max_channel</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">trim_data</span><span class="p">(</span><span class="n">min_channel</span><span class="p">,</span> <span class="n">max_channel</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING : There is no counts in data object. This is normal if you are trying to synthesise data.&#39;</span>
+                      <span class="s1">&#39;Otherwise something is very wrong and do not continue&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">trim_response</span><span class="p">(</span><span class="n">min_channel</span><span class="p">,</span> <span class="n">max_channel</span><span class="p">)</span>
+
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index_range</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">])):</span>
+            <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span> <span class="s1">&#39;Size of the channel array declared for event data &#39;</span>
+                                <span class="s1">&#39;does not match the size of the channel array declared&#39;</span>
+                                <span class="s1">&#39; for the loaded instrument response (sub)matrix.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channels</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel array declared for event data does not &#39;</span>
+                               <span class="s1">&#39;match channel array declared for the loaded &#39;</span>
+                               <span class="s1">&#39;instrument response (sub)matrix.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Check that they come from the same instrument</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="p">,</span> <span class="s1">&#39;instrument&#39;</span> <span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span> <span class="p">,</span> <span class="s1">&#39;name&#39;</span> <span class="p">):</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">instrument</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;Data and Instrument come from different instruments&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_identify_waveband</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">Background</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a background object.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="o">=</span> <span class="n">background</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">support</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">support</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="n">support</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Data spectrum and background support must the have same shape&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interstellar</span><span class="p">,</span> <span class="n">Interstellar</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an interstellar object.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="o">=</span> <span class="n">interstellar</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">photosphere_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_photosphere</span> <span class="o">=</span> <span class="n">photosphere_prefix</span>
+
+        <span class="n">cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cache</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Activate or deactivate caching with a boolean.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">cache</span>
+
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        The phase shift for the signal, a periodic parameter [cycles].</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">phase_bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">phase_value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">phase_bounds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phase_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_bounds</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be specified.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be finite.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">phase_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">phase_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase bounds must be separated by &#39;</span>
+                                 <span class="s1">&#39;a maximum of one cycle.&#39;</span><span class="p">)</span>
+
+        <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span>
+                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">),</span>
+                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">phase_bounds</span><span class="p">,</span>
+                                <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                                <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\phi$&#39;</span><span class="p">,</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="n">phase_value</span><span class="p">)</span>
+
+        <span class="c1"># merge the subspaces; order unimportant</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">,</span>
+                                     <span class="n">phase_shift</span><span class="p">,</span>
+                                     <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isI</span>
+        
+    <span class="nd">@isI</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isI</span> <span class="o">=</span> <span class="n">b</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isQ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isQ</span>
+        
+    <span class="nd">@isQ</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isQ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isQ</span> <span class="o">=</span> <span class="n">b</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isU</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isU</span>
+        
+    <span class="nd">@isU</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isU</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isU</span> <span class="o">=</span> <span class="n">b</span> 
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isQn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isQn</span>
+        
+    <span class="nd">@isQn</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isQn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isQn</span> <span class="o">=</span> <span class="n">b</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isUn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isUn</span>
+        
+    <span class="nd">@isUn</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isUn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ... &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isUn</span> <span class="o">=</span> <span class="n">b</span>         
+        
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">background</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Background.Background`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interstellar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Interstellar.Interstellar`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Instrument.Instrument`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the a copy of the original instance of :class:`~.Data.Data`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">original_instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the a copy of the original instance of :class:`~.Instrument.Instrument`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_instrument</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">photosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_photosphere</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_waveband</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Bound the waveband for signal integration.</span>
+
+<span class="sd">            Constructs an array of energy edges for instrument operation.</span>
+<span class="sd">            This method thus automatically constructs energy bounds for this</span>
+<span class="sd">            a particular instrument. At energies between these bounds signals</span>
+<span class="sd">            are calculated. This requires details about the contiguous</span>
+<span class="sd">            subset of output channels the photon data spans (in an instance of</span>
+<span class="sd">            the :class:`~.Data.Data` class) and the redistribution matrix of the</span>
+<span class="sd">            model instrument (in an instance of the</span>
+<span class="sd">            :class:`~.Instrument.Instrument` class).</span>
+
+<span class="sd">            :raises IndexError:</span>
+<span class="sd">                If the channel range of the data object is not consistent with</span>
+<span class="sd">                the instrument object.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="n">k</span>
+                <span class="k">return</span> <span class="n">j</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">search</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_energy_mids</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get coarse array of energies for fast-mode likelihood evals. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_energies</span>
+
+    <span class="nd">@fast_energies</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set energies for fast mode.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_energies</span> <span class="o">=</span> <span class="n">energies</span>
+
+<div class="viewcode-block" id="Signal.create_energy_array">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.Signal.create_energy_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_energy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel_num_energies</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a (finer) array of energies spanning instrument waveband.</span>
+
+<span class="sd">        Useful for getting an appropriately bounded and spaced set of energies</span>
+<span class="sd">        for signal interpolation.</span>
+
+<span class="sd">        :param float rel_num_energies:</span>
+<span class="sd">            The number of energies desired as a fraction of the number of</span>
+<span class="sd">            energies implemented for incident signal integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R</span><span class="p">),</span>
+                                <span class="nb">int</span><span class="p">(</span><span class="n">rel_num_energies</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">)),</span>
+                                <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">energies</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a :class:`numpy.ndarray` of energy edges. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span>
+
+<div class="viewcode-block" id="Signal.register">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.Signal.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;  Register an incident signal by operating with the response matrix.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` is stored as an instance attribute containing</span>
+<span class="sd">        source signal for each *output* channel in units of counts cm^2/s</span>
+<span class="sd">        (assuming instrument effective area units are cm^2).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fast_mode</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_total_counts</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">for</span> <span class="n">hotRegion</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+                <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">phases</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hotRegion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_phases</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">fast_total_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">integrated</span> <span class="o">=</span> <span class="n">energy_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                                       <span class="n">component</span><span class="p">,</span>
+                                                       <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fast_energies</span><span class="p">),</span>
+                                                       <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">))</span>
+
+                        <span class="c1"># move interstellar to star?</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_mids</span><span class="p">,</span> <span class="n">integrated</span><span class="p">)</span>
+
+                        <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">integrated</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span>
+
+                        <span class="n">fast_total_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">fast_total_counts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fast_total_counts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">signals</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">incident_specific_flux_signals</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">for</span> <span class="n">hotRegion</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span> <span class="c1"># iterate over hot regions</span>
+                    <span class="n">signal</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hotRegion</span><span class="p">:</span> <span class="c1"># add other components</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">signal</span> <span class="o">+=</span> <span class="n">component</span>
+                        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                            <span class="n">signal</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="c1"># cache total hot region signal</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">incident_specific_flux_signals</span> <span class="o">=</span> <span class="n">signal</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">incident_flux_signals</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">execute_custom_cache_instructions</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                    <span class="k">pass</span> <span class="c1"># no custom caching targets</span>
+
+            <span class="k">for</span> <span class="n">hotRegion</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+                <span class="n">integrated</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hotRegion</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">=</span> <span class="n">energy_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                             <span class="n">component</span><span class="p">,</span>
+                                             <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energies</span><span class="p">),</span>
+                                             <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">))</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">integrated</span> <span class="o">+=</span> <span class="n">temp</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="n">integrated</span> <span class="o">=</span> <span class="n">temp</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">incident_flux_signals</span> <span class="o">=</span> <span class="n">integrated</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_mids</span><span class="p">,</span> <span class="n">integrated</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">signals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">integrated</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error when evaluating the incident background.&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">registered_background</span> <span class="o">=</span> \
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">incident_background</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">phases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">phases</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">]</span>
+
+    <span class="nd">@phases</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">phases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">phases</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span><span class="p">]</span>
+
+    <span class="nd">@fast_phases</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energies</span>
+
+    <span class="nd">@energies</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_energies</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="nd">@energies</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energies</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_total_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fast_total_counts</span><span class="p">)</span>
+
+    <span class="nd">@fast_total_counts</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_total_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fast_total_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fast_total_counts</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+
+    <span class="nd">@fast_total_counts</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fast_total_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_total_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span>
+
+    <span class="nd">@store</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Signal storage requires boolean activation.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span>
+
+    <span class="nd">@cache</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Signal storage requires boolean activation.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the stored data object. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the data object. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The data object is of an invalid type.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the stored channel-by-channel signal components. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">)</span>
+
+    <span class="nd">@signals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+
+    <span class="nd">@signals</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_specific_flux_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the incident signal components. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incident_specific_flux_signals</span><span class="p">)</span>
+
+    <span class="nd">@incident_specific_flux_signals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_specific_flux_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incident_specific_flux_signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incident_specific_flux_signals</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+
+    <span class="nd">@incident_specific_flux_signals</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_specific_flux_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incident_specific_flux_signals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_flux_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the incident flux signal components.</span>
+
+<span class="sd">        These signals are integrated over a set of energy intervals spanning</span>
+<span class="sd">        the instrument waveband.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incident_flux_signals</span><span class="p">)</span>
+
+    <span class="nd">@incident_flux_signals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_flux_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incident_flux_signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incident_flux_signals</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+
+    <span class="nd">@incident_flux_signals</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incident_flux_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incident_flux_signals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected_counts</span>
+
+    <span class="nd">@expected_counts</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expected_counts</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="nd">@expected_counts</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the hot region phase plus the instrument phase-shift.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span>
+
+    <span class="nd">@shifts</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Store phase shift parameters as a 1D ndarray.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@shifts</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">background_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get stored background. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background_signal</span>
+
+    <span class="nd">@background_signal</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">background_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_background_signal</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="nd">@background_signal</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">background_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background_signal</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caching_target_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Just return the names of the caching targets. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caching_targets</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caching_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a dictionary of model objects for caching.</span>
+
+<span class="sd">        Called by the post-processing module.</span>
+
+<span class="sd">        :raises AttributeError:</span>
+<span class="sd">            If a property is not set in methods of a subclass, or if the</span>
+<span class="sd">            ``self.store`` property is not ``True``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_caching_targets</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Caching targets not declared.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="n">target</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caching_targets</span><span class="p">}</span>
+
+    <span class="nd">@caching_targets</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caching_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">_six</span><span class="o">.</span><span class="n">string_types</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_caching_targets</span> <span class="o">=</span> <span class="n">obj</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid caching targets.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Signal.execute_custom_cache_instructions">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.Signal.execute_custom_cache_instructions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_custom_cache_instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Subclass and overwrite to specify custom cache objects.</span>
+
+<span class="sd">        The default cached objects, when ``cache`` mode is activated, are</span>
+<span class="sd">        handled in the :meth:`~.Signal.register` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Cache method not implemented.&#39;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loglikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the logarithm of the likelihood.</span>
+
+<span class="sd">        :raises AttributeError: If property not set in methods of a subclass.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loglikelihood</span>
+
+    <span class="nd">@loglikelihood</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loglikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ll</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Check and store the logarithm of the likelihood. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ll</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">LikelihoodError</span><span class="p">(</span><span class="s1">&#39;Log-likelihood is ``NaN``.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ll</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglikelihood</span> <span class="o">=</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglikelihood</span> <span class="o">=</span> <span class="n">ll</span>
+
+<div class="viewcode-block" id="Signal.__call__">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.Signal.__call__">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Compute the logarithm of the likelihood and store it as a property.</span>
+
+<span class="sd">        The keyword arguments currently communicated by an</span>
+<span class="sd">        :class:`~.Likelihood.Likelihood` instance are as follows.</span>
+
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads to use for likelihood evaluation.</span>
+<span class="sd">            This argument can be ignored if not required.</span>
+
+<span class="sd">        :param float llzero:</span>
+<span class="sd">            The minimum log-likelihood setting for MultiNest. Points whose</span>
+<span class="sd">            log-likelihood is lower than this value are ignored.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Signal.synthesise">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.Signal.synthesise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_shifts</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Synthesise signal data according to the generative model.</span>
+
+<span class="sd">        :param iterable phase_shifts:</span>
+<span class="sd">            Container of phase shift :class:`~.Parameter.Parameter` instances,</span>
+<span class="sd">            one per hot region, communicated by the likelihood object from</span>
+<span class="sd">            the star object. The order is equal to the order of the hot</span>
+<span class="sd">            region objects stored in ``photosphere.hot.objects``.</span>
+
+<span class="sd">        :param str directory: Path to directory in which to write synthetic</span>
+<span class="sd">                              data. It is recommended that the ``prefix`` of</span>
+<span class="sd">                              the signal appears in the filename.</span>
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads to use for likelihood evaluation.</span>
+<span class="sd">            This argument can be ignored if not required.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Cannot synthesise data.&#39;</span><span class="p">)</span></div>
+
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bolometric_chi2</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the bolometric chi2 value for the current likelihood value. &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the pulse of data and model</span>
+        <span class="n">pulse_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">)</span>
+        <span class="n">pulse_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">)</span>
+
+        <span class="c1"># Compute the chi squared</span>
+        <span class="n">chi2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">pulse_data</span> <span class="o">-</span> <span class="n">pulse_model</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">pulse_model</span> <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chi2</span></div>
+
+            
+
+
+<div class="viewcode-block" id="construct_energy_array">
+<a class="viewcode-back" href="../../signal.html#xpsi.Signal.construct_energy_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">construct_energy_array</span><span class="p">(</span><span class="n">num_energies</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">max_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Construct an array of photon energies for integration.</span>
+
+<span class="sd">        :param int num_energies:</span>
+<span class="sd">            Number of energies, distributed over union of wavebands covered</span>
+<span class="sd">            by instruments that registered the data signals.</span>
+
+<span class="sd">        :param list signals:</span>
+<span class="sd">            An unordered list of :class:`~.Signal` instances.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># in waveband upper-limit, highest to lowest</span>
+        <span class="n">coverage_gaps</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># highest to lowest</span>
+
+        <span class="c1"># locate coverage gaps if any</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="p">)):</span>
+            <span class="c1"># find upper limit in energy from those remaining</span>
+            <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">MAX</span>
+                <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+                    <span class="n">MAX</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">signal</span>
+
+                <span class="n">E</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">E</span> <span class="o">&gt;</span> <span class="n">MAX</span><span class="p">:</span>
+                    <span class="n">MAX</span> <span class="o">=</span> <span class="n">E</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">signal</span>
+
+            <span class="n">ordered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">signals</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">ordered</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">MIN</span>
+                    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+                        <span class="n">MIN</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="n">E</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="n">MIN</span><span class="p">:</span>
+                        <span class="n">MIN</span> <span class="o">=</span> <span class="n">E</span>
+
+                <span class="k">if</span> <span class="n">MAX</span> <span class="o">&lt;</span> <span class="n">MIN</span><span class="p">:</span> <span class="c1"># MAX from above</span>
+                    <span class="n">coverage_gaps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">MAX</span><span class="p">,</span> <span class="n">MIN</span><span class="p">))</span>
+
+            <span class="k">del</span> <span class="n">MAX</span>
+
+        <span class="c1"># find global limits</span>
+        <span class="n">_signal_max</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_energy</span> <span class="o">&lt;</span> <span class="n">_signal_max</span><span class="p">:</span>
+            <span class="n">MAX</span> <span class="o">=</span> <span class="n">max_energy</span>
+
+            <span class="c1"># respect maximum energy setting</span>
+            <span class="n">_coverage_gaps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_coverage_gap</span> <span class="ow">in</span> <span class="n">coverage_gaps</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">MAX</span> <span class="o">&lt;=</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                     <span class="n">MAX</span> <span class="o">=</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">MAX</span> <span class="o">&gt;</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">_coverage_gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_coverage_gap</span><span class="p">)</span>
+
+            <span class="n">coverage_gaps</span> <span class="o">=</span> <span class="n">_coverage_gaps</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">MAX</span> <span class="o">=</span> <span class="n">_signal_max</span>
+
+        <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">ordered</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">MIN</span>
+            <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+                <span class="n">MIN</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">E</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="n">MIN</span><span class="p">:</span>
+                <span class="n">MIN</span> <span class="o">=</span> <span class="n">E</span>
+
+        <span class="n">interval</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">MAX</span><span class="p">)</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">MIN</span><span class="p">)</span>
+
+        <span class="c1"># account for gaps to conserve total number of energies requested</span>
+        <span class="k">for</span> <span class="n">_coverage_gap</span> <span class="ow">in</span> <span class="n">coverage_gaps</span><span class="p">:</span>
+            <span class="n">interval</span> <span class="o">-=</span> <span class="p">(</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+        <span class="c1"># distribute energies over waveband intervals</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coverage_gaps</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">U</span> <span class="o">=</span> <span class="n">MAX</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">U</span> <span class="o">=</span> <span class="n">coverage_gaps</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">coverage_gaps</span><span class="p">):</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="n">MIN</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="n">coverage_gaps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">frac</span> <span class="o">=</span> <span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">U</span><span class="p">)</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="n">interval</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">_m</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">frac</span> <span class="o">*</span> <span class="n">num_energies</span><span class="p">)</span> <span class="p">)</span>
+
+            <span class="n">energies</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span>
+                                  <span class="n">_np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">U</span><span class="p">),</span>
+                                  <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">),</span>
+                                  <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">energies</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

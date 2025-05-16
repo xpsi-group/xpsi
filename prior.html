@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prior &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Posterior" href="posterior.html" />
+    <link rel="prev" title="Posterior API" href="posterior_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="posterior_api.html">Posterior API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Prior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Prior.Prior"><code class="docutils literal notranslate"><span class="pre">Prior</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.__call__"><code class="docutils literal notranslate"><span class="pre">Prior.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.draw"><code class="docutils literal notranslate"><span class="pre">Prior.draw()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.estimate_hypercube_frac"><code class="docutils literal notranslate"><span class="pre">Prior.estimate_hypercube_frac()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.inverse_sample"><code class="docutils literal notranslate"><span class="pre">Prior.inverse_sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.inverse_sample_and_transform"><code class="docutils literal notranslate"><span class="pre">Prior.inverse_sample_and_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.transform"><code class="docutils literal notranslate"><span class="pre">Prior.transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Prior.Prior.unit_hypercube_frac"><code class="docutils literal notranslate"><span class="pre">Prior.unit_hypercube_frac()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SBI_wrapper.html">Wrappers for SBI</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="posterior_api.html">Posterior API</a></li>
+      <li class="breadcrumb-item active">Prior</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/prior.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="prior">
+<span id="module-xpsi.Prior"></span><span id="id1"></span><h1>Prior<a class="headerlink" href="#prior" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> are called by worker sampling processes for
+evaluation of a joint prior distribution.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Prior.</span></span><span class="sig-name descname"><span class="pre">Prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">hyperparameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior" title="Link to this definition"></a></dt>
+<dd><p>The joint prior distribution of parameters (including hyperparameters).</p>
+<p>Methods to both evaluate the distribution (required by MCMC) and
+draw uniformly from the distribution (required for nested sampling, and
+by default is used to initialise an ensemble of MCMC chains).</p>
+<p>The distribution must be integrable (proper) and is thus
+<em>usually</em> bounded (compactly supported on a space).</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">__call__()</span></code> method the parameter values are checked against the
+hard parameter bounds of the prior support.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you wish to check bounds manually, implement the <code class="docutils literal notranslate"><span class="pre">__init__()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">__call__()</span></code> methods, and do not access the default code (e.g., via
+<code class="docutils literal notranslate"><span class="pre">super()</span></code>) or only use the default code for some parameters.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> (<em>obj</em>) – An optional instance of <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a>.</p></li>
+<li><p><strong>hyperparameters</strong> (<em>obj</em>) – Positional arguments that are hyperparameters (parameters of the prior
+distribution), or iterables of hyperparameters.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.__call__">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.__call__" title="Link to this definition"></a></dt>
+<dd><p>Evaluate distribution at <code class="xref py py-obj docutils literal notranslate"><span class="pre">p</span></code> and store it as a property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>list</em>) – Vector of model parameter values, but typically unused. If you
+use it, handle it in a custom implementation of this method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndraws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LHS_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.draw" title="Link to this definition"></a></dt>
+<dd><p>Draw samples uniformly from the prior via inverse sampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ndraws</strong> (<em>int</em>) – Number of draws.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(samples, acceptance fraction)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(<em>ndarray[ndraws, len(self)]</em>, <em>float</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.estimate_hypercube_frac">
+<span class="sig-name descname"><span class="pre">estimate_hypercube_frac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndraws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LHS_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.estimate_hypercube_frac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.estimate_hypercube_frac" title="Link to this definition"></a></dt>
+<dd><p>Estimate using Monte Carlo integration the fractional hypervolume
+within a unit hypercube at which prior density is finite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ndraws</strong> (<em>optional</em><em>[</em><em>int</em><em>]</em>) – Base-10 logarithm of number of draws from the prior to require
+at which the density is finite.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.inverse_sample">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inverse_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hypercube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.inverse_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.inverse_sample" title="Link to this definition"></a></dt>
+<dd><p>Draw sample uniformly from the distribution via inverse sampling.</p>
+<p>By default, implements a flat density between bounds. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is
+in a tuple of bounds, <code class="docutils literal notranslate"><span class="pre">None</span></code> is assigned to the corresponding
+coordinate and the user must handle in a custom subclass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hypercube</strong> (<em>iterable</em>) – A pseudorandom point in an n-dimensional hypercube.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A parameter <em>list</em>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you call this base method via the <code class="docutils literal notranslate"><span class="pre">super()</span></code> built-in, the
+current parameter values will be cached when new values are
+assigned. If you then assign to a parameter again, the current
+value will be automatically cached, thus overwriting the cache
+established in the body of this present method. If you want to
+call this present method and then assign again to a parameter,
+you can restore the cached value so that it is pushed to the
+cache when you reassign.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.inverse_sample_and_transform">
+<span class="sig-name descname"><span class="pre">inverse_sample_and_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hypercube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.inverse_sample_and_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.inverse_sample_and_transform" title="Link to this definition"></a></dt>
+<dd><p>Inverse sample and then transform.</p>
+<p>This method is useful for drawing from the prior when overplotting
+posterior and prior density functions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.transform">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.transform" title="Link to this definition"></a></dt>
+<dd><p>A transformation for post-processing.</p>
+<p>A subclass can implement this attribute as an instance method: it
+does not need to be a static method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>list</em>) – Parameter vector.</p>
+</dd>
+<dt class="field-even">Kwargs<span class="colon">:</span></dt>
+<dd class="field-even"><p>A key sometimes passed is <code class="docutils literal notranslate"><span class="pre">old_API</span></code>, which flags whether a
+transformation needs to account for a parameter vector written to
+file by an older software version, which might be different in
+due to transformations of parameters defined in the current
+software version.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As an example, the <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. 2019</a> samples are in inclination
+<span class="math notranslate nohighlight">\(i\)</span> instead of <span class="math notranslate nohighlight">\(\cos(i)\)</span> which is the current inclination
+parameter in the API. Therefore the transformation needed depends
+on the source of the parameter vector. If the vector is from the
+original sample files, then it needs to be transformed to have
+the same parameter definitions as the current API. However, when
+drawing samples from the prior in the current API, no such
+transformation needs to be performed because these are the
+definitions we need to match. Refer to the dummy example code
+in the method body.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Transformed vector <code class="docutils literal notranslate"><span class="pre">p</span></code> where <code class="docutils literal notranslate"><span class="pre">len(p)</span> <span class="pre">&gt;</span> <span class="pre">len(self)</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>list</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Prior.Prior.unit_hypercube_frac">
+<span class="sig-name descname"><span class="pre">unit_hypercube_frac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">LHS_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.unit_hypercube_frac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Prior.Prior.unit_hypercube_frac" title="Link to this definition"></a></dt>
+<dd><p>Get the fractional hypervolume with finite prior density.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="posterior_api.html" class="btn btn-neutral float-left" title="Posterior API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="posterior.html" class="btn btn-neutral float-right" title="Posterior" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

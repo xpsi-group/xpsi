@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wrappers for SBI &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="PostProcessing" href="postprocessing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="posterior_api.html">Posterior API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Wrappers for SBI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.SBI_wrapper.Custom_SBI_Likelihood"><code class="docutils literal notranslate"><span class="pre">Custom_SBI_Likelihood</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.SBI_wrapper.Custom_SBI_Likelihood._driver"><code class="docutils literal notranslate"><span class="pre">Custom_SBI_Likelihood._driver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.SBI_wrapper.Custom_SBI_Likelihood.synthesise"><code class="docutils literal notranslate"><span class="pre">Custom_SBI_Likelihood.synthesise()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.SBI_wrapper.SynthesiseData"><code class="docutils literal notranslate"><span class="pre">SynthesiseData</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.SBI_wrapper.synthesise"><code class="docutils literal notranslate"><span class="pre">synthesise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.SBI_wrapper.xpsi_wrappers"><code class="docutils literal notranslate"><span class="pre">xpsi_wrappers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.SBI_wrapper.xpsi_wrappers.log_prob"><code class="docutils literal notranslate"><span class="pre">xpsi_wrappers.log_prob()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.SBI_wrapper.xpsi_wrappers.sample"><code class="docutils literal notranslate"><span class="pre">xpsi_wrappers.sample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.SBI_wrapper.xpsi_wrappers.simulator"><code class="docutils literal notranslate"><span class="pre">xpsi_wrappers.simulator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="posterior_api.html">Posterior API</a></li>
+      <li class="breadcrumb-item active">Wrappers for SBI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/SBI_wrapper.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="wrappers-for-sbi">
+<span id="sbi-wrapper"></span><span id="module-xpsi.SBI_wrapper"></span><h1>Wrappers for SBI<a class="headerlink" href="#wrappers-for-sbi" title="Link to this heading"></a></h1>
+<p>X-PSI wrapper functionalities to be used by the <a class="reference external" href="https://sbi-dev.github.io/sbi/latest/">sbi</a> package for Simulation-Based Inference (SBI).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.Custom_SBI_Likelihood">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.SBI_wrapper.</span></span><span class="sig-name descname"><span class="pre">Custom_SBI_Likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">star</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_rel_num_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llzero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1e+90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">externally_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#Custom_SBI_Likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.Custom_SBI_Likelihood" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p>
+<p>Custom likelihood function for use with SBI.</p>
+<p>Modifies the <cite>_driver</cite> and <cite>synthesise</cite> methods from the base class 
+to return <cite>model_flux</cite> that is the synthesised signal.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.Custom_SBI_Likelihood._driver">
+<span class="sig-name descname"><span class="pre">_driver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synthesise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#Custom_SBI_Likelihood._driver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.Custom_SBI_Likelihood._driver" title="Link to this definition"></a></dt>
+<dd><p>Main likelihood evaluation driver routine.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.Custom_SBI_Likelihood.synthesise">
+<span class="sig-name descname"><span class="pre">synthesise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reinitialise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#Custom_SBI_Likelihood.synthesise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.Custom_SBI_Likelihood.synthesise" title="Link to this definition"></a></dt>
+<dd><p>Synthesise pulsation data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>list</em>) – Parameter vector.</p></li>
+<li><p><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call <code class="docutils literal notranslate"><span class="pre">self.reinitialise()</span></code>?</p></li>
+<li><p><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments propagated to custom signal synthesis methods.
+Examples of such arguments include exposure times or
+required total count numbers (see example notebooks).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns ndarray model_flux<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>model_flux</em> (<cite>numpy.ndarray</cite>) synthesised counts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.SynthesiseData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.SBI_wrapper.</span></span><span class="sig-name descname"><span class="pre">SynthesiseData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#SynthesiseData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.SynthesiseData" title="Link to this definition"></a></dt>
+<dd><p>Custom data container to enable synthesis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channels</strong> (<em>ndarray</em>) – Instrument channel numbers which must be equal in number to the first
+dimension of the count matrix.</p></li>
+<li><p><strong>phases</strong> (<em>ndarray</em>) – Phases of the phase bins which must be equal in number to the second
+dimension of the count matrix.</p></li>
+<li><p><strong>first</strong> (<em>int</em>) – First channel index number to include in the synthesised data.</p></li>
+<li><p><strong>last</strong> (<em>int</em>) – Last channel index number to include in the synthesised data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.synthesise">
+<span class="sig-prename descclassname"><span class="pre">xpsi.SBI_wrapper.</span></span><span class="sig-name descname"><span class="pre">synthesise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_source_counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nphases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#synthesise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.synthesise" title="Link to this definition"></a></dt>
+<dd><p>Synthesise data set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exposure_time</strong> (<em>float</em>) – Exposure time in seconds to scale the expected count rate.</p></li>
+<li><p><strong>expected_source_counts</strong> (<em>float</em>) – Total expected number of source counts.</p></li>
+<li><p><strong>nchannels</strong> (<em>int</em>) – Number of channels in the synthesised data.</p></li>
+<li><p><strong>nphases</strong> (<em>int</em>) – Number of phase bins in the synthesised data.</p></li>
+<li><p><strong>seed</strong> (<em>optional</em><em>[</em><em>int</em><em>]</em>) – Seed for random number generation for Poisson noise in synthesised data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>synthetic</strong> (<cite>numpy.ndarray</cite>) The synthesised data set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.xpsi_wrappers">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.SBI_wrapper.</span></span><span class="sig-name descname"><span class="pre">xpsi_wrappers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instr_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_using_CNNs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#xpsi_wrappers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.xpsi_wrappers" title="Link to this definition"></a></dt>
+<dd><p>Class that wraps the xpsi likelihood and prior into a SBI compatible interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prior</strong> (<em>xpsi.Prior</em>) – xpsi.Prior instance.</p></li>
+<li><p><strong>likelihood</strong> (<em>xpsi.Likelihood</em>) – xpsi.Likelihood instance.</p></li>
+<li><p><strong>instr_kwargs</strong> (<em>dict</em>) – Instrument keyword arguments for the likelihood synthesise method.</p></li>
+<li><p><strong>train_using_CNNs</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Whether to use CNNs for training. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.xpsi_wrappers.log_prob">
+<span class="sig-name descname"><span class="pre">log_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#xpsi_wrappers.log_prob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.xpsi_wrappers.log_prob" title="Link to this definition"></a></dt>
+<dd><p>Compute the log probability of the parameter vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameter_vector</strong> (<em>torch.Tensor</em>) – The parameter vector.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>log_probability</strong> (<cite>torch.Tensor</cite>) The log probability of the parameter vector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.xpsi_wrappers.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#xpsi_wrappers.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.xpsi_wrappers.sample" title="Link to this definition"></a></dt>
+<dd><p>Sample from the prior distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample_shape</strong> (<em>torch.Size</em>) – The shape of the sample. Defaults to torch.Size([]).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sample</strong> (<cite>torch.Tensor</cite> or <cite>torch.cuda.Tensor</cite> if CUDA is available.) The sampled values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.SBI_wrapper.xpsi_wrappers.simulator">
+<span class="sig-name descname"><span class="pre">simulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/SBI_wrapper.html#xpsi_wrappers.simulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.SBI_wrapper.xpsi_wrappers.simulator" title="Link to this definition"></a></dt>
+<dd><p>Compute the likelihood of the parameter vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameter_vector</strong> (<em>torch.Tensor</em>) – The parameter vector for which to simulate pulse profile.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>model_flux</strong> (<cite>torch.Tensor</cite>) The pulse profile for the input parameter vector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="postprocessing.html" class="btn btn-neutral float-left" title="PostProcessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

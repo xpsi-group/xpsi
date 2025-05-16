@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Photosphere &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Photosphere</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Photosphere</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Spacetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spacetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.HotRegion</span><span class="w"> </span><span class="kn">import</span> <span class="n">HotRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Elsewhere</span><span class="w"> </span><span class="kn">import</span> <span class="n">Elsewhere</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Everywhere</span><span class="w"> </span><span class="kn">import</span> <span class="n">Everywhere</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Parameter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.surface_radiation_field</span><span class="w"> </span><span class="kn">import</span> <span class="n">effective_gravity</span>
+
+<div class="viewcode-block" id="Photosphere">
+<a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Photosphere</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A photosphere embedded in an ambient Schwarzschild spacetime.</span>
+
+<span class="sd">    :param obj hot:</span>
+<span class="sd">        An instance of :class:`~.HotRegion.HotRegion` (or a derived class).</span>
+<span class="sd">        This objects represents the hot regions of the surface that in most</span>
+<span class="sd">        use-cases will be assumed to contain radiating material that is hotter</span>
+<span class="sd">        than that *elsewhere*.</span>
+
+<span class="sd">    :param obj elsewhere:</span>
+<span class="sd">        An instance of :class:`~.Elsewhere.Elsewhere` (or a derived class).</span>
+
+<span class="sd">    :param obj everywhere:</span>
+<span class="sd">        An instance of :class:`~.Everywhere.Everywhere` (or a derived class).</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        You cannot specify the surface radiation field *everywhere* if you</span>
+<span class="sd">        use hot regions (the latter usage may also include specification of</span>
+<span class="sd">        the radiation field *elsewhere*).</span>
+
+<span class="sd">    :param dict bounds:</span>
+<span class="sd">        Bounds are supplied for instantiation of a frequency parameter.</span>
+<span class="sd">        The parameter name ``&#39;mode_frequency&#39;`` must be a key in the</span>
+<span class="sd">        dictionary unless the parameter is *fixed* or *derived*. If a bound</span>
+<span class="sd">        is ``None`` that bound is set equal to a strict hard-coded bound.</span>
+<span class="sd">        If ``None``, lock the coordinate rotation frequency of a mode of</span>
+<span class="sd">        asymmetry in the photosphere to a fixed frequency, e.g., the stellar</span>
+<span class="sd">        rotation frequency. If bounds are passed, the frequency is interpreted</span>
+<span class="sd">        as a free parameter.</span>
+
+<span class="sd">    :param dict values:</span>
+<span class="sd">        Either the fixed value of the mode frequency, a callable if the</span>
+<span class="sd">        frequency is *derived*, or a value upon initialisation if the</span>
+<span class="sd">        frequency is free. The dictionary must have a key with name</span>
+<span class="sd">        ``&#39;mode_frequency&#39;`` if it is *fixed* or *derived*.</span>
+<span class="sd">        If the asymmetry is locked to the stellar spin, then you need to pass</span>
+<span class="sd">        the spin frequency. If fixed but different to the spin frequency, this</span>
+<span class="sd">        value needs to be passed instead. In the hot region base class this</span>
+<span class="sd">        mode frequency is applied to normalise the ray lags instead of the</span>
+<span class="sd">        stellar rotation frequency.</span>
+
+<span class="sd">    :param boolean stokes:</span>
+<span class="sd">        A Boolean that determines whether the signals for all the Stokes I, Q,</span>
+<span class="sd">        and U parameters are calculated. If False, only Stokes I is calculated.</span>
+
+<span class="sd">    :param iterable custom:</span>
+<span class="sd">        A :class:`~.Parameter.Parameter` instance or iterable over such</span>
+<span class="sd">        instances. Might be useful for calling image plane extensions and</span>
+<span class="sd">        passing global variables, without having to instantiate</span>
+<span class="sd">        surface-discretisation classes and without having to handle global</span>
+<span class="sd">        variable values at compile time or from disk for runtime access.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        In basic modelling patterns the frequency is the spin frequency,</span>
+<span class="sd">        and thus you only need to explicitly pass the spin as ``value`` whilst</span>
+<span class="sd">        leaving ``bounds`` to default. If the spin frequency happens to be a</span>
+<span class="sd">        free parameter (perhaps with informative prior information), then</span>
+<span class="sd">        pass a callable instead that can be used to get the spin frequency</span>
+<span class="sd">        dynamically when the derived mode frequency variable is called for.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">required_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">hot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">everywhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">stokes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">custom</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hot</span> <span class="ow">or</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot use hot region nor elsewhere &#39;</span>
+                                 <span class="s1">&#39;functionality if constructing the &#39;</span>
+                                 <span class="s1">&#39;radiation field everywhere.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">everywhere</span><span class="p">,</span> <span class="n">Everywhere</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for everywhere object.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
+            
+        <span class="k">elif</span> <span class="n">hot</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># can call image-plane extensions</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an elsewhere object.&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Hot region object(s) must be used in &#39;</span>
+                                     <span class="s1">&#39;conjuction with an elsewhere object.&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
+                                              <span class="c1"># including derived classes</span>
+            <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot &#39;</span>
+                                            <span class="s1">&#39;region(s).&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot region(s).&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="o">=</span> <span class="n">hot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere_Q</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span> <span class="o">=</span> <span class="n">everywhere</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stokes</span> <span class="o">=</span> <span class="n">stokes</span>
+        <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_surface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_surface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Coordinate frequency of the mode of radiative asymmetry in the</span>
+<span class="s2">        photosphere that is assumed to generate the pulsed signal [Hz].</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span>
+                                   <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2000.0</span><span class="p">),</span>
+                                   <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                   <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                                   <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$f_{\rm mode}$&#39;</span><span class="p">,</span>
+                                   <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">stokes</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Spin axis position angle measured from the north counterclock-</span>
+<span class="s2">            wise to the projection of the rotation axis on the plane of the</span>
+<span class="s2">            sky [in radians].</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">spin_axis_position_angle</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;spin_axis_position_angle&#39;</span><span class="p">,</span>
+                                       <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
+                                       <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spin_axis_position_angle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                       <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                                       <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\chi_</span><span class="si">{0}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                                       <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spin_axis_position_angle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+            <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mode_frequency</span><span class="p">,</span> <span class="n">spin_axis_position_angle</span><span class="p">,</span>
+                                              <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="n">everywhere</span><span class="p">,</span>
+                                              <span class="n">custom</span><span class="p">,</span>
+                                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mode_frequency</span><span class="p">,</span>
+                                              <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="n">everywhere</span><span class="p">,</span>
+                                              <span class="n">custom</span><span class="p">,</span>
+                                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_NSX_table</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">Tcol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">gcol</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mucol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Ecol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="o">=</span><span class="mi">2</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loading the nsx atmosphere table provided in path </span>
+<span class="sd">        giving the colums in the table corresponding to </span>
+<span class="sd">        - the logarithm of local comoving effective temperature logTeff(K) (Tcol, default=4), </span>
+<span class="sd">        - the logarithm of effective surface gravity logg(cm s^-2) (gcol, default=5), </span>
+<span class="sd">        - the cosine of the angle from the local surface normal mu = cos(theta) (mucol, default=1), </span>
+<span class="sd">        - the logarithm of the photon energy log(E/kTeff) (Ecol, default=0) </span>
+<span class="sd">        - the one-dimensional buffer of specific intensity log(Inu/Teff^3) (spe_Icol, default=2)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Load tables and get sizes</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="n">lenlogT</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">table</span><span class="p">[:,</span><span class="n">Tcol</span><span class="p">])</span> <span class="p">)</span>
+        <span class="n">lenlogg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">table</span><span class="p">[:,</span><span class="n">gcol</span><span class="p">])</span> <span class="p">)</span>
+        <span class="n">lenmu</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">table</span><span class="p">[:,</span><span class="n">mucol</span><span class="p">])</span> <span class="p">)</span>
+        <span class="n">lenlogE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">table</span><span class="p">[:,</span><span class="n">Ecol</span><span class="p">])</span> <span class="p">)</span>
+
+        <span class="c1"># Make respective tables</span>
+        <span class="n">logT</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">lenlogT</span> <span class="p">)</span>
+        <span class="n">logg</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">lenlogg</span> <span class="p">)</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">lenmu</span> <span class="p">)</span>
+        <span class="n">logE</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">lenlogE</span> <span class="p">)</span>
+
+        <span class="n">reorder_buf</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">lenlogT</span><span class="p">,</span>
+                                <span class="n">lenlogg</span><span class="p">,</span>
+                                <span class="n">lenmu</span><span class="p">,</span>
+                                <span class="n">lenlogE</span><span class="p">,))</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenlogT</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenlogg</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenlogE</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenmu</span><span class="p">):</span>
+                        <span class="n">logT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="n">Tcol</span><span class="p">]</span>
+                        <span class="n">logg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="n">gcol</span><span class="p">]</span>
+                        <span class="n">logE</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="n">Ecol</span><span class="p">]</span>
+                        <span class="n">mu</span><span class="p">[</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="n">mucol</span><span class="p">]</span>
+                        <span class="n">reorder_buf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.0</span><span class="o">**</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="n">spe_Icol</span><span class="p">])</span>
+                        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="n">bufdex</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenlogT</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenlogg</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenmu</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenlogE</span><span class="p">):</span>
+                            <span class="n">buf</span><span class="p">[</span><span class="n">bufdex</span><span class="p">]</span> <span class="o">=</span> <span class="n">reorder_buf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">];</span> <span class="n">bufdex</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the numerical atmosphere buffers for hot regions if used.</span>
+
+<span class="sd">        To preload a numerical atmosphere into a buffer, subclass and</span>
+<span class="sd">        overwrite the setter. The underscore attribute set by the setter</span>
+<span class="sd">        must be an :math:`n`-tuple whose :math:`n^{th}` element is an</span>
+<span class="sd">        :math:`(n-1)`-dimensional array flattened into a one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray`. The first :math:`n-1`</span>
+<span class="sd">        elements of the :math:`n`-tuple must each be an ordered one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray` of parameter values for the purpose of</span>
+<span class="sd">        multi-dimensional interpolation in the :math:`n^{th}` buffer. The</span>
+<span class="sd">        first :math:`n-1` elements must be ordered to match the index</span>
+<span class="sd">        arithmetic applied to the :math:`n^{th}` buffer. An example would be</span>
+<span class="sd">        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:</span>
+<span class="sd">        ``logT`` is a logarithm of local comoving effective temperature;</span>
+<span class="sd">        ``logg`` is a logarithm of effective surface gravity;</span>
+<span class="sd">        ``mu`` is the cosine of the angle from the local surface normal;</span>
+<span class="sd">        ``logE`` is a logarithm of the photon energy; and</span>
+<span class="sd">        ``buf`` is a one-dimensional buffer of intensities of size given by</span>
+<span class="sd">        the product of sizes of the first :math:`n-1` tuple elements.</span>
+
+<span class="sd">        It is highly recommended that buffer preloading is used, instead</span>
+<span class="sd">        of loading from disk in the customisable radiation field extension</span>
+<span class="sd">        module, to avoid reading from disk for every signal</span>
+<span class="sd">        (likelihood) evaluation. This can be a non-negligible waste of compute</span>
+<span class="sd">        resources. By preloading in Python, the memory is allocated and</span>
+<span class="sd">        references to that memory are not in general deleted until a sampling</span>
+<span class="sd">        script exits and the kernel stops. The likelihood callback accesses</span>
+<span class="sd">        the same memory upon each call without I/O.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span>
+
+    <span class="nd">@hot_atmosphere</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span><span class="n">Tcol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gcol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mucol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Ecol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s1">&#39;nsx&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c1"># Read and set attributes of NSX model table</span>
+            <span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_NSX_table</span><span class="p">(</span> <span class="n">path</span> <span class="p">,</span><span class="n">Tcol</span><span class="p">,</span> <span class="n">gcol</span><span class="p">,</span> <span class="n">mucol</span><span class="p">,</span> <span class="n">Ecol</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span> <span class="o">=</span> <span class="p">(</span><span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">## if you want to set another model</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement setter if required.&#39;</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hot_atmosphere_Q</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the numerical atmosphere Stokes Q buffers for hot regions if used.</span>
+
+<span class="sd">        To preload a numerical atmosphere into a buffer, subclass and</span>
+<span class="sd">        overwrite the setter. The underscore attribute set by the setter</span>
+<span class="sd">        must be an :math:`n`-tuple whose :math:`n^{th}` element is an</span>
+<span class="sd">        :math:`(n-1)`-dimensional array flattened into a one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray`. The first :math:`n-1`</span>
+<span class="sd">        elements of the :math:`n`-tuple must each be an ordered one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray` of parameter values for the purpose of</span>
+<span class="sd">        multi-dimensional interpolation in the :math:`n^{th}` buffer. The</span>
+<span class="sd">        first :math:`n-1` elements must be ordered to match the index</span>
+<span class="sd">        arithmetic applied to the :math:`n^{th}` buffer. An example would be</span>
+<span class="sd">        ``self._hot_atmosphere_Q = (logT, logg, mu, logE, buf)``, where:</span>
+<span class="sd">        ``logT`` is a logarithm of local comoving effective temperature;</span>
+<span class="sd">        ``logg`` is a logarithm of effective surface gravity;</span>
+<span class="sd">        ``mu`` is the cosine of the angle from the local surface normal;</span>
+<span class="sd">        ``logE`` is a logarithm of the photon energy; and</span>
+<span class="sd">        ``buf`` is a one-dimensional buffer of intensities of size given by</span>
+<span class="sd">        the product of sizes of the first :math:`n-1` tuple elements.</span>
+
+<span class="sd">        It is highly recommended that buffer preloading is used, instead</span>
+<span class="sd">        of loading from disk in the customisable radiation field extension</span>
+<span class="sd">        module, to avoid reading from disk for every signal</span>
+<span class="sd">        (likelihood) evaluation. This can be a non-negligible waste of compute</span>
+<span class="sd">        resources. By preloading in Python, the memory is allocated and</span>
+<span class="sd">        references to that memory are not in general deleted until a sampling</span>
+<span class="sd">        script exits and the kernel stops. The likelihood callback accesses</span>
+<span class="sd">        the same memory upon each call without I/O.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere_Q</span>
+
+    <span class="nd">@hot_atmosphere_Q</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hot_atmosphere_Q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">Tcol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gcol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mucol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Ecol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s1">&#39;nsx&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c1"># Read and set attributes of NSX model table</span>
+            <span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_NSX_table</span><span class="p">(</span> <span class="n">path</span> <span class="p">,</span><span class="n">Tcol</span><span class="p">,</span> <span class="n">gcol</span><span class="p">,</span> <span class="n">mucol</span><span class="p">,</span> <span class="n">Ecol</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere_Q</span> <span class="o">=</span> <span class="p">(</span><span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement setter if required.&#39;</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elsewhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the numerical atmosphere buffers for elsewhere if used.</span>
+
+<span class="sd">        To preload a numerical atmosphere into a buffer, subclass and</span>
+<span class="sd">        overwrite the setter. The underscore attribute set by the setter</span>
+<span class="sd">        must be an :math:`n`-tuple whose :math:`n^{th}` element is an</span>
+<span class="sd">        :math:`(n-1)`-dimensional array flattened into a one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray`. The first :math:`n-1`</span>
+<span class="sd">        elements of the :math:`n`-tuple must each be an ordered one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray` of parameter values for the purpose of</span>
+<span class="sd">        multi-dimensional interpolation in the :math:`n^{th}` buffer. The</span>
+<span class="sd">        first :math:`n-1` elements must be ordered to match the index</span>
+<span class="sd">        arithmetic applied to the :math:`n^{th}` buffer. An example would be</span>
+<span class="sd">        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:</span>
+<span class="sd">        ``logT`` is a logarithm of local comoving effective temperature;</span>
+<span class="sd">        ``logg`` is a logarithm of effective surface gravity;</span>
+<span class="sd">        ``mu`` is the cosine of the angle from the local surface normal;</span>
+<span class="sd">        ``logE`` is a logarithm of the photon energy; and</span>
+<span class="sd">        ``buf`` is a one-dimensional buffer of intensities of size given by</span>
+<span class="sd">        the product of sizes of the first :math:`n-1` tuple elements.</span>
+
+<span class="sd">        It is highly recommended that buffer preloading is used, instead</span>
+<span class="sd">        of loading from disk in the customisable radiation field extension</span>
+<span class="sd">        module, to avoid reading from disk for every signal</span>
+<span class="sd">        (likelihood) evaluation. This can be a non-negligible waste of compute</span>
+<span class="sd">        resources. By preloading in Python, the memory is allocated and</span>
+<span class="sd">        references to that memory are not in general deleted until a sampling</span>
+<span class="sd">        script exits and the kernel stops. The likelihood callback accesses</span>
+<span class="sd">        the same memory upon each call without I/O.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span>
+
+    <span class="nd">@elsewhere_atmosphere</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elsewhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">Tcol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gcol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mucol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Ecol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s1">&#39;nsx&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c1"># Read and set attributes of NSX model table</span>
+            <span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_NSX_table</span><span class="p">(</span> <span class="n">path</span> <span class="p">,</span><span class="n">Tcol</span><span class="p">,</span> <span class="n">gcol</span><span class="p">,</span> <span class="n">mucol</span><span class="p">,</span> <span class="n">Ecol</span><span class="p">,</span> <span class="n">spe_Icol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span> <span class="o">=</span> <span class="p">(</span><span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement setter if required.&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">everywhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the numerical atmosphere buffers for eerywhere if used.</span>
+
+<span class="sd">        To preload a numerical atmosphere into a buffer, subclass and</span>
+<span class="sd">        overwrite the setter. The underscore attribute set by the setter</span>
+<span class="sd">        must be an :math:`n`-tuple whose :math:`n^{th}` element is an</span>
+<span class="sd">        :math:`(n-1)`-dimensional array flattened into a one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray`. The first :math:`n-1`</span>
+<span class="sd">        elements of the :math:`n`-tuple must each be an ordered one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray` of parameter values for the purpose of</span>
+<span class="sd">        multi-dimensional interpolation in the :math:`n^{th}` buffer. The</span>
+<span class="sd">        first :math:`n-1` elements must be ordered to match the index</span>
+<span class="sd">        arithmetic applied to the :math:`n^{th}` buffer. An example would be</span>
+<span class="sd">        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:</span>
+<span class="sd">        ``logT`` is a logarithm of local comoving effective temperature;</span>
+<span class="sd">        ``logg`` is a logarithm of effective surface gravity;</span>
+<span class="sd">        ``mu`` is the cosine of the angle from the local surface normal;</span>
+<span class="sd">        ``logE`` is a logarithm of the photon energy; and</span>
+<span class="sd">        ``buf`` is a one-dimensional buffer of intensities of size given by</span>
+<span class="sd">        the product of sizes of the first :math:`n-1` tuple elements.</span>
+
+<span class="sd">        It is highly recommended that buffer preloading is used, instead</span>
+<span class="sd">        of loading from disk in the customisable radiation field extension</span>
+<span class="sd">        module, to avoid reading from disk for every signal</span>
+<span class="sd">        (likelihood) evaluation. This can be a non-negligible waste of compute</span>
+<span class="sd">        resources. By preloading in Python, the memory is allocated and</span>
+<span class="sd">        references to that memory are not in general deleted until a sampling</span>
+<span class="sd">        script exits and the kernel stops. The likelihood callback accesses</span>
+<span class="sd">        the same memory upon each call without I/O.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere_atmosphere</span>
+
+    <span class="nd">@everywhere_atmosphere</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">everywhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">Tcol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gcol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mucol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Ecol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bufcol</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s1">&#39;nsx&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c1"># Read and set attributes of NSX model table</span>
+            <span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_NSX_table</span><span class="p">(</span> <span class="n">path</span> <span class="p">,</span><span class="n">Tcol</span><span class="p">,</span> <span class="n">gcol</span><span class="p">,</span> <span class="n">mucol</span><span class="p">,</span> <span class="n">Ecol</span><span class="p">,</span> <span class="n">bufcol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere_atmosphere</span> <span class="o">=</span> <span class="p">(</span><span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement setter if required.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.HotRegion.HotRegion`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elsewhere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Elsewhere.Elsewhere`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">everywhere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Everywhere.Everywhere`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">surface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.HotRegion.HotRegion` or</span>
+<span class="sd">        :class:`~.Everywhere.Everywhere` depending on which approach is used</span>
+<span class="sd">        in the modelling. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_surface</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spacetime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return instance of :class:`~.Spacetime.Spacetime`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span>
+
+    <span class="nd">@spacetime</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spacetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Spacetime</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for spacetime object.&#39;</span><span class="p">)</span>
+        <span class="c1"># otherwise store a reference to the spacetime object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the stokes option. If True, a full Stokes vector is computed and</span>
+<span class="sd">        stored in signal, signalQ, and signalU. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stokes</span>
+
+<div class="viewcode-block" id="Photosphere.embed">
+<a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.embed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Embed the photosphere in an ambient Schwarzschild spacetime.</span>
+
+<span class="sd">        In other words, generate a discrete representation of the photospheric</span>
+<span class="sd">        radiation field and the null mapping from the photosphere to infinity,</span>
+<span class="sd">        for use in flux integrators called by distant observers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="p">,</span>
+                                   <span class="n">threads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="p">,</span>
+                                    <span class="n">fast_total_counts</span><span class="p">,</span>
+                                    <span class="n">threads</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="p">,</span>
+                                <span class="n">fast_total_counts</span><span class="p">,</span>
+                                <span class="n">threads</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Photosphere.integrate">
+<a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.integrate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
+
+<span class="sd">        :param energies:</span>
+<span class="sd">            A one-dimensional :class:`numpy.ndarray` of energies in keV.</span>
+
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads to spawn for signal integration.</span>
+
+<span class="sd">        :param bool stokes:</span>
+<span class="sd">            If activated, a full Stokes vector is computed and stored in signal, signalQ, and signalU.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">hot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hot</span><span class="o">.</span><span class="n">atm_ext</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1">#Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.</span>
+
+                    <span class="n">T_low</span><span class="p">,</span> <span class="n">T_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">g_low</span><span class="p">,</span> <span class="n">g_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">ipar</span> <span class="ow">in</span> <span class="n">hot</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s2">&quot;temperature&quot;</span> <span class="ow">in</span> <span class="n">ipar</span><span class="p">:</span>
+                            <span class="n">temperature</span> <span class="o">=</span> <span class="n">hot</span><span class="p">[</span><span class="n">ipar</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">T_low</span> <span class="o">&lt;=</span> <span class="n">temperature</span> <span class="o">&lt;=</span> <span class="n">T_high</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;HotRegion temperature &quot;</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="s2">&quot;is outside of the atmosphere table bounds: [&quot;</span><span class="p">,</span><span class="n">T_low</span><span class="p">,</span> <span class="n">T_high</span><span class="p">,</span><span class="s2">&quot;]&quot;</span><span class="p">)</span>
+
+                    <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span>
+                    <span class="n">grav</span> <span class="o">=</span> <span class="n">effective_gravity</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
+                                             <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">R</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="p">),</span>
+                                             <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span>
+                                             <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+
+                    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">grav</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">g_low</span> <span class="o">&lt;=</span> <span class="n">g</span> <span class="o">&lt;=</span> <span class="n">g_high</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Surface gravity &quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="s2">&quot;is outside of the atmosphere table bounds: [&quot;</span><span class="p">,</span><span class="n">g_low</span><span class="p">,</span> <span class="n">g_high</span><span class="p">,</span><span class="s2">&quot;]&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">atm_ext</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1">#Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.</span>
+                <span class="n">T_low</span><span class="p">,</span> <span class="n">T_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">g_low</span><span class="p">,</span> <span class="n">g_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">temperature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">T_low</span> <span class="o">&lt;=</span> <span class="n">temperature</span> <span class="o">&lt;=</span> <span class="n">T_high</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot; Elsewhere temperature &quot;</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="s2">&quot;is outside of the atmosphere table bounds: [&quot;</span><span class="p">,</span><span class="n">T_low</span><span class="p">,</span> <span class="n">T_high</span><span class="p">,</span><span class="s2">&quot;]&quot;</span><span class="p">)</span>
+
+                <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span>
+                <span class="n">grav</span> <span class="o">=</span> <span class="n">effective_gravity</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
+                                         <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">R</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="p">),</span>
+                                         <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span>
+                                         <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">grav</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">g_low</span> <span class="o">&lt;=</span> <span class="n">g</span> <span class="o">&lt;=</span> <span class="n">g_high</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Surface gravity &quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="s2">&quot;is outside of the atmosphere table bounds: [&quot;</span><span class="p">,</span><span class="n">g_low</span><span class="p">,</span> <span class="n">g_high</span><span class="p">,</span><span class="s2">&quot;]&quot;</span><span class="p">)</span>
+
+        <span class="c1">#TBD: Similar check for Everywhere.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stokes</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Stokes option for everywhere not implemented yet.&#39;</span><span class="p">)</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                   <span class="n">energies</span><span class="p">,</span>
+                                                   <span class="n">threads</span><span class="p">,</span>
+                                                   <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_everywhere_atmosphere</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="p">((</span><span class="n">spectrum</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),),)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="p">((</span><span class="n">spectrum</span><span class="p">,),)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                     <span class="n">energies</span><span class="p">,</span>
+                                                     <span class="n">threads</span><span class="p">,</span>
+                                                     <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">else_atm_ext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">atm_ext</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">else_atm_ext</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stokes</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                   <span class="n">energies</span><span class="p">,</span>
+                                                   <span class="n">threads</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere_Q</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">,</span>
+                                                   <span class="n">else_atm_ext</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">,)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span><span class="p">,)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span><span class="p">,)</span>
+                    <span class="c1">#Rotate the Stokes parameters based on position of the spin axis:</span>
+                    <span class="n">chi_rad</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;spin_axis_position_angle&quot;</span><span class="p">]</span>
+                    <span class="n">tempQ</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span><span class="p">]</span>
+                    <span class="n">tempU</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">ih</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span><span class="p">)):</span>
+                        <span class="k">for</span> <span class="n">ic</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span><span class="p">[</span><span class="n">ih</span><span class="p">][:])):</span>
+                            <span class="n">tempQ</span><span class="p">[</span><span class="n">ih</span><span class="p">][</span><span class="n">ic</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">chi_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">tempQ</span><span class="p">[</span><span class="n">ih</span><span class="p">][</span><span class="n">ic</span><span class="p">]</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">chi_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">tempU</span><span class="p">[</span><span class="n">ih</span><span class="p">][</span><span class="n">ic</span><span class="p">]</span>
+                            <span class="n">tempU</span><span class="p">[</span><span class="n">ih</span><span class="p">][</span><span class="n">ic</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">chi_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">tempQ</span><span class="p">[</span><span class="n">ih</span><span class="p">][</span><span class="n">ic</span><span class="p">]</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">chi_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">tempU</span><span class="p">[</span><span class="n">ih</span><span class="p">][</span><span class="n">ic</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">tempQ</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">tempU</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                   <span class="n">energies</span><span class="p">,</span>
+                                                   <span class="n">threads</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">,</span>
+                                                   <span class="n">else_atm_ext</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">,)</span>
+
+                <span class="c1"># add time-invariant component to first time-dependent component</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">spectrum</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the stored signal (Stokes I).</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            A tuple of tuples of *ndarray[m,n]*.</span>
+<span class="sd">            Here :math:`m` is the number of energies, and</span>
+<span class="sd">            :math:`n` is the number of phases. Units are photon/s/keV; the</span>
+<span class="sd">            distance is a fast parameter so the areal units are not yet</span>
+<span class="sd">            factored in. If the signal is a spectrum because the signal is</span>
+<span class="sd">            time-invariant, then :math:`n=1`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signalQ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the stored Stokes Q signal.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            A tuple of tuples of *ndarray[m,n]*.</span>
+<span class="sd">            Here :math:`m` is the number of energies, and</span>
+<span class="sd">            :math:`n` is the number of phases. Units are photon/s/keV; the</span>
+<span class="sd">            distance is a fast parameter so the areal units are not yet</span>
+<span class="sd">            factored in. If the signal is a spectrum because the signal is</span>
+<span class="sd">            time-invariant, then :math:`n=1`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stokes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to set stokes=True for the Photosphere object &quot;</span>
+            <span class="s2">&quot;to calculate Stokes Q signal.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signalQ</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signalU</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the stored Stokes U signal.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            A tuple of tuples of *ndarray[m,n]*.</span>
+<span class="sd">            Here :math:`m` is the number of energies, and</span>
+<span class="sd">            :math:`n` is the number of phases. Units are photon/s/keV; the</span>
+<span class="sd">            distance is a fast parameter so the areal units are not yet</span>
+<span class="sd">            factored in. If the signal is a spectrum because the signal is</span>
+<span class="sd">            time-invariant, then :math:`n=1`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stokes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to set stokes=True for the Photosphere object &quot;</span>
+            <span class="s2">&quot;to calculate Stokes U signal.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signalU</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

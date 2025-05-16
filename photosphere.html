@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photosphere &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HotRegion" href="hotregion.html" />
+    <link rel="prev" title="Spacetime" href="spacetime.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Photosphere</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere"><code class="docutils literal notranslate"><span class="pre">Photosphere</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.elsewhere"><code class="docutils literal notranslate"><span class="pre">Photosphere.elsewhere</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.elsewhere_atmosphere"><code class="docutils literal notranslate"><span class="pre">Photosphere.elsewhere_atmosphere</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.embed"><code class="docutils literal notranslate"><span class="pre">Photosphere.embed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.everywhere"><code class="docutils literal notranslate"><span class="pre">Photosphere.everywhere</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.hot"><code class="docutils literal notranslate"><span class="pre">Photosphere.hot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.hot_atmosphere"><code class="docutils literal notranslate"><span class="pre">Photosphere.hot_atmosphere</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.integrate"><code class="docutils literal notranslate"><span class="pre">Photosphere.integrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.signal"><code class="docutils literal notranslate"><span class="pre">Photosphere.signal</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.signalQ"><code class="docutils literal notranslate"><span class="pre">Photosphere.signalQ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.signalU"><code class="docutils literal notranslate"><span class="pre">Photosphere.signalU</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.spacetime"><code class="docutils literal notranslate"><span class="pre">Photosphere.spacetime</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">Photosphere</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/photosphere.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="photosphere">
+<span id="module-xpsi.Photosphere"></span><span id="id1"></span><h1>Photosphere<a class="headerlink" href="#photosphere" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Photosphere.Photosphere" title="xpsi.Photosphere.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Photosphere</span></code></a> represent a photosphere embedded
+in an ambient Schwarzschild spacetime.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Photosphere.</span></span><span class="sig-name descname"><span class="pre">Photosphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elsewhere</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">everywhere</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a></p>
+<p>A photosphere embedded in an ambient Schwarzschild spacetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hot</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a> (or a derived class).
+This objects represents the hot regions of the surface that in most
+use-cases will be assumed to contain radiating material that is hotter
+than that <em>elsewhere</em>.</p></li>
+<li><p><strong>elsewhere</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a> (or a derived class).</p></li>
+<li><p><strong>everywhere</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a> (or a derived class).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You cannot specify the surface radiation field <em>everywhere</em> if you
+use hot regions (the latter usage may also include specification of
+the radiation field <em>elsewhere</em>).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>dict</em>) – Bounds are supplied for instantiation of a frequency parameter.
+The parameter name <code class="docutils literal notranslate"><span class="pre">'mode_frequency'</span></code> must be a key in the
+dictionary unless the parameter is <em>fixed</em> or <em>derived</em>. If a bound
+is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set equal to a strict hard-coded bound.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, lock the coordinate rotation frequency of a mode of
+asymmetry in the photosphere to a fixed frequency, e.g., the stellar
+rotation frequency. If bounds are passed, the frequency is interpreted
+as a free parameter.</p></li>
+<li><p><strong>values</strong> (<em>dict</em>) – Either the fixed value of the mode frequency, a callable if the
+frequency is <em>derived</em>, or a value upon initialisation if the
+frequency is free. The dictionary must have a key with name
+<code class="docutils literal notranslate"><span class="pre">'mode_frequency'</span></code> if it is <em>fixed</em> or <em>derived</em>.
+If the asymmetry is locked to the stellar spin, then you need to pass
+the spin frequency. If fixed but different to the spin frequency, this
+value needs to be passed instead. In the hot region base class this
+mode frequency is applied to normalise the ray lags instead of the
+stellar rotation frequency.</p></li>
+<li><p><strong>stokes</strong> (<em>boolean</em>) – A Boolean that determines whether the signals for all the Stokes I, Q,
+and U parameters are calculated. If False, only Stokes I is calculated.</p></li>
+<li><p><strong>custom</strong> (<em>iterable</em>) – A <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instance or iterable over such
+instances. Might be useful for calling image plane extensions and
+passing global variables, without having to instantiate
+surface-discretisation classes and without having to handle global
+variable values at compile time or from disk for runtime access.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In basic modelling patterns the frequency is the spin frequency,
+and thus you only need to explicitly pass the spin as <code class="docutils literal notranslate"><span class="pre">value</span></code> whilst
+leaving <code class="docutils literal notranslate"><span class="pre">bounds</span></code> to default. If the spin frequency happens to be a
+free parameter (perhaps with informative prior information), then
+pass a callable instead that can be used to get the spin frequency
+dynamically when the derived mode frequency variable is called for.</p>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.elsewhere">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elsewhere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.elsewhere" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.elsewhere_atmosphere">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elsewhere_atmosphere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.elsewhere_atmosphere" title="Link to this definition"></a></dt>
+<dd><p>Get the numerical atmosphere buffers for elsewhere if used.</p>
+<p>To preload a numerical atmosphere into a buffer, subclass and
+overwrite the setter. The underscore attribute set by the setter
+must be an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
+<span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
+first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
+arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
+<code class="docutils literal notranslate"><span class="pre">self._hot_atmosphere</span> <span class="pre">=</span> <span class="pre">(logT,</span> <span class="pre">logg,</span> <span class="pre">mu,</span> <span class="pre">logE,</span> <span class="pre">buf)</span></code>, where:
+<code class="docutils literal notranslate"><span class="pre">logT</span></code> is a logarithm of local comoving effective temperature;
+<code class="docutils literal notranslate"><span class="pre">logg</span></code> is a logarithm of effective surface gravity;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code> is the cosine of the angle from the local surface normal;
+<code class="docutils literal notranslate"><span class="pre">logE</span></code> is a logarithm of the photon energy; and
+<code class="docutils literal notranslate"><span class="pre">buf</span></code> is a one-dimensional buffer of intensities of size given by
+the product of sizes of the first <span class="math notranslate nohighlight">\(n-1\)</span> tuple elements.</p>
+<p>It is highly recommended that buffer preloading is used, instead
+of loading from disk in the customisable radiation field extension
+module, to avoid reading from disk for every signal
+(likelihood) evaluation. This can be a non-negligible waste of compute
+resources. By preloading in Python, the memory is allocated and
+references to that memory are not in general deleted until a sampling
+script exits and the kernel stops. The likelihood callback accesses
+the same memory upon each call without I/O.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast_total_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.embed" title="Link to this definition"></a></dt>
+<dd><p>Embed the photosphere in an ambient Schwarzschild spacetime.</p>
+<p>In other words, generate a discrete representation of the photospheric
+radiation field and the null mapping from the photosphere to infinity,
+for use in flux integrators called by distant observers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.everywhere">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">everywhere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.everywhere" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.hot">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hot</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.hot" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.hot_atmosphere">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hot_atmosphere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.hot_atmosphere" title="Link to this definition"></a></dt>
+<dd><p>Get the numerical atmosphere buffers for hot regions if used.</p>
+<p>To preload a numerical atmosphere into a buffer, subclass and
+overwrite the setter. The underscore attribute set by the setter
+must be an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
+<span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
+first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
+arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
+<code class="docutils literal notranslate"><span class="pre">self._hot_atmosphere</span> <span class="pre">=</span> <span class="pre">(logT,</span> <span class="pre">logg,</span> <span class="pre">mu,</span> <span class="pre">logE,</span> <span class="pre">buf)</span></code>, where:
+<code class="docutils literal notranslate"><span class="pre">logT</span></code> is a logarithm of local comoving effective temperature;
+<code class="docutils literal notranslate"><span class="pre">logg</span></code> is a logarithm of effective surface gravity;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code> is the cosine of the angle from the local surface normal;
+<code class="docutils literal notranslate"><span class="pre">logE</span></code> is a logarithm of the photon energy; and
+<code class="docutils literal notranslate"><span class="pre">buf</span></code> is a one-dimensional buffer of intensities of size given by
+the product of sizes of the first <span class="math notranslate nohighlight">\(n-1\)</span> tuple elements.</p>
+<p>It is highly recommended that buffer preloading is used, instead
+of loading from disk in the customisable radiation field extension
+module, to avoid reading from disk for every signal
+(likelihood) evaluation. This can be a non-negligible waste of compute
+resources. By preloading in Python, the memory is allocated and
+references to that memory are not in general deleted until a sampling
+script exits and the kernel stops. The likelihood callback accesses
+the same memory upon each call without I/O.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.integrate" title="Link to this definition"></a></dt>
+<dd><p>Integrate over the photospheric radiation field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for signal integration.</p></li>
+<li><p><strong>stokes</strong> (<em>bool</em>) – If activated, a full Stokes vector is computed and stored in signal, signalQ, and signalU.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.signal">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signal</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.signal" title="Link to this definition"></a></dt>
+<dd><p>Get the stored signal (Stokes I).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tuples of <em>ndarray[m,n]</em>.
+Here <span class="math notranslate nohighlight">\(m\)</span> is the number of energies, and
+<span class="math notranslate nohighlight">\(n\)</span> is the number of phases. Units are photon/s/keV; the
+distance is a fast parameter so the areal units are not yet
+factored in. If the signal is a spectrum because the signal is
+time-invariant, then <span class="math notranslate nohighlight">\(n=1\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.signalQ">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signalQ</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.signalQ" title="Link to this definition"></a></dt>
+<dd><p>Get the stored Stokes Q signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tuples of <em>ndarray[m,n]</em>.
+Here <span class="math notranslate nohighlight">\(m\)</span> is the number of energies, and
+<span class="math notranslate nohighlight">\(n\)</span> is the number of phases. Units are photon/s/keV; the
+distance is a fast parameter so the areal units are not yet
+factored in. If the signal is a spectrum because the signal is
+time-invariant, then <span class="math notranslate nohighlight">\(n=1\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.signalU">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signalU</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.signalU" title="Link to this definition"></a></dt>
+<dd><p>Get the stored Stokes U signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tuples of <em>ndarray[m,n]</em>.
+Here <span class="math notranslate nohighlight">\(m\)</span> is the number of energies, and
+<span class="math notranslate nohighlight">\(n\)</span> is the number of phases. Units are photon/s/keV; the
+distance is a fast parameter so the areal units are not yet
+factored in. If the signal is a spectrum because the signal is
+time-invariant, then <span class="math notranslate nohighlight">\(n=1\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.spacetime">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spacetime</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.spacetime" title="Link to this definition"></a></dt>
+<dd><p>Return instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spacetime.html" class="btn btn-neutral float-left" title="Spacetime" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hotregion.html" class="btn btn-neutral float-right" title="HotRegion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

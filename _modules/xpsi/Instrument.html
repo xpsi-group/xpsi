@@ -1,0 +1,863 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Instrument &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Instrument</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Instrument</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Instrument&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_verbose</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_verbose</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.PileupModule</span><span class="w"> </span><span class="kn">import</span> <span class="n">XrayPileup</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+
+<div class="viewcode-block" id="ResponseError">
+<a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.ResponseError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResponseError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if there is a problem with the input response matrix. &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="EdgesError">
+<a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.EdgesError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EdgesError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if there is a problem with the input energy edges. &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ChannelError">
+<a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.ChannelError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChannelError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raised if there is a problem with the input channel numbers. &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Instrument">
+<a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Instrument</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Base class for astronomical X-ray instruments on-board space telescopes.</span>
+
+<span class="sd">    The body of the initialiser must not be changed to ensure inter-module</span>
+<span class="sd">    compatibility, but can be extended if appropriate using a call to</span>
+<span class="sd">    ``super().__init__``. Specialist constructors can be defined in a subclass</span>
+<span class="sd">    using the ``@classmethod`` decorator.</span>
+
+<span class="sd">    :param ndarray[p,q] matrix:</span>
+<span class="sd">        A :math:`p \\times q` matrix which is the product of a redistribution</span>
+<span class="sd">        matrix and effective area vector. The input energy intervals must</span>
+<span class="sd">        increase along the columns of :attr:`matrix`, and the output channels</span>
+<span class="sd">        must increase along the rows of :attr:`matrix`. The *units* of the</span>
+<span class="sd">        elements must be that of an *effective* area (:math:`cm^2`). Generally</span>
+<span class="sd">        there will be some available calibration product, and deviations from</span>
+<span class="sd">        this nominal response model will be parametrised. So here load some</span>
+<span class="sd">        nominal response matrix.</span>
+
+<span class="sd">    :param ndarray[q+1] energy_edges:</span>
+<span class="sd">        Energy edges in keV of the instrument energy intervals which must be</span>
+<span class="sd">        congruent to the first dimension of the :attr:`matrix`: the number of</span>
+<span class="sd">        edges must be :math:`q + 1`. The edges must be monotonically increasing.</span>
+<span class="sd">        These edges will correspond to the nominal response matrix and any</span>
+<span class="sd">        deviation from this matrix (see above).</span>
+
+<span class="sd">    :param ndarray[p] channels:</span>
+<span class="sd">        Instrument channel numbers which must be equal in number to the number</span>
+<span class="sd">        of rows of the :attr:`matrix`. The number of channels must therefore be</span>
+<span class="sd">        :math:`p`. These channels will correspond to the nominal response</span>
+<span class="sd">        matrix and any deviation from this matrix (see above). In common usage</span>
+<span class="sd">        patterns, the channel numbers will increase monotonically with row</span>
+<span class="sd">        number, and usually increment by one (but this is not necessary).</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        That these channel numbers are not used to index the loaded instrument</span>
+<span class="sd">        (sub)matrix. The :attr:`xpsi.Data.index_range` property returns</span>
+<span class="sd">        bounding row numbers that index the loaded instrument response</span>
+<span class="sd">        (sub)matrix in order to operate on an incident signal flux. The</span>
+<span class="sd">        channel array contained in :attr:`xpsi.Data.channels` must be a</span>
+<span class="sd">        contiguous (ordered) subset of the channel array loaded here.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The dimensions of the response matrix need not be equal, but it is</span>
+<span class="sd">        required that the number of input intervals be greater than or equal to</span>
+<span class="sd">        the number of output channels -- i.e., :math:`p \leq q`. If :math:`p &lt;</span>
+<span class="sd">        q` then it is implied that subsets of adjacent output channels are</span>
+<span class="sd">        effectively grouped together.</span>
+
+<span class="sd">    :param ndarray[p+1] channel_edges:</span>
+<span class="sd">        The channel (energy) edges of the instrument, in keV. The array must</span>
+<span class="sd">        be congruent to the zeroth dimension of the :attr:`matrix`: the number</span>
+<span class="sd">        of edges must be :math:`p + 1`. The edges must be monotonically</span>
+<span class="sd">        increasing. These edges will correspond to the nominal response matrix</span>
+<span class="sd">        and any deviation from this matrix (see above).</span>
+
+<span class="sd">    :param tuple args:</span>
+<span class="sd">        Container of parameter instances.</span>
+
+<span class="sd">    :param dict kwargs:</span>
+<span class="sd">        If you want to prefix parameters of an instance of this instrument</span>
+<span class="sd">        subspace with an identifier, pass it as keyword argument and it will</span>
+<span class="sd">        find its way to the base class.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
+        <span class="k">if</span> <span class="n">channel_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Get the reference response matrix.</span>
+
+<span class="sd">        In common usage patterns there will be some fiducial or nominal</span>
+<span class="sd">        response matrix that either defines fixed instrument operation or</span>
+<span class="sd">        is a basis for parametrised deviations. This matrix is usually a</span>
+<span class="sd">        calibration product distributed by an instrument calibration team.</span>
+
+<span class="sd">        A matrix of dimension :math:`p \\times q`. Here :math:`p` must be the</span>
+<span class="sd">        number of input energy intervals, and :math:`q \geq p` the number of</span>
+<span class="sd">        output channels.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            The attribute :attr:`matrix` must be assigned, and it must be</span>
+<span class="sd">            a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even</span>
+<span class="sd">            if the matrix is sparse to some degree).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span>
+
+    <span class="nd">@matrix</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the matrix. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">matrix</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">matrix</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ResponseError</span><span class="p">(</span><span class="s1">&#39;Input matrix must be a two-dimensional ndarray with all matrix elements that are zero or positive.&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">assert</span> <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">assert</span> <span class="n">matrix</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ResponseError</span><span class="p">(</span><span class="s1">&#39;Each row and column of the matrix must contain at least one positive number.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span> <span class="o">=</span> <span class="n">matrix</span>
+
+<div class="viewcode-block" id="Instrument.construct_matrix">
+<a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.construct_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Construct the response matrix if it is parameterised.</span>
+
+<span class="sd">        If customising, do operations to calculate a matrix, and return it.</span>
+<span class="sd">        You can access parameters (free, fixed, and derived) via the container</span>
+<span class="sd">        access ``self[&lt;name&gt;]``.</span>
+
+<span class="sd">        If the instrument operation is fixed, you might not need to subclass,</span>
+<span class="sd">        because the default behaviour is to return the nominal response you</span>
+<span class="sd">        loaded. If for some reason the matrix you loaded is to be modified in</span>
+<span class="sd">        some fixed manner, possibly as a function of some custom fixed</span>
+<span class="sd">        parameters that you defined, you would also have to subclass and</span>
+<span class="sd">        provide the correct implementation of this method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span></div>
+
+
+<div class="viewcode-block" id="Instrument.__call__">
+<a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.__call__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">irange</span><span class="p">,</span> <span class="n">orange</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Register an incident signal.</span>
+
+<span class="sd">        :param ndarray[m,n] signal:</span>
+<span class="sd">            An :math:`m \\times n` matrix, where input energy interval</span>
+<span class="sd">            increments along rows, and phase increases along columns. The</span>
+<span class="sd">            number of rows, :math:`m`, must equal the number of columns of</span>
+<span class="sd">            :attr:`matrix`: :math:`m=q`.</span>
+
+<span class="sd">        :param array-like irange:</span>
+<span class="sd">            Indexable object with two elements respectively denoting the</span>
+<span class="sd">            indices of the first and last *input* intervals. The response</span>
+<span class="sd">            matrix :attr:`matrix` must be indexable with these numbers, i.e.,</span>
+<span class="sd">            they must satisfy :math:`indx &lt; q`.</span>
+
+<span class="sd">        :param array-like orange:</span>
+<span class="sd">            Indexable object with two elements respectively denoting the</span>
+<span class="sd">            indices of the first and last *output* channels. The response</span>
+<span class="sd">            matrix :attr:`matrix` must be indexable with these numbers, i.e.,</span>
+<span class="sd">            they must satisfy :math:`indx &lt; p`.</span>
+
+<span class="sd">        :return: *ndarray[p,n]* containing the registered signal.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            The product of the most recent operation is stored as the property</span>
+<span class="sd">            :attr:`cached_signal`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_matrix</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">orange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">orange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="n">irange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">irange</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">signal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cached_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the cached registered signal. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the energy edges of the instrument, in keV.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` of edges of the input energy intervals which</span>
+<span class="sd">        map to channels defined in the data space.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span>
+
+    <span class="nd">@energy_edges</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the energy edges in keV. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energy_edges</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy_edges</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional array of positive increasing values.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">energy_edges</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">energy_edges</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">energy_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;=</span> <span class="n">energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional array of positive increasing values, with a &#39;</span>
+                             <span class="s1">&#39;length equal to number of energy intervals in the matrix + 1.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the channel (energy) edges of the instrument, in keV.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` of edges of the registered energy intervals</span>
+<span class="sd">        labelled as channels defined in the data space. This is relevant when</span>
+<span class="sd">        there is a detector-by-detector gain scale applied to event data (such</span>
+<span class="sd">        as for NICER instrument calibration products), meaning that the</span>
+<span class="sd">        redistribution matrix is effectively shared by detectors and the</span>
+<span class="sd">        channels across detectors can share an energy scale definition.</span>
+
+<span class="sd">        An incident photon of given energy then has a registered-energy</span>
+<span class="sd">        distribution that generally peaks in the vicinity of the true photon</span>
+<span class="sd">        energy. The resdistribution matrix will have some energy resolution</span>
+<span class="sd">        (along with other features such as shelves). With thanks to Paul S.</span>
+<span class="sd">        Ray for explaining the choice to calibrate in this manner.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            If you made a channel cut that results in a non-contiguous subset</span>
+<span class="sd">            of channels, you will need to overwrite the setter method because</span>
+<span class="sd">            the checks will fail.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span>
+
+    <span class="nd">@channel_edges</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the channel (energy) edges in keV. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">channel_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Channel edges must be in a one-dimensional array of positive increasing values.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">channel_edges</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">channel_edges</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">channel_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="n">channel_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;=</span> <span class="n">channel_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Channel edges must be in a one-dimensional array of positive increasing values, with a &#39;</span>
+                             <span class="s1">&#39;length equal to the number of channel intervals in the matrix + 1.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the array of channels corresponding to rows of the matrix.</span>
+
+<span class="sd">        The matrix being the loaded instrument response (sub)matrix.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span>
+
+    <span class="nd">@channels</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Setting channels for loaded instrument response (sub)matrix&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Channels set&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_array</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel_array</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">channel_array</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">channel_array</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in an array.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">channel_array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">channel_array</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">channel_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in a one-dimensional array of positive integers (including zero), with a &#39;</span>
+                             <span class="s1">&#39;length equal to the number of channel in the matrix.&#39;</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">channel_array</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">channel_array</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: Channel numbers do not uniformly increment by one.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">channel_array</span>
+
+        <span class="k">yield</span>
+
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Trimming instrument response&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Instrument response trimmed&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">trim_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                      <span class="n">min_channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                      <span class="n">max_channel</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-5</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Trim the instrument response to the specified channel range.</span>
+
+<span class="sd">        :param int min_channel:</span>
+<span class="sd">            The minimum channel number to include in the trimmed response.</span>
+
+<span class="sd">        :param int max_channel:</span>
+<span class="sd">            The maximum channel number to include in the trimmed response.</span>
+
+<span class="sd">        :param float threshold:</span>
+<span class="sd">            The threshold value to use for trimming the instrument response.</span>
+<span class="sd">            Channels / inputs with a total response below this value will be removed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Make the table of required channels</span>
+        <span class="k">assert</span> <span class="n">min_channel</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_channel</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">max_channel</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">old_channels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span>
+        <span class="n">new_channels_indexes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">min_channel</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="n">max_channel</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">]</span>
+
+        <span class="c1"># Find empty columns and lines</span>
+        <span class="n">new_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">new_channels_indexes</span><span class="p">]</span>
+        <span class="n">empty_channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">new_matrix</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">empty_inputs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">new_matrix</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="c1"># Apply to matrix and channels directly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">new_matrix</span><span class="p">[</span><span class="o">~</span><span class="n">empty_channels</span><span class="p">][:,</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">new_channels_indexes</span><span class="p">][</span> <span class="o">~</span><span class="n">empty_channels</span> <span class="p">]</span>
+
+        <span class="c1"># Get the edges of energies for both input and channel</span>
+        <span class="n">new_energy_edges</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">empty_inputs</span><span class="p">))</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">empty_inputs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span> <span class="p">(</span><span class="n">new_energy_edges</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span> <span class="o">==</span> <span class="n">new_energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> <span class="s1">&#39;channel_edges&#39;</span> <span class="p">):</span>
+            <span class="n">new_channels_edges</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_edges</span><span class="p">[</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">old_channels</span><span class="o">==</span><span class="n">chan</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">chan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span> <span class="p">(</span><span class="n">new_channels_edges</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_edges</span><span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">old_channels</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="p">)</span>
+
+        <span class="c1"># Print if any trimming happens</span>
+        <span class="k">if</span> <span class="n">empty_inputs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Triming the response matrix because it contains rows with only values &lt;= </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1"> &#39;</span>
+                  <span class="sa">f</span><span class="s1">&#39;Now min_energy=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> and max_energy=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">empty_channels</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Triming the response matrix because it contains columns with only values &lt;= </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1"> &#39;</span>
+                  <span class="sa">f</span><span class="s1">&#39;Now min_channel=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> and max_channel=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># If ARF and RMF, trim them</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> <span class="s1">&#39;ARF&#39;</span> <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RMF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RMF</span><span class="p">[</span><span class="n">new_channels_indexes</span><span class="p">][</span><span class="o">~</span><span class="n">empty_channels</span><span class="p">][:,</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ARF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARF</span><span class="p">[</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading instrument response matrix from OGIP compliant files&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Response matrix loaded&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_ogip_fits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+              <span class="n">RMF_path</span><span class="p">,</span>
+              <span class="n">ARF_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">min_channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+              <span class="n">max_channel</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">min_input</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">max_input</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">datafolder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Loading method for Instrument using OGIP defined ARF/RMF or RSP.</span>
+
+<span class="sd">        :param str RMF_path:</span>
+<span class="sd">            The path to the RMF file which should be OGIP compliant. Path to the OGIP compliant RSP file it ARF_path is None. </span>
+
+<span class="sd">        :param str | None ARF_path:</span>
+<span class="sd">            The path to the ARF file which should be OGIP compliant or None if the RMF_path points to a RSP file. </span>
+
+<span class="sd">        :param int min_channel:</span>
+<span class="sd">            The minimum channel for which the instrument response is loaded.</span>
+
+<span class="sd">        :param int max_channel:</span>
+<span class="sd">            The maximum channel for which the instrument response is loaded.</span>
+
+<span class="sd">        :param int min_input:</span>
+<span class="sd">            The minimum input energy number for which the instrument response is loaded.</span>
+
+<span class="sd">        :param int max_input:</span>
+<span class="sd">            The maximum input energy number for which the instrument response is loaded.</span>
+
+<span class="sd">        :param str | None datafolder:</span>
+<span class="sd">            The path to the folder which contains both ARF and RMF files, if not specified in RMF_path or ARF_path.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            Instrument instance with loaded instrument response matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">datafolder</span><span class="p">:</span>
+            <span class="n">ARF_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">datafolder</span><span class="p">,</span> <span class="n">ARF_path</span> <span class="p">)</span> <span class="k">if</span> <span class="n">ARF_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">RMF_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">datafolder</span><span class="p">,</span> <span class="n">RMF_path</span> <span class="p">)</span>
+
+        <span class="c1"># Open useful values in ARF/RMF/RSP</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">RMF_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">RMF_hdul</span><span class="p">:</span>
+            <span class="n">RMF_header</span> <span class="o">=</span> <span class="n">RMF_hdul</span><span class="p">[</span><span class="s1">&#39;MATRIX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+        <span class="n">RMF_instr</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span> 
+        <span class="n">DETCHANS</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;DETCHANS&#39;</span><span class="p">]</span>
+        <span class="n">NUMGRP</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">]</span>
+        <span class="n">TLMIN</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;TLMIN4&#39;</span><span class="p">]</span>
+        <span class="n">TLMAX</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;TLMAX4&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Handle the RSP case</span>
+        <span class="k">if</span> <span class="n">ARF_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">ARF_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">ARF_hdul</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">RMF_instr</span> <span class="o">==</span> <span class="n">ARF_hdul</span><span class="p">[</span><span class="s1">&#39;SPECRESP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Get the values and change the -1 values if requried</span>
+        <span class="k">if</span> <span class="n">max_channel</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="n">DETCHANS</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">max_input</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_input</span> <span class="o">=</span> <span class="n">NUMGRP</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="n">min_channel</span><span class="p">,</span> <span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span> <span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="o">+</span><span class="mi">1</span>  <span class="p">)</span>
+
+        <span class="c1"># Perform routine checks</span>
+        <span class="k">assert</span> <span class="n">min_channel</span> <span class="o">&gt;=</span> <span class="n">TLMIN</span> <span class="ow">and</span> <span class="n">max_channel</span> <span class="o">&lt;=</span> <span class="n">TLMAX</span>
+        <span class="k">assert</span> <span class="n">min_input</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">max_input</span> <span class="o">&lt;=</span> <span class="n">NUMGRP</span>
+
+        <span class="c1"># If everything in order, get the data</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">RMF_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">RMF_hdul</span><span class="p">:</span>
+            <span class="n">RMF_MATRIX</span> <span class="o">=</span> <span class="n">RMF_hdul</span><span class="p">[</span><span class="s1">&#39;MATRIX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">RMF_EBOUNDS</span> <span class="o">=</span> <span class="n">RMF_hdul</span><span class="p">[</span><span class="s1">&#39;EBOUNDS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># Get the channels from the data</span>
+        <span class="n">RMF</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">DETCHANS</span><span class="p">,</span> <span class="n">NUMGRP</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">N_GRP</span><span class="p">,</span> <span class="n">F_CHAN</span><span class="p">,</span> <span class="n">N_CHAN</span><span class="p">,</span> <span class="n">RMF_line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="nb">zip</span><span class="p">(</span><span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;N_GRP&#39;</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;F_CHAN&#39;</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;N_CHAN&#39;</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;MATRIX&#39;</span><span class="p">])</span> <span class="p">):</span>
+
+            <span class="c1"># Skip if needed</span>
+            <span class="k">if</span> <span class="n">N_GRP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check the values</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">F_CHAN</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span> <span class="p">):</span>
+                <span class="n">F_CHAN</span> <span class="o">=</span> <span class="p">[</span><span class="n">F_CHAN</span><span class="p">]</span>
+                <span class="n">N_CHAN</span> <span class="o">=</span> <span class="p">[</span><span class="n">N_CHAN</span><span class="p">]</span>
+
+            <span class="c1"># Add the values to the RMF</span>
+            <span class="n">n_skip</span> <span class="o">=</span> <span class="mi">0</span> 
+            <span class="k">for</span> <span class="n">f_chan</span><span class="p">,</span> <span class="n">n_chan</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">F_CHAN</span><span class="p">,</span><span class="n">N_CHAN</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">n_chan</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">RMF</span><span class="p">[</span><span class="n">f_chan</span><span class="p">:</span><span class="n">f_chan</span><span class="o">+</span><span class="n">n_chan</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">RMF_line</span><span class="p">[</span><span class="n">n_skip</span><span class="p">:</span><span class="n">n_skip</span><span class="o">+</span><span class="n">n_chan</span><span class="p">]</span>
+                <span class="n">n_skip</span> <span class="o">+=</span> <span class="n">n_chan</span>
+
+        <span class="c1"># Make the RSP, depending on the input files</span>
+        <span class="k">if</span> <span class="n">ARF_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">RSP</span> <span class="o">=</span> <span class="n">RMF</span><span class="p">[</span><span class="n">min_channel</span><span class="p">:</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">]</span>
+            <span class="n">ARF_area</span> <span class="o">=</span> <span class="n">RMF</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ARF</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ARF_path</span><span class="p">,</span> <span class="s1">&#39;SPECRESP&#39;</span><span class="p">)</span>
+            <span class="n">ARF_area</span> <span class="o">=</span> <span class="n">ARF</span><span class="p">[</span><span class="s1">&#39;SPECRESP&#39;</span><span class="p">]</span>
+            <span class="n">RSP</span> <span class="o">=</span> <span class="n">RMF</span> <span class="o">*</span> <span class="n">ARF_area</span>
+            <span class="n">RSP</span> <span class="o">=</span> <span class="n">RSP</span><span class="p">[</span><span class="n">min_channel</span><span class="p">:</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">]</span>
+
+        <span class="c1"># Find empty columns and lines</span>
+        <span class="n">empty_channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">RSP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">empty_inputs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">RSP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">RSP</span> <span class="o">=</span> <span class="n">RSP</span><span class="p">[</span><span class="o">~</span><span class="n">empty_channels</span><span class="p">][:,</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span> <span class="o">~</span><span class="n">empty_channels</span> <span class="p">]</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span> <span class="o">~</span><span class="n">empty_inputs</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="n">empty_inputs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Triming the response matrix because it contains rows with only 0 values.</span><span class="se">\n</span><span class="s1"> &#39;</span>
+                  <span class="sa">f</span><span class="s1">&#39;Now min_energy=</span><span class="si">{</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> and max_energy=</span><span class="si">{</span><span class="n">inputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">empty_channels</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Triming the response matrix because it contains columns with only 0 values.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                  <span class="sa">f</span><span class="s1">&#39; Now min_channel=</span><span class="si">{</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> and max_channel=</span><span class="si">{</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get the edges of energies for both input and channel</span>
+        <span class="n">energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;ENERG_LO&#39;</span><span class="p">][</span><span class="n">inputs</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;ENERG_HI&#39;</span><span class="p">][</span><span class="n">inputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="n">channel_energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RMF_EBOUNDS</span><span class="p">[</span><span class="s1">&#39;E_MIN&#39;</span><span class="p">][</span><span class="n">channels</span><span class="p">],</span><span class="n">RMF_EBOUNDS</span><span class="p">[</span><span class="s1">&#39;E_MAX&#39;</span><span class="p">][</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="c1"># Make the instrument</span>
+        <span class="n">Instrument</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">RSP</span><span class="p">,</span>
+                         <span class="n">energy_edges</span><span class="p">,</span>
+                         <span class="n">channels</span><span class="p">,</span>
+                         <span class="n">channel_energy_edges</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1"># Add ARF and RMF for plotting</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">RMF</span> <span class="o">=</span> <span class="n">RMF</span><span class="p">[</span><span class="n">min_channel</span><span class="p">:</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">][</span><span class="o">~</span><span class="n">empty_channels</span><span class="p">][:,</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">ARF</span> <span class="o">=</span> <span class="n">ARF_area</span><span class="p">[</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">][</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">RMF_instr</span>
+
+        <span class="k">return</span> <span class="n">Instrument</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">InstrumentPileup</span><span class="p">(</span><span class="n">Instrument</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Instrument with pile-up computation &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Overwrite. &quot;&quot;&quot;</span>
+        <span class="c1">## Compute spectrum with pileup</span>
+        <span class="n">piled_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pileup</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span>
+                                             <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;grade_migration&#39;</span><span class="p">],</span>
+                                             <span class="n">psf_frac</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;psf_fraction&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span> <span class="o">=</span> <span class="n">piled_spectrum</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading instrument response matrix&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Response matrix loaded&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_ogip_fits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+              <span class="n">Data_path</span><span class="p">,</span>
+              <span class="n">ARF_path</span><span class="p">,</span>
+              <span class="n">RMF_path</span><span class="p">,</span>
+              <span class="n">min_channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+              <span class="n">max_channel</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">min_input</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">max_input</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">bounds</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+              <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+              <span class="n">datafolder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Load any instrument response matrix. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">datafolder</span><span class="p">:</span>
+            <span class="n">ARF_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">datafolder</span><span class="p">,</span> <span class="n">ARF_path</span> <span class="p">)</span>
+            <span class="n">RMF_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">datafolder</span><span class="p">,</span> <span class="n">RMF_path</span> <span class="p">)</span>
+            <span class="n">Data_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">datafolder</span><span class="p">,</span> <span class="n">Data_path</span> <span class="p">)</span>
+
+        <span class="c1"># Open useful values in ARF/RMF    </span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">ARF_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">ARF_hdul</span><span class="p">:</span>
+            <span class="n">ARF_header</span> <span class="o">=</span> <span class="n">ARF_hdul</span><span class="p">[</span><span class="s1">&#39;SPECRESP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+        <span class="n">ARF_instr</span> <span class="o">=</span> <span class="n">ARF_header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span>
+            
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">RMF_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">RMF_hdul</span><span class="p">:</span>
+            <span class="n">RMF_header</span> <span class="o">=</span> <span class="n">RMF_hdul</span><span class="p">[</span><span class="s1">&#39;MATRIX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+        <span class="n">RMF_instr</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span> 
+        <span class="n">DETCHANS</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;DETCHANS&#39;</span><span class="p">]</span>
+        <span class="n">NUMGRP</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">]</span>
+        <span class="n">TLMIN</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;TLMIN4&#39;</span><span class="p">]</span>
+        <span class="n">TLMAX</span> <span class="o">=</span> <span class="n">RMF_header</span><span class="p">[</span><span class="s1">&#39;TLMAX4&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Get the values and change the -1 values if requried</span>
+        <span class="k">if</span> <span class="n">max_channel</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_channel</span> <span class="o">=</span> <span class="n">DETCHANS</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">max_input</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_input</span> <span class="o">=</span> <span class="n">NUMGRP</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="n">min_channel</span><span class="p">,</span> <span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span> <span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="o">+</span><span class="mi">1</span>  <span class="p">)</span>
+
+        <span class="c1"># Perform routine checks</span>
+        <span class="k">assert</span> <span class="n">ARF_instr</span> <span class="o">==</span> <span class="n">RMF_instr</span>
+        <span class="k">assert</span> <span class="n">min_channel</span> <span class="o">&gt;=</span> <span class="n">TLMIN</span> <span class="ow">and</span> <span class="n">max_channel</span> <span class="o">&lt;=</span> <span class="n">TLMAX</span>
+        <span class="k">assert</span> <span class="n">min_input</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">max_input</span> <span class="o">&lt;=</span> <span class="n">NUMGRP</span>
+
+        <span class="c1"># If everything in order, get the data</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">RMF_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">RMF_hdul</span><span class="p">:</span>
+            <span class="n">RMF_MATRIX</span> <span class="o">=</span> <span class="n">RMF_hdul</span><span class="p">[</span><span class="s1">&#39;MATRIX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">RMF_EBOUNDS</span> <span class="o">=</span> <span class="n">RMF_hdul</span><span class="p">[</span><span class="s1">&#39;EBOUNDS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># Get the channels from the data</span>
+        <span class="n">RMF</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">DETCHANS</span><span class="p">,</span> <span class="n">NUMGRP</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">N_GRP</span><span class="p">,</span> <span class="n">F_CHAN</span><span class="p">,</span> <span class="n">N_CHAN</span><span class="p">,</span> <span class="n">RMF_line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="nb">zip</span><span class="p">(</span><span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;N_GRP&#39;</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;F_CHAN&#39;</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;N_CHAN&#39;</span><span class="p">],</span> <span class="n">RMF_MATRIX</span><span class="p">[</span><span class="s1">&#39;MATRIX&#39;</span><span class="p">])</span> <span class="p">):</span>
+
+            <span class="c1"># Skip if needed</span>
+            <span class="k">if</span> <span class="n">N_GRP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check the values</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">F_CHAN</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span> <span class="p">):</span>
+                <span class="n">F_CHAN</span> <span class="o">=</span> <span class="p">[</span><span class="n">F_CHAN</span><span class="p">]</span>
+                <span class="n">N_CHAN</span> <span class="o">=</span> <span class="p">[</span><span class="n">N_CHAN</span><span class="p">]</span>
+
+            <span class="c1"># Add the values to the RMF</span>
+            <span class="n">n_skip</span> <span class="o">=</span> <span class="mi">0</span> 
+            <span class="k">for</span> <span class="n">f_chan</span><span class="p">,</span> <span class="n">n_chan</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">F_CHAN</span><span class="p">,</span><span class="n">N_CHAN</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">n_chan</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">RMF</span><span class="p">[</span><span class="n">f_chan</span><span class="p">:</span><span class="n">f_chan</span><span class="o">+</span><span class="n">n_chan</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">RMF_line</span><span class="p">[</span><span class="n">n_skip</span><span class="p">:</span><span class="n">n_skip</span><span class="o">+</span><span class="n">n_chan</span><span class="p">]</span>
+                <span class="n">n_skip</span> <span class="o">+=</span> <span class="n">n_chan</span>
+
+        <span class="c1"># Make the RSP</span>
+        <span class="n">ARF</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ARF_path</span><span class="p">,</span> <span class="s1">&#39;SPECRESP&#39;</span><span class="p">)</span>
+        <span class="n">ARF_area</span> <span class="o">=</span> <span class="n">ARF</span><span class="p">[</span><span class="s1">&#39;SPECRESP&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Extract the required matrix</span>
+        <span class="n">RSP</span> <span class="o">=</span> <span class="n">RMF</span> <span class="o">*</span> <span class="n">ARF_area</span>
+        <span class="n">RSP</span> <span class="o">=</span> <span class="n">RSP</span><span class="p">[</span><span class="n">min_channel</span><span class="p">:</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">]</span>
+
+        <span class="c1"># Find empty columns and lines</span>
+        <span class="n">empty_channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">RSP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">empty_inputs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">RSP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">RSP</span> <span class="o">=</span> <span class="n">RSP</span><span class="p">[</span><span class="o">~</span><span class="n">empty_channels</span><span class="p">][:,</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span> <span class="o">~</span><span class="n">empty_channels</span> <span class="p">]</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span> <span class="o">~</span><span class="n">empty_inputs</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="n">empty_inputs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Triming the response matrix because it contains lines with only 0 values.</span><span class="se">\n</span><span class="s1"> Now min_input=</span><span class="si">{</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> and max_input=</span><span class="si">{</span><span class="n">inputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">empty_channels</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Triming the response matrix because it contains columns with only 0 values.</span><span class="se">\n</span><span class="s1"> Now min_channel=</span><span class="si">{</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> and max_channel=</span><span class="si">{</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get the edges of energies for both input and channel</span>
+        <span class="n">energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">ARF</span><span class="p">[</span><span class="s1">&#39;ENERG_LO&#39;</span><span class="p">][</span><span class="n">inputs</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ARF</span><span class="p">[</span><span class="s1">&#39;ENERG_HI&#39;</span><span class="p">][</span><span class="n">inputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="p">(</span><span class="n">ARF</span><span class="p">[</span><span class="s1">&#39;ENERG_LO&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">ARF</span><span class="p">[</span><span class="s1">&#39;ENERG_HI&#39;</span><span class="p">][:])</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="n">channel_energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RMF_EBOUNDS</span><span class="p">[</span><span class="s1">&#39;E_MIN&#39;</span><span class="p">][</span><span class="n">channels</span><span class="p">],</span><span class="n">RMF_EBOUNDS</span><span class="p">[</span><span class="s1">&#39;E_MAX&#39;</span><span class="p">][</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    
+
+        <span class="c1">## -------- INITIALIZATION OF THE PILEUP ---------------</span>
+
+        <span class="c1">## Definition of the parameters for the pile-up</span>
+        <span class="n">alpha_grade</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;grade_migration&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grade_migration&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;Grade migration factor : probability that the piled event is not rejected as “bad event”&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$G_n$&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grade_migration&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    
+        <span class="n">psffrac</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;psf_fraction&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span>  <span class="c1">#min in sherpa set at 0.85</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_fraction&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;fraction of events in the source extraction region to which pileup will be applied&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$PSF_frac&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_fraction&#39;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">))</span>
+    
+        <span class="n">nregions</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;nregions&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">),</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>     <span class="c1">##this parameter should always be fixed  - should be 1.0 for point sources</span>
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;number of regions to which pileup model will be applied independently&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$N_</span><span class="si">{regions}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nregions&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="n">g0</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;g0&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>     <span class="c1">##this parameter should always be fixed</span>
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;grade correction for single photon detection&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$g_0$&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;g0&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    
+        <span class="n">npiled</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;npiled&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">100.0</span><span class="p">),</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>     <span class="c1">##this parameter should always be fixed </span>
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;number of photons considered for pileup in a single frame&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$N_</span><span class="si">{phot}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;npiled&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span> <span class="c1">#or 30 in sherpa</span>
+
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">Data_path</span> <span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">Data_header</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;SPECTRUM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span> 
+
+        <span class="c1">## make sure that EXPTIME and FRACEXPO exist - should be the case if it&#39;s Chandra data</span>
+        <span class="n">frametime</span> <span class="o">=</span> <span class="n">Data_header</span><span class="p">[</span><span class="s1">&#39;EXPTIME&#39;</span><span class="p">]</span>
+        <span class="n">frac_expo</span> <span class="o">=</span> <span class="n">ARF_header</span><span class="p">[</span><span class="s1">&#39;FRACEXPO&#39;</span><span class="p">]</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;frame_time&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">),</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>    
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;good exposure time per frame&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\tau$ (s)&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">frametime</span> <span class="p">)</span>
+
+        <span class="n">fracexpo</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;frac_expo&#39;</span><span class="p">,</span>
+                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>    
+                    <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;fraction of the frame exposure time to create effective frame exposure time&#39;</span><span class="p">,</span>
+                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$f_</span><span class="si">{expo}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">frac_expo</span><span class="p">)</span> 
+
+        <span class="n">Instrument</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">RSP</span><span class="p">,</span>
+                        <span class="n">energy_edges</span><span class="p">,</span>
+                        <span class="n">channels</span><span class="p">,</span>
+                        <span class="n">channel_energy_edges</span><span class="p">,</span>
+                        <span class="n">alpha_grade</span><span class="p">,</span><span class="n">psffrac</span><span class="p">,</span><span class="n">nregions</span><span class="p">,</span><span class="n">g0</span><span class="p">,</span><span class="n">npiled</span><span class="p">,</span><span class="n">frame</span><span class="p">,</span><span class="n">fracexpo</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+        <span class="c1"># Add ARF and RMF</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">RMF</span> <span class="o">=</span> <span class="n">RMF</span><span class="p">[</span><span class="n">min_channel</span><span class="p">:</span><span class="n">max_channel</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">][</span><span class="o">~</span><span class="n">empty_channels</span><span class="p">][:,</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">ARF</span> <span class="o">=</span> <span class="n">ARF_area</span><span class="p">[</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">][</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">min_input</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">max_input</span><span class="p">][</span><span class="o">~</span><span class="n">empty_inputs</span><span class="p">]</span>
+
+        <span class="c1">##Initialization of the pileup module</span>
+        <span class="n">pileup</span> <span class="o">=</span> <span class="n">XrayPileup</span><span class="p">(</span><span class="n">Instrument</span><span class="p">)</span>
+        <span class="n">Instrument</span><span class="o">.</span><span class="n">pileup</span> <span class="o">=</span> <span class="n">pileup</span>
+
+        <span class="k">return</span> <span class="n">Instrument</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

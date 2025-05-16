@@ -1,0 +1,1410 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiple imaging &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Importance Sampling" href="Importance_sampling.html" />
+    <link rel="prev" title="Accretion disk" href="Accretion_disk.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multiple imaging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Default-(phase-invariant)">Default (phase-invariant)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Decreasing-the-image-order-limit">Decreasing the image order limit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Multiple-images">Multiple images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Millisecond-pulsar-spin-(phase-invariant)">Millisecond pulsar spin (phase-invariant)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Custom-(phase-dependent)">Custom (phase-dependent)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multiple imaging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Multiple_imaging.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Multiple-imaging">
+<h1>Multiple imaging<a class="headerlink" href="#Multiple-imaging" title="Link to this heading"></a></h1>
+<p>Let’s explore simulation of signals generated by neutron stars sufficiently compact to generate multiple images of a subset or even all of the surface.</p>
+<p>Previous versions of this tutorial used to also demonstrate the correctness for an oblate surface embedded in an ambient Schwarzschild spacetime by calling multiple different integrators and using the simple <a class="reference external" href="https://github.com/ThomasEdwardRiley/rayXpanda">rayXpanda</a> package. If interested, those can be found by checking the early GitHub history of this tutorial. However, in the current form we focus only on studying the effects of different image orders on the pulse profiles.</p>
+<p>Ultimately, we conclude that the inclusion of secondary images is important in practice, whilst the inclusion of tertiary images is unimportant in practice, and the inclusion of quaternary order and higher is entirely unnecessary as far as we can foresee.</p>
+<p><strong>Note that if you wish to execute this notebook as is, it is costly because we use rather high-resolution calculations. You can also lower the integrator resolution settings and change the model parameters including the stellar spin frequency, the spacetime properties, and the source-receiver configuration.</strong></p>
+<p>In the first part of this tutorial we calculate signals with no image order limit for a reference. This means that images will be summed over until higher order images are not visible or the visibility limit is truncated due to lack of numerical precision. We use a surface radiation field that is globally uniform (see a similar approach in <em>Global surface emission</em> tutorial) and an effectively spherical star by entering the limit of zero spin.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+from __future__ import print_function, division
+
+import os
+import numpy as np
+import math
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
+from matplotlib import gridspec
+from matplotlib import cm
+
+from IPython.display import Image
+
+import xpsi
+from xpsi import Parameter
+from xpsi.utilities import PlottingLibrary as XpsiPlot
+
+from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.6               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.6
+Imported PyMultiNest.
+Imported UltraNest.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<p>First we need to do some setup of the ambient spacetime and the surface embedded in it that the photosphere exists on.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(frequency = (0.1, 600.0),
+              distance = (0.1, 1.0),                     # (Earth) distance
+              mass = (1.0, 3.0),                         # mass
+              radius = (3.0 * gravradius(1.0), 16.0),    # equatorial radius
+              cos_inclination = (0.0, 1.0))              # (Earth) inclination to rotation axis
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=0.1)) # spherical star
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with bounds [1.000e-01, 6.000e+02] and initial value 1.000e-01.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<section id="Default-(phase-invariant)">
+<h2>Default (phase-invariant)<a class="headerlink" href="#Default-(phase-invariant)" title="Link to this heading"></a></h2>
+<p>First we invoke a globally uniform temperature field. There is no azimuthal dependence, meaning that the signal generated by the star is time-invariant. We are in need of an object that embeds a <em>globally</em> discretised surface into the ambient spacetime and exposes methods for integration over solid angle on our sky.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(temperature = (None, None))
+
+everywhere = xpsi.Everywhere(time_invariant=True,
+                             bounds=bounds,
+                             values={}, # no fixed/derived variables
+                             sqrt_num_cells=1024, # in colatitude, and in azimuth separately
+                             num_rays=1024, # O(1000) useful for secondary and tertiary images
+                             num_leaves=1024, # specify leaves if time-dependent
+                             num_phases=100, # of the output signal
+                             image_order_limit=None) # as many images as possible within resolution
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Warning : with time_invariant=True, num_leaves and num_phases are automatically set to 1
+Creating parameter:
+    &gt; Named &#34;temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(effective temperature [K] everywhere).
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+</pre></div></div>
+</div>
+<p>We are free to subclass <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere"><span class="std std-ref">Everywhere</span></a> and implement custom functionality beyond the simple default above. The argument specifying the number of rays has the familiar meaning. The argument for the number of cells is now used to discretise the surface in azimuth and colatitude with respect to the stellar rotation axis, as was the case for the <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere"><span class="std std-ref">Elsewhere</span></a> module. The new argument <code class="docutils literal notranslate"><span class="pre">time_invariant</span></code> declares
+whether or not the surface radiation field is dependent on azimuth; if it is independent of azimuth, a faster integrator is called.</p>
+<p>Now we need an instance of <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> that we can feed our <code class="docutils literal notranslate"><span class="pre">everywhere</span></code> object to.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class derive(xpsi.Derive):
+    def __init__(self):
+        pass
+    def __call__(self, boundto, caller = None):
+        global spacetime
+        return spacetime[&#39;frequency&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere = xpsi.Photosphere(hot = None, elsewhere = None, everywhere = everywhere,
+                               values=dict(mode_frequency = derive()))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; that is derived from ulterior variables.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<p>Let’s check the vector of parameter values in the <code class="docutils literal notranslate"><span class="pre">Star</span></code> instance and the other objects it encapsulates references to.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+frequency: Spin frequency [Hz].
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+temperature: log10(effective temperature [K] everywhere).
+</pre></div></div>
+</div>
+<p>We assign parameter values and update the star as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># (Earth) distance
+star[&#39;distance&#39;] = 0.33
+# gravitational mass
+star[&#39;mass&#39;] = 2.7088795
+# coordinate equatorial radius
+star[&#39;radius&#39;] = 12.0
+# (Earth) inclination to rotation axis
+star[&#39;cos_inclination&#39;] = math.cos(1.0)
+# isotropic blackbody temperature
+star[&#39;temperature&#39;] = 6.3
+
+star.update()
+</pre></div>
+</div>
+</div>
+<p>The temperature is chosen to be something appropriately hot for the energy range, so that the specific flux at the lowest energies is <em>not</em> dominated by bright stellar limb, which will be the case for targets in X-ray telescope wavebands. More on this later.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime.R_r_s # rather compact! effectively @ the Schwarzschild photon sphere
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.5000001812176318
+</pre></div></div>
+</div>
+<p>Let’s see what the maximum deflection is calculated to be conditional on the resolution:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>everywhere._maxDeflection[0]/xpsi.global_imports._pi
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+5.44436523851195
+</pre></div></div>
+</div>
+<p>A true maximum deflection of this value, for a spherical star, would mean a subset of the stellar surface would be imaged <em>six</em> times. This subset is defined by having a <em>principal</em> deflection of <span class="math notranslate nohighlight">\(\psi\gtrsim(1-0.4444)\pi\)</span>, meaning a spherical cap of this angular radius centred on the direction between Earth and the centre of the star. The subset of the surface with <em>principal</em> deflection of <span class="math notranslate nohighlight">\(\psi\lesssim(1-0.4444)\pi\)</span>, and by definition less than <span class="math notranslate nohighlight">\(\pi\)</span>, is <em>only</em> imaged <em>five</em>
+times.</p>
+<p>Let’s compute the incident specific flux signal, up to some constant coefficient.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energies = np.logspace(-2.0, np.log10(3.0), 100, base=10.0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere.integrate(energies=energies, threads=4) # calls to xpsi/cellmesh/integrator_for_time_invariance.pyx
+</pre></div>
+</div>
+</div>
+<p>The signal is time-invariant and therefore we need to copy the spectrum to a sequence of matrix columns to get the desired energy-phase signal matrix:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>phases_in_cycles = 100
+temp_int1 = np.tile(photosphere.signal[0][0], (1,phases_in_cycles))
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Decreasing-the-image-order-limit">
+<h2>Decreasing the image order limit<a class="headerlink" href="#Decreasing-the-image-order-limit" title="Link to this heading"></a></h2>
+<p>For integrators that directly discretise the stellar surface with a regular mesh (e.g. for the time invariant integrator used here) we can straightforwardly control the limiting image order to try to sum up to. If the image order is conservative, the integrators automatically detect invisibility and truncate. Note that the sum is executed from low- to high-order, which generally means adding small numbers to much larger numbers, and thus in principle accuracy loss, but the number magnitude
+decays very rapidly with order so the contribution from combining higher-order images first shouldn’t make an importance difference. If higher-order images are visible, they are simply missed because of enforced truncation. It follows that because the flux contribution from higher-order images (even at fixed phase and energy) decays with order, setting a limit of three images or even two images is going to be entirely sufficient in practice. On the other hand, not setting a limit won’t affect
+integration time in an important way for less compact stars, but if prior support extends to very compact stars, the computation time increases by a factor of a few, until the resolution limit is reached.</p>
+<p>Choosing a limit of two or three, and allowing the prior support to encompass configurations with polar radius greater than the Schwarzschild photon sphere radius should be sufficient. Then, if of interest, incrementing the order limit during post-processing to execute sensitivity analysis via importance sampling should allow one to demonstrate insensitivity to higher-order image inclusion; this is only relevant if the samples are from a posterior mode at high compactness where part of the
+surface is doubly or multiply-imaged.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def helper(order):
+    everywhere.image_order_limit = order
+    photosphere.integrate(energies=energies, threads=4)
+    return photosphere.signal[0][0].copy()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>temp_int1_rayX_1 = helper(1) # primary image only
+temp_int1_rayX_2 = helper(2) # up to secondary images
+temp_int1_rayX_3 = helper(3) # up to tertiary images
+temp_int1_rayX_4 = helper(4) # and so on...
+temp_int1_rayX_5 = helper(5) # we will compare to the adaptive computation above
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,5))
+ax = fig.add_subplot(111)
+
+ax.plot(energies,
+     100.0*(-temp_int1_rayX_1[:,0]/temp_int1[:,0] + 1.0),
+     &#39;k-&#39;,label=&quot;Up to 1st image&quot;)
+
+ax.plot(energies,
+         100.0*(-temp_int1_rayX_2[:,0]/temp_int1[:,0] + 1.0),
+         &#39;k-.&#39;,label=&quot;Up to 2nd image&quot;)
+
+ax.plot(energies,
+         100.0*(-temp_int1_rayX_3[:,0]/temp_int1[:,0] + 1.0),
+         &#39;k--&#39;,label=&quot;Up to 3rd image&quot;)
+
+ax.plot(energies,
+         100.0*(-temp_int1_rayX_4[:,0]/temp_int1[:,0] + 1.0),
+         &#39;k:&#39;,label=&quot;Up to 4th image&quot;)
+
+ax.plot(energies,
+         100.0*(-temp_int1_rayX_5[:,0]/temp_int1[:,0] + 1.0),
+         &#39;r:&#39;,label=&quot;Up to 5th image&quot;)
+
+ax.set_xscale(&#39;log&#39;)
+ax.set_xlabel(&#39;Energy [keV]&#39;)
+
+ax.set_yscale(&#39;log&#39;)
+ax.set_ylabel(&#39;Abs. % frac. diff.&#39;)
+ax.legend()
+
+XpsiPlot.veneer((None, None), (None, None), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_34_0.png" src="_images/Multiple_imaging_34_0.png" />
+</div>
+</div>
+<p>For this compact star only the secondary images are demonstrably important, with a massive increase in accuracy.</p>
+</section>
+<section id="Multiple-images">
+<h2>Multiple images<a class="headerlink" href="#Multiple-images" title="Link to this heading"></a></h2>
+<p>Let’s use the cached ray map to try to visualise the multiple imaging. We will use the image plane integrator to do that.</p>
+<p>First we need to force the spacetime to be static (otherwise univeral relations are invoked based on the stellar spin frequency as set above):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime.a = 0.0 # spacetime spin parameter (~angular momentum)
+spacetime.q = 0.0 # spacetime mass quadrupole moment
+</pre></div>
+</div>
+</div>
+<p>Now we call the integrator. The integrator discretises a distant image plane instead of the stellar surface. The <em>image</em> of the star is spatially resolved on the image plane. The integrator yields four-dimensional information about the signal. We trace a set of rays from the image plane to the star; the set is roughly equal in cardinality to the number of cells that discretise the surface above. Note that when this extension module is called, some output for diagnostics is directed to the
+terminal in which you launched this Jupyter notebook.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class CustomPhotospherePlotter(xpsi.PhotospherePlotter):
+    &quot;&quot;&quot; Implement method for imaging.&quot;&quot;&quot;
+
+    @property
+    def global_variables(self):
+        &quot;&quot;&quot; This method is needed if we also want to invoke the image-plane signal simulator. &quot;&quot;&quot;
+
+        return np.array([0.0, #self.photosphere[&#39;p__super_colatitude&#39;],
+                          0.0, #self.photosphere[&#39;p__phase_shift&#39;] * 2.0 * math.pi,
+                          np.pi, #self.photosphere[&#39;p__super_radius&#39;],
+                          0.0, #self.photosphere[&#39;p__cede_colatitude&#39;],
+                          0.0, #self.photosphere[&#39;p__phase_shift&#39;] * 2.0 * math.pi - self.photosphere[&#39;p__cede_azimuth&#39;],
+                          0.0, #self.photosphere[&#39;p__cede_radius&#39;],
+                          0.0, #self.photosphere[&#39;s__super_colatitude&#39;],
+                          0.0, #(self.photosphere[&#39;s__phase_shift&#39;] + 0.5) * 2.0 * math.pi,
+                          0.0, #self.photosphere[&#39;s__super_radius&#39;],
+                          0.0, #self.photosphere[&#39;s__cede_colatitude&#39;],
+                          0.0, #(self.photosphere[&#39;s__phase_shift&#39;] + 0.5) * 2.0 * math.pi - self.photosphere[&#39;s__cede_azimuth&#39;],
+                          0.0, #self.photosphere[&#39;s__cede_radius&#39;],
+                          self.photosphere[&#39;temperature&#39;], #self.photosphere[&#39;p__super_temperature&#39;],
+                          0.0, #self.photosphere[&#39;p__cede_temperature&#39;],
+                          0.0, #self.photosphere[&#39;s__super_temperature&#39;],
+                          0.0]) #self.photosphere[&#39;s__cede_temperature&#39;]])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plotter = CustomPhotospherePlotter(photosphere)
+
+plotter.image(reimage = True,
+                  reuse_ray_map = False,
+                  energies = energies,
+                  phases = everywhere.phases_in_cycles * _2pi,
+                  sqrt_num_rays = 1024,
+                  # squeeze rays towards limb where higher-order images are
+                  image_plane_radial_increment_power=0.2,
+                  threads = 4,          # OpenMP
+                  max_steps = 100000,   # max number of steps per ray
+                  epsrel_ray = 1.0e-12) # ray relative tolerance
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz] = 1.000e-01, log10(effective temperature [K] everywhere) = 6.300e+00]
+Imaging the star...
+Commencing ray tracing and imaging...
+Imaging the star and computing light-curves...
+Calculating image plane boundary...
+Image plane semi-major: 1.01
+Image plane semi-minor: 1.01
+Thread 0 is tracing annulus #0 of rays.
+Thread 0 is tracing annulus #100 of rays.
+Thread 0 is tracing annulus #200 of rays.
+Thread 0 is tracing annulus #300 of rays.
+Thread 0 is tracing annulus #400 of rays.
+Thread 0 is tracing annulus #500 of rays.
+Thread 0 is tracing annulus #600 of rays.
+Thread 0 is tracing annulus #700 of rays.
+Thread 0 is tracing annulus #800 of rays.
+Thread 0 is tracing annulus #900 of rays.
+Thread 0 is tracing annulus #1000 of rays.
+
+Global ray map computed.
+Coordinates transformed from Boyer-Lindquist to spherical.
+Commencing imaging...Ray tracing complete.
+Ray set cached.
+Specific flux integration complete.
+Star imaged.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+ref = plotter.images[3].copy()
+ref[ref &gt; math.pi/2.0] *= -1.0
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                ref,
+                levels=np.linspace(np.min(ref[ref &gt; -100.0]),
+                                   np.max(ref[ref &gt; -100.0]),
+                                   200),
+               cmap=cm.magma_r)
+# rays that scatter have negative constant values &lt;-100
+# for map quantities such as the colatitude
+
+ax = plt.gca()
+ax.set_xlim([-1.025,1.025])
+ax.set_ylim([-1.025,1.025])
+XpsiPlot.veneer((0.05,0.25), (0.05,0.25), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_43_0.png" src="_images/Multiple_imaging_43_0.png" />
+</div>
+</div>
+<p>The artefact near the origin along the equator is because we squeezed the image-plane polar ray set towards the image boundary, leaving fewer rays around the origin for accurate contour computation (via Delaunay triangulation).</p>
+<p>Let’s zoom in to see the second image of the southern pole more clearly:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                ref,
+                levels=np.linspace(np.min(ref[ref &gt; -100.0]),
+                                   np.max(ref[ref &gt; -100.0]),
+                                   200),
+               cmap=cm.magma_r)
+
+ax = plt.gca()
+ax.set_xlim([-0.4,0.4])
+ax.set_ylim([-1.0,-0.95])
+XpsiPlot.veneer((0.025,0.1), (0.005,0.025), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_46_0.png" src="_images/Multiple_imaging_46_0.png" />
+</div>
+</div>
+<p>Let’s zoom in again to see the insane squeezing of just the third image of the southern pole:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                ref,
+                levels=np.linspace(np.min(ref[ref &gt; -100.0]),
+                                   np.max(ref[ref &gt; -100.0]),
+                                   200),
+               cmap=cm.magma_r)
+
+ax = plt.gca()
+ax.set_xlim([-0.025,0.025])
+ax.set_ylim([-1.0,-0.9995])
+_ = XpsiPlot.veneer((0.0025,0.01), (0.000025,0.0001), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_48_0.png" src="_images/Multiple_imaging_48_0.png" />
+</div>
+</div>
+<p>We’d evidently need more rays and potentially more accurate ray tracing (in particular surface detection for near-grazing rays) to resolve even these third-order images if they contributed to the flux in an important way. Note that in theory the image of this almost exactly spherical star should extend to coordinates <span class="math notranslate nohighlight">\(y=\pm1\)</span> and <span class="math notranslate nohighlight">\(x=\pm1\)</span> almost exactly (for an oblate star and the definition of the coordinate units, the maximum extent of the star is <span class="math notranslate nohighlight">\(x=\pm1\)</span>, with the actual
+extent being a function of both viewing angle and the surface oblateness and compactness). We continue discussion of performance below.</p>
+<p>Let’s first plot the azimuth map to distinguish images:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+phi = np.copy(plotter.images[4][...])
+
+for i in range(len(phi)):
+
+    if phi[i] &gt; -100.0:
+        if phi[i] &gt; math.pi:
+            while phi[i] &gt; math.pi:
+                phi[i] -= 2.0 * math.pi
+        elif phi[i] &lt; -math.pi:
+            while phi[i] &lt; -math.pi:
+                phi[i] += 2.0 * math.pi
+
+phi_lvls = np.linspace(np.min(phi[phi &gt; -100.0]),
+                       np.max(phi[phi &gt; -100.0]), 100)
+
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                phi,
+                levels=phi_lvls,
+                cmap=cm.magma_r)
+# rays that scatter have negative constant values &lt;-100
+# for map quantities such as the azimuth
+
+ax = plt.gca()
+ax.set_xlim([-1.025,1.025])
+ax.set_ylim([-1.025,1.025])
+XpsiPlot.veneer((0.05,0.25), (0.05,0.25), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_51_0.png" src="_images/Multiple_imaging_51_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                phi,
+                levels=phi_lvls,
+                cmap=cm.magma_r)
+
+ax = plt.gca()
+ax.set_xlim([-0.4,0.4])
+ax.set_ylim([-1.0,-0.95])
+XpsiPlot.veneer((0.025,0.1), (0.005,0.025), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_52_0.png" src="_images/Multiple_imaging_52_0.png" />
+</div>
+</div>
+</section>
+<section id="Millisecond-pulsar-spin-(phase-invariant)">
+<h2>Millisecond pulsar spin (phase-invariant)<a class="headerlink" href="#Millisecond-pulsar-spin-(phase-invariant)" title="Link to this heading"></a></h2>
+<p>Let’s spin the star up to include two additional effects: relativistic beaming of the surface emission and rotational deformation (oblateness). The former means that for an observer substantially inclined to the rotational axis, the flux at (gravitationally blueshifted) energies beyond a thermal knee in the photosphere specific intensity spectrum becomes dominated by images at the edge of the stellar image on our sky (i.e., at the stellar limb). An interesting effect to note is that relatvistic
+beaming brightens odd-order images and dims even-order images, or vice versa dependending on whether the radiating neighbourhood of the surface is receeding or approaching based on the primary image. That means for instance, that if the primary is dimmed due to beaming, and the secondary is brightened, the tertiary image will be dimmed even more than the primary due to beaming which compounds the solid angle decay. This is one way in which a secondary image can in principle contribute at least
+as much flux as a primary image at some rotational phases and viewing configurations, whilst the quaternary image contributes a similar flux to the tertiary image, and so on relating adjacent odd and even order images; the tertiary and higher-order images are would be unimportant though. On the other hand, if the primary image is brightened, the secondary is dimmed and the tertiary is brightened. In this case, a tertiary image can contribute more flux than a secondary image at select phases and
+viewing configurations, but will itself generally be entirely dominated by the primary. The relationships between unimportant higher-order adjacent even and odd images is similar to the above description.</p>
+<p><em>Note that another way to weight the flux integral towards the stellar limb is to have temperature inversion in the atmosphere, leading to bright near-tangential emission, but the effect is not as a strong as turning up to millisecond spin periods and higher.</em></p>
+<p>Only at energies well beyond a thermal knee in the surface emission will the relativistic beaming mean that the flux is dominated by the brightness at the stellar limb (when there is somewhat uniform, global surface emission as assumed here), where the high-order images will be squeezed. The brightness of near-tangential emission after beaming partially counteracts the solid angle decay with image order, in such a case, but will not realistically ever mean high-order images contribute more flux
+at some energy. However, X-ray telescopes will generally be sensitive to softer emission where there are <em>far</em> more counts, meaning relative insensitivity of a well-performing likelihood function jointly over the instrument waveband to flux integration error in the vicinity of the stellar limb.</p>
+<p>Realistically, if a surface does not radiate somewhat unformly in the instrument waveband, leading to pulsed emission, effectively the same reasoning applies to the importance of accurately calculating the flux at phases where the flux is dominated by the signal from the stellar limb where the limb is constituted by only primary images, simply because of geometric projected effects. This is with or without additional strong relativistic beaming effects leading to flux (at energies beyond a
+thermal knee in the surface emission spectrum) being dominated by the contribution from the relevant radiating regions when they reach the stellar limb on the approaching side of the star.</p>
+<p>Oblateness has the effect of increasing the maximum deflection that can be attained by a point on the surface, relative to an unperturbed spherical <em>background</em> solution. Some points, such as the locus in the vicinity of the equator only get lower in maximum deflection. In the vicinities of the poles, points gain in maximum deflection. In these cases the surface normal remains effectively radial. For intermediate points between a pole and the equator, the maximum deflection generally increases
+due to tilt even if the compactness coordinate decreases, but due to tilt, some images (either even or odd beyond some order) are also lost. This is because the maximum deflection depends on the ray direction aside from the angle subtended to the radial direction.</p>
+<p>Note that for very compact stars with polar radius near the Schwarzschild photon sphere, higher order images need to graze closer and closer to the photon sphere to complete revolutions before scattering. If the surface is slightly oblate, then an opaque surface quickly truncates higher order images. Alas, for an oblate surface in this case to be valid in the ambient Schwarzschild spacetime, it would have to be effectively massless; it requires substantial rotation speed for such soft equations
+of state that lead to high compactness, which thus nullifies the Schwarzschild ambient spacetime and photon sphere. The issue of rotational deformation leading to a (highly compact) photosphere which lies within its own null future due to high (outgoing) ray curvature is somewhat of open problem to our knowledge but it is thought that the source matter curvature will always be too high to intercept outgoing rays that would otherwise scatter in the ambient spacetime in the absence of the opaque
+surface (private communication with the NICER collaboration light-curve SWG, Joonas Nättilä, and Juri Poutanen, July 2016, Seattle). Beyond this reasoning, it is not considered even mildly important for realistic experiements because the flux contribution from higher order images is so small and entirely dominated by other modelling inaccuracies.</p>
+<p>Note that in principle, for a maximally compact toy equation of state (see, e.g., <a class="reference external" href="https://doi.org/10.1063/1.4909560">Lattimer 2015</a> and references therein), non-rotating scale-free solutions exist within the Schwarzschild photon sphere, but rather close to it, at <span class="math notranslate nohighlight">\(R\approx1.41r_{\rm s}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime[&#39;frequency&#39;] = 205.0 # ~J0030+0451 spin
+</pre></div>
+</div>
+</div>
+<p>We’ll reset the mass so that the oblate surface lies entirely, and barely just outside ambient Schwarzschild photon sphere:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;mass&#39;] = 2.695 # choose mass so that surface lies entirely, and barely just outside Schwarzschild photon sphere
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime.R_r_s
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.5077253212974875
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star.update()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime.a = 0.0 # spacetime spin parameter (~angular momentum)
+spacetime.q = 0.0 # spacetime mass quadrupole moment
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plotter.image(reimage = True,
+                  reuse_ray_map = False,
+                  energies = energies,
+                  phases = np.linspace(0.0, 1.0, phases_in_cycles) * _2pi,
+                  sqrt_num_rays = 1024,
+                  # squeeze rays towards limb where higher-order images are
+                  image_plane_radial_increment_power=0.33,
+                  threads = 4,          # OpenMP
+                  max_steps = 100000,   # max number of steps per ray
+                  epsrel_ray = 1.0e-12) # ray relative tolerance
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imaging the star...
+Commencing ray tracing and imaging...
+Imaging the star and computing light-curves...
+Calculating image plane boundary...
+Image plane semi-major: 1.00
+Image plane semi-minor: 1.00
+Thread 0 is tracing annulus #0 of rays.
+Thread 0 is tracing annulus #100 of rays.
+Thread 0 is tracing annulus #200 of rays.
+Thread 0 is tracing annulus #300 of rays.
+Thread 0 is tracing annulus #400 of rays.
+Thread 0 is tracing annulus #500 of rays.
+Thread 0 is tracing annulus #600 of rays.
+Thread 0 is tracing annulus #700 of rays.
+Thread 0 is tracing annulus #800 of rays.
+Thread 0 is tracing annulus #900 of rays.
+Thread 0 is tracing annulus #1000 of rays.
+
+Global ray map computed.
+Coordinates transformed from Boyer-Lindquist to spherical.
+Commencing imaging...Ray tracing complete.
+Ray set cached.
+Phase-resolved specific flux integration complete.
+Star imaged.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+ref = plotter.images[3].copy()
+ref[ref &gt; math.pi/2.0] *= -1.0
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                ref,
+                levels=np.linspace(np.min(ref[ref &gt; -100.0]),
+                                   np.max(ref[ref &gt; -100.0]),
+                                   200),
+               cmap=cm.magma_r)
+# rays that scatter have negative constant values &lt;-100
+# for map quantities such as the colatitude
+
+ax = plt.gca()
+ax.set_xlim([-1.025,1.025])
+ax.set_ylim([-1.025,1.025])
+XpsiPlot.veneer((0.05,0.25), (0.05,0.25), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_65_0.png" src="_images/Multiple_imaging_65_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(10,10))
+
+plt.tricontourf(plotter.images[1],
+                plotter.images[2],
+                ref,
+                levels=np.linspace(np.min(ref[ref &gt; -100.0]),
+                                   np.max(ref[ref &gt; -100.0]),
+                                   200),
+               cmap=cm.magma_r)
+
+ax = plt.gca()
+ax.set_xlim([-0.025,0.025])
+ax.set_ylim([-1.0,-0.9995])
+_ = XpsiPlot.veneer((0.0025,0.01), (0.000025,0.0001), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_66_0.png" src="_images/Multiple_imaging_66_0.png" />
+</div>
+</div>
+<p>Notice that due to finite oblateness the resolved limb is slightly further from <span class="math notranslate nohighlight">\(y=-1\)</span> that is the case for the effectively spherical star above. For the <span class="math notranslate nohighlight">\(x\)</span> coordinate, the proximity to <span class="math notranslate nohighlight">\(x±1\)</span> depends on the viewing angle and surface oblateness and compactness (besides the ray resolution).</p>
+</section>
+<section id="Custom-(phase-dependent)">
+<h2>Custom (phase-dependent)<a class="headerlink" href="#Custom-(phase-dependent)" title="Link to this heading"></a></h2>
+<p>Let’s now play with localised hot regions so that secondary images in particular can be visualised directly in intensity sky maps.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(frequency = (0.1, 600.0),
+              distance = (0.1, 1.0),                     # (Earth) distance
+              mass = (1.0, 3.0),                         # mass
+              radius = (3.0 * gravradius(1.0), 16.0),    # equatorial radius
+              cos_inclination = (0.0, 1.0))              # (Earth) inclination to rotation axis
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=205.0)) # ~J0030 spin
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with bounds [1.000e-01, 6.000e+02] and initial value 2.050e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(super_colatitude = (0.001, math.pi - 0.001),
+              super_radius = (0.001, math.pi/2.0 - 0.001),
+              phase_shift = (-0.25, 0.75),
+              super_temperature = (5.1, 6.8))
+
+primary = xpsi.HotRegion(bounds=bounds,
+                            values={},
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=512,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=1024,
+                            num_leaves=1024,
+                            num_phases=100,
+                            num_rays=1024,
+                            is_antiphased=False,
+                            prefix=&#39;p&#39;)
+
+bounds = dict(super_colatitude = (0.001, math.pi - 0.001),
+              super_radius = (0.001, math.pi/2.0 - 0.001),
+              phase_shift = (-0.25, 0.75),
+              super_temperature = (5.1, 6.8))
+
+secondary = xpsi.HotRegion(bounds=bounds,
+                            values={},
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=512,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=1024,
+                            num_leaves=1024,
+                            num_phases=100,
+                            num_rays=1024,
+                            is_antiphased=True,
+                            prefix=&#39;s&#39;)
+
+from xpsi import HotRegions
+
+hot = HotRegions((primary, secondary))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [1.000e-03, 3.141e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [1.000e-03, 1.570e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [5.100e+00, 6.800e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [1.000e-03, 3.141e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [1.000e-03, 1.570e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [5.100e+00, 6.800e+00].
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class derive(xpsi.Derive):
+    def __init__(self):
+        pass
+    def __call__(self, boundto, caller = None):
+        global spacetime
+        return spacetime[&#39;frequency&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere = xpsi.Photosphere(hot = hot,
+                                elsewhere = None,
+                                everywhere = None,
+                                values=dict(mode_frequency = derive()))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; that is derived from ulterior variables.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># (Earth) distance
+star[&#39;distance&#39;] = 0.33
+# gravitational mass
+star[&#39;mass&#39;] = 2.695
+# coordinate equatorial radius
+star[&#39;radius&#39;] = 12.0
+# (Earth) inclination to rotation axis
+star[&#39;cos_inclination&#39;] = 0.0
+
+star[&#39;p__phase_shift&#39;] = 0.0
+# isotropic blackbody temperature
+star[&#39;p__super_temperature&#39;] = 6.3
+star[&#39;p__super_colatitude&#39;] = 1.0
+star[&#39;p__super_radius&#39;] = 0.2
+
+star[&#39;s__phase_shift&#39;] = 0.0
+# isotropic blackbody temperature
+star[&#39;s__super_temperature&#39;] = 6.3
+star[&#39;s__super_colatitude&#39;] = math.pi - 1.0
+star[&#39;s__super_radius&#39;] = 0.2
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star.update()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energies = np.logspace(-2.0, np.log10(3.0), 100, base=10.0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime.a = 0.0 # spacetime spin parameter (~angular momentum)
+spacetime.q = 0.0 # spacetime mass quadrupole moment
+</pre></div>
+</div>
+</div>
+<p>Now we call the image-plane integrator.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class CustomPhotospherePlotter(xpsi.PhotospherePlotter):
+    &quot;&quot;&quot; Implement method for imaging.&quot;&quot;&quot;
+
+    @property
+    def global_variables(self):
+        &quot;&quot;&quot; This method is needed if we also want to invoke the image-plane signal simulator. &quot;&quot;&quot;
+
+        return np.array([ self.photosphere[&#39;p__super_colatitude&#39;],
+                          self.photosphere[&#39;p__phase_shift&#39;] * 2.0 * math.pi,
+                          self.photosphere[&#39;p__super_radius&#39;],
+                          0.0, #self[&#39;p__cede_colatitude&#39;],
+                          0.0, #self[&#39;p__phase_shift&#39;] * 2.0 * math.pi - self[&#39;p__cede_azimuth&#39;],
+                          0.0, #self[&#39;p__cede_radius&#39;],
+                          self.photosphere[&#39;s__super_colatitude&#39;],
+                          (self.photosphere[&#39;s__phase_shift&#39;] + 0.5) * 2.0 * math.pi,
+                          self.photosphere[&#39;s__super_radius&#39;],
+                          0.0, #self[&#39;s__cede_colatitude&#39;],
+                          0.0, #(self[&#39;s__phase_shift&#39;] + 0.5) * 2.0 * math.pi - self[&#39;s__cede_azimuth&#39;],
+                          0.0, #self[&#39;s__cede_radius&#39;],
+                          self.photosphere[&#39;p__super_temperature&#39;],
+                          0.0, #self[&#39;p__cede_temperature&#39;],
+                          self.photosphere[&#39;s__super_temperature&#39;],
+                          0.0]) #self[&#39;s__cede_temperature&#39;]])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plotter = CustomPhotospherePlotter(photosphere)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz] = 2.050e+02, The phase of the hot region, a periodic parameter [cycles] = 0.000e+00, The colatitude of the centre of the superseding region [radians] = 1.000e+00, The angular radius of the (circular) superseding region [radians] = 2.000e-01, log10(superseding region effective temperature [K]) = 6.300e+00, The phase of the hot region, a periodic parameter [cycles] = 0.000e+00, The colatitude of the centre of the superseding region [radians] = 2.142e+00, The angular radius of the (circular) superseding region [radians] = 2.000e-01, log10(superseding region effective temperature [K]) = 6.300e+00]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sky_map_kwargs = {&#39;panel_indices&#39;: (0,1,2,3,4,5),
+                  &#39;num_levels&#39;: 100, # in intensity field rendering
+                  &#39;colormap&#39;: cm.Purples_r,
+                  &#39;phase_average&#39;: False,
+                  &#39;annotate_energies&#39;: True,  # background from the surface and behind the star
+                  &#39;energy_annotation_format&#39;: &#39;[%.2f keV]&#39;,
+                  &#39;annotate_location&#39;: (0.025,0.025)}
+
+# you can install ffmpeg with conda in order to animate
+animate_kwargs = {&#39;cycles&#39;: 4, &#39;fps&#39;: 32}
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plotter.image(reimage = True,
+                  reuse_ray_map = False,
+                  cache_intensities = 1.0, # cache size limit in GBs
+                  energies = np.array([0.01,0.1,0.5,1.0,2.0,5.0]),
+                  phases = np.linspace(0.0, 1.0, 96) * _2pi,
+                  sqrt_num_rays = 512, # do not need as many to see the important images
+                  threads = 4,
+                  max_steps = 100000,
+                  epsrel_ray = 1.0e-12,
+                  plot_sky_maps = True, # activate if you want to plot frames
+                  sky_map_kwargs = sky_map_kwargs,
+                  animate_sky_maps = False, # activate if you want to animate
+                  free_memory = False, # activate if memory is a concern, to delete ray-map/intensity caches
+                  animate_kwargs = animate_kwargs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imaging the star...
+Commencing ray tracing and imaging...
+Imaging the star and computing light-curves...
+Calculating image plane boundary...
+Image plane semi-major: 1.00
+Image plane semi-minor: 1.00
+Thread 0 is tracing annulus #0 of rays.
+Thread 0 is tracing annulus #100 of rays.
+Thread 0 is tracing annulus #200 of rays.
+Thread 0 is tracing annulus #300 of rays.
+Thread 0 is tracing annulus #400 of rays.
+Thread 0 is tracing annulus #500 of rays.
+
+Global ray map computed.
+Coordinates transformed from Boyer-Lindquist to spherical.
+Commencing imaging...Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
+Plotting intensity sky maps...
+Normalising each sky map panel separately...
+Normalised sky map panels separately.
+Rendering image numbers [1, 10]...
+Rendering image numbers (10, 20]...
+Rendering image numbers (20, 30]...
+Rendering image numbers (30, 40]...
+Rendering image numbers (40, 50]...
+Rendering image numbers (50, 60]...
+Rendering image numbers (60, 70]...
+Rendering image numbers (70, 80]...
+Rendering image numbers (80, 90]...
+Rendering image numbers (90, 100]...
+Intensity sky maps plotted.
+Star imaged.
+</pre></div></div>
+</div>
+<p>If you are executing this notebook, you can view the video file:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%%HTML
+&lt;div align=&quot;middle&quot;&gt;
+&lt;video width=&quot;100%&quot; controls loop&gt;
+    &lt;source src=&quot;images/skymap_animated.mp4&quot; type=&quot;video/mp4&quot;&gt;
+&lt;/video&gt;&lt;/div&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div align="middle">
+<video width="100%" controls loop>
+    <source src="images/skymap_animated.mp4" type="video/mp4">
+</video></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!mkdir images/frames_multiple_imaging
+!mv images/*.png images/frames_multiple_imaging/.
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+mkdir: cannot create directory ‘images/frames_multiple_imaging’: File exists
+</pre></div></div>
+</div>
+<p>Here is a frame for the purpose of the documentation notebook. Each panel displays the photon specific intensity field, on the sky, at a given energy; energy increases from top-left to bottom-right. The intensity field in each panel is normalised over sky direction and phase, for each energy in the sequence.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Image(&quot;./images/frames_multiple_imaging/skymap_50.png&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_88_0.png" src="_images/Multiple_imaging_88_0.png" />
+</div>
+</div>
+<p>Finally, let’s phase-average the intensity sky maps:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sky_map_kwargs[&#39;phase_average&#39;] = True
+# only one set of panels so why not choose higher res.?
+sky_map_kwargs[&#39;num_levels&#39;] = 500
+
+plotter.image(reimage = False, # because we decided not to free_memory earlier
+                  energies = np.array([0.01,0.1,0.5,1.0,2.0,5.0]),
+                  phases = np.linspace(0.0, 1.0, 96) * _2pi,
+                  plot_sky_maps = True,
+                  sky_map_kwargs = sky_map_kwargs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imaging the star...
+Plotting intensity sky maps...
+Averaging (specific) intensity over rotational phase...
+Averaged (specific) intensity over rotational phase.
+Normalising each sky map panel separately...
+Normalised sky map panels separately.
+Rendering phase-averaged images...
+Intensity sky maps plotted.
+Star imaged.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!mv images/skymap_0.png images/frames_multiple_imaging/skymap_multiple_imaging_phase_averaged.png
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Image(&quot;images/frames_multiple_imaging/skymap_multiple_imaging_phase_averaged.png&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Multiple_imaging_92_0.png" src="_images/Multiple_imaging_92_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Accretion_disk.html" class="btn btn-neutral float-left" title="Accretion disk" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Importance_sampling.html" class="btn btn-neutral float-right" title="Importance Sampling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surface radiation field &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Likelihoods" href="likelihood_implementations.html" />
+    <link rel="prev" title="Overview of extension modules" href="extensions_overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extension_modules.html">Extension modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Surface radiation field</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wrappers">Wrappers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.surface_radiation_field.intensity"><code class="docutils literal notranslate"><span class="pre">intensity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.surface_radiation_field.intensity_from_globals"><code class="docutils literal notranslate"><span class="pre">intensity_from_globals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.surface_radiation_field.effective_gravity"><code class="docutils literal notranslate"><span class="pre">effective_gravity()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#a-numerical-atmosphere">A numerical atmosphere</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="extension_modules.html">Extension modules</a></li>
+      <li class="breadcrumb-item active">Surface radiation field</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/surface_radiation_field.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-xpsi.surface_radiation_field">
+<span id="id1"></span><span id="surface-radiation-field"></span><h1>Surface radiation field<a class="headerlink" href="#module-xpsi.surface_radiation_field" title="Link to this heading"></a></h1>
+<section id="wrappers">
+<h2>Wrappers<a class="headerlink" href="#wrappers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.surface_radiation_field.intensity">
+<span class="sig-prename descclassname"><span class="pre">xpsi.surface_radiation_field.</span></span><span class="sig-name descname"><span class="pre">intensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">::1]</span> <span class="pre">local_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmosphere=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">stokesQ=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_extension=u'hot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmos_extension=u'BB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_opt=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_t</span> <span class="pre">numTHREADS=1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.surface_radiation_field.intensity" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the photon specific intensity using an extension module.</p>
+<p>The intensities are computed directly from local variable values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energies</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV to evaluate photon
+specific intensity at, in the local comoving frame.</p></li>
+<li><p><strong>mu</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of angles at which to evaluate the photon
+specific intensity at. Specifically, the angle is the cosine of the
+angle of the ray direction to the local surface normal, in the local
+comoving frame.</p></li>
+<li><p><strong>local_variables</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – A 2D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (with beam_opt=0) or 7D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+(with beam_opt &gt; 0) of local variables such as temperature, effective gravity,
+and beaming parameters. Rows correspond to the sequence of points in the
+space of energy and angle specified above, and columns contain the
+required variable values, one variable per column, in the expected
+order.</p></li>
+<li><p><strong>atmosphere</strong> (<em>tuple</em>) – <p>A numerical atmosphere preloaded into buffers. The buffers must be
+supplied in an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
+<span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
+first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
+arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
+<code class="docutils literal notranslate"><span class="pre">(logT,</span> <span class="pre">logg,</span> <span class="pre">mu,</span> <span class="pre">logE,</span> <span class="pre">buf)</span></code>, where:
+<code class="docutils literal notranslate"><span class="pre">logT</span></code> is a logarithm of local comoving effective temperature;
+<code class="docutils literal notranslate"><span class="pre">logg</span></code> is a logarithm of effective surface gravity;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code> is the cosine of the angle from the local surface normal;
+<code class="docutils literal notranslate"><span class="pre">logE</span></code> is a logarithm of the photon energy; and
+<code class="docutils literal notranslate"><span class="pre">buf</span></code> is a one-dimensional buffer of intensities of size given by
+the product of sizes of the first <span class="math notranslate nohighlight">\(n-1\)</span> tuple elements.</p>
+<p>It is highly recommended that buffer preloading is used, instead
+of loading from disk in the customisable radiation field extension
+module, to avoid reading from disk for every signal
+(likelihood) evaluation. This can be a non-negligible waste of compute
+resources. By preloading in Python, the memory is allocated and
+references to that memory are not in general deleted until a sampling
+script exits and the kernel stops. The likelihood callback accesses
+the same memory upon each call without I/O.</p>
+</p></li>
+<li><p><strong>StokesQ</strong> (<em>int</em>) – If StokesQ=1, Stokes Q intensities will be returned. Otherwise Stokes I
+intensities. Default is StokesQ=0.</p></li>
+<li><p><strong>region_extension</strong> (<em>str</em>) – Specify the radiating region extension module to invoke. Options are <code class="docutils literal notranslate"><span class="pre">'hot'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'elsewhere'</span></code>.</p></li>
+<li><p><strong>atmos_extension</strong> (<em>str</em>) – Used to determine which atmospheric extension to use.
+Options at the moment:
+“BB”: Analytical blackbody,
+“Num4D”: Numerical atmosphere using 4D-interpolation from the provided
+atmosphere data,
+“Pol_BB_burst”: Polarized analytical blackbody+burst approximation,
+“Pol_Num2D”: Polarized numerical atmosphere using 2D-interpolation from the provided
+atmosphere data,
+“user”: A user-provided extension which can be set up by replacing the contents of
+the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+(if not changed, “user” is the same as “BB”).</p></li>
+<li><p><strong>beam_opt</strong> (<em>int</em>) – Used to determine which atmospheric beaming modification model to use.
+Options at the moment:
+0: No modification (default)
+1: Original*beaming_correction without re-normalization
+2: Original*beaming_correction with analytical re-normalization estimate
+3: Original*beaming_correction with numerical re-normalization</p></li>
+<li><p><strong>numTHREADS</strong> (<em>int</em>) – Number of OpenMP threads to launch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the photon specific intensities in
+units of photons/s/keV/cm^2/sr.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.surface_radiation_field.intensity_from_globals">
+<span class="sig-prename descclassname"><span class="pre">xpsi.surface_radiation_field.</span></span><span class="sig-name descname"><span class="pre">intensity_from_globals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">colatitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">azimuth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">phase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">global_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">R_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmosphere=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmos_extension=u'BB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_t</span> <span class="pre">numTHREADS=1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.surface_radiation_field.intensity_from_globals" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the photon specific intensity using extension modules.</p>
+<p>The local variables are computed from global variables and spacetime
+coordinates of events at the surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energies</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV to evaluate photon
+specific intensity at, in the local comoving frame.</p></li>
+<li><p><strong>mu</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of angles at which to evaluate the photon
+specific intensity at. Specifically, the angle is the cosine of the
+angle of the ray direction to the local surface normal, in the local
+comoving frame.</p></li>
+<li><p><strong>colatitude</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of colatitudes in radians at which to
+evaluate photon specific intensity, in the local comoving frame. This
+is the coordinate of a fixed point relative to a distant static
+observer.</p></li>
+<li><p><strong>azimuth</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of azimuths in radians at which to
+evaluate photon specific intensity, in the local comoving frame. This
+is the coordinate of a fixed point relative to a distant static
+observer.</p></li>
+<li><p><strong>phase</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of rotational phases in radians at which to
+evaluate photon specific intensity, in the local comoving frame. The
+phase describes the rotation of the surface radiation field through
+the fixed points alluded to above. A localised hot region for instance
+rotates so that it’s azimuth changes relative to a point with fixed
+azimuth described above. Specifying zero phase means that the intensity
+is evaluated at the fixed points for the initial configuration of the
+hot region (or more general radiation field).</p></li>
+<li><p><strong>global_variables</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of global variables controlling the surface
+radiation field.</p></li>
+<li><p><strong>R_eq</strong> (<em>double</em>) – The equatorial radius in metres. Needed for effective gravity universal
+relation.</p></li>
+<li><p><strong>zeta</strong> (<em>double</em>) – See the <a class="reference internal" href="spacetime.html#module-xpsi.Spacetime" title="xpsi.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a> class property. Needed for
+effective gravity universal relation. It is recommended to supply this
+dimensionless variable by using an instance of <a class="reference internal" href="spacetime.html#module-xpsi.Spacetime" title="xpsi.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>epsilon</strong> (<em>double</em>) – See the <a class="reference internal" href="spacetime.html#module-xpsi.Spacetime" title="xpsi.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a> class property. Needed for
+effective gravity universal relation. It is recommended to supply this
+dimensionless variable by using an instance of <a class="reference internal" href="spacetime.html#module-xpsi.Spacetime" title="xpsi.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p></li>
+<li><p><strong>atmosphere</strong> (<em>tuple</em>) – <p>A numerical atmosphere preloaded into buffers. The buffers must be
+supplied in an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
+<span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
+first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
+arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
+<code class="docutils literal notranslate"><span class="pre">(logT,</span> <span class="pre">logg,</span> <span class="pre">mu,</span> <span class="pre">logE,</span> <span class="pre">buf)</span></code>, where:
+<code class="docutils literal notranslate"><span class="pre">logT</span></code> is a logarithm of local comoving effective temperature;
+<code class="docutils literal notranslate"><span class="pre">logg</span></code> is a logarithm of effective surface gravity;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code> is the cosine of the angle from the local surface normal;
+<code class="docutils literal notranslate"><span class="pre">logE</span></code> is a logarithm of the photon energy; and
+<code class="docutils literal notranslate"><span class="pre">buf</span></code> is a one-dimensional buffer of intensities of size given by
+the product of sizes of the first <span class="math notranslate nohighlight">\(n-1\)</span> tuple elements.</p>
+<p>It is highly recommended that buffer preloading is used, instead
+of loading from disk in the customisable radiation field extension
+module, to avoid reading from disk for every signal
+(likelihood) evaluation. This can be a non-negligible waste of compute
+resources. By preloading in Python, the memory is allocated and
+references to that memory are not in general deleted until a sampling
+script exits and the kernel stops. The likelihood callback accesses
+the same memory upon each call without I/O.</p>
+</p></li>
+<li><p><strong>atmos_extension</strong> (<em>str</em>) – Used to determine which atmospheric extension to use.
+Options at the moment:
+“BB”: Analytical blackbody,
+“Num4D”: Numerical atmosphere using 4D-interpolation from the provided
+atmosphere data,
+“user”: A user-provided extension which can be set up by replacing the contents of
+the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+(if not changed, “user” is the same as “BB”).</p></li>
+<li><p><strong>numTHREADS</strong> (<em>int</em>) – Number of OpenMP threads to launch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the photon specific intensities in
+units of photons/s/keV/cm^2/sr.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.surface_radiation_field.effective_gravity">
+<span class="sig-prename descclassname"><span class="pre">xpsi.surface_radiation_field.</span></span><span class="sig-name descname"><span class="pre">effective_gravity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">cos_colatitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">R_eq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">zeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double[::1]</span> <span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unicode</span> <span class="pre">star_shape=u'AGM_14'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.surface_radiation_field.effective_gravity" title="Link to this definition"></a></dt>
+<dd><p>Approximate local effective gravity using a universal relation.
+(or a spherical star if setting star_shape=”sphere”)</p>
+<p>See Morsink et al. (2007), AlGendy &amp; Morsink (2014), and Bogdanov et al.
+(2019, ApJL, 887, L26).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cos_colatitude</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of colatitudes, with respect to <em>a</em>
+rotational pole, at which to evaluate the local effective gravity.
+on the surface. Specifically, the angle is the cosine of the
+colatitude of the ray direction to the local surface normal, in the
+local comoving frame.</p></li>
+<li><p><strong>R_eq</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of surface coordinate equatorial radii in
+metres.</p></li>
+<li><p><strong>zeta</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of a dimensionless function of stellar
+properties. See <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.zeta" title="xpsi.Spacetime.Spacetime.zeta"><code class="xref py py-attr docutils literal notranslate"><span class="pre">zeta</span></code></a>.</p></li>
+<li><p><strong>epsilon</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of a dimensionless function of stellar
+properties. See <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.epsilon" title="xpsi.Spacetime.Spacetime.epsilon"><code class="xref py py-attr docutils literal notranslate"><span class="pre">epsilon</span></code></a>.</p></li>
+<li><p><strong>star_shape</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A string defining the shape model of the star (“AGM_14” or “sphere”).
+See <code class="xref py py-attr docutils literal notranslate"><span class="pre">star_shape</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the logarithms (base 10) of the
+effective gravities in units of cm/s^2.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="a-numerical-atmosphere">
+<span id="numerical-atmosphere"></span><h2>A numerical atmosphere<a class="headerlink" href="#a-numerical-atmosphere" title="Link to this heading"></a></h2>
+<p>The following is the extension module <code class="docutils literal notranslate"><span class="pre">hot_Num4D.pyx</span></code> for surface radiation field evaluation
+that may be found on path <code class="docutils literal notranslate"><span class="pre">surface_radiation_field/hot_Num4D.pyx</span></code>.
+This extension works with numerical atmosphere preloading to execute cubic polynomial interpolation
+in four dimensions.</p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="c">#cython: cdivision=True</span>
+<span class="c">#cython: boundscheck=False</span>
+<span class="c">#cython: nonecheck=False</span>
+<span class="c">#cython: wraparound=False</span>
+
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.math</span><span class="w"> </span><span class="k">cimport</span> <span class="n">M_PI</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">acos</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">fabs</span>
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.stdio</span><span class="w"> </span><span class="k">cimport</span> <span class="n">printf</span><span class="p">,</span> <span class="n">fopen</span><span class="p">,</span> <span class="n">fclose</span><span class="p">,</span> <span class="n">fread</span><span class="p">,</span> <span class="n">FILE</span>
+<span class="k">from</span><span class="w"> </span><span class="nn">GSL</span><span class="w"> </span><span class="k">cimport</span> <span class="n">gsl_isnan</span><span class="p">,</span> <span class="n">gsl_isinf</span>
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.stdlib</span><span class="w"> </span><span class="k">cimport</span> <span class="n">malloc</span><span class="p">,</span> <span class="n">free</span>
+
+<span class="k">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="k">import</span> <span class="n">_keV</span><span class="p">,</span> <span class="n">_k_B</span><span class="p">,</span> <span class="n">_h_keV</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">SUCCESS</span><span class="w"> </span><span class="o">=</span> <span class="mf">0</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">ERROR</span><span class="w"> </span><span class="o">=</span> <span class="mf">1</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">erg</span><span class="w"> </span><span class="o">=</span> <span class="mf">1.0e-7</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">k_B</span><span class="w"> </span><span class="o">=</span> <span class="n">_k_B</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">keV</span><span class="w"> </span><span class="o">=</span> <span class="n">_keV</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">h_keV</span><span class="w"> </span><span class="o">=</span> <span class="n">_h_keV</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">k_B_over_keV</span><span class="w"> </span><span class="o">=</span> <span class="n">k_B</span> <span class="o">/</span> <span class="n">keV</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">VERBOSE</span><span class="w"> </span><span class="o">=</span> <span class="mf">0</span>
+
+<span class="k">ctypedef</span> <span class="k">struct</span><span class="w"> </span><span class="nc">ACCELERATE</span><span class="p">:</span>
+    <span class="n">size_t</span> <span class="o">**</span><span class="n">BN</span>                <span class="c"># base node for interpolation</span>
+    <span class="n">double</span> <span class="o">**</span><span class="n">node_vals</span>
+    <span class="n">double</span> <span class="o">**</span><span class="n">SPACE</span>
+    <span class="n">double</span> <span class="o">**</span><span class="n">DIFF</span>
+    <span class="n">double</span> <span class="o">**</span><span class="n">INTENSITY_CACHE</span>
+    <span class="n">double</span> <span class="o">**</span><span class="n">VEC_CACHE</span>
+
+<span class="c"># Modify this struct if useful for the user-defined source radiation field.</span>
+<span class="c"># Note that the members of DATA will be shared by all threads and are</span>
+<span class="c"># statically allocated, whereas the members of ACCELERATE will point to</span>
+<span class="c"># dynamically allocated memory, not shared by threads.</span>
+
+<span class="k">ctypedef</span> <span class="k">struct</span><span class="w"> </span><span class="nc">DATA</span><span class="p">:</span>
+    <span class="n">const</span> <span class="n">_preloaded</span> <span class="o">*</span><span class="n">p</span>
+    <span class="n">ACCELERATE</span> <span class="n">acc</span>
+
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="c"># &gt;&gt;&gt; User modifiable functions.</span>
+<span class="c"># &gt;&gt;&gt; Note that the user is entirely free to wrap thread-safe and</span>
+<span class="c"># ... non-parallel external C routines from an external library.</span>
+<span class="c"># &gt;&gt;&gt; Thus the bodies of the following need not be written explicitly in</span>
+<span class="c"># ... the Cython language.</span>
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">void</span>* <span class="nf">init_hot_Num4D</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">const</span> <span class="n">_preloaded</span> <span class="o">*</span><span class="n">const</span> <span class="n">preloaded</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the free management routine free_hot()</span>
+    <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
+    <span class="c"># the user&#39;s responsibility to manage.</span>
+    <span class="c"># Return NULL if dynamic memory is not required for the model</span>
+
+    <span class="k">if</span> <span class="n">preloaded</span> <span class="o">==</span> <span class="bp">NULL</span> <span class="p">:</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">DATA</span> *<span class="nf">D</span><span class="w"> </span><span class="o">=</span> <span class="o">&lt;</span><span class="n">DATA</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">sizeof</span><span class="p">(</span><span class="n">DATA</span><span class="p">))</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">preloaded</span>
+
+    <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">64</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">16</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">size_t</span> <span class="nf">T</span><span class="p">,</span> <span class="nf">i</span><span class="p">,</span> <span class="nf">j</span><span class="p">,</span> <span class="nf">k</span><span class="p">,</span> <span class="nf">l</span>
+
+    <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">size_t</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numThreads</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">size_t</span><span class="o">*</span><span class="p">))</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numThreads</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="o">*</span><span class="p">))</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numThreads</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="o">*</span><span class="p">))</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numThreads</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="o">*</span><span class="p">))</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">INTENSITY_CACHE</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numThreads</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="o">*</span><span class="p">))</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">**&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numThreads</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="o">*</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numThreads</span><span class="p">):</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">size_t</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">size_t</span><span class="p">))</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="mf">2</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="p">))</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="mf">4</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="p">))</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="mf">4</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="p">))</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">INTENSITY_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="mf">256</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="p">))</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">double</span><span class="o">*&gt;</span> <span class="n">malloc</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">double</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span><span class="p">):</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="mf">4</span><span class="o">*</span><span class="n">i</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">])</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">])</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">])</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">])</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">*=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> *<span class="nf">address</span><span class="w"> </span><span class="o">=</span> <span class="bp">NULL</span>
+    <span class="c"># Cache intensity</span>
+    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numThreads</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+                        <span class="n">address</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">I</span> <span class="o">+</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+                        <span class="n">address</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span>
+                        <span class="n">address</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="mf">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span>
+                        <span class="n">address</span> <span class="o">+=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="mf">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">l</span>
+                        <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">INTENSITY_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">][</span><span class="n">i</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">address</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+
+    <span class="c"># Cast for generalised usage in integration routines</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span> <span class="n">D</span>
+
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">free_hot_Num4D</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the initialisation routine init_hot()</span>
+    <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
+    <span class="c"># the user&#39;s responsibility to manage.</span>
+    <span class="c"># The void pointer must be appropriately cast before memory is freed --</span>
+    <span class="c"># only the user can know this at compile time.</span>
+    <span class="c"># Just use free(&lt;void*&gt; data) iff no memory was dynamically</span>
+    <span class="c"># allocated in the function:</span>
+    <span class="c">#   init_hot()</span>
+    <span class="c"># because data is expected to be NULL in this case</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">DATA</span> *<span class="nf">D</span><span class="w"> </span><span class="o">=</span> <span class="o">&lt;</span><span class="n">DATA</span><span class="o">*&gt;</span> <span class="n">data</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">size_t</span> <span class="nf">T</span>
+
+    <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numThreads</span><span class="p">):</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">INTENSITY_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">)</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span><span class="p">)</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">)</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">INTENSITY_CACHE</span><span class="p">)</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">)</span>
+
+    <span class="n">free</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SUCCESS</span>
+
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="c"># &gt;&gt;&gt; Cubic polynomial interpolation.</span>
+<span class="c"># &gt;&gt;&gt; Improve acceleration properties... i.e. do not recompute numerical</span>
+<span class="c"># ... weights or re-read intensities if not necessary.</span>
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">eval_hot_Num4D</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+                     <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
+                     <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
+                     <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
+                     <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># Arguments:</span>
+    <span class="c"># E = photon energy in keV</span>
+    <span class="c"># mu = cosine of ray zenith angle (i.e., angle to surface normal)</span>
+    <span class="c"># VEC = variables such as temperature, effective gravity, ...</span>
+    <span class="c"># data = numerical model data required for intensity evaluation</span>
+
+    <span class="c"># This function must cast the void pointer appropriately for use.</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">DATA</span> *<span class="nf">D</span><span class="w"> </span><span class="o">=</span> <span class="o">&lt;</span><span class="n">DATA</span><span class="o">*&gt;</span> <span class="n">data</span>
+
+    <span class="k">cdef</span><span class="p">:</span>
+        <span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mf">0</span><span class="p">,</span> <span class="n">ii</span>
+        <span class="n">double</span> <span class="n">I</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">temp</span>
+        <span class="n">double</span> <span class="o">*</span><span class="n">node_vals</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">node_vals</span><span class="p">[</span><span class="n">THREAD</span><span class="p">]</span>
+        <span class="n">size_t</span> <span class="o">*</span><span class="n">BN</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">BN</span><span class="p">[</span><span class="n">THREAD</span><span class="p">]</span>
+        <span class="n">double</span> <span class="o">*</span><span class="n">SPACE</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">SPACE</span><span class="p">[</span><span class="n">THREAD</span><span class="p">]</span>
+        <span class="n">double</span> <span class="o">*</span><span class="n">DIFF</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">DIFF</span><span class="p">[</span><span class="n">THREAD</span><span class="p">]</span>
+        <span class="n">double</span> <span class="o">*</span><span class="n">I_CACHE</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">INTENSITY_CACHE</span><span class="p">[</span><span class="n">THREAD</span><span class="p">]</span>
+        <span class="n">double</span> <span class="o">*</span><span class="n">V_CACHE</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">VEC_CACHE</span><span class="p">[</span><span class="n">THREAD</span><span class="p">]</span>
+        <span class="n">double</span> <span class="n">vec</span><span class="p">[</span><span class="mf">4</span><span class="p">]</span>
+        <span class="n">double</span> <span class="n">E_eff</span> <span class="o">=</span> <span class="n">k_B_over_keV</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+        <span class="nb">int</span> <span class="n">update_baseNode</span><span class="p">[</span><span class="mf">4</span><span class="p">]</span>
+        <span class="nb">int</span> <span class="n">CACHE</span> <span class="o">=</span> <span class="mf">0</span>
+
+    <span class="n">vec</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+    <span class="n">vec</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span>
+    <span class="n">vec</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu</span>
+    <span class="n">vec</span><span class="p">[</span><span class="mf">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">E_eff</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">ndims</span><span class="p">:</span>
+        <span class="c"># if parallel == 31:</span>
+        <span class="c">#     printf(&quot;\nDimension: %d&quot;, &lt;int&gt;i)</span>
+        <span class="n">update_baseNode</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0</span>
+        <span class="k">if</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">node_vals</span><span class="p">[</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span><span class="p">]</span> <span class="ow">and</span> <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0</span><span class="p">:</span>
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nExecute block 1: %d&quot;, &lt;int&gt;i)</span>
+            <span class="n">update_baseNode</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1</span>
+            <span class="k">while</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]:</span>
+                <span class="c"># if parallel == 31:</span>
+                <span class="c">#     printf(&quot;\n!&quot;)</span>
+                <span class="c">#     printf(&quot;\nvec i: %.8e&quot;, vec[i])</span>
+                <span class="c">#     printf(&quot;\nBase node: %d&quot;, &lt;int&gt;BN[i])</span>
+                <span class="k">if</span> <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0</span><span class="p">:</span>
+                    <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">1</span>
+                <span class="k">elif</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]:</span>
+                    <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="n">node_vals</span><span class="p">[</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">node_vals</span><span class="p">[</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nEnd Block 1: %d&quot;, &lt;int&gt;i)</span>
+
+        <span class="k">elif</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">node_vals</span><span class="p">[</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4</span><span class="p">:</span>
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nExecute block 2: %d&quot;, &lt;int&gt;i)</span>
+            <span class="n">update_baseNode</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1</span>
+            <span class="k">while</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4</span><span class="p">:</span>
+                    <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1</span>
+                <span class="k">elif</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1</span><span class="p">]:</span>
+                    <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1</span><span class="p">]</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="n">node_vals</span><span class="p">[</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">node_vals</span><span class="p">[</span><span class="mf">2</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nEnd Block 2: %d&quot;, &lt;int&gt;i)</span>
+
+        <span class="c"># if parallel == 31:</span>
+        <span class="c">#     printf(&quot;\nTry block 3: %d&quot;, &lt;int&gt;i)</span>
+
+        <span class="k">if</span> <span class="n">V_CACHE</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="n">update_baseNode</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1</span><span class="p">:</span>
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nExecute block 3: %d&quot;, &lt;int&gt;i)</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="mf">4</span><span class="o">*</span><span class="n">i</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">DIFF</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">*=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+
+            <span class="n">V_CACHE</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nEnd block 3: %d&quot;, &lt;int&gt;i)</span>
+
+        <span class="c"># if parallel == 31:</span>
+        <span class="c">#     printf(&quot;\nTry block 4: %d&quot;, &lt;int&gt;i)</span>
+
+        <span class="k">if</span> <span class="n">update_baseNode</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1</span><span class="p">:</span>
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nExecute block 4: %d&quot;, &lt;int&gt;i)</span>
+            <span class="n">CACHE</span> <span class="o">=</span> <span class="mf">1</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">])</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span>
+
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1</span><span class="p">]</span>
+            <span class="n">SPACE</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">/=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">BN</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2</span><span class="p">]</span>
+
+            <span class="c"># if parallel == 31:</span>
+            <span class="c">#     printf(&quot;\nEnd block 4: %d&quot;, &lt;int&gt;i)</span>
+
+        <span class="n">i</span> <span class="o">+=</span> <span class="mf">1</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">size_t</span> <span class="nf">j</span><span class="p">,</span> <span class="nf">k</span><span class="p">,</span> <span class="nf">l</span><span class="p">,</span> <span class="nf">INDEX</span><span class="p">,</span> <span class="nf">II</span><span class="p">,</span> <span class="nf">JJ</span><span class="p">,</span> <span class="nf">KK</span>
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> *<span class="nf">address</span><span class="w"> </span><span class="o">=</span> <span class="bp">NULL</span>
+    <span class="c"># Combinatorics over nodes of hypercube; weight cgs intensities</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+        <span class="n">II</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+            <span class="n">JJ</span> <span class="o">=</span> <span class="n">j</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+                <span class="n">KK</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">BLOCKS</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">4</span><span class="p">):</span>
+                    <span class="n">address</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">I</span> <span class="o">+</span> <span class="p">(</span><span class="n">BN</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+                    <span class="n">address</span> <span class="o">+=</span> <span class="p">(</span><span class="n">BN</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span>
+                    <span class="n">address</span> <span class="o">+=</span> <span class="p">(</span><span class="n">BN</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span>
+                    <span class="n">address</span> <span class="o">+=</span> <span class="n">BN</span><span class="p">[</span><span class="mf">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">l</span>
+
+                    <span class="n">temp</span> <span class="o">=</span> <span class="n">DIFF</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">DIFF</span><span class="p">[</span><span class="mf">4</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">DIFF</span><span class="p">[</span><span class="mf">8</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">DIFF</span><span class="p">[</span><span class="mf">12</span> <span class="o">+</span> <span class="n">l</span><span class="p">]</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">SPACE</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">SPACE</span><span class="p">[</span><span class="mf">4</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">SPACE</span><span class="p">[</span><span class="mf">8</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">SPACE</span><span class="p">[</span><span class="mf">12</span> <span class="o">+</span> <span class="n">l</span><span class="p">]</span>
+                    <span class="n">INDEX</span> <span class="o">=</span> <span class="n">II</span> <span class="o">+</span> <span class="n">JJ</span> <span class="o">+</span> <span class="n">KK</span> <span class="o">+</span> <span class="n">l</span>
+                    <span class="k">if</span> <span class="n">CACHE</span> <span class="o">==</span> <span class="mf">1</span><span class="p">:</span>
+                        <span class="n">I_CACHE</span><span class="p">[</span><span class="n">INDEX</span><span class="p">]</span> <span class="o">=</span> <span class="n">address</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+                    <span class="n">I</span> <span class="o">+=</span> <span class="n">temp</span> <span class="o">*</span> <span class="n">I_CACHE</span><span class="p">[</span><span class="n">INDEX</span><span class="p">]</span>
+
+    <span class="c">#if gsl_isnan(I) == 1:</span>
+        <span class="c">#printf(&quot;\nIntensity: NaN; Index [%d,%d,%d,%d] &quot;,</span>
+                <span class="c">#&lt;int&gt;BN[0], &lt;int&gt;BN[1], &lt;int&gt;BN[2], &lt;int&gt;BN[3])</span>
+
+    <span class="c">#printf(&quot;\nBase-nodes [%d,%d,%d,%d] &quot;,</span>
+                <span class="c">#&lt;int&gt;BN[0], &lt;int&gt;BN[1], &lt;int&gt;BN[2], &lt;int&gt;BN[3])</span>
+
+    <span class="k">if</span> <span class="n">I</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">I</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">vec</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">eval_hot_norm_Num4D</span><span class="p">()</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># Source radiation field normalisation which is independent of the</span>
+    <span class="c"># parameters of the parametrised model -- i.e. cell properties, energy,</span>
+    <span class="c"># and angle.</span>
+    <span class="c"># Writing the normalisation here reduces the number of operations required</span>
+    <span class="c"># during integration.</span>
+    <span class="c"># The units of the specific intensity need to be J/cm^2/s/keV/steradian.</span>
+
+    <span class="k">return</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">h_keV</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="extensions_overview.html" class="btn btn-neutral float-left" title="Overview of extension modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="likelihood_implementations.html" class="btn btn-neutral float-right" title="Likelihoods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

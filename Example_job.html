@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example job &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Posterior Inference using SBI" href="x_p_sbi.html" />
+    <link rel="prev" title="Example script and modules" href="Example_script_and_modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example job</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#snellius">Snellius</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#helios">Helios</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example job</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Example_job.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-job">
+<span id="id1"></span><h1>Example job<a class="headerlink" href="#example-job" title="Link to this heading"></a></h1>
+<p>For both jobs you will need these
+<a class="reference external" href="https://zenodo.org/record/7113931">auxiliary files</a> inside the <code class="docutils literal notranslate"><span class="pre">model_data/</span></code>
+directory.</p>
+<section id="snellius">
+<h2>Snellius<a class="headerlink" href="#snellius" title="Link to this heading"></a></h2>
+<p>The following job script <code class="docutils literal notranslate"><span class="pre">job.sh</span></code> is an example job script for analysis on the Snellius system (see <a class="reference internal" href="HPC_systems.html#hpcsystems"><span class="std std-ref">HPC systems</span></a>).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH -N 5</span>
+<span class="c1">#SBATCH --tasks-per-node=128</span>
+<span class="c1">#SBATCH -t 1-00:00:00</span>
+<span class="c1">#SBATCH -p thin</span>
+<span class="c1">#SBATCH --job-name=run1</span>
+<span class="c1">#SBATCH --mail-user=my_email@gmail.com</span>
+<span class="c1">#SBATCH --mail-type=END</span>
+
+<span class="nb">echo</span><span class="w"> </span>start<span class="w"> </span>of<span class="w"> </span>job<span class="w"> </span><span class="k">in</span><span class="w"> </span>directory<span class="w"> </span><span class="nv">$SLURM_SUBMIT_DIR</span>
+<span class="nb">echo</span><span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>nodes<span class="w"> </span>is<span class="w"> </span><span class="nv">$SLURM_JOB_NUM_NODES</span>
+<span class="nb">echo</span><span class="w"> </span>the<span class="w"> </span>allocated<span class="w"> </span>nodes<span class="w"> </span>are:
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$SLURM_JOB_NODELIST</span>
+
+module<span class="w"> </span>purge
+
+module<span class="w"> </span>load<span class="w"> </span><span class="m">2024</span>
+module<span class="w"> </span>load<span class="w"> </span>foss/2024a
+module<span class="w"> </span>load<span class="w"> </span>SciPy-bundle/2024.05-gfbf-2024a
+module<span class="w"> </span>load<span class="w"> </span>wrapt/1.16.0-gfbf-2024a
+module<span class="w"> </span>load<span class="w"> </span>matplotlib/3.9.2-gfbf-2024a
+
+<span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/venvs/xpsi_py3/bin/activate
+
+cp<span class="w"> </span>-r<span class="w"> </span><span class="nv">$HOME</span>/xpsi/examples/examples_modeling_tutorial/*<span class="w"> </span><span class="nv">$TMPDIR</span>/
+mkdir<span class="w"> </span><span class="nv">$TMPDIR</span>/run
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$TMPDIR</span>/
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOTO_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:<span class="nv">$HOME</span>/multinest/MultiNest_v3.12_CMake/multinest/lib/
+
+srun<span class="w"> </span>python<span class="w"> </span>TestRun_BB.py<span class="w"> </span>&gt;<span class="w"> </span>out1<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>err1
+cp<span class="w"> </span>-r<span class="w"> </span>out1<span class="w"> </span>err1<span class="w"> </span>run<span class="w"> </span><span class="nv">$HOME</span>/xpsi/examples/examples_modeling_tutorial/.
+<span class="c1">#end of job file</span>
+</pre></div>
+</div>
+<p>This can be submitted with <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">job.sh</span></code>. In a corresponding resume script one would typically increase the number of processes. This is because parallelisation efficiency scales with the local rejection fraction during a nested sampling iteration. Make sure that also the previous sample output files are copied to the $TMPDIR directory, and that the resume option for MultiNest is turned on in the main Python file (in <code class="docutils literal notranslate"><span class="pre">TestRun_BB.py</span></code> for this example).</p>
+<p>Note how <code class="docutils literal notranslate"><span class="pre">srun</span></code> is aware of the MPI World, so there is no need specify the
+number of processes to spawn as a flag argument.</p>
+<p>Finally, note that only the root process will generate output for inspection.</p>
+</section>
+<section id="helios">
+<h2>Helios<a class="headerlink" href="#helios" title="Link to this heading"></a></h2>
+<p>For Helios, we can use the following type of job script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH -N 2</span>
+<span class="c1">#SBATCH --tasks-per-node=126</span>
+<span class="c1">#SBATCH -t 1-00:00:00</span>
+<span class="c1">#SBATCH -J example_run</span>
+<span class="c1">#SBATCH -o example_run_%j.out</span>
+<span class="c1">#SBATCH -e example_run_%j.err</span>
+<span class="c1">#SBATCH --partition=neutron-star</span>
+<span class="c1">#SBATCH --mem 160000</span>
+<span class="c1">#SBATCH --mail-user=my_email@gmail.com</span>
+<span class="c1">#SBATCH --mail-type=END</span>
+
+module<span class="w"> </span>purge
+module<span class="w"> </span>load<span class="w"> </span>gnu12
+module<span class="w"> </span>load<span class="w"> </span>openmpi4
+module<span class="w"> </span>load<span class="w"> </span>gsl
+<span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/venv311/xpsi/bin/activate
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOTO_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MKL_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span>/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/gsl/bin:<span class="nv">$PATH</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">JOB_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/xpsi/examples/examples_modeling_tutorial
+<span class="nb">export</span><span class="w"> </span><span class="nv">OUTPUT_FOLDER</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span>/hddstore/<span class="nv">$USER</span><span class="k">)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$OUTPUT_FOLDER</span><span class="w"> </span><span class="nv">$SLURMD_NODENAME</span>
+mkdir<span class="w"> </span><span class="nv">$OUTPUT_FOLDER</span>/run
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$OUTPUT_FOLDER</span>
+
+<span class="c1">#Copy the input data to be visible for all the nodes (and make sure your paths point to hddstore):</span>
+srun<span class="w"> </span>-n<span class="w"> </span><span class="nv">$SLURM_JOB_NUM_NODES</span><span class="w"> </span>--ntasks-per-node<span class="o">=</span><span class="m">1</span><span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span><span class="nv">$JOB_DIR</span>/model_data/<span class="w"> </span><span class="nv">$OUTPUT_FOLDER</span>
+sleep<span class="w"> </span><span class="m">1</span>
+
+mpiexec<span class="w"> </span>-n<span class="w"> </span><span class="m">252</span><span class="w"> </span>-mca<span class="w"> </span>btl_tcp_if_include<span class="w"> </span>ib0<span class="w"> </span>python<span class="w"> </span><span class="nv">$JOB_DIR</span>/TestRun_BB.py
+
+<span class="c1">#Move your output from scratch to storage space.</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>/zfs/helios/filer0/<span class="nv">$USER</span>/
+cp<span class="w"> </span>-r<span class="w"> </span><span class="nv">$OUTPUT_FOLDER</span>/*<span class="w"> </span>/zfs/helios/filer0/<span class="nv">$USER</span>/
+
+<span class="c1">#Clean the scratch automatically here.</span>
+<span class="c1">#But remember to remove manually in each node, if the main program ends by crashing.</span>
+rm<span class="w"> </span>-rf<span class="w"> </span><span class="nv">$OUTPUT_FOLDER</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Example_script_and_modules.html" class="btn btn-neutral float-left" title="Example script and modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="x_p_sbi.html" class="btn btn-neutral float-right" title="Posterior Inference using SBI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

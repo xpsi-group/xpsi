@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sample &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PostProcessing" href="postprocessing.html" />
+    <link rel="prev" title="Posterior" href="posterior.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="posterior_api.html">Posterior API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sample</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Sample.run_multinest"><code class="docutils literal notranslate"><span class="pre">run_multinest()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Sample.run_emcee"><code class="docutils literal notranslate"><span class="pre">run_emcee()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Sample.run_ultranest"><code class="docutils literal notranslate"><span class="pre">run_ultranest()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SBI_wrapper.html">Wrappers for SBI</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="posterior_api.html">Posterior API</a></li>
+      <li class="breadcrumb-item active">Sample</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sample.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sample">
+<span id="module-xpsi.Sample"></span><span id="id1"></span><h1>Sample<a class="headerlink" href="#sample" title="Link to this heading"></a></h1>
+<p>Use these functions to run sampling/integration processes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.Sample.run_multinest">
+<span class="sig-prename descclassname"><span class="pre">xpsi.Sample.</span></span><span class="sig-name descname"><span class="pre">run_multinest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Sample.html#run_multinest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Sample.run_multinest" title="Link to this definition"></a></dt>
+<dd><p>Initialise MultiNest and integrate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>likelihood</strong> (<em>dict</em>) – Keyword arguments required for instantiation of
+<a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a>.</p></li>
+<li><p><strong>prior</strong> (<em>dict</em>) – Keyword arguments required for instantiation of
+<a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a>.</p></li>
+<li><p><strong>check_kwargs</strong> (<em>dict</em>) – Keywords for likelihood function checker. Passed to checker before
+commencement of sampling.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments for PyMultiNest.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.Sample.run_emcee">
+<span class="sig-prename descclassname"><span class="pre">xpsi.Sample.</span></span><span class="sig-name descname"><span class="pre">run_emcee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MPI</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Sample.html#run_emcee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Sample.run_emcee" title="Link to this definition"></a></dt>
+<dd><p>Initialise <a class="reference external" href="http://dfm.io/emcee/current/">emcee</a> and sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>likelihood</strong> – An instance of <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a>.</p></li>
+<li><p><strong>prior</strong> – An instance of <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a>.</p></li>
+<li><p><strong>MPI</strong> (<em>bool</em>) – Parallelise with MPI? If calling script not lauched with an MPI
+directive, sampling will not commence because there is only one
+process. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code> since only in testing is it justifiable to
+use a single process.</p></li>
+<li><p><strong>kwargs</strong> – <p>Passed to initialisers of appropriate classes:</p>
+<blockquote>
+<div><ul>
+<li><p>boolean to resume, under keyword <code class="xref py py-obj docutils literal notranslate"><span class="pre">resume</span></code>;</p></li>
+<li><p>number of steps, under keyword <code class="xref py py-obj docutils literal notranslate"><span class="pre">nsteps</span></code>;</p></li>
+<li><p>number of walkers, under keyword <code class="xref py py-obj docutils literal notranslate"><span class="pre">nwalkers</span></code>;</p></li>
+<li><p>moments of initial walker multivariate Gaussian distribution,
+under keyword <code class="xref py py-obj docutils literal notranslate"><span class="pre">walker_dist_moments</span></code> (can be <code class="docutils literal notranslate"><span class="pre">None</span></code>);</p></li>
+<li><p>root directory for output, under keyword <code class="xref py py-obj docutils literal notranslate"><span class="pre">root_dir</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p>The above objects are used to instantiate <a class="reference internal" href="posterior.html#xpsi.Posterior.Posterior" title="xpsi.Posterior.Posterior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Posterior</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An instance of <a class="reference external" href="https://emcee.readthedocs.io/en/latest/user/backends/#emcee.backends.HDFBackend" title="(in emcee v3.1.7.dev12+gc75406b)"><code class="xref py py-class docutils literal notranslate"><span class="pre">emcee.backends.HDFBackend</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.Sample.run_ultranest">
+<span class="sig-prename descclassname"><span class="pre">xpsi.Sample.</span></span><span class="sig-name descname"><span class="pre">run_ultranest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runtime_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_stepsampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stepsampler_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weighted_post_ultranest_xpsi'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Sample.html#run_ultranest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Sample.run_ultranest" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Wrapper for the UltraNest (<a class="reference external" href="https://johannesbuchner.github.io/UltraNest/">https://johannesbuchner.github.io/UltraNest/</a>)</dt><dd><p>package (Buchner 2021).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>likelihood</strong> – An instance of <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a>.</p></li>
+<li><p><strong>prior</strong> – An instance of <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a>.</p></li>
+<li><p><strong>sampler_params</strong> – A dictionary of the keyword arguments passed to the
+instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">UltranestSampler</span></code> to initialise the sampler.</p></li>
+<li><p><strong>runtime_params</strong> – A dictionary of the keyword arguments passed to the
+instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">UltranestSampler</span></code> to run the sampler.</p></li>
+<li><p><strong>use_stepsampler</strong> – Boolean indicating if the step sampler is used. In this
+case the <code class="xref py py-class docutils literal notranslate"><span class="pre">ultranest.stepsampler.SliceSampler</span></code> is used.</p></li>
+<li><p><strong>stepsampler_params</strong> – A dictionary of the keyword arguments passed to the
+to the instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">UltranestSampler</span></code> specifying the step sampler
+runtime parameters.</p></li>
+<li><p><strong>out_filename</strong> – String specifying the name of the output file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">UltranestSampler</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="posterior.html" class="btn btn-neutral float-left" title="Posterior" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="postprocessing.html" class="btn btn-neutral float-right" title="PostProcessing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

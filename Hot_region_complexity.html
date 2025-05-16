@@ -1,0 +1,1470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hot region complexity &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Global surface emission" href="Global_surface_emission.html" />
+    <link rel="prev" title="Instrument synergy" href="Instrument_synergy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hot region complexity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Single-temperature-hot-regions">Single-temperature hot regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Pulse-integration">Pulse integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Two-temperature-hot-regions">Two-temperature hot regions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Hot region complexity</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Hot_region_complexity.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Hot-region-complexity">
+<h1>Hot region complexity<a class="headerlink" href="#Hot-region-complexity" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import os
+import numpy as np
+import math
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
+from matplotlib import gridspec
+from matplotlib import cm
+
+import xpsi
+
+from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+from xpsi.cellmesh.mesh_tools import eval_cedeCentreCoords
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.0               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.6
+Imported PyMultiNest.
+Imported UltraNest.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<p>Let’s explore higher-complexity surface hot regions models. First we need to do some setup of the ambient spacetime and the surface embedded in it that the photosphere exists on.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+                mass = (1.0, 3.0),                       # mass
+                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<section id="Single-temperature-hot-regions">
+<h2>Single-temperature hot regions<a class="headerlink" href="#Single-temperature-hot-regions" title="Link to this heading"></a></h2>
+<p>First we play with two hot regions that each have a single temperature component, meaning that the local comoving effective temperature is uniform within the hot region boundary. We instantiate hot region objects:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(super_colatitude = (None, None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 1.0),
+              super_temperature = (None, None))
+
+# a simple circular, simply-connected spot
+primary = xpsi.HotRegion(bounds=bounds,
+                            values={}, # no fixed/derived variables
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=64,
+                            num_leaves=100,
+                            num_rays=200,
+                            do_fast=False,
+                            prefix=&#39;p&#39;)
+
+bounds = dict(super_colatitude=(None,None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 1.0),
+              super_temperature = (None, None),
+              omit_colatitude = (None, None),
+              omit_radius = (None, None),
+              omit_azimuth = (None, None))
+
+# overlap of an omission region and
+# and a radiating super region
+secondary = xpsi.HotRegion(bounds=bounds,
+                              values={}, # no fixed/derived variables
+                              symmetry=True,
+                              omit=True,
+                              cede=False,
+                              concentric=False,
+                              sqrt_num_cells=32,
+                              min_sqrt_num_cells=10,
+                              max_sqrt_num_cells=100,
+                              num_leaves=100,
+                              num_rays=200,
+                              do_fast=False,
+                              is_antiphased=True,
+                              prefix=&#39;s&#39;)
+
+from xpsi import HotRegions
+
+hot = HotRegions((primary, secondary))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;omit_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the omission region [radians].
+Creating parameter:
+    &gt; Named &#34;omit_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) omission region [radians].
+Creating parameter:
+    &gt; Named &#34;omit_azimuth&#34; with bounds [-3.142e+00, 3.142e+00].
+    &gt; The azimuth of the centre of the omission region relative to the
+centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">{min,max}_sqrt_num_cells</span></code> keyword arguments set the maximum number of elements that the vicinity of a hot region will be discretised into in both colatitude and azimuth.</p>
+<p>Let’s also explicitly fill the photosphere <em>elsewhere</em> with a simple radiation field. We will return to this later when we integrate over the surface radiation field to calculate signals.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = (None,None)))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;elsewhere_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10 of the effective temperature elsewhere.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere,
+                               values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<p>We will now define helper functions for plotting mesh representations, together with some plot settings.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_meshes(lines=(True,True),
+                primary_ticks = (1,5),
+                secondary_ticks = (1,5)):
+    &quot;&quot;&quot; Plot representations of the cached meshes.
+
+    Note that the lowest colatitude row of elements is plotted as the
+    lowest row, so colatitude increases along the y-axis and azimuth
+    increaes along the x-axis. This could be considered as spatially
+    inverted if we were looking at the star whilst being oriented
+    such that &quot;up&quot; is in the spin direction.
+
+    &quot;&quot;&quot;
+
+    fig = plt.figure(figsize = (9, 19))
+
+    gs = gridspec.GridSpec(2, 2, width_ratios=[50,1], wspace=0.1, hspace=0.1)
+    ax = plt.subplot(gs[0,0])
+    veneer(primary_ticks, primary_ticks, ax)
+
+    # primary (lower colatitude) hot region
+    z = hot.objects[0]._HotRegion__cellArea[0]/np.max(hot.objects[0]._HotRegion__cellArea[0])
+    patches = plt.pcolormesh(z,
+                             vmin = np.min(z),
+                             vmax = np.max(z),
+                             cmap = cm.magma,
+                             linewidth = 1.0 if lines[0] else 0.0,
+                             rasterized = True,
+                             edgecolor=&#39;black&#39;)
+
+    ax = plt.subplot(gs[1,0])
+    veneer(secondary_ticks, secondary_ticks, ax)
+
+    # secondary (higher colatitude) hot region
+    z = hot.objects[1]._HotRegion__cellArea[0]/np.max(hot.objects[1]._HotRegion__cellArea[0])
+    _ = plt.pcolormesh(z,
+                       vmin = np.min(z),
+                       vmax = np.max(z),
+                       cmap = cm.magma,
+                       linewidth = 1.0 if lines[1] else 0.0,
+                       rasterized = True,
+                       edgecolor=&#39;black&#39;)
+
+    ax_cb = plt.subplot(gs[:,1])
+    cb = plt.colorbar(patches,
+                      cax = ax_cb,
+                      ticks = MultipleLocator(0.2))
+
+    cb.set_label(label = r&#39;cell area (normalised by maximum)&#39;, labelpad=25)
+    cb.solids.set_edgecolor(&#39;face&#39;)
+
+    veneer((None, None), (0.05, None), ax_cb)
+    cb.outline.set_linewidth(1.0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rcParams[&#39;text.usetex&#39;] = False
+rcParams[&#39;font.size&#39;] = 14.0
+
+def veneer(x, y, axes, lw=1.0, length=8, yticks=None):
+    &quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;
+    if x is not None:
+        if x[1] is not None:
+            axes.xaxis.set_major_locator(MultipleLocator(x[1]))
+        if x[0] is not None:
+            axes.xaxis.set_minor_locator(MultipleLocator(x[0]))
+    else:
+        axes.xaxis.set_major_locator(AutoLocator())
+        axes.xaxis.set_minor_locator(AutoMinorLocator())
+
+    if y is not None:
+        if y[1] is not None:
+            axes.yaxis.set_major_locator(MultipleLocator(y[1]))
+        if y[0] is not None:
+            axes.yaxis.set_minor_locator(MultipleLocator(y[0]))
+    else:
+        axes.yaxis.set_major_locator(AutoLocator())
+        axes.yaxis.set_minor_locator(AutoMinorLocator())
+
+    axes.tick_params(which=&#39;major&#39;, colors=&#39;black&#39;, length=length, width=lw)
+    axes.tick_params(which=&#39;minor&#39;, colors=&#39;black&#39;, length=int(length/2), width=lw)
+    plt.setp(axes.spines.values(), linewidth=lw, color=&#39;black&#39;)
+
+    if yticks:
+        axes.set_yticks(yticks)
+</pre></div>
+</div>
+</div>
+<p>Let’s form a vector of parameter values in the <em>conventional</em> order expected by the <code class="docutils literal notranslate"><span class="pre">Star</span></code> instance and the other objects it encapsulates references to.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def set_defaults():
+    global star # for clarity
+    # (Earth) distance
+    star[&#39;distance&#39;] = 0.329
+    # gravitational mass
+    star[&#39;mass&#39;] = 1.4
+    # coordinate equatorial radius
+    star[&#39;radius&#39;] = 13.18
+    # (Earth) inclination to rotation axis
+    star[&#39;cos_inclination&#39;] = math.cos(1.0)
+    # primary hot region (spot) centre colatitude
+    star[&#39;p__super_colatitude&#39;] = 2.19
+    # primary spot angular radius
+    star[&#39;p__super_radius&#39;] = 0.0792
+    # primary spot effective temperature
+    star[&#39;p__super_temperature&#39;] = 6.11
+    # secondary hot region superseding member (SM) centre colatitude
+    star[&#39;s__super_colatitude&#39;] = math.pi/2.0
+    # secondary hot region superseding member angular radius
+    star[&#39;s__super_radius&#39;] = 0.32
+    # secondary hot region omission centre colatitude
+    star[&#39;s__omit_colatitude&#39;] = math.pi/2.0
+    # secondary hot region omission angular radius
+    star[&#39;s__omit_radius&#39;] = 0.25
+    # secondary hot region omission centre relative azimuth
+    star[&#39;s__omit_azimuth&#39;] = 0.0
+    # secondary hot region effective temperature
+    star[&#39;s__super_temperature&#39;] = 6.12
+    # elsewhere effective temperature
+    star[&#39;elsewhere_temperature&#39;] = 5.6
+
+set_defaults()
+</pre></div>
+</div>
+</div>
+<p>We now prepare the star for pulse integration. In statistical contexts the likelihood function places this call automatically. The preparation involves embedding hot region objects into the photosphere (that also radiates elsewhere), by constructing element (or cell) meshes and precomputing ray mapping information for image integration. We place a call to our helper function to plot the meshes constructed: the mesh for the primary hot region is rendered in the topmost panel, with colour
+representing the proper area covered by the hot region within a given element. This area weights the pulse generated by an infinitesimal radiating element located at the proper-area-weighted centre of the element. The mesh associated with the secondary hot region is rendered in the bottommost panel.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_18_0.png" src="_images/Hot_region_complexity_18_0.png" />
+</div>
+</div>
+<p>We have a ring for secondary hot region. The hole would be automatically filled with the radiation field <em>elsewhere</em>, which might, e.g., be much cooler.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__super_radius&#39;] = 0.25   # increase the primary spot angular radius
+star[&#39;s__omit_radius&#39;] = 0.31    # increase the angular radius of the omission region
+star[&#39;s__omit_azimuth&#39;] = -0.02  # introduce a finite azimuthal omission offset
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_20_0.png" src="_images/Hot_region_complexity_20_0.png" />
+</div>
+</div>
+<p>We have a crescent that is symmetric about the equator. A way to think about this configuration is to consider the omission region as a a superseding member that supersedes a ceding member with the <em>elsewhere</em> radiation field.</p>
+<p>Given that the superseding member is not a topological hole, the resulting crescent has <em>terminal points</em> or <em>horns</em>. As one approaches the horns around the crescent, the cell areas approach zero, and the two cells containing the two terminal points, and the adjacent cells cannot be resolved in colour from the cells that have zero coverage of the hot region. We can pick out these cells at the horns by setting a uniform colour for cells of finite area:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>h = hot.objects[1]
+
+# in the source code, there is always a radiating &quot;super&quot; region
+# even if there is an omission region, it is equivalent to a
+# non-radiating superseding member relative to a &quot;super&quot; region
+# that is really a ceding member
+h._super_cellArea[h._super_cellArea &gt; 0.0] = 1.0
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_23_0.png" src="_images/Hot_region_complexity_23_0.png" />
+</div>
+</div>
+<p>We can now see all cells with finite hot region coverage, and the symmetry is perhaps clearer.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__super_colatitude&#39;] = 2.9     # increase the colatitude of the primary spot centre
+star[&#39;p__super_radius&#39;] = 0.3         # increase the angular radius of the primary spot
+star[&#39;s__super_colatitude&#39;] = 2.72    # this is not equal
+star[&#39;s__omit_colatitude&#39;] = 2.75     # to this any more
+star[&#39;s__omit_radius&#39;] = 0.284        #
+star[&#39;s__omit_azimuth&#39;] = -0.0483     # increase the magnitude of omission azimuthal offset
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_25_0.png" src="_images/Hot_region_complexity_25_0.png" />
+</div>
+</div>
+<p>Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is <em>not</em> periodic. The omission region is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular
+radius of the hole with the angular separation between the centres.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># changes:
+# reflect primary spot w.r.t equator
+# increase SM centre colatitude
+# increase omission centre colatitude
+# increase the omission region angular radius
+# positive omission offset
+
+star[&#39;p__super_colatitude&#39;] = math.pi - 2.9
+star[&#39;s__super_colatitude&#39;] = 2.87
+star[&#39;s__omit_colatitude&#39;] = star[&#39;s__super_colatitude&#39;]
+star[&#39;s__omit_radius&#39;] = 0.3
+star[&#39;s__omit_azimuth&#39;] *= -1.0
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_27_0.png" src="_images/Hot_region_complexity_27_0.png" />
+</div>
+</div>
+<p>Note that although the primary spot was reflected about the equator, and now encompasses the northern rotation pole, the mesh does not look as though it has been reflected. Under the hood, the mesh for the primary spot encompassing the southern rotational pole is constructed as reflection about the equator, and then the mesh of colatitudes, which is not plotted but has the same shape as the mesh of proper areas (plotted), is transformed via <span class="math notranslate nohighlight">\(\theta\mapsto\pi-\theta\)</span>, leaving other
+reflection-symmetric properties intact.</p>
+<p>The mesh for the secondary hot region has now joined that of the primary in having a periodic boundary in azimuth. Note that the hole also encompasses the southern rotational pole.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># changes:
+# move primary spot centre almost to south pole
+# move secondary hot region to encompass north pole
+# decrease the angular radius of the omission region
+# increase magnitude of omission region azimuthal offset
+
+star[&#39;p__super_colatitude&#39;] = math.pi - 0.01
+star[&#39;s__super_colatitude&#39;] = 0.27
+star[&#39;s__super_radius&#39;] = 0.32
+star[&#39;s__omit_colatitude&#39;] = 0.275
+star[&#39;s__omit_radius&#39;] = 0.2
+star[&#39;s__omit_azimuth&#39;] = -0.1
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_30_0.png" src="_images/Hot_region_complexity_30_0.png" />
+</div>
+</div>
+<p>The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the omission member of the secondary hot region is a hole, but does not encompass a pole, whilst the outer boundary of the resulting ring <em>does</em>.</p>
+<p>Let’s increase the resolution for one of the examples above to some ridiculous level that is not even accurately rendered:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__super_colatitude&#39;] = math.pi - 2.9
+star[&#39;p__super_radius&#39;] = 0.3
+star[&#39;s__super_colatitude&#39;] = 2.87
+star[&#39;s__super_radius&#39;] = 0.32
+star[&#39;s__omit_colatitude&#39;] = star[&#39;s__super_colatitude&#39;]
+star[&#39;s__omit_radius&#39;] = 0.3
+star[&#39;s__omit_azimuth&#39;] = 0.0483
+
+h = hot.objects[1]
+
+h.set_num_cells(sqrt_num_cells=1000, max_sqrt_num_cells=10000)
+
+star.update()
+
+plot_meshes(lines=(True, False), secondary_ticks=None)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_33_0.png" src="_images/Hot_region_complexity_33_0.png" />
+</div>
+</div>
+<p>There are other parametrisations that are useful to consider that might be more natural for prior implementation. The helper function below is an example.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def transform(p):
+    &quot;&quot;&quot; Transform a parameter vector from a useful space to another.
+
+    Specifically, the input vector ``p`` is constituted by:
+
+        * the fractional angular offset between the centres of superseding and ceding members
+        * the azimuthal offset of the ceding member about the centre of the superseding member
+
+    An omission member is a non-radiating superseding region that *might* be a topological hole
+    in the ceding member region.
+
+    &quot;&quot;&quot;
+    global star # for clarity
+
+    if star[&#39;s__omit_radius&#39;] &lt;= star[&#39;s__super_radius&#39;]:
+        t1 = p[0] * (star[&#39;s__omit_radius&#39;] + star[&#39;s__super_radius&#39;])
+    else:
+        t1 = star[&#39;s__omit_radius&#39;] - star[&#39;s__super_radius&#39;]
+        t1 += 2.0*p[0]*star[&#39;s__super_radius&#39;]
+
+    star[&#39;s__super_colatitude&#39;], star[&#39;s__omit_azimuth&#39;] \
+            = eval_cedeCentreCoords(star[&#39;s__omit_colatitude&#39;], t1, p[1])
+
+    star[&#39;s__omit_azimuth&#39;] *= -1.0
+
+    return p
+</pre></div>
+</div>
+</div>
+<p>Let’s try to recreate (approximately, although it can of course be done exactly by inverting the transformation) the crescent above that is symmetric with respect to the equator.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>set_defaults()                            # defaults
+star[&#39;p__super_radius&#39;] = 0.25            # increase the primary spot angular radius
+star[&#39;s__omit_radius&#39;] = 0.31             # increase the angular radius of the omission region
+star[&#39;s__omit_colatitude&#39;] = math.pi/2.0
+
+p = [0.05, math.pi/2.0]
+
+transform(p)
+
+h.set_num_cells(sqrt_num_cells=32, max_sqrt_num_cells=100)
+
+star.update()
+
+# make sure all elements with finite coverage are discernable
+h = hot.objects[1]
+
+# in the source code, there is always a radiating &quot;super&quot; region
+# even if the omission region is equivalent to a non-radiating
+# superseding member and the &quot;super&quot; region is then really a
+# ceding member
+h._super_cellArea[h._super_cellArea &gt; 0.0] = 1.0
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_37_0.png" src="_images/Hot_region_complexity_37_0.png" />
+</div>
+</div>
+</section>
+<section id="Pulse-integration">
+<h2>Pulse integration<a class="headerlink" href="#Pulse-integration" title="Link to this heading"></a></h2>
+<p>Let’s compute some pulses. First we need a helper function.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi.tools import phase_interpolator
+
+def plot_2D_pulse(z, x, shift, y, ylabel,
+                  num_rotations=5.0, res=5000, cm=cm.viridis,
+                  yticks=None):
+    &quot;&quot;&quot; Helper function to plot a phase-energy pulse.
+
+    :param array-like z:
+        A pair of *ndarray[m,n]* objects representing the signal at
+        *n* phases and *m* values of an energy variable.
+
+    :param ndarray[n] x: Phases the signal is resolved at.
+
+    :param tuple shift: Hot region phase parameters.
+
+    :param ndarray[m] x: Energy values the signal is resolved at.
+
+    &quot;&quot;&quot;
+
+    fig = plt.figure(figsize = (12,6))
+
+    gs = gridspec.GridSpec(1, 2, width_ratios=[50,1], wspace=0.025)
+    ax = plt.subplot(gs[0])
+    ax_cb = plt.subplot(gs[1])
+
+    new_phases = np.linspace(0.0, num_rotations, res)
+
+    interpolated = phase_interpolator(new_phases,
+                                      x,
+                                      z[0], shift[0],
+                                      allow_negative=False)
+    interpolated += phase_interpolator(new_phases,
+                                       x,
+                                       z[1], shift[1],
+                                       allow_negative=True)
+
+    profile = ax.pcolormesh(new_phases,
+                             y,
+                             interpolated/np.max(interpolated),
+                             cmap = cm,
+                             linewidth = 0,
+                             rasterized = True)
+
+    profile.set_edgecolor(&#39;face&#39;)
+
+    ax.set_xlim([0.0, 5.0])
+    ax.set_yscale(&#39;log&#39;)
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel(r&#39;Phase&#39;)
+    veneer((0.1, 0.5), (None,None), ax, yticks=yticks)
+    if yticks is not None:
+        ax.set_yticklabels(yticks)
+
+    cb = plt.colorbar(profile,
+                      cax = ax_cb,
+                      ticks = MultipleLocator(0.2))
+
+    cb.set_label(label=r&#39;Signal (normalised by maximum)&#39;, labelpad=25)
+    cb.solids.set_edgecolor(&#39;face&#39;)
+
+    veneer((None, None), (0.05, None), ax_cb)
+    cb.outline.set_linewidth(1.0)
+</pre></div>
+</div>
+</div>
+<p>First we will make a configuration that resembles the first configuration in the <strong>Modelling</strong> notebook tutorial.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;distance&#39;] = 0.2
+star[&#39;mass&#39;] = 1.4
+star[&#39;radius&#39;] = 12.5
+star[&#39;cos_inclination&#39;] = math.cos(1.0)
+star[&#39;p__super_colatitude&#39;] = 1.0
+star[&#39;p__super_radius&#39;] = 0.075
+star[&#39;p__super_temperature&#39;] = 6.2
+star[&#39;s__super_colatitude&#39;] = math.pi - 1.0
+star[&#39;s__super_radius&#39;] = 0.2
+star[&#39;s__omit_colatitude&#39;] = math.pi - 1.0
+star[&#39;s__omit_radius&#39;] = 0.02               # make this smol
+star[&#39;s__omit_azimuth&#39;] = 0.0
+star[&#39;s__super_temperature&#39;] = 6.0
+star[&#39;elsewhere_temperature&#39;] = 3.0         # turn off
+
+star.update()
+</pre></div>
+</div>
+</div>
+<p>Let’s compute the incident specific flux signal normalised to the maximum. Note that if want to obtain the specific flux in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV instead, the output of <code class="docutils literal notranslate"><span class="pre">photosphere.signal</span></code> needs to be divided by distance squared, where distance is measured in meters.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energies = np.logspace(-2.0, np.log10(3.0), 1000, base=10.0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere.integrate(energies=energies, threads=1)
+
+plot_2D_pulse((photosphere.signal[0][0], photosphere.signal[1][0]),
+              x=hot.phases_in_cycles[0],
+              shift=np.array([0.0,0.025]),
+              y=energies,
+              ylabel=r&#39;Energy (keV)&#39;,
+              yticks=[0.01,0.1,1.0])
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_45_0.png" src="_images/Hot_region_complexity_45_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_45_1.png" src="_images/Hot_region_complexity_45_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;elsewhere_temperature&#39;] = 5.0
+
+star.update()
+
+photosphere.integrate(energies=energies, threads=1)
+
+plot_2D_pulse((photosphere.signal[0][0], photosphere.signal[1][0]),
+              x=hot.phases_in_cycles[0],
+              shift=np.array([0.0,0.025]),
+              y=energies,
+              ylabel=r&#39;Energy (keV)&#39;,
+              yticks=[0.01,0.1,1.0])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_46_0.png" src="_images/Hot_region_complexity_46_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;s__omit_radius&#39;] = 0.95 * star[&#39;s__super_radius&#39;] # not so small
+star[&#39;s__super_temperature&#39;] = 6.4                      # but brighter
+star[&#39;elsewhere_temperature&#39;] = 4.85                    # not so bright
+
+p = [0.025, math.pi/2.0]
+
+transform(p)
+
+star.update(threads=4)
+
+photosphere.integrate(energies=energies, threads=4)
+
+plot_2D_pulse((photosphere.signal[0][0], photosphere.signal[1][0]),
+              x=hot.phases_in_cycles[0],
+              shift=np.array([0.0, 0.0]), # zero shift
+              y=energies,
+              ylabel=r&#39;Energy (keV)&#39;,
+              yticks=[0.01,0.1,1.0])
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_47_0.png" src="_images/Hot_region_complexity_47_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_47_1.png" src="_images/Hot_region_complexity_47_1.png" />
+</div>
+</div>
+</section>
+<section id="Two-temperature-hot-regions">
+<h2>Two-temperature hot regions<a class="headerlink" href="#Two-temperature-hot-regions" title="Link to this heading"></a></h2>
+<p>Now we play with two hot regions which each have two temperature components. First we need to do the usual type of setup:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(super_colatitude=(None,None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 1.0),
+              super_temperature = (None, None),
+              cede_colatitude = (None, None),
+              cede_radius = (None, None),
+              cede_azimuth = (None, None),
+              cede_temperature = (None, None))
+
+
+# overlap of a radiating superseding member region
+# and a radiating ceding member region
+primary = xpsi.HotRegion(bounds=bounds,
+                            values={}, # no fixed/derived variables
+                            symmetry=True,
+                            omit=False,
+                            cede=True,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=64,
+                            num_leaves=100,
+                            num_rays=200,
+                            do_fast=False,
+                            prefix=&#39;p&#39;)
+
+# also an overlap of a radiating superseding member
+# region and a radiating ceding member region
+bounds = dict(super_colatitude=(None,None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 1.0),
+              super_temperature = (None, None),
+              cede_colatitude = (None, None),
+              cede_radius = (None, None),
+              cede_azimuth = (None, None),
+              cede_temperature = (None, None))
+
+secondary = xpsi.HotRegion(bounds=bounds,
+                              values={}, # no fixed/derived variables
+                              symmetry=True,
+                              omit=False,
+                              cede=True,
+                              concentric=False,
+                              sqrt_num_cells=32,
+                              min_sqrt_num_cells=10,
+                              max_sqrt_num_cells=100,
+                              num_leaves=100,
+                              num_rays=200,
+                              do_fast=False,
+                              is_antiphased=True,
+                              prefix=&#39;s&#39;)
+
+from xpsi import HotRegions
+
+hot = HotRegions((primary, secondary))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;cede_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the ceding region [radians].
+Creating parameter:
+    &gt; Named &#34;cede_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) ceding region [radians].
+Creating parameter:
+    &gt; Named &#34;cede_azimuth&#34; with bounds [-3.142e+00, 3.142e+00].
+    &gt; The azimuth of the centre of the ceding region relative to the
+centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;cede_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(ceding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;cede_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the ceding region [radians].
+Creating parameter:
+    &gt; Named &#34;cede_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) ceding region [radians].
+Creating parameter:
+    &gt; Named &#34;cede_azimuth&#34; with bounds [-3.142e+00, 3.142e+00].
+    &gt; The azimuth of the centre of the ceding region relative to the
+centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;cede_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(ceding region effective temperature [K]).
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = (None,None)))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;elsewhere_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10 of the effective temperature elsewhere.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere,
+                               values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<p>Let’s define a different helper function for plotting the meshes:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_meshes(lines=(True,True),
+                primary_ticks = (1,5),
+                secondary_ticks = (1,5)):
+    &quot;&quot;&quot; Plot representations of the cached meshes.
+
+    Note that the lowest colatitude row of elements is plotted as the
+    lowest row, so colatitude increases along the y-axis and azimuth
+    increaes along the x-axis. This could be considered as spatially
+    inverted if we were looking at the star whilst being oriented
+    such that &quot;up&quot; is in the spin direction.
+
+    &quot;&quot;&quot;
+
+    fig = plt.figure(figsize = (10, 10))
+
+    gs = gridspec.GridSpec(2, 3, width_ratios=[50,50, 1], wspace=0.25, hspace=0.15)
+    ax = plt.subplot(gs[0,0])
+    veneer(primary_ticks, primary_ticks, ax)
+
+    # primary (lower colatitude) superseding
+    z = hot.objects[0]._HotRegion__cellArea[0]/np.max(hot.objects[0]._HotRegion__cellArea[0])
+    patches = plt.pcolormesh(z,
+                             vmin = np.min(z),
+                             vmax = np.max(z),
+                             cmap = cm.magma,
+                             linewidth = 1.0 if lines[0] else 0.0,
+                             rasterized = True,
+                             edgecolor=&#39;black&#39;)
+
+    ax = plt.subplot(gs[1,0])
+    veneer(secondary_ticks, secondary_ticks, ax)
+
+    # primary ceding
+    z = hot.objects[0]._HotRegion__cellArea[1]/np.max(hot.objects[0]._HotRegion__cellArea[1])
+    _ = plt.pcolormesh(z,
+                       vmin = np.min(z),
+                       vmax = np.max(z),
+                       cmap = cm.magma,
+                       linewidth = 1.0 if lines[1] else 0.0,
+                       rasterized = True,
+                       edgecolor=&#39;black&#39;)
+
+    ax = plt.subplot(gs[0,1])
+    veneer(primary_ticks, primary_ticks, ax)
+
+    # secondary superseding
+    z = hot.objects[1]._HotRegion__cellArea[0]/np.max(hot.objects[1]._HotRegion__cellArea[0])
+    patches = plt.pcolormesh(z,
+                             vmin = np.min(z),
+                             vmax = np.max(z),
+                             cmap = cm.magma,
+                             linewidth = 1.0 if lines[0] else 0.0,
+                             rasterized = True,
+                             edgecolor=&#39;black&#39;)
+
+    ax = plt.subplot(gs[1,1])
+    veneer(secondary_ticks, secondary_ticks, ax)
+
+    # secondary ceding
+    z = hot.objects[1]._HotRegion__cellArea[1]/np.max(hot.objects[1]._HotRegion__cellArea[1])
+    _ = plt.pcolormesh(z,
+                       vmin = np.min(z),
+                       vmax = np.max(z),
+                       cmap = cm.magma,
+                       linewidth = 1.0 if lines[1] else 0.0,
+                       rasterized = True,
+                       edgecolor=&#39;black&#39;)
+
+    ax_cb = plt.subplot(gs[:,2])
+    cb = plt.colorbar(patches,
+                      cax = ax_cb,
+                      ticks = MultipleLocator(0.2))
+
+    cb.set_label(label = r&#39;cell area (normalised by maximum)&#39;, labelpad=25)
+    cb.solids.set_edgecolor(&#39;face&#39;)
+
+    veneer((None, None), (0.05, None), ax_cb)
+    cb.outline.set_linewidth(1.0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def set_defaults():
+    &quot;&quot;&quot; Default configuration is antipodally reflection symmetric. &quot;&quot;&quot;
+    # (Earth) distance
+    star[&#39;distance&#39;] = 0.329
+    # gravitational mass
+    star[&#39;mass&#39;] = 1.4
+    # coordinate equatorial radius
+    star[&#39;radius&#39;] = 13.18
+    # (Earth) inclination to rotation axis
+    star[&#39;cos_inclination&#39;] = math.cos(1.0)
+
+    # primary super colatitude
+    star[&#39;p__super_colatitude&#39;] = math.pi/2.0
+    # primary super angular radius
+    star[&#39;p__super_radius&#39;] = 0.25
+    # primary cede colatitude
+    star[&#39;p__cede_colatitude&#39;] = math.pi/2.0
+    # primary cede angular radius
+    star[&#39;p__cede_radius&#39;] = 0.32
+    # primary cede azimuthal offset
+    star[&#39;p__cede_azimuth&#39;] = 0.0
+    # primary super temp
+    star[&#39;p__super_temperature&#39;] = 6.12
+    # primary cede temp
+    star[&#39;p__cede_temperature&#39;] = 6.0
+
+    # secondary super colatitude
+    star[&#39;s__super_colatitude&#39;] = math.pi/2.0
+    # secondary super angular radius
+    star[&#39;s__super_radius&#39;] = 0.25
+    # secondary cede colatitude
+    star[&#39;s__cede_colatitude&#39;] = math.pi/2.0
+    # secondary cede angular radius
+    star[&#39;s__cede_radius&#39;] = 0.32
+    # secondary cede azimuthal offset
+    star[&#39;s__cede_azimuth&#39;] = 0.0
+    # secondary super temp
+    star[&#39;s__super_temperature&#39;] = 6.12
+    # secondary cede temp
+    star[&#39;s__cede_temperature&#39;] = 6.0
+
+    # elsewhere effective temperature
+    star[&#39;elsewhere_temperature&#39;] = 5.0
+
+set_defaults()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_57_0.png" src="_images/Hot_region_complexity_57_0.png" />
+</div>
+</div>
+<p>The leftmost panels are the meshes associated with the primary hot region, whilst the rightmost panels are the meshes associated with the secondary hot region. The topmost panels are the meshes associated with the superseding members, whilst the bottommost panels are the meshes associated with the ceding members.</p>
+<p>Let’s play with the hot regions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__cede_azimuth&#39;] = -0.04
+star[&#39;s__cede_azimuth&#39;] = 0.04
+
+star[&#39;p__super_radius&#39;] = star[&#39;s__super_radius&#39;] = 0.9*star[&#39;s__cede_radius&#39;]
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_60_0.png" src="_images/Hot_region_complexity_60_0.png" />
+</div>
+</div>
+<p>Let’s move them to opposite poles:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__super_colatitude&#39;] = star[&#39;p__cede_colatitude&#39;] = math.pi - 0.2
+
+star[&#39;s__cede_colatitude&#39;] = star[&#39;s__super_colatitude&#39;] = 0.2
+
+star[&#39;p__cede_azimuth&#39;] = 1.0
+star[&#39;s__cede_azimuth&#39;] = -1.0
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_62_0.png" src="_images/Hot_region_complexity_62_0.png" />
+</div>
+</div>
+<p>Let’s move them so that they do not encompass the poles and the meshes are inverted:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__super_colatitude&#39;] = star[&#39;p__cede_colatitude&#39;] = 1.0
+
+star[&#39;s__cede_colatitude&#39;] = star[&#39;s__super_colatitude&#39;] = math.pi - 1.0
+
+star[&#39;p__cede_azimuth&#39;] = 0.04
+star[&#39;s__cede_azimuth&#39;]  = -0.05
+
+star[&#39;p__cede_radius&#39;]  = star[&#39;s__cede_radius&#39;] = 0.15
+star[&#39;p__super_radius&#39;] = star[&#39;s__super_radius&#39;] = 0.8*star[&#39;s__cede_radius&#39;]
+
+star.update()
+
+plot_meshes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_64_0.png" src="_images/Hot_region_complexity_64_0.png" />
+</div>
+</div>
+<p>Finally, let’s integrate a pulse:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energies = np.logspace(-2.0, np.log10(3.0), 1000, base=10.0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;elsewhere_temperature&#39;] = 5.0
+
+star.update()
+
+photosphere.integrate(energies=energies, threads=4)
+
+plot_2D_pulse((photosphere.signal[0][0] + photosphere.signal[0][1],
+               photosphere.signal[1][0] + photosphere.signal[1][1]),
+              x=hot.phases_in_cycles[0],
+              shift=np.array([0.0,0.0]),
+              y=energies,
+              ylabel=r&#39;Energy (keV)&#39;,
+              yticks=[0.01,0.1,1.0])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_67_0.png" src="_images/Hot_region_complexity_67_0.png" />
+</div>
+</div>
+<p>Let’s have a play with the temperatures, so show that the signal from <em>elsewhere</em> is affected by the now <em>cool</em> localised regions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;elsewhere_temperature&#39;] = 6.2
+
+star[&#39;p__super_temperature&#39;] = star[&#39;p__cede_temperature&#39;] \
+    = star[&#39;s__super_temperature&#39;] = star[&#39;s__cede_temperature&#39;] = 3.0
+
+star[&#39;p__super_colatitude&#39;] = star[&#39;p__cede_colatitude&#39;] = math.pi/2.0
+
+star[&#39;s__cede_colatitude&#39;] = star[&#39;s__super_colatitude&#39;] = math.pi/2.0
+
+star[&#39;p__cede_radius&#39;] = star[&#39;s__cede_radius&#39;] = 1.0
+star[&#39;p__super_radius&#39;] = star[&#39;s__super_radius&#39;] = 0.8*star[&#39;s__cede_radius&#39;]
+
+star.update()
+
+plot_meshes()
+
+photosphere.integrate(energies=energies, threads=4)
+
+plot_2D_pulse((photosphere.signal[0][0] + photosphere.signal[0][1],
+               photosphere.signal[1][0] + photosphere.signal[1][1]),
+              x=hot.phases_in_cycles[0],
+              shift=np.array([0.0,0.0]),
+              y=energies,
+              ylabel=r&#39;Energy (keV)&#39;,
+              yticks=[0.01,0.1,1.0])
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_69_0.png" src="_images/Hot_region_complexity_69_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Hot_region_complexity_69_1.png" src="_images/Hot_region_complexity_69_1.png" />
+</div>
+</div>
+<p>Notice the phase shift relative to the previous pulse plot? The local maxima now are shifted by <span class="math notranslate nohighlight">\(\sim\!0.25\)</span> cycles.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Instrument_synergy.html" class="btn btn-neutral float-left" title="Instrument synergy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Global_surface_emission.html" class="btn btn-neutral float-right" title="Global surface emission" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

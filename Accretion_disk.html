@@ -1,0 +1,926 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accretion disk &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Multiple imaging" href="Multiple_imaging.html" />
+    <link rel="prev" title="Emitting Patterns 2D Projection" href="Emitting_patterns_2Dprojection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Accretion disk</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Setting-up-the-disk-model">Setting up the disk model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Simulating-the-flux-of-a-neutron-star-along-with-an-accretion-disk">Simulating the flux of a neutron star along with an accretion disk</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Accretion disk</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Accretion_disk.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Accretion-disk">
+<h1>Accretion disk<a class="headerlink" href="#Accretion-disk" title="Link to this heading"></a></h1>
+<p>The file <code class="docutils literal notranslate"><span class="pre">Bobrikova_compton_slab_I.npz</span></code>, which contains the atmosphere data for an accretion powered hot spot, is required for this tutorial to run as intended. Still, in principle one could use any atmosphere, such as a default blackbody atmosphere, which does not require this file.</p>
+<p>In this tutorial we will set up an accretion disk, which is a radiation source separate from the star, and add its contribution to the signal. If you don’t want an explanation but just a working example of a star with an accretion disk in X-PSI, you can find it in <code class="docutils literal notranslate"><span class="pre">/examples/example_modelling_tutorial/TestRun_AMXP.py</span></code>. From there you can copy the code and modify it as you wish.</p>
+<p>The accretion disk we will use here (<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/1984PASJ...36..741M/abstract">Mitsuda et al. 1984</a>, <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/1986ApJ...308..635M/abstract">Makishima et al. 1986</a>) is a superposition of multicolor blackbody rings. It does not include relativistic effects and spectral hardening.</p>
+<section id="Setting-up-the-disk-model">
+<h2>Setting up the disk model<a class="headerlink" href="#Setting-up-the-disk-model" title="Link to this heading"></a></h2>
+<p>We follow here the description given by Makishima et al. (1986). The disk is parametrized by an inner cut-off radius, <span class="math notranslate nohighlight">\(R_\rm{in}\)</span>, a temperature at this radius, <span class="math notranslate nohighlight">\(T_\rm{in}\)</span>, and an outer radius, <span class="math notranslate nohighlight">\(R_\rm{out}\)</span>. The outer rings will contribute much less to the X-ray spectrum than inner rings due to being much colder, so the exact value of <span class="math notranslate nohighlight">\(R_\rm{out}\)</span> is much less consequential than <span class="math notranslate nohighlight">\(R_\rm{in}\)</span>. For each ring, the temperature at some radius <span class="math notranslate nohighlight">\(T(r)\)</span> is determined
+by the (gravitational) energy release associated with accretion towards a central object of mass <span class="math notranslate nohighlight">\(M_*\)</span>. It is expressed as:</p>
+<div class="math notranslate nohighlight">
+\[T(r) = \left(\frac{3 G \dot{M} M_*}{8 \pi \sigma r^3}\right)^{1/4},\]</div>
+<p>where <span class="math notranslate nohighlight">\(G\)</span> is the gravitational constant, <span class="math notranslate nohighlight">\(\dot{M}\)</span> is the accretion rate and <span class="math notranslate nohighlight">\(\sigma\)</span> is the Stefan-Boltzmann constant. If the accretion and the luminosity from accretion were isotropic, one could thus infer accretion rate if all the other parameters in this equation were known. However, this will not be the case (i.e. not isotropic) in the situations we will be considering so we can not apply this equation for that purpose and we will not be using it at all in the end.
+Nevertheless, we included it here as it is relevant context for how the temperature is produced and how it is distributed (even if just approximately) in the radial direction.</p>
+<p>The surface area <span class="math notranslate nohighlight">\(dA\)</span> of an infinitesimal ring between between <span class="math notranslate nohighlight">\(r-dr\)</span> and <span class="math notranslate nohighlight">\(r\)</span> is given by <span class="math notranslate nohighlight">\(2 \pi r dr\)</span>. The specific luminosity <span class="math notranslate nohighlight">\(dL_\rm{ring}(E)\)</span> (energy/time/energy) of two hemispheres becomes</p>
+<div class="math notranslate nohighlight">
+\[dL_\rm{ring}(E) = 4 B(E,T(r)) dA \int d\Omega= 8 \pi B(E,T(r)) r dr \int d\Omega = 8 \pi^2 B(E,T(r)) r dr.\]</div>
+<p>Here the integral of the solid angle over one hemisphere evaluates to <span class="math notranslate nohighlight">\(\pi\)</span>. We multiply by 2 for the two sides of the disk and another factor of 2 appears since we define the <span class="math notranslate nohighlight">\(B(E, T)\)</span>, as half of the blackbody spectral radiance,</p>
+<div class="math notranslate nohighlight">
+\[B(E,T) = \frac{E^3}{c^2h^2}\left[\exp{\left(\frac{E}{k_\rm{B}T}\right)-1}\right]^{-1}.\]</div>
+<p>Next up, we will provide the python functions involved in computing the radiation from the accretion disk that we will later collect into a python class. Let’s start with the definition of <span class="math notranslate nohighlight">\(B(E, T)\)</span>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from xpsi.global_imports import  _keV, _k_B, _h_keV
+_c = 2.99792458E8
+_c_cgs = _c*1E2
+
+def B_E(self, E, T):
+    &#39;&#39;&#39;
+    Half the energy radiance of a blackbody. If the the photon energy is much higher than kT,
+    the radiance is set to zero and ignores a warning.
+
+    parameters:
+        E in keV
+        T in keV
+
+    returns:
+        B_E in keV/s/keV/cm^2/sr (you will integrate over keV)
+    &#39;&#39;&#39;
+    with np.errstate(over=&#39;ignore&#39;):
+        safe_ET = np.float128(E / T)
+        exp_safe_ET = np.exp(safe_ET)
+    B = np.where(np.isinf(exp_safe_ET), 0, E**3 / (_h_keV**3 * _c_cgs**2) / (exp_safe_ET - 1))
+    return B
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.4               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Check your emcee installation.
+Check your installation of emcee if using the EnsembleSampler
+Imported PyMultiNest.
+Check your UltraNest installation.
+Check your installation of UltraNest if using the UltranestSampler
+Warning: Cannot import torch and test SBI_wrapper.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<p>The specific flux of the disk <span class="math notranslate nohighlight">\(f_\rm{disk}(E)\)</span> (energy/time/length<span class="math notranslate nohighlight">\(^2\)</span>/energy) is the integral of the contribution of each ring from <span class="math notranslate nohighlight">\(R_\rm{in}\)</span> to <span class="math notranslate nohighlight">\(R_\rm{out}\)</span>. This can be conveniently expressed as an integral over <span class="math notranslate nohighlight">\(dT\)</span>:</p>
+<p><span class="math">\begin{equation}
+\begin{aligned}
+f_\mathrm{disk}(E) &= \frac{\cos{i} \int dL_\mathrm{ring}}{4\pi D^2} \\
+&= \frac{2 \pi \cos{i}}{D^2} \int_{R_\mathrm{in}}^{R_\mathrm{out}} r B(E,T(r)) \, dr \\
+&= \frac{8\pi R_\mathrm{in}^2 \cos{i}}{3 D^2 T_\mathrm{in}}
+\int_{T_\mathrm{out}}^{T_\mathrm{in}} \Big(\frac{T}{T_\mathrm{in}}\Big)^{-11/3} B(E,T) \, dT.
+\end{aligned}
+\end{equation}</span></p>
+<p>Where <span class="math notranslate nohighlight">\(D\)</span> is the distance and we introduced <span class="math notranslate nohighlight">\(\cos{i}\)</span> to scale the flux to account for the viewing angle.</p>
+<p>In the code, similar to the approach in Xspec (the diskbb model), we collect the three parameters outside of the integral into a normalisation factor</p>
+<div class="math notranslate nohighlight">
+\[K_\rm{disk} = R_\rm{in}^2 \cos{i} / D^2.\]</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_k_disk(cos_i, r_in, distance):
+    &quot;&quot;&quot;
+    This function calculates the k-disk value for a given set of input parameters.
+
+    Parameters
+    ----------
+    cos_i: The cosine inclination angle of the disk
+    r_in: The inner radius of the disk in kilometers
+    distance: The distance to the disk (and star) in kiloparsecs
+
+    Returns
+    -------
+    k_disk normalisation factor
+
+    &quot;&quot;&quot;
+
+    k_disk = cos_i * (r_in / (distance / 10))**2 # in [km/ 10 kpc]^2
+
+    # K_disk is cos_i*R_in^2/D^2 in (km / 10 kpc)^2.
+    # (1 km / 10 kpc)^2 = 1.0502650e-35 [ cm/cm ]^2
+
+    k_disk *= 1.0502650e-35 # now k_disk is unitless
+
+    return k_disk
+</pre></div>
+</div>
+</div>
+<p>We also define the integrand <span class="math notranslate nohighlight">\(l_\rm{disk}(E,T) = \frac{1}{T_\rm{in}}(\frac{T}{T_\rm{in}})^{-11/3}B(E,T)\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from scipy.integrate import quad
+
+def l_disk_integrand(self, T, E, T_in, spectral_radiance):
+    &#39;&#39;&#39;
+    parameters:
+        T, T_in in keV
+        E in keV
+
+    returns:
+        integrand in spectral radiance units/keV. This integrand will
+        be integrated over keV.
+    &#39;&#39;&#39;
+
+    integrand = (T/T_in)**(-11/3)*spectral_radiance(E, T)/T_in
+    return integrand
+
+def l_disk_integrated(self, E, T_in, T_out, spectral_radiance, epsrel):
+    &#39;&#39;&#39;
+    parameters:
+        T, T_in in keV
+        E in keV
+
+    returns:
+        disk luminosity [spectral radiance units].
+    &#39;&#39;&#39;
+
+    integrated,_= quad(self.l_disk_integrand, T_out, T_in, args=(E, T_in, spectral_radiance), epsrel=epsrel)
+    return integrated
+</pre></div>
+</div>
+</div>
+<p>For clarity let’s rewrite <span class="math notranslate nohighlight">\(f_\rm{disk}\)</span> in the way it is used in the code:</p>
+<div class="math notranslate nohighlight">
+\[f_\rm{disk}(E) = \frac{8 \pi}{3} K_\rm{disk} \int_{T_\rm{out}}^{T_\rm{in}} l_\rm{disk}(E,T) dT\]</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>k_B_over_keV = _k_B / _keV
+
+def get_f_disk(self, energies, spectral_radiance):
+    &quot;&quot;&quot; Evaluate f_disk(E). This function also requires the X-PSI parameters T_in and K_disk to be defined.
+
+    Parameters
+    ----------
+    energies[keV]
+
+    Returns
+    -------
+    f_disk [keV/s/cm^2/keV]
+
+    &quot;&quot;&quot;
+
+    T_in = self[&#39;T_in&#39;] # in 10^T K
+    K_disk = self[&#39;K_disk&#39;] #
+
+    T_in_keV = k_B_over_keV * pow(10.0, T_in)
+    T_out_keV = T_in_keV*1e-1 # hardcode a factor 10 difference
+
+    epsrel = 1e-4 # hardcode precision for integration
+
+    f_disk_array = np.array([])
+    for energy in energies:
+        f_disk_value = self.l_disk_integrated(energy, T_in_keV, T_out_keV, spectral_radiance, epsrel)
+        f_disk_array=np.append(f_disk_array,f_disk_value)
+
+    f_disk_array *=K_disk*8*np.pi/3 # keV/s/cm^2/keV
+
+    return f_disk_array
+</pre></div>
+</div>
+</div>
+<p>To obtain the photon flux for the disk instead of energy flux, one can divide <span class="math notranslate nohighlight">\(f_\rm{disk}(E)\)</span> by the photon energy. Let’s collect these function into an X-PSI compatible class. With initiation of an instance of the class, we initiate the three X-PSI compatible parameters that control the accretion disk. When one calls the instance with an array of energies, photon flux at each energy is returned.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter, Derive
+
+class Disk(ParameterSubspace):
+    &quot;&quot;&quot;
+    A class representing an accretion disk model compatible with the X-PSI framework.
+
+    This class initializes and manages three X-PSI-compatible parameters that describe
+    the physical properties of an accretion disk: the inner disk temperature, the inner
+    disk radius, and the disk normalization. Once instantiated, the class allows for
+    the computation of the photon flux at specified energy values.
+
+    Parameters
+    ----------
+    bounds : dict, optional
+        A dictionary specifying bounds for each parameter. Keys must include:
+        - &#39;T_in&#39;: Bounds for the logarithm (base 10) of the inner disk temperature in Kelvin.
+        - &#39;R_in&#39;: Bounds for the inner disk radius in kilometers.
+        - &#39;K_disk&#39;: Bounds for the disk normalization.
+        Default is None, which uses the strict bounds defined in the Parameter objects.
+
+    values : dict, optional
+        A dictionary specifying initial values for each parameter. Keys must include:
+        - &#39;T_in&#39;: Initial value for the logarithm (base 10) of the inner disk temperature in Kelvin.
+        - &#39;R_in&#39;: Initial value for the inner disk radius in kilometers.
+        - &#39;K_disk&#39;: Initial value for the disk normalization.
+        Default is None, which sets no initial values.
+
+    Methods
+    -------
+    __call__(energies):
+        Computes and returns the photon flux in photons/s/cm^2/keV for the given array of energy
+        values in keV.
+
+    Attributes
+    ----------
+    inner_temperature : Parameter
+        The parameter representing the logarithm of the inner disk temperature in Kelvin.
+    inner_radius : Parameter
+        The parameter representing the inner disk radius in kilometers.
+    background_normalisation : Parameter
+        The parameter representing the disk normalization factor.
+    disk_flux : ndarray
+        The computed photon flux as a function of energy after calling the instance.
+
+    Notes
+    -----
+    - The `Disk` class is designed for compatibility with the X-PSI (X-ray spectral
+      fitting) framework, and the parameters follow X-PSI conventions.
+    - The photon flux is computed based on the provided energy array using the
+      Planck function, with scaling determined by the disk&#39;s physical parameters.
+    - The call function requires the functions B_E and get_f_disk which have been
+      defined above in this tutorial.
+
+    Example
+    -------
+    &gt;&gt;&gt; bounds = {&#39;T_in&#39;: (3., 10.), &#39;R_in&#39;: (0., 1e3), &#39;K_disk&#39;: (0., 1e100)}
+    &gt;&gt;&gt; values = {&#39;T_in&#39;: 6.5, &#39;R_in&#39;: 10., &#39;K_disk&#39;: 1e2}
+    &gt;&gt;&gt; disk = Disk(bounds=bounds, values=values)
+    &gt;&gt;&gt; energies = np.linspace(1, 10, 100)  # Example energy array
+    &gt;&gt;&gt; flux = disk(energies)
+    &gt;&gt;&gt; print(flux)
+    &quot;&quot;&quot;
+
+    def __init__(self, bounds=None, values=None):
+
+        doc = &quot;&quot;&quot;
+        Temperature at inner disk radius in log10 Kelvin.
+        &quot;&quot;&quot;
+        inner_temperature = Parameter(&#39;T_in&#39;,
+                                strict_bounds = (3., 10.),
+                                bounds = bounds.get(&#39;T_in&#39;, None),
+                                doc = doc,
+                                symbol = r&#39;$T_{in}$&#39;,
+                                value = values.get(&#39;T_in&#39;, None))
+
+        doc = &quot;&quot;&quot;
+        Disk R_in in kilometers.
+        &quot;&quot;&quot;
+        inner_radius = Parameter(&#39;R_in&#39;,
+                                strict_bounds = (0., 1e3),
+                                bounds = bounds.get(&#39;R_in&#39;, None),
+                                doc = doc,
+                                symbol = r&#39;$R_{in}$&#39;,
+                                value = values.get(&#39;R_in&#39;, None))
+
+        doc = &quot;&quot;&quot;
+        Disk normalisation cos_i*R_in^2/D^2.
+        &quot;&quot;&quot;
+        background_normalisation = Parameter(&#39;K_disk&#39;,
+                                strict_bounds = (0., 1e100),
+                                bounds = bounds.get(&#39;K_disk&#39;, None),
+                                doc = doc,
+                                symbol = r&#39;$K_{BB}$&#39;,
+                                value = values.get(&#39;K_disk&#39;, None))
+
+
+        super(Disk, self).__init__(inner_temperature, inner_radius, background_normalisation)
+
+
+    def __call__(self, energies):
+        self.disk_flux = self.get_f_disk(energies, self.spectral_radiance)/energies
+        return self.disk_flux
+
+Disk.spectral_radiance = B_E
+Disk.l_disk_integrand = l_disk_integrand
+Disk.l_disk_integrated = l_disk_integrated
+Disk.get_f_disk = get_f_disk
+</pre></div>
+</div>
+</div>
+<p>Let’s now instantiate this class and use it to make a disk spectrum:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>D = 1 #kpc
+cos_i = 1 #disk face on
+R_in = 55 # km
+T_in = 6.53 # log10(K) = 6.53 corresponds to 0.29 keV
+K_disk = get_k_disk(cos_i, D, R_in)
+
+bounds_example = {&#39;T_in&#39;: (3., 10.), &#39;R_in&#39;: (0., 1e3), &#39;K_disk&#39;: (0., 1e100)}
+values_example = {&#39;T_in&#39;: T_in, &#39;R_in&#39;: R_in, &#39;K_disk&#39;: K_disk}
+disk_example = Disk(bounds=bounds_example, values=values_example)
+
+energies_example = np.logspace(-1, 0, 100)  # Example energy array in keV
+flux_example = disk_example(energies_example)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;T_in&#34; with bounds [3.000e+00, 1.000e+01] and initial value 6.530e+00.
+    &gt; Temperature at inner disk radius in log10 Kelvin.
+Creating parameter:
+    &gt; Named &#34;R_in&#34; with bounds [0.000e+00, 1.000e+03] and initial value 5.500e+01.
+    &gt; Disk R_in in kilometers.
+Creating parameter:
+    &gt; Named &#34;K_disk&#34; with bounds [0.000e+00, 1.000e+100] and initial value 3.472e-37.
+    &gt; Disk normalisation cos_i*R_in^2/D^2.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(1,2,figsize=(7,3))
+
+ax[0].loglog(energies_example, flux_example)
+ax[0].set_ylabel(&#39;Photon flux [photons/s/cm^2/keV]&#39;)
+ax[0].set_xlabel(&#39;Energies [keV]&#39;)
+ax[0].set_title(f&#39;Photon flux at {D} kpc&#39;)
+
+ax[1].loglog(energies_example, flux_example*energies_example)
+ax[1].set_ylabel(&#39;Energy flux [keV/s/cm^2/keV]&#39;)
+ax[1].set_xlabel(&#39;Energies [keV]&#39;)
+ax[1].set_title(f&#39;Energy flux at {D} kpc&#39;)
+
+fig.tight_layout()
+plt.show()
+
+print(f&#39;Photons per second per cm^2: {np.sum(flux_example):.3g}&#39;)
+<br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Accretion_disk_13_0.png" src="_images/Accretion_disk_13_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Photons per second per cm^2: 0.000573
+</pre></div></div>
+</div>
+</section>
+<section id="Simulating-the-flux-of-a-neutron-star-along-with-an-accretion-disk">
+<h2>Simulating the flux of a neutron star along with an accretion disk<a class="headerlink" href="#Simulating-the-flux-of-a-neutron-star-along-with-an-accretion-disk" title="Link to this heading"></a></h2>
+<p>Now that we have set up the disk model, let’s combine its flux with that from a neutron star. We will set up a star with some parameters based on the well studied accreting millisecond X-ray pulsar SAX J1808.4-3658. Let’s start with a regular spacetime.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi import Spacetime
+from xpsi.global_imports import gravradius
+
+bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+                mass = (1.0, 3.0),                       # mass
+                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
+
+spacetime = Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 4.010e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<p>To keep this tutorial concise, we will import necessary custom classes rather than rewriting them verbatim. They were already set up for the example <code class="docutils literal notranslate"><span class="pre">TestRun_AMXP.py</span></code>, and we will import them from there. Nevertheless, we will describe and highlight notable special features of these custom classes. The first Custom class is the <code class="docutils literal notranslate"><span class="pre">CustomHotRegion_Accreting</span></code>, which provides hot regions that incorporate the Compton slab atmosphere (Bobrikova et al. 2023). This class accepts three atmosphere
+parameters: <span class="math notranslate nohighlight">\(t_\rm{bb}\)</span>, <span class="math notranslate nohighlight">\(\tau\)</span>, <span class="math notranslate nohighlight">\(t_\rm{e}\)</span>. For this purpose the class function <code class="docutils literal notranslate"><span class="pre">_HotRegion__compute_cellParamVecs</span></code> is overwritten to accept three parameters instead of the standard two for rotation powered millisecond pulsars.</p>
+<p>Here we will use just one circular hot spot so we only have a primary.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+import sys
+from pathlib import Path
+
+# Get the directory of the current notebook
+this_directory = str(Path().resolve())  # Resolves to the current working directory
+sys.path.append(this_directory + &#39;/../../examples/examples_modeling_tutorial/modules/&#39;)
+
+from CustomHotRegion_Accreting import CustomHotRegion_Accreting
+
+
+bounds = dict(super_colatitude = (None, None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 0.1),
+              super_tbb = (0.001, 0.003),
+              super_tau = (0.5, 3.5),
+              super_te = (40.0, 200.0))
+
+primary = CustomHotRegion_Accreting(bounds=bounds,
+                                    values={},
+                                    symmetry=True,
+                                    omit=False,
+                                    cede=False,
+                                    concentric=False,
+                                    sqrt_num_cells=50, #100
+                                    min_sqrt_num_cells=10,
+                                    max_sqrt_num_cells=64, #100
+                                    num_leaves=30,
+                                    num_rays=200,
+                                    split=True,
+                                    atm_ext=&#39;Num5D&#39;,
+                                    image_order_limit=3,
+                                    prefix=&#39;p&#39;)
+
+from xpsi import HotRegions
+hot = HotRegions((primary,))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_tbb&#34; with bounds [1.000e-03, 3.000e-03].
+    &gt; tbb.
+Creating parameter:
+    &gt; Named &#34;super_te&#34; with bounds [4.000e+01, 2.000e+02].
+    &gt; te.
+Creating parameter:
+    &gt; Named &#34;super_tau&#34; with bounds [5.000e-01, 3.500e+00].
+    &gt; tau.
+The default/given atmosphere option is ignored, since using split=True, which only works with numerical 3+2D interpolation.
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+</pre></div></div>
+</div>
+<p>Before we continue with the photosphere, we must first modify the disk model slightly, such that the flux can be combined with the flux from a star.</p>
+<p>First we will multiply the disk flux with the distance squared in meters. This is to match the emission unit that X-PSI is expecting, which is the total photon emission rate per unit energy (keV). Later, if computing the registered counts, the combined emission (star and disk) will be divided by distance squared (in <code class="docutils literal notranslate"><span class="pre">Likelihood.py</span></code>) to recover the flux.</p>
+<p>We choose to make the modification in the previous function <code class="docutils literal notranslate"><span class="pre">k_disk</span></code>, which will imply this function no longer returns <code class="docutils literal notranslate"><span class="pre">k_disk</span></code>. This is convenient because the distance was one of the function arguments, so it is readily available.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_k_disk_distance_m_squared(cos_i, r_in, distance):
+    &quot;&quot;&quot;
+    This function calculates the k-disk value for a given set of input parameters.
+
+    Parameters
+    ----------
+    cos_i: The cosine inclination angle of the disk
+    r_in: The inner radius of the disk in kilometers
+    distance: The distance to the disk (and star) in kiloparsecs
+
+    Returns
+    -------
+    k_disk times the distance in meters squared
+
+    &quot;&quot;&quot;
+
+    k_disk = cos_i * (r_in / (distance / 10))**2 # in [km/ 10 kpc]^2
+
+    # K_disk is cos_i*R_in^2/D^2 in (km / 10 kpc)^2.
+    # (1 km / 10 kpc)^2 = 1.0502650e-35 [ cm/cm ]^2
+
+    k_disk *= 1.0502650e-35 # now k_disk is unitless
+
+    # multiplying k_disk by distance squared in meters to match signal units
+    distance_m = 3.08567758128e19*distance
+    k_disk_distance_m_squared = k_disk*distance_m**2
+
+    return k_disk_distance_m_squared
+</pre></div>
+</div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">K_disk</span></code> is a parameter which depends solely other parameters, we use a new class to automatically derive it from those parameters. To achieve this we define a new class <code class="docutils literal notranslate"><span class="pre">k_disk_derive</span></code> which is a subclass of <code class="docutils literal notranslate"><span class="pre">xpsi.Derive</span></code>. By using the Derive functionality in X-PSI, we ensure the derived parameter is compatible with parameter sampling.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class k_disk_derive(Derive):
+    def __init__(self):
+        pass
+
+    def __call__(self, boundto, caller=None):
+        # Ensure that self.star and self.disk are defined when we
+        # call an instance of this class. This ensures parameter
+        # values are passed along correctly.
+        return get_k_disk_distance_m_squared(
+            self.star[&#39;cos_inclination&#39;],
+            self.disk[&#39;R_in&#39;],
+            self.star[&#39;distance&#39;]
+        )
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>k_disk = k_disk_derive()
+values_derive = {&#39;T_in&#39;:T_in,&#39;R_in&#39;:R_in,&#39;K_disk&#39;: k_disk}
+bounds_example[&#39;K_disk&#39;] = None # we must choose `None` here for the boundaries of the derived parameter. Having any boundaries here is not allowed and could cause conflicts.
+disk = Disk(bounds=bounds_example, values=values_derive)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;T_in&#34; with bounds [3.000e+00, 1.000e+01] and initial value 6.530e+00.
+    &gt; Temperature at inner disk radius in log10 Kelvin.
+Creating parameter:
+    &gt; Named &#34;R_in&#34; with bounds [0.000e+00, 1.000e+03] and initial value 5.500e+01.
+    &gt; Disk R_in in kilometers.
+Creating parameter:
+    &gt; Named &#34;K_disk&#34; that is derived from ulterior variables.
+    &gt; Disk normalisation cos_i*R_in^2/D^2.
+</pre></div></div>
+</div>
+<p>Now we are ready to create instantiate the custom photosphere. This photosphere accepts a new parameter in the <code class="docutils literal notranslate"><span class="pre">init</span></code> called <code class="docutils literal notranslate"><span class="pre">disk</span></code>, and then creates a private property called <code class="docutils literal notranslate"><span class="pre">_disk</span></code>. To <code class="docutils literal notranslate"><span class="pre">disk</span></code> we will pass the instance of the disk class. The spectrum of the disk will be added to the first time-invariant component of the signal (in this case the only component since we only have one hotspot) like so:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># add time-invariant component to first time-dependent component
+if self._disk is not None:
+    self.disk_spectrum = self._disk(energies)
+    for i in range(self._signal[0][0].shape[1]):
+    self._signal[0][0][:,i] += self.disk_spectrum
+</pre></div>
+</div>
+<p>The time-dependent component here has some amount of phase bins (num_leaves) and we add up the disk emission to each component. There is no need to divide the disk emission by the number of phase bins here, which one may think of doing when distributing an emission component along some number of bins such that when summing back later together one conserves the full contribution one started with. The reason why is that the signal will make use of <code class="docutils literal notranslate"><span class="pre">gsl_interp_eval_integ</span></code> (in <code class="docutils literal notranslate"><span class="pre">synthesise.pyx</span></code>)
+when recording data of photon counts (per second). That function already accounts for phase intervals correctly in the sense that a constant signal with any number of phase bins will integrate up correctly within in phase interval [0,1] to the number one started with. If in any other situation one may be adding a constant component with some count rate to the time dependent count rate of a star (such as by considering it a <code class="docutils literal notranslate"><span class="pre">background</span></code>), one must take care to ensure that the distribution of
+counts over phase bins is correct.</p>
+<p>Another note is that we insert the disk into the <code class="docutils literal notranslate"><span class="pre">custom</span></code> argument of <code class="docutils literal notranslate"><span class="pre">xpsi.Photosphere</span></code> when calling the <code class="docutils literal notranslate"><span class="pre">super</span></code> function, which will make X-PSI aware of the disk parameters. One could add more components there in the future since custom can be a list of instances.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from CustomPhotosphere import CustomPhotosphere_NumA5
+from xpsi import Star
+
+photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = None, stokes=False, disk=disk, bounds=None,
+                                values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+
+photosphere.hot_atmosphere = this_directory+&#39;/../../examples/examples_modeling_tutorial&#39;+&#39;/model_data/Bobrikova_compton_slab_I.npz&#39;
+
+star = Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 4.010e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 4.010e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<p>Now that we have created the star instance, we can also connect the star (and the disk) to the derived <code class="docutils literal notranslate"><span class="pre">k_disk</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>k_disk.star = star
+k_disk.disk = disk
+</pre></div>
+</div>
+</div>
+<p>Now, we can make a SAX J1808-like parameter vector.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import math
+
+# Star parameters
+mass = 1.4
+radius = 11.0
+distance = 2.7
+inclination = 80.
+cos_i = math.cos(inclination*math.pi/180.0)
+
+# Hotspot
+phase_shift = 0.226365126031355196E+00
+super_colatitude = 0.175993450466385537E+00
+super_radius = 30.*math.pi/180
+
+# Compton slab model parameters
+tbb=0.0025
+te=100.
+tau=2.0
+
+#Tbb = 1 keV &lt;=&gt; tbb = 0.002 (roughly)
+#Te = 50 keV &lt;=&gt;  te = 100 (roughly)
+
+p = [mass, #grav mass
+     radius, #coordinate equatorial radius
+     distance, # earth distance kpc
+     cos_i, #cosine of earth inclination
+     phase_shift, #phase of hotregion
+     super_colatitude, #colatitude of centre of superseding region
+     super_radius,  #angular radius superceding region
+     tbb,
+     te,
+     tau,
+     T_in,
+     R_in,
+    ]
+
+star(p)
+star.update()
+</pre></div>
+</div>
+</div>
+<p>We use <code class="docutils literal notranslate"><span class="pre">photosphere.integrate()</span></code>, to get the incident signal before interstellar absorption or interaction with the telescope.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energies = np.logspace(np.log10(0.15), np.log10(12.0), 40, base=10.0)
+photosphere.integrate(energies, threads=1)
+StokesI = photosphere.signal[0][0]
+phases = np.linspace(0,1,30)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from matplotlib.colors import LogNorm
+
+fig, ax = plt.subplots(1, 2, figsize=(10, 3))
+
+profile = ax[0].pcolormesh(phases, energies, StokesI, shading=&#39;auto&#39;,
+                           norm=LogNorm(vmin=StokesI.min(), vmax=StokesI.max()))
+ax[0].set_yscale(&#39;log&#39;)
+ax[0].set_title(&#39;Photon emission in photons/s/cm^2*m^2&#39;) # the meters squared is related to the distance to recover flux, the centimeters squared is for the instrumental effective area
+ax[0].set_ylabel(&#39;photon energy (keV)&#39;)
+ax[0].set_xlabel(&#39;phase (cycles)&#39;)
+fig.colorbar(profile, ax=ax[0])
+
+profile = ax[1].pcolormesh(phases, energies, (energies * StokesI.T).T, shading=&#39;auto&#39;,
+                           norm=LogNorm(vmin=(energies * StokesI.T).T.min(),
+                                        vmax=(energies * StokesI.T).T.max()))
+ax[1].set_yscale(&#39;log&#39;)
+ax[1].set_title(&#39;(Photon) energy emission in keV/s/cm^2*m^2&#39;)
+ax[1].set_xlabel(&#39;phase (cycles)&#39;)
+fig.colorbar(profile, ax=ax[1], label=&quot;Logarithmic Scale&quot;)
+
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Accretion_disk_31_0.png" src="_images/Accretion_disk_31_0.png" />
+</div>
+</div>
+<p>For completeness, here is also the 1D spectrum separately. The star flux is averaged over phase.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>disk_flux_dist_sq = photosphere.disk_spectrum #m^2*photons/s/cm^2/keV
+star_flux_dist_sq = np.mean(photosphere.signal[0][0],axis=1)-disk_flux_dist_sq #subtracting disk from the total to retrieve star flux
+
+def unit_convert(F, distance):
+    # assuming the distance is in 10 kpc units, which we use to convert flux to photons/s/cm^2/keV,  3.08e19 is to convert kpc to meter
+    F_converted = F/(3.08567758128e19*distance)**2
+    return F_converted
+
+disk_flux = unit_convert(disk_flux_dist_sq, spacetime[&#39;distance&#39;])
+star_flux = unit_convert(star_flux_dist_sq, spacetime[&#39;distance&#39;])
+
+fig,ax = plt.subplots()
+
+ax.loglog(energies, energies*disk_flux, label=&#39;disk&#39;)
+ax.loglog(energies, energies*star_flux, label=&#39;star&#39;)
+ax.set_xlim([0.1,20])
+ax.set_ylim([1e-2, 1e0])
+ax.set_ylabel(&#39;Energy flux (keV/s/cm^2/KeV)&#39;)
+ax.set_xlabel(&#39;Energy (keV)&#39;)
+ax.legend()
+
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Accretion_disk_33_0.png" src="_images/Accretion_disk_33_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Emitting_patterns_2Dprojection.html" class="btn btn-neutral float-left" title="Emitting Patterns 2D Projection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Multiple_imaging.html" class="btn btn-neutral float-right" title="Multiple imaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

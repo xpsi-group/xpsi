@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.PostProcessing._postprocessor &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.PostProcessing._postprocessor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.PostProcessing._postprocessor</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">._global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">NestedBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._runs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runs</span><span class="p">,</span> <span class="n">ParameterError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._run</span><span class="w"> </span><span class="kn">import</span> <span class="n">Run</span> <span class="c1"># for Sphinx docstring cross-references</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Params</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Information about parameters shared by runs for plotting. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PostProcessor">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._postprocessor.PostProcessor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PostProcessor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Post-process samples for inference and posterior checking.</span>
+
+<span class="sd">    Base class that functions as a container for nested sampling run objects</span>
+<span class="sd">    representing some set of posterior distributions that share some subset of</span>
+<span class="sd">    parameters of interest that are to be plotted. The parameters can be</span>
+<span class="sd">    shared in the sense that their relationship is the identity relation, or</span>
+<span class="sd">    multiple physical objects in a population context each have an instance</span>
+<span class="sd">    of a parameter type. An example of the former is the mass of a star, for</span>
+<span class="sd">    which there are two or more distinct posterior distributions, due, e.g.:</span>
+
+<span class="sd">        * to sequential inference conditional on independent data sets, where</span>
+<span class="sd">          each posterior is an updated of the previous in the sequence;</span>
+<span class="sd">        * inference conditional on independent data sets, where the different</span>
+<span class="sd">          analyses invoked same [different] prior models and one simply wants</span>
+<span class="sd">          to overlay the posteriors e.g., to gauge the synergy of different</span>
+<span class="sd">          experiments [and argue the priors are weakly informative/</span>
+<span class="sd">          diffuse in the context of the likelihood functions];</span>
+<span class="sd">        * to analysis of a single data set but the effective existence of</span>
+<span class="sd">          discrete hyperparameter resulting in posteriors conditional on</span>
+<span class="sd">          the discrete label over population-level prior distributions that</span>
+<span class="sd">          has not been marginalized over (i.e., the problem of choosing an</span>
+<span class="sd">          appropriate the hierarchical prior model);</span>
+<span class="sd">        * to competing models, where models can differ in the likelihood</span>
+<span class="sd">          function, prior density, or both.</span>
+
+<span class="sd">    An example of the latter is two more (neutron) stars, each with a mass;</span>
+<span class="sd">    these masses collectively encode interesting population-level information.</span>
+
+<span class="sd">    Subclasses will calculate inferences, usually in the form of approximate</span>
+<span class="sd">    integrals over the posterior distribution. They will also provide tools</span>
+<span class="sd">    for visualisation of posterior information and derived quantities, which</span>
+<span class="sd">    is useful for basic posterior predictive checking.</span>
+
+<span class="sd">    :param iterable posteriors:</span>
+<span class="sd">        An iterable of instances of :class:`~.Runs`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">posteriors</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">posteriors</span> <span class="o">=</span> <span class="n">posteriors</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_cred</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="o">=</span><span class="p">{}</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">posteriors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the posteriors. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_posteriors</span>
+
+    <span class="nd">@posteriors</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">posteriors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the posteriors attribute. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;No objects of type ``Runs`` supplied.&#39;</span><span class="p">)</span>
+            <span class="n">IDs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">Runs</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Objects must be instances of the &#39;</span>
+                                    <span class="s1">&#39;``Runs`` class.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">IDs</span><span class="p">:</span>
+                    <span class="n">IDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">AmbiguityError</span><span class="p">(</span><span class="s1">&#39;Use distinct IDs for distinct &#39;</span>
+                                         <span class="s1">&#39;posteriors (run sets).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_posteriors</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Runs</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_posteriors</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Supply an instance or instances of the &#39;</span>
+                            <span class="s1">&#39;``Runs`` class.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PostProcessor.set_subset">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._postprocessor.PostProcessor.set_subset">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Curating set of runs for posterior plotting&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Run set curated&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">combine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">combine_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">force_combine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only_combined</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split_modes</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set a current list of :class:`~.Runs` instances.</span>
+
+<span class="sd">        Helper function to get and notify which runs will be plotted.</span>
+
+<span class="sd">        :param OrderedDict IDs:</span>
+<span class="sd">            A dictionary of lists, where keys match :class:`~.Runs` instance</span>
+<span class="sd">            IDs, and list elements match :class:`~.Run` instance IDs. If no</span>
+<span class="sd">            key matches a :class:`~.Runs` instance ID, it is assumed that</span>
+<span class="sd">            all associated :class:`~.Run` instances are to be selected as the</span>
+<span class="sd">            current subset for plotting applications.</span>
+
+<span class="sd">        :param bool combine:</span>
+<span class="sd">            Additionally combine the runs into a single run for overplotting?</span>
+<span class="sd">            The overriding setting if there is more than one underlying</span>
+<span class="sd">            posterior to be plotted, is to attempt to combine runs on each</span>
+<span class="sd">            posterior if multiple such runs are available, in order to</span>
+<span class="sd">            reduce information density. If there is a single underlying</span>
+<span class="sd">            posterior, the user-specified value is respected.</span>
+
+<span class="sd">        :param bool combine_all:</span>
+<span class="sd">            Combine all runs in each :class:`Runs` instance or only those</span>
+<span class="sd">            for which IDs are provided? Ignored if ``combine`` is ``False``.</span>
+
+<span class="sd">        :param bool force_combine:</span>
+<span class="sd">            Force recombination of elligible run sets, even if a</span>
+<span class="sd">            combined run is already cached?</span>
+
+<span class="sd">        :param bool only_combined:</span>
+<span class="sd">            Only plot the combined run? Only heeded if a single posterior</span>
+<span class="sd">            is selected for plotting, and in that case is ignored if</span>
+<span class="sd">            ``combine`` is ``False``.</span>
+
+<span class="sd">        :param bool overwrite:</span>
+<span class="sd">            Overwrite combined-sample files on disk with the same filename?</span>
+
+<span class="sd">        :param bool split_modes:</span>
+<span class="sd">            Split posteriors by mode? Only useful for cornerplots.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">IDs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_posteriors</span>
+            <span class="n">IDs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IDs</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span> <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">IDs</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;IDs must be supplied in a &#39;</span>
+                                <span class="s1">&#39;collections.OrderedDict container.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Only the first nine positional posteriors &#39;</span>
+                      <span class="s1">&#39;will be plotted, with IDs to prevent the plot from overcrowding&#39;</span>
+                      <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[:</span><span class="mi">9</span><span class="p">]))</span>
+
+            <span class="k">for</span> <span class="n">posterior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[:</span><span class="mi">9</span><span class="p">]:</span>
+                <span class="n">posterior</span><span class="o">.</span><span class="n">set_subset</span><span class="p">(</span><span class="n">IDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                     <span class="n">combine</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">combine_all</span> <span class="o">=</span> <span class="n">combine_all</span><span class="p">,</span>
+                                     <span class="n">force_combine</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">only_combined</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">only_principal</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span><span class="p">,</span>
+                                     <span class="n">split_modes</span> <span class="o">=</span> <span class="n">split_modes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">IDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">only_combined</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Only the first nine positional runs &#39;</span>
+                      <span class="s1">&#39;will be plotted individually, with IDs to prevent the plot from overcrowding&#39;</span>
+                      <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ids</span><span class="p">[:</span><span class="mi">9</span><span class="p">]))</span>
+
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[:</span><span class="mi">9</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span> <span class="ow">and</span> <span class="n">combine</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Only the first eight positional runs will be &#39;</span>
+                      <span class="s1">&#39;plotted individually, with IDs to prevent the plot from overcrowding &#39;</span>
+                      <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ids</span><span class="p">[:</span><span class="mi">8</span><span class="p">]))</span>
+
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
+
+            <span class="n">posterior</span><span class="o">.</span><span class="n">set_subset</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span>
+                                 <span class="n">combine</span> <span class="o">=</span> <span class="n">combine</span><span class="p">,</span>
+                                 <span class="n">combine_all</span> <span class="o">=</span> <span class="n">combine_all</span><span class="p">,</span>
+                                 <span class="n">force_combine</span> <span class="o">=</span> <span class="n">force_combine</span><span class="p">,</span>
+                                 <span class="n">only_combined</span> <span class="o">=</span> <span class="n">only_combined</span><span class="p">,</span>
+                                 <span class="n">only_principal</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                 <span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span><span class="p">,</span>
+                                 <span class="n">split_modes</span> <span class="o">=</span> <span class="n">split_modes</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the current subset of posteriors for plotting. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subset_to_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the current subset of runs for plotting. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">runs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">posterior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">:</span>
+                <span class="n">runs</span> <span class="o">+=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">subset_to_plot</span>
+
+            <span class="c1"># reorder so nestcheck-compatible last</span>
+            <span class="n">reordered_runs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">temp_runs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">reordered_posteriors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">temp_posteriors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">run</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">runs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">run</span><span class="o">.</span><span class="n">use_nestcheck</span><span class="p">:</span>
+                    <span class="n">reordered_runs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+                    <span class="n">reordered_posteriors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">temp_runs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+                    <span class="n">temp_posteriors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">reordered_runs</span> <span class="o">+=</span> <span class="n">temp_runs</span>
+            <span class="n">reordered_posteriors</span> <span class="o">+=</span> <span class="n">temp_posteriors</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="o">=</span> <span class="n">reordered_posteriors</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">runs</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">subset_to_plot</span>
+
+            <span class="c1"># reorder so nestcheck-compatible first</span>
+            <span class="n">reordered_runs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">temp_runs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">runs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">run</span><span class="o">.</span><span class="n">use_nestcheck</span><span class="p">:</span>
+                    <span class="n">reordered_runs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">temp_runs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+            <span class="n">reordered_runs</span> <span class="o">+=</span> <span class="n">temp_runs</span>
+
+        <span class="k">return</span> <span class="n">reordered_runs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a :class:`~.Runs` instance using the associated ID. &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">ID</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">_six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">posterior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_posteriors</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ID</span> <span class="o">==</span> <span class="n">posterior</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">posterior</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No posterior with ID matching key.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">_six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">search</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">search</span><span class="p">(</span><span class="n">ID</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="n">ID</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid run ID specification.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the current parameter information. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span>
+
+<div class="viewcode-block" id="PostProcessor.set_params">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._postprocessor.PostProcessor.set_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set current parameters for plotting, which must be shared. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">posterior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">posterior</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s1">&#39;No parameter name matching </span><span class="si">%s</span><span class="s1"> in run &#39;</span>
+                                         <span class="s1">&#39;with ID </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">posterior</span><span class="o">.</span><span class="n">ID</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_params</span><span class="p">(</span><span class="s1">&#39;labels&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">raise</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Check consistency of parameter information across posteriors. &quot;&quot;&quot;</span>
+
+        <span class="n">_attrs</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">attrs</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">,</span> <span class="n">_attrs</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_names</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_names</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">posterior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">attrs</span><span class="p">)[</span><span class="n">param</span><span class="p">]</span> \
+                            <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)[</span><span class="n">param</span><span class="p">]):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Inconsistent </span><span class="si">%s</span><span class="s1"> for parameter&#39;</span>
+                                         <span class="s1">&#39; </span><span class="si">%s</span><span class="s1"> between posteriors </span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span>
+                                         <span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">posterior</span><span class="o">.</span><span class="n">ID</span><span class="p">))</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">,</span> <span class="n">_attrs</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">attrs</span><span class="p">)[</span><span class="n">param</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter </span><span class="si">%s</span><span class="s1"> not specified correctly.&#39;</span> <span class="o">%</span> <span class="n">attrs</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+<div class="viewcode-block" id="PostProcessor.get_attr">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._postprocessor.PostProcessor.get_attr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a list of attributes of the :class:`~.Runs` instances stored as</span>
+<span class="sd">            the current subset. &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset_to_plot</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_nestcheck_compatible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return only runs to plot that are compatible with nestcheck. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset_to_plot</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">NestedBackend</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Nested sampling backends are required.&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Nested sampling runs are required.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">runs</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># space to cache refs to only nestcheck-compatible runs</span>
+            <span class="n">nestcheck_bcknds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># we only want the runs that are nestcheck-compatible</span>
+            <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset_to_plot</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">run</span><span class="o">.</span><span class="n">use_nestcheck</span><span class="p">:</span>
+                    <span class="n">nestcheck_bcknds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">nestcheck_backend</span><span class="p">)</span>
+                    <span class="n">runs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">nestcheck_bcknds</span><span class="p">,</span> <span class="n">runs</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

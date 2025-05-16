@@ -1,0 +1,160 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example script and modules &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example job" href="Example_job.html" />
+    <link rel="prev" title="Module generator tutorial" href="Module_generator_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example script and modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Example_script_and_modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-script-and-modules">
+<span id="example-script"></span><h1>Example script and modules<a class="headerlink" href="#example-script-and-modules" title="Link to this heading"></a></h1>
+<p>A few example scripts and modules are found here: <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples">examples</a>.</p>
+<p>The script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_fast/Modules/main.py">examples/examples_fast/Modules/main.py</a> is a quick test run not requiring any input files. It assumes a single hot region with a uniform temperature using the default blackbody atmosphere extension and a fake instrument matrix.</p>
+<p>Second script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_BB.py">examples/examples_modeling_tutorial/TestRun_BB.py</a> is a test run, which is similar to the <a class="reference internal" href="Modeling.html"><span class="doc">Modeling</span></a> tutorial, requiring the same input files as in the corresponding tutorial and using the default blackbody atmosphere extension.</p>
+<p>Third script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_Num.py">examples/examples_modeling_tutorial/TestRun_Num.py</a> is also a test run, which is similar to the <a class="reference internal" href="Modeling.html"><span class="doc">Modeling</span></a> tutorial, except using the numerical atmosphere extension.</p>
+<p>Fourth script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_NumBeam.py">examples/examples_modeling_tutorial/TestRun_NumBeam.py</a> is a similar test run as the previous, except using a numerical atmosphere extension with extra parameters allowing deviations to the atmospheric beaming pattern.</p>
+<p>Fifth script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_Pol.py">examples/examples_modeling_tutorial/TestRun_Pol.py</a> is an example script for producing polarized pulses in X-PSI using a simple analytical model for the atmosphere emission.</p>
+<p>Sixth script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py">examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py</a> is an example script for producing polarized pulses in X-PSI using a numerical atmosphere model with 3+2 dimensional interpolation.</p>
+<p>Seventh script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_PolNum_split_inference.py">examples/examples_modeling_tutorial/TestRun_PolNum_split_inference.py</a> is a preliminary example script for producing and analyzing polarized pulses in X-PSI using a numerical atmosphere model with 3+2 dimensional interpolation and ST+PDT spot model.</p>
+<p>Eigth script called <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_AMXP.py">examples/examples_modeling_tutorial/TestRun_AMXP.py</a> is an example script of an Accreting Millisecond Pulsar with accretion disk implemented through the CustomPhotosphere.py, and 3+2 dimensional interpolation. Note that TestRun_PolNum_split_1spot similarly includes an accretion disk implementation at the end, but there it is a background signal. The results are equivalent but the implementation in this example here is faster and thus recommended for sampling.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Module_generator_tutorial.html" class="btn btn-neutral float-left" title="Module generator tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Example_job.html" class="btn btn-neutral float-right" title="Example job" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

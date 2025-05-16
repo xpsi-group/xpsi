@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.PostProcessing._signalplot &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.PostProcessing._signalplot</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.PostProcessing._signalplot</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">._global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">fgivenx</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_warning</span><span class="p">(</span><span class="s1">&#39;Cannot import fgivenx for conditional posterior contours.&#39;</span><span class="p">)</span>
+    <span class="n">fgivenx</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signal</span>
+
+<div class="viewcode-block" id="SignalPlot">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._signalplot.SignalPlot">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SignalPlot</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base class for a signal plot.</span>
+
+<span class="sd">    Interact with a single :class:`~xpsi.Signal.Signal` instance to plot</span>
+<span class="sd">    signals.</span>
+
+<span class="sd">    :param str fig_dir:</span>
+<span class="sd">        Directory to write to.</span>
+
+<span class="sd">    :param str root_filename:</span>
+<span class="sd">        Prepended to filename automatically generated figure filename.</span>
+
+<span class="sd">    :param str cmap:</span>
+<span class="sd">         Colormap name from :mod:`matplotlib` to use for :mod:`fgivenx`</span>
+<span class="sd">         contours. It is advisable to choose a colormap that is darker</span>
+<span class="sd">         at lower values (in tails of conditional posterior distribution) and</span>
+<span class="sd">         lighter at higher values (at higher densities in conditional posterior</span>
+<span class="sd">         distribution).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__figtype__</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># When you subclass, assign values to the following specials and then</span>
+    <span class="c1"># do not change the values at runtime unless the methods behave</span>
+    <span class="c1"># accordingly in response to such changes. This is because the methods</span>
+    <span class="c1"># might simply assume the values and have not adapt to changes in those</span>
+    <span class="c1"># values, which might require conditional statements to control the flow</span>
+    <span class="c1"># of execution. It is best to consider these specials as hard-coded/</span>
+    <span class="c1"># invariant, and not runtime variables because they describe the nature</span>
+    <span class="c1"># and distribution of information for a given plot type, instead of being</span>
+    <span class="c1"># boolean execution switches or settings whose values are independent of the</span>
+    <span class="c1"># flow of execution.</span>
+    <span class="n">__caching_targets__</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">__rows__</span>          <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of large panels (of size cls._panelsize)</span>
+    <span class="n">__columns__</span>       <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of large panels (of size cls._panelsize)</span>
+    <span class="n">__ax_rows__</span>       <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of all axes including colorbar axes</span>
+    <span class="n">__ax_columns__</span>    <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of all axes including colorbar axes</span>
+    <span class="n">__height_ratios__</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of all axes</span>
+    <span class="n">__width_ratios__</span>  <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of all axes</span>
+    <span class="n">__wspace__</span>        <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of all axes</span>
+    <span class="n">__hspace__</span>        <span class="o">=</span> <span class="kc">None</span> <span class="c1"># of all axes</span>
+
+<div class="viewcode-block" id="SignalPlot.declare_settings">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._signalplot.SignalPlot.declare_settings">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Declaring plot class settings&#39;</span><span class="p">,</span><span class="s1">&#39;Settings declared&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">declare_settings</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                         <span class="n">panelsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span>
+                         <span class="n">fscale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                         <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">tick_lengths</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span>
+                         <span class="n">tick_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                         <span class="n">logspace_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">tqdm_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;disable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                         <span class="n">scale_ymin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                         <span class="n">scale_ymax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+                         <span class="n">ny</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                         <span class="n">lines_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">add_label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span>
+                         <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                         <span class="n">write_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">xticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">yticks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Configure subclass with attributes, *before instantiation*.</span>
+
+<span class="sd">        These attributes can in principle be safely changed during the runtime.</span>
+
+<span class="sd">        :param tuple panelsize:</span>
+<span class="sd">            The approximate size, ``(width, height)``, in inches *per panel*.</span>
+
+<span class="sd">        :param float fscale:</span>
+<span class="sd">            Scale factor for the fontsize applied to the default.</span>
+
+<span class="sd">        :param bool rasterized:</span>
+<span class="sd">            Beware that if ``False``, white polygon edges may appear in figures.</span>
+
+<span class="sd">        :param tuple(int, int) tick_lengths:</span>
+<span class="sd">            The major and minor tick lengths for all axis objects.</span>
+
+<span class="sd">        :param int tick_width:</span>
+<span class="sd">            The width of every tick.</span>
+
+<span class="sd">        :param bool logspace_y:</span>
+<span class="sd">            Should the :mod:`fgivenx` y-values (for which the posterior mass</span>
+<span class="sd">            is integrated over points at lower densities than the density at y)</span>
+<span class="sd">            be logarithimcally or linearly spaced? Appropriate for logarithmic</span>
+<span class="sd">            y-axes of signal panels.</span>
+
+<span class="sd">        :param dict tqdm_kwargs:</span>
+<span class="sd">            Progress bar keyword arguments.</span>
+
+<span class="sd">        :param float scale_ymin:</span>
+<span class="sd">            The minimum y-value to use, as a fraction of the minimum sample</span>
+<span class="sd">            value.</span>
+
+<span class="sd">        :param float scale_ymax:</span>
+<span class="sd">            The maximum y-value to use, as a fraction of the minimum sample</span>
+<span class="sd">            value.</span>
+
+<span class="sd">        :param int ny:</span>
+<span class="sd">            Number of y-values to compute the posterior mass for.</span>
+
+<span class="sd">        :param bool lines_on:</span>
+<span class="sd">            Render contour lines?</span>
+
+<span class="sd">        :param bool add_label:</span>
+<span class="sd">            Add contour colorbar label.</span>
+
+<span class="sd">        :param bool write:</span>
+<span class="sd">            Write figure to disk?</span>
+
+<span class="sd">        :param str extension:</span>
+<span class="sd">            File extension for writing.</span>
+
+<span class="sd">        :param int dpi:</span>
+<span class="sd">            Figure write resolution.</span>
+
+<span class="sd">        :param dict write_kwargs:</span>
+<span class="sd">            Additional writing keyword arguments.</span>
+
+<span class="sd">        :param list(list(float)) xticks:</span>
+<span class="sd">            Determine the x-tick values that will be labelled in each of the subplots</span>
+<span class="sd">            (including color bars). Automatic ticks and labels are used for the</span>
+<span class="sd">            specific subplot if providing None instead of a list of floats</span>
+<span class="sd">            (e.g., xticks=[[0.1,0.5,1.0],None,None]).</span>
+<span class="sd">            If xticks=None (default), automatic ticks and labels are used for all the</span>
+<span class="sd">            subplots.</span>
+
+<span class="sd">        :param list(list(float)) yticks:</span>
+<span class="sd">            Determine the y-tick values that will be labelled in each of the subplots</span>
+<span class="sd">            (including color bars). See param xticks for more details.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">panelsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">panelsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: plots are generally better rendered such &#39;</span>
+                   <span class="s1">&#39;that panel width is greater than panel height. Use the &#39;</span>
+                   <span class="s1">&#39;``figsize`` argument to specify figure size per panel.&#39;</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_panelsize</span> <span class="o">=</span> <span class="n">panelsize</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_fscale</span> <span class="o">=</span> <span class="n">fscale</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_fontsize</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_fscale</span> <span class="o">*</span> <span class="mf">3.25</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">panelsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">panelsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_rasterized</span> <span class="o">=</span> <span class="n">rasterized</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_tick_lengths</span> <span class="o">=</span> <span class="n">tick_lengths</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_tick_width</span> <span class="o">=</span> <span class="n">tick_width</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_logspace_y</span> <span class="o">=</span> <span class="n">logspace_y</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_tqdm_kwargs</span> <span class="o">=</span> <span class="n">tqdm_kwargs</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_scale_ymin</span> <span class="o">=</span> <span class="n">scale_ymin</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_scale_ymax</span> <span class="o">=</span> <span class="n">scale_ymax</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_ny</span> <span class="o">=</span> <span class="n">ny</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_lines_on</span> <span class="o">=</span> <span class="n">lines_on</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_add_label</span> <span class="o">=</span> <span class="n">add_label</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_write</span> <span class="o">=</span> <span class="n">write</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_ext</span> <span class="o">=</span> <span class="n">extension</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_dpi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">write_kwargs</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_write_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_xticks</span> <span class="o">=</span> <span class="n">xticks</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_yticks</span> <span class="o">=</span> <span class="n">yticks</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_settings_declared</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">yield</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">fig_dir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
+                 <span class="n">root_filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdPu_r&#39;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_settings_declared</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">declare_settings</span><span class="p">()</span> <span class="c1"># defaults</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_settings_declared</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">declare_settings</span><span class="p">()</span> <span class="c1"># defaults</span>
+
+        <span class="c1"># set fontsize globally for use in subclass initializer for axes</span>
+        <span class="c1"># creation; note that __exit__ from context finalizes plotting</span>
+        <span class="c1"># before another plot object is handled and also ensures fontsize</span>
+        <span class="c1"># is set as the class fontsize in case needed</span>
+        <span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fontsize</span><span class="p">})</span> <span class="c1"># per plot fontsize settings</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig_dir</span> <span class="o">=</span> <span class="n">fig_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_filename</span> <span class="o">=</span> <span class="n">root_filename</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmap</span> <span class="o">=</span> <span class="n">cmap</span>
+
+        <span class="c1"># will shadow class attributes if you really do want instance-specific</span>
+        <span class="c1"># attributes</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span> <span class="k">else</span> <span class="n">key</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span> <span class="c1"># try to protect specials</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># in subclass init, append axes to automatically veneer</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_posterior</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@posterior</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">_six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for ID.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_posterior</span> <span class="o">=</span> <span class="n">ID</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span>
+
+    <span class="nd">@signal</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Signal</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for signal object.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Redirect for Python 3 compatibility. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Plots are a resource to be managed. &quot;&quot;&quot;</span>
+        <span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fontsize</span><span class="p">})</span> <span class="c1"># per plot fontsize settings</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="c1"># assume no axes to veneer</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span> <span class="c1"># quietly do nothing</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">iax</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_veneer</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_veneer</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">xticks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_veneer</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">yticks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_veneer</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">xticks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span><span class="p">[</span><span class="n">iax</span><span class="p">],</span><span class="n">yticks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_yticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xticks</span><span class="p">[</span><span class="n">iax</span><span class="p">])</span>
+                    <span class="n">iax</span> <span class="o">=</span> <span class="n">iax</span><span class="o">+</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">savefig</span><span class="p">()</span>
+
+        <span class="c1"># the following handles possible hanging current figure ref</span>
+        <span class="c1"># if comment out this line, a figure and axis of default</span>
+        <span class="c1"># matplotlib size seems to be created somewhere and output</span>
+        <span class="c1"># in a notebook; need to figure ;) out why that happens</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SignalPlot.execute">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._signalplot.SignalPlot.execute">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thetas</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Execute behaviours requiring a loop over samples.</span>
+
+<span class="sd">        :param ndarray[n,m] thetas:</span>
+<span class="sd">            Equally-weighted set of posterior samples.</span>
+
+<span class="sd">        :param callable wrapper:</span>
+<span class="sd">            Wrapper function that interleaves iterative calls `next(self)`</span>
+<span class="sd">            with code to update the :class:`~.Signal.Signal` instance from a</span>
+<span class="sd">            cache stored on disk. The wrapper returns a callback function,</span>
+<span class="sd">            If such a cache is unavailable, the likelihood function is</span>
+<span class="sd">            evaluated on-the-fly when the callback is called passing a sample</span>
+<span class="sd">            (parameter vector). In this case, signals to be plotted are</span>
+<span class="sd">            temporarily cached in the :class:`~.Signal.Signal` instance.</span>
+<span class="sd">            The signature of the wrapper function is:</span>
+<span class="sd">            `wrapper(self, delete_me=None, index=None)`,</span>
+<span class="sd">            where `self` is this a subclass of</span>
+<span class="sd">            :class:`~.SignalPlot`, `delete_me` is an optional</span>
+<span class="sd">            attribute name or a list of attribute name in `self.__dict__` to be</span>
+<span class="sd">            deleted before iterating over samples, and `index` is an optional</span>
+<span class="sd">            integer to index a tuple returned from `next(self)`.</span>
+<span class="sd">            The signature of the callback function, if you need to call it</span>
+<span class="sd">            directly (instead of an external library such as fgivenx calling</span>
+<span class="sd">            it):</span>
+<span class="sd">            `callback(None, theta)`,</span>
+<span class="sd">            where each sample/parameter vector is a row in `thetas`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Redirect for Python 3 compatibility. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="c1">#@abstractmethod</span>
+    <span class="c1">#def __next__(self):</span>
+    <span class="c1">#    &quot;&quot;&quot; Execute next iteration. &quot;&quot;&quot;</span>
+    <span class="c1">#    pass</span>
+
+<div class="viewcode-block" id="SignalPlot.finalize">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._signalplot.SignalPlot.finalize">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Execute instructions to finish plotting.</span>
+
+<span class="sd">        Before this method is called, the likelihood object will be updated</span>
+<span class="sd">        so that the true (injected) signals are cached. In the body of the</span>
+<span class="sd">        subclass implementation of this method, one can plot the injected</span>
+<span class="sd">        signals by accessing the attributes of the signal instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_veneer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">xticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yticks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; These are globally applicable settings for aesthetics. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">_mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span>
+                       <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span>
+                       <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                       <span class="n">length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_width</span><span class="p">,</span>
+                       <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span>
+                       <span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span>
+                       <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                       <span class="n">length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                       <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_width</span><span class="p">,</span>
+                       <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">spine</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">spine</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_width</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">xticks</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">yticks</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_contours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                      <span class="n">callback</span><span class="p">,</span>
+                      <span class="n">thetas</span><span class="p">,</span>
+                      <span class="n">x</span><span class="p">,</span>
+                      <span class="n">ax</span><span class="p">,</span>
+                      <span class="n">ax_cb</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Plot contours with :mod:`fgivenx`.</span>
+
+<span class="sd">        In order to increase control, we bypass direct use of some functions</span>
+<span class="sd">        from :mod:`fgivenx.drivers`.</span>
+
+<span class="sd">        Avoid :mod:`fgivenx` caching because it caching is implemented in</span>
+<span class="sd">        :mod:`xpsi.PostProcessing` for derived signals, which are generally</span>
+<span class="sd">        needed beyond a single application of :mod:`fgivenx`. We thus do not</span>
+<span class="sd">        currently cache the masses computed by :mod:`fgivenx`, but this is</span>
+<span class="sd">        acceptable in terms of the speed to replot the contours.</span>
+
+<span class="sd">        .. todo::</span>
+
+<span class="sd">            Determine whether parallelistion is straighforwardly possible</span>
+<span class="sd">            within :mod:`fgivenx` given that the callback is complicated</span>
+<span class="sd">            object. Currently ``OpenMP`` threading is enabled by the</span>
+<span class="sd">            likelihood object instead.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fgivenx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Install fgivenx to plot contours.&#39;</span><span class="p">)</span>
+
+        <span class="n">tqdm_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tqdm_kwargs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tqdm_kwargs</span><span class="p">)</span>
+
+        <span class="n">fsamps</span> <span class="o">=</span> <span class="n">fgivenx</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">compute_samples</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="p">[</span><span class="n">callback</span><span class="p">],</span>
+                                                 <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                                                 <span class="n">samples</span><span class="o">=</span><span class="p">[</span><span class="n">thetas</span><span class="p">],</span>
+                                                 <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                 <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                 <span class="n">tqdm_kwargs</span><span class="o">=</span><span class="n">tqdm_kwargs</span><span class="p">)</span>
+
+        <span class="n">ymin</span> <span class="o">=</span> <span class="n">fsamps</span><span class="p">[</span><span class="o">~</span><span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fsamps</span><span class="p">)]</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">ymin</span> <span class="o">*=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scale_ymin&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_ymin</span><span class="p">)</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="n">fsamps</span><span class="p">[</span><span class="o">~</span><span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fsamps</span><span class="p">)]</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">ymax</span> <span class="o">*=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scale_ymax&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_ymax</span><span class="p">)</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ny&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span><span class="p">)</span>
+        <span class="n">logspace</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logspace_y&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logspace_y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">logspace</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ymin</span><span class="p">),</span>
+                             <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ymax</span><span class="p">),</span>
+                             <span class="n">ny</span><span class="p">,</span>
+                             <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+        <span class="c1"># posterior mass integration more robust under transformation</span>
+        <span class="n">_fsamps</span> <span class="o">=</span> <span class="n">fsamps</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">logspace</span> <span class="k">else</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">fsamps</span><span class="p">)</span>
+        <span class="n">_y</span> <span class="o">=</span> <span class="n">y</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">logspace</span> <span class="k">else</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="n">pmf</span> <span class="o">=</span> <span class="n">fgivenx</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">compute_pmf</span><span class="p">(</span><span class="n">fsamps</span><span class="o">=</span><span class="n">_fsamps</span><span class="p">,</span>
+                                       <span class="n">y</span><span class="o">=</span><span class="n">_y</span><span class="p">,</span>
+                                       <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                       <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tqdm_kwargs</span><span class="o">=</span><span class="n">tqdm_kwargs</span><span class="p">)</span>
+
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fgivenx</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">pmf</span><span class="p">,</span>
+                           <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                           <span class="n">colors</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmap</span><span class="p">)),</span>
+                           <span class="n">lines</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lines_on&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines_on</span><span class="p">),</span>
+                           <span class="n">rasterize_contours</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">,</span>
+                           <span class="n">smooth</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># no additional smoothing with kernel</span>
+
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">ax_cb</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># ticks units = sigmas</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;add_label&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_label</span><span class="p">):</span>
+            <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="sa">r</span><span class="s1">&#39;$1\sigma$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$2\sigma$&#39;</span><span class="p">,</span>
+                                   <span class="sa">r</span><span class="s1">&#39;$3\sigma$&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Add signal line as a 1D function. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create and return figure handle. &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># do not permit shadowing instance attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_panelsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__columns__</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_panelsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__rows__</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__ax_rows__</span><span class="p">,</span>
+                                     <span class="bp">cls</span><span class="o">.</span><span class="n">__ax_columns__</span><span class="p">,</span>
+                                     <span class="n">height_ratios</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__height_ratios__</span><span class="p">,</span>
+                                     <span class="n">width_ratios</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__width_ratios__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">wspace</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__wspace__</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fscale</span><span class="p">,</span>
+                        <span class="n">hspace</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__hspace__</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fscale</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the figure object. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># nothing to return</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_subplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Add subplot and append a reference to the new subplot axes object.</span>
+
+<span class="sd">        To work with a subgrid, you must implement it manually. See, e.g.,</span>
+<span class="sd">        :class:`~xpsi.PostProcessing._spectrum.SpectrumPlot`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subplot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subplot</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subplot</span>
+
+<div class="viewcode-block" id="SignalPlot.savefig">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing._signalplot.SignalPlot.savefig">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Writing plot to disk&#39;</span><span class="p">,</span> <span class="s1">&#39;Written&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write figure to file. &quot;&quot;&quot;</span>
+
+        <span class="n">fileroot</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_filename</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_filename</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">fileroot</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig_dir</span><span class="p">,</span>
+                                 <span class="n">fileroot</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__figtype__</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> \
+                <span class="s1">&#39; instance plot will be written to path </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dpi</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_write_kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span> <span class="c1"># quietly proceed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dpi</span><span class="p">)</span>
+
+        <span class="k">yield</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,446 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parameter &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ParameterSubspace" href="parameterSubspace.html" />
+    <link rel="prev" title="Likelihood API" href="likelihood_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Parameter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Parameter.Parameter"><code class="docutils literal notranslate"><span class="pre">Parameter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.__call__"><code class="docutils literal notranslate"><span class="pre">Parameter.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.__repr__"><code class="docutils literal notranslate"><span class="pre">Parameter.__repr__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.__str__"><code class="docutils literal notranslate"><span class="pre">Parameter.__str__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.bounds"><code class="docutils literal notranslate"><span class="pre">Parameter.bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.cached"><code class="docutils literal notranslate"><span class="pre">Parameter.cached</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.doc"><code class="docutils literal notranslate"><span class="pre">Parameter.doc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.evaluate"><code class="docutils literal notranslate"><span class="pre">Parameter.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.fixed"><code class="docutils literal notranslate"><span class="pre">Parameter.fixed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.is_hyperparameter"><code class="docutils literal notranslate"><span class="pre">Parameter.is_hyperparameter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.name"><code class="docutils literal notranslate"><span class="pre">Parameter.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.needs_update"><code class="docutils literal notranslate"><span class="pre">Parameter.needs_update</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.permit_prepend"><code class="docutils literal notranslate"><span class="pre">Parameter.permit_prepend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.strict_bounds"><code class="docutils literal notranslate"><span class="pre">Parameter.strict_bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.symbol"><code class="docutils literal notranslate"><span class="pre">Parameter.symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Parameter.value"><code class="docutils literal notranslate"><span class="pre">Parameter.value</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Parameter.Derive"><code class="docutils literal notranslate"><span class="pre">Derive</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Parameter.Derive.__call__"><code class="docutils literal notranslate"><span class="pre">Derive.__call__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">Parameter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/parameter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parameter">
+<span id="module-xpsi.Parameter"></span><span id="id1"></span><h1>Parameter<a class="headerlink" href="#parameter" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> represent <em>abstract</em>
+model parameters, both free and fixed/derived variables.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Parameter.</span></span><span class="sig-name descname"><span class="pre">Parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permit_prepend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deactivate_verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_hyperparameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Parameter" title="Link to this definition"></a></dt>
+<dd><p>A parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – A unique parameter name for identification in attribute lookup.</p></li>
+<li><p><strong>strict_bounds</strong> (<em>tuple</em>) – One 2-tuple of hard bounds per parameter. Can be unbounded
+<em>in principle</em>, but read the documentation for the
+<a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> class first.</p></li>
+<li><p><strong>bounds</strong> (<em>tuple</em>) – One 2-tuple of hard bounds per parameter. Can be unbounded
+<em>in principle</em>, but read the documentation for the
+<a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> class first.</p></li>
+<li><p><strong>permit_prepend</strong> (<em>bool</em>) – Allow encapsulating subspaces to prepend the parameter name with
+a prefix? Note that this gives permission recursively to all
+encapsulating subspaces higher in the hierarchy.</p></li>
+<li><p><strong>is_hyperparameter</strong> (<em>bool</em>) – A boolean declaring whether the parameter is a hyperparameter.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__call__" title="Link to this definition"></a></dt>
+<dd><p>Update or get current point if the parameter is <em>free</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>array-like</em>) – New point to update to. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the current point is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Current point (if the call was not an update).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – If parameter is derived or has no value yet but the argument is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Get a string summary of the parameter and current value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__str__" title="Link to this definition"></a></dt>
+<dd><p>Redirect to the magic doctring.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.bounds">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.bounds" title="Link to this definition"></a></dt>
+<dd><p>Get the hard bounds of the parameter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.cached">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cached</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.cached" title="Link to this definition"></a></dt>
+<dd><p>Get the cached value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.doc">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">doc</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.doc" title="Link to this definition"></a></dt>
+<dd><p>Redirect to the magic docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Symlink to property pending dynamic overwrite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>caller</strong> (<em>obj</em>) – An object, such as the calling class itself, used to transfer
+information from higher in the hierarchy.</p>
+</dd>
+</dl>
+<p>Overwrite if value must be explicitly computed from other variables
+and parameters. That is, subclass <a class="reference internal" href="#xpsi.Parameter.Derive" title="xpsi.Parameter.Derive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Derive</span></code></a>, instantiate,
+and pass as a callable to the initialiser of the present class as
+a value of a <em>derived</em> parameter. The callable will automatically
+replace the bound variant of this present method and will have access
+to some caller object, plus other references (class and/or instance)
+attributes you define in the subclass.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.fixed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fixed</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.fixed" title="Link to this definition"></a></dt>
+<dd><p>Is the variable fixed (or derived) or a free parameter?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.is_hyperparameter">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_hyperparameter</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.is_hyperparameter" title="Link to this definition"></a></dt>
+<dd><p>Is the variable a hyperparameter?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.name" title="Link to this definition"></a></dt>
+<dd><p>Get the name of the parameter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.needs_update">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">needs_update</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.needs_update" title="Link to this definition"></a></dt>
+<dd><p>Do cached dependencies need to be updated?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.permit_prepend">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">permit_prepend</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.permit_prepend" title="Link to this definition"></a></dt>
+<dd><p>Allow subspaces to prepend parameter with prefixes?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.strict_bounds">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strict_bounds</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.strict_bounds" title="Link to this definition"></a></dt>
+<dd><p>Get the strict bounds of the parameter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.symbol">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">symbol</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.symbol" title="Link to this definition"></a></dt>
+<dd><p>Get TeX-compatible symbol.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Parameter.Parameter.value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#xpsi.Parameter.Parameter.value" title="Link to this definition"></a></dt>
+<dd><p>Get the current parameter value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Parameter.Derive">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Parameter.</span></span><span class="sig-name descname"><span class="pre">Derive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Derive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Derive" title="Link to this definition"></a></dt>
+<dd><p>Helper class to bind to parameter instances as a method.</p>
+<p>This is a powerful abstract base class for customisting how derived
+parameters are evaluated from references to existing parameter objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>refs</strong> (<em>obj</em>) – Some references to parameter objects or subspace objects that
+need to be stored for deriving variable values. For example,
+a dictionary with key-ref pairs.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In principle, it might be the case that the calling parameter
+subspace does not have references to other parameter objects
+required, <em>and</em> that distinct subspaces require mutual references
+to each other. An example would be two hot regions, each of which
+has one or more parameters that are derived in part from parameters
+of the other hot region. In this case you need to instantiate
+the subspaces first by binding instances of this present
+class to parameters. However, you then need to complete these instances
+of this present class (or more precisely instances of subclasses) with
+the required references. As an example, consider the following:</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">derive</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Derive</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boundto</span><span class="p">,</span> <span class="n">caller</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># ref is a reference to another hot region object</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+<span class="n">ref_1</span> <span class="o">=</span> <span class="n">derive</span><span class="p">()</span>
+
+<span class="c1"># a simple circular, simply-connected spot</span>
+<span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                            <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">:</span> <span class="n">ref_1</span><span class="p">},</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                            <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                            <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+
+<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">omit_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">omit_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">omit_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">derive</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Derive</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boundto</span><span class="p">,</span> <span class="n">caller</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;super_colatitude&#39;</span><span class="p">]</span>
+
+<span class="n">ref_2</span> <span class="o">=</span> <span class="n">derive</span><span class="p">()</span>
+
+<span class="c1"># overlap of an omission region and</span>
+<span class="c1"># and a radiating super region</span>
+<span class="n">secondary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                              <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;super_colatitude&#39;</span><span class="p">:</span> <span class="n">ref_2</span><span class="p">},</span>
+                              <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">omit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                              <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                              <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                              <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">is_antiphased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi</span><span class="w"> </span><span class="kn">import</span> <span class="n">HotRegions</span>
+
+<span class="n">hot</span> <span class="o">=</span> <span class="n">HotRegions</span><span class="p">((</span><span class="n">primary</span><span class="p">,</span> <span class="n">secondary</span><span class="p">))</span>
+
+<span class="c1"># the crux: resolve the mutual refs</span>
+<span class="n">ref_1</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">secondary</span>
+<span class="n">ref_2</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">primary</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Parameter.Derive.__call__">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Derive.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Parameter.Derive.__call__" title="Link to this definition"></a></dt>
+<dd><p>Derive value from some parameters.</p>
+<p>The second argument is the parameter object to which this callable
+is bound. The third argument is a subspace from which the call
+comes, which might be useful or even sufficient for retrieving the
+required information, in which case write an initialiser with <code class="docutils literal notranslate"><span class="pre">pass</span></code>
+as the body.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="likelihood_api.html" class="btn btn-neutral float-left" title="Likelihood API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parameterSubspace.html" class="btn btn-neutral float-right" title="ParameterSubspace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

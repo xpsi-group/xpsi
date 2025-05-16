@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Instrument" href="instrument.html" />
+    <link rel="prev" title="Likelihood" href="likelihood.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Signal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Signal.Signal"><code class="docutils literal notranslate"><span class="pre">Signal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.__call__"><code class="docutils literal notranslate"><span class="pre">Signal.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.background"><code class="docutils literal notranslate"><span class="pre">Signal.background</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.background_signal"><code class="docutils literal notranslate"><span class="pre">Signal.background_signal</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.bolometric_chi2"><code class="docutils literal notranslate"><span class="pre">Signal.bolometric_chi2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.caching_target_names"><code class="docutils literal notranslate"><span class="pre">Signal.caching_target_names</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.caching_targets"><code class="docutils literal notranslate"><span class="pre">Signal.caching_targets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.create_energy_array"><code class="docutils literal notranslate"><span class="pre">Signal.create_energy_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.data"><code class="docutils literal notranslate"><span class="pre">Signal.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.energy_edges"><code class="docutils literal notranslate"><span class="pre">Signal.energy_edges</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.execute_custom_cache_instructions"><code class="docutils literal notranslate"><span class="pre">Signal.execute_custom_cache_instructions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.fast_energies"><code class="docutils literal notranslate"><span class="pre">Signal.fast_energies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.incident_flux_signals"><code class="docutils literal notranslate"><span class="pre">Signal.incident_flux_signals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.incident_specific_flux_signals"><code class="docutils literal notranslate"><span class="pre">Signal.incident_specific_flux_signals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.instrument"><code class="docutils literal notranslate"><span class="pre">Signal.instrument</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.interstellar"><code class="docutils literal notranslate"><span class="pre">Signal.interstellar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.isI"><code class="docutils literal notranslate"><span class="pre">Signal.isI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.isQ"><code class="docutils literal notranslate"><span class="pre">Signal.isQ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.isQn"><code class="docutils literal notranslate"><span class="pre">Signal.isQn</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.isU"><code class="docutils literal notranslate"><span class="pre">Signal.isU</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.isUn"><code class="docutils literal notranslate"><span class="pre">Signal.isUn</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.loglikelihood"><code class="docutils literal notranslate"><span class="pre">Signal.loglikelihood</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.original_data"><code class="docutils literal notranslate"><span class="pre">Signal.original_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.original_instrument"><code class="docutils literal notranslate"><span class="pre">Signal.original_instrument</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.register"><code class="docutils literal notranslate"><span class="pre">Signal.register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.shifts"><code class="docutils literal notranslate"><span class="pre">Signal.shifts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.signals"><code class="docutils literal notranslate"><span class="pre">Signal.signals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Signal.Signal.synthesise"><code class="docutils literal notranslate"><span class="pre">Signal.synthesise()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Signal.LikelihoodError"><code class="docutils literal notranslate"><span class="pre">LikelihoodError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Signal.construct_energy_array"><code class="docutils literal notranslate"><span class="pre">construct_energy_array()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">Signal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/signal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="signal">
+<span id="module-xpsi.Signal"></span><span id="id1"></span><h1>Signal<a class="headerlink" href="#signal" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> are objects which define the
+generative relationship between the pulse and X-ray photon data.
+That is, the parametrised sampling distribution of the photon data is defined.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Signal.</span></span><span class="sig-name descname"><span class="pre">Signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interstellar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photosphere_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'I'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#Signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.Signal" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a></p>
+<p>A signal is constituted by some X-ray dataset, a model instrument
+with which that data was acquired, a model background, and an object for
+modelling interstellar processes.</p>
+<p>The methods in this class must transform incident specific flux signals
+into a structure congruent to that of the data for the purpose of
+evaluation of the custom likelihood implemented via subclassing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="data.html#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>.</p></li>
+<li><p><strong>instrument</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>.</p></li>
+<li><p><strong>background</strong> (<em>obj</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of <a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>.
+It is assumed if one constructs a model using instances of
+<a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a> that the background needs to be
+registered by a model instrument. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is still possible
+for one to define and use background parameters in a custom subclass
+of <a class="reference internal" href="#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a>. In particular, background parameters for some
+model which directly specifies background contribution in units of
+count/s per <em>output</em> channels. These background parameters can even
+<em>be</em> the counts/s in output channels.</p></li>
+<li><p><strong>interstellar</strong> (<em>obj</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of <a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>.
+To be applied to the incident signal as a callable that modifies the
+signal in place.</p></li>
+<li><p><strong>photosphere_prefix</strong> (<em>str</em>) – The <code class="docutils literal notranslate"><span class="pre">str</span></code> prefix of the photosphere object with which this signal
+object is associated.</p></li>
+<li><p><strong>cache</strong> (<em>bool</em>) – Cache intermediary signals during likelihood evalation? When performing
+post-processing, this needs to be activated for full functionality of
+the <a class="reference internal" href="postprocessing.html#module-xpsi.PostProcessing" title="xpsi.PostProcessing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">PostProcessing</span></code></a> module. For likelihood function
+evaluation during sampling, caching should be deactivated because it is
+not used. It might be useful to activate caching also when preparing a
+model for a sampling application, to check the likelihood function
+works as intended.</p></li>
+<li><p><strong>store</strong> (<em>bool</em>) – Deprecated. You can use this or <code class="docutils literal notranslate"><span class="pre">cache</span></code>, which has the same effect.</p></li>
+<li><p><strong>stokes</strong> (<em>str</em>) – Define the type of the signal. Options are Stokes “I” (default), “Q”,
+“U”, “Qn” (Q/I), and “Un” (U/I).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.__call__">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#Signal.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.Signal.__call__" title="Link to this definition"></a></dt>
+<dd><p>Compute the logarithm of the likelihood and store it as a property.</p>
+<p>The keyword arguments currently communicated by an
+<a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> instance are as follows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to use for likelihood evaluation.
+This argument can be ignored if not required.</p></li>
+<li><p><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for MultiNest. Points whose
+log-likelihood is lower than this value are ignored.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.background">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">background</span></span><a class="headerlink" href="#xpsi.Signal.Signal.background" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.background_signal">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">background_signal</span></span><a class="headerlink" href="#xpsi.Signal.Signal.background_signal" title="Link to this definition"></a></dt>
+<dd><p>Get stored background.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.bolometric_chi2">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bolometric_chi2</span></span><a class="headerlink" href="#xpsi.Signal.Signal.bolometric_chi2" title="Link to this definition"></a></dt>
+<dd><p>Return the bolometric chi2 value for the current likelihood value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.caching_target_names">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">caching_target_names</span></span><a class="headerlink" href="#xpsi.Signal.Signal.caching_target_names" title="Link to this definition"></a></dt>
+<dd><p>Just return the names of the caching targets.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.caching_targets">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">caching_targets</span></span><a class="headerlink" href="#xpsi.Signal.Signal.caching_targets" title="Link to this definition"></a></dt>
+<dd><p>Get a dictionary of model objects for caching.</p>
+<p>Called by the post-processing module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If a property is not set in methods of a subclass, or if the
+<code class="docutils literal notranslate"><span class="pre">self.store</span></code> property is not <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.create_energy_array">
+<span class="sig-name descname"><span class="pre">create_energy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rel_num_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#Signal.create_energy_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.Signal.create_energy_array" title="Link to this definition"></a></dt>
+<dd><p>Get a (finer) array of energies spanning instrument waveband.</p>
+<p>Useful for getting an appropriately bounded and spaced set of energies
+for signal interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rel_num_energies</strong> (<em>float</em>) – The number of energies desired as a fraction of the number of
+energies implemented for incident signal integration.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.data">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#xpsi.Signal.Signal.data" title="Link to this definition"></a></dt>
+<dd><p>Get the stored data object.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.energy_edges">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">energy_edges</span></span><a class="headerlink" href="#xpsi.Signal.Signal.energy_edges" title="Link to this definition"></a></dt>
+<dd><p>Get a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energy edges.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.execute_custom_cache_instructions">
+<span class="sig-name descname"><span class="pre">execute_custom_cache_instructions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#Signal.execute_custom_cache_instructions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.Signal.execute_custom_cache_instructions" title="Link to this definition"></a></dt>
+<dd><p>Subclass and overwrite to specify custom cache objects.</p>
+<p>The default cached objects, when <code class="docutils literal notranslate"><span class="pre">cache</span></code> mode is activated, are
+handled in the <a class="reference internal" href="#xpsi.Signal.Signal.register" title="xpsi.Signal.Signal.register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.fast_energies">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fast_energies</span></span><a class="headerlink" href="#xpsi.Signal.Signal.fast_energies" title="Link to this definition"></a></dt>
+<dd><p>Get coarse array of energies for fast-mode likelihood evals.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.incident_flux_signals">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">incident_flux_signals</span></span><a class="headerlink" href="#xpsi.Signal.Signal.incident_flux_signals" title="Link to this definition"></a></dt>
+<dd><p>Get the incident flux signal components.</p>
+<p>These signals are integrated over a set of energy intervals spanning
+the instrument waveband.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.incident_specific_flux_signals">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">incident_specific_flux_signals</span></span><a class="headerlink" href="#xpsi.Signal.Signal.incident_specific_flux_signals" title="Link to this definition"></a></dt>
+<dd><p>Get the incident signal components.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.instrument">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instrument</span></span><a class="headerlink" href="#xpsi.Signal.Signal.instrument" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.interstellar">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">interstellar</span></span><a class="headerlink" href="#xpsi.Signal.Signal.interstellar" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.isI">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isI</span></span><a class="headerlink" href="#xpsi.Signal.Signal.isI" title="Link to this definition"></a></dt>
+<dd><p>…</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.isQ">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isQ</span></span><a class="headerlink" href="#xpsi.Signal.Signal.isQ" title="Link to this definition"></a></dt>
+<dd><p>…</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.isQn">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isQn</span></span><a class="headerlink" href="#xpsi.Signal.Signal.isQn" title="Link to this definition"></a></dt>
+<dd><p>…</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.isU">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isU</span></span><a class="headerlink" href="#xpsi.Signal.Signal.isU" title="Link to this definition"></a></dt>
+<dd><p>…</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.isUn">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isUn</span></span><a class="headerlink" href="#xpsi.Signal.Signal.isUn" title="Link to this definition"></a></dt>
+<dd><p>…</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.loglikelihood">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loglikelihood</span></span><a class="headerlink" href="#xpsi.Signal.Signal.loglikelihood" title="Link to this definition"></a></dt>
+<dd><p>Return the logarithm of the likelihood.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If property not set in methods of a subclass.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.original_data">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">original_data</span></span><a class="headerlink" href="#xpsi.Signal.Signal.original_data" title="Link to this definition"></a></dt>
+<dd><p>Get the a copy of the original instance of <a class="reference internal" href="data.html#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.original_instrument">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">original_instrument</span></span><a class="headerlink" href="#xpsi.Signal.Signal.original_instrument" title="Link to this definition"></a></dt>
+<dd><p>Get the a copy of the original instance of <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#Signal.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.Signal.register" title="Link to this definition"></a></dt>
+<dd><p>Register an incident signal by operating with the response matrix.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> is stored as an instance attribute containing
+source signal for each <em>output</em> channel in units of counts cm^2/s
+(assuming instrument effective area units are cm^2).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.shifts">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shifts</span></span><a class="headerlink" href="#xpsi.Signal.Signal.shifts" title="Link to this definition"></a></dt>
+<dd><p>Returns the hot region phase plus the instrument phase-shift.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.signals">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signals</span></span><a class="headerlink" href="#xpsi.Signal.Signal.signals" title="Link to this definition"></a></dt>
+<dd><p>Get the stored channel-by-channel signal components.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Signal.Signal.synthesise">
+<span class="sig-name descname"><span class="pre">synthesise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phase_shifts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#Signal.synthesise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.Signal.synthesise" title="Link to this definition"></a></dt>
+<dd><p>Synthesise signal data according to the generative model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase_shifts</strong> (<em>iterable</em>) – Container of phase shift <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances,
+one per hot region, communicated by the likelihood object from
+the star object. The order is equal to the order of the hot
+region objects stored in <code class="docutils literal notranslate"><span class="pre">photosphere.hot.objects</span></code>.</p></li>
+<li><p><strong>directory</strong> (<em>str</em>) – Path to directory in which to write synthetic
+data. It is recommended that the <code class="docutils literal notranslate"><span class="pre">prefix</span></code> of
+the signal appears in the filename.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to use for likelihood evaluation.
+This argument can be ignored if not required.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Signal.LikelihoodError">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Signal.</span></span><span class="sig-name descname"><span class="pre">LikelihoodError</span></span><a class="reference internal" href="_modules/xpsi/Signal.html#LikelihoodError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.LikelihoodError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsiError</span></code></p>
+<p>Raised if there is a problem with the value of the log-likelihood.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xpsi.Signal.construct_energy_array">
+<span class="sig-prename descclassname"><span class="pre">xpsi.Signal.</span></span><span class="sig-name descname"><span class="pre">construct_energy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Signal.html#construct_energy_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Signal.construct_energy_array" title="Link to this definition"></a></dt>
+<dd><p>Construct an array of photon energies for integration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_energies</strong> (<em>int</em>) – Number of energies, distributed over union of wavebands covered
+by instruments that registered the data signals.</p></li>
+<li><p><strong>signals</strong> (<em>list</em>) – An unordered list of <a class="reference internal" href="#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="likelihood.html" class="btn btn-neutral float-left" title="Likelihood" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="instrument.html" class="btn btn-neutral float-right" title="Instrument" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

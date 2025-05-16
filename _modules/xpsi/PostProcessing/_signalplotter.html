@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.PostProcessing._signalplotter &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=c3365b21"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.PostProcessing._signalplotter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.PostProcessing._signalplotter</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_warning</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_warning</span><span class="p">(</span><span class="s1">&#39;Cannot import h5py for signal caching.&#39;</span><span class="p">)</span>
+    <span class="n">h5py</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.auto</span><span class="w"> </span><span class="kn">import</span> <span class="n">trange</span> <span class="k">as</span> <span class="n">_range</span> <span class="c1"># detect if Jupyter notebook</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1"># ignore extra (kw)args</span>
+        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">Likelihood</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._postprocessor</span><span class="w"> </span><span class="kn">import</span> <span class="n">PostProcessor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">_Cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._signalplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">SignalPlot</span>
+
+<div class="viewcode-block" id="SignalPlotter">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.SignalPlotter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SignalPlotter</span><span class="p">(</span><span class="n">PostProcessor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Plot conditional posterior distributions of thematic X-ray signals.</span>
+
+<span class="sd">    Methods to plot the data and model for posterior checking.</span>
+
+<span class="sd">    Plots are generated for each posterior selected using the associated</span>
+<span class="sd">    likelihood object.</span>
+
+<span class="sd">    For a given model, there may be multiple :class:`~xpsi.Signal.Signal`</span>
+<span class="sd">    instances per likelihood object. If this is the case, you need to</span>
+<span class="sd">    reduce the model down to only the objects needed for functioning of</span>
+<span class="sd">    the :class:`~xpsi.Signal.Signal` object to be handled. To do this, simply</span>
+<span class="sd">    remove supply to your likelihood object the references to this minimal</span>
+<span class="sd">    set of objects. This minimises computation time and ensures explicit</span>
+<span class="sd">    declaration of the signals to be plotted.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        If a model has multiple instruments, then the energy set for signal</span>
+<span class="sd">        integration is calculated based on waveband coverage union.</span>
+<span class="sd">        If instruments are omitted from the likelihood object in order</span>
+<span class="sd">        to execute posterior signal plotting, the number of energies</span>
+<span class="sd">        that span the waveband of the remaining instrument waveband should</span>
+<span class="sd">        be set to match the number in the full model (with all instruments)</span>
+<span class="sd">        if the likelihood factor for the remaining instrument is to be</span>
+<span class="sd">        exactly the same.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SignalPlotter.plot">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.SignalPlotter.plot">[docs]</a>
+    <span class="nd">@fix_random_seed</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Plotting signals for posterior checking&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Plotted signals for posterior checking&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">plots</span><span class="p">,</span>
+             <span class="n">IDs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">combine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">combine_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">only_combined</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">force_combine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="n">nsamples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+             <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="n">force_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span>
+             <span class="n">read_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">archive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Compute and plot signals *a posteriori*.</span>
+
+<span class="sd">        :param dict plots:</span>
+<span class="sd">            Dictionary of lists of plot objects, where each dictionary key</span>
+<span class="sd">            must match a posterior ID.</span>
+
+<span class="sd">        :param OrderedDict IDs:</span>
+<span class="sd">            Keys must be string identifiers of :class:`Runs` instances.</span>
+<span class="sd">            Each dictionary element must be a list of string identifiers,</span>
+<span class="sd">            each matching objects collected in :class:`Runs` instance</span>
+<span class="sd">            corresponding to the key. Defaults to ``None``, meaning attempt to</span>
+<span class="sd">            use as many runs as possible subject to plotting restrictions.</span>
+
+<span class="sd">        :param bool cache:</span>
+<span class="sd">            Cache intermediary model objects to accelerate post-processing?</span>
+
+<span class="sd">        :param bool force_cache:</span>
+<span class="sd">            Force caching irrespective of checks of existing cache files.</span>
+<span class="sd">            Useful if some part of the model is tweaked and the cache file with</span>
+<span class="sd">            the same name and sample set is not manually moved from the</span>
+<span class="sd">            designated directory..</span>
+
+<span class="sd">        :param int nsamples:</span>
+<span class="sd">            Number of samples to use. Equally-weighted samples are generated,</span>
+<span class="sd">            thus introducing a additional Monte Carlo noise which is ignored.</span>
+
+<span class="sd">        :param int num_phases:</span>
+<span class="sd">            Number of phases to interpolate at on the interval [0,2] cycles.</span>
+
+<span class="sd">        :param str filename:</span>
+<span class="sd">            Filename of cache.</span>
+
+<span class="sd">        :param str cache_dir:</span>
+<span class="sd">            Directory to write cache to.</span>
+
+<span class="sd">        :param bool read_only:</span>
+<span class="sd">            Do not write to cache file?</span>
+
+<span class="sd">        :param bool archive:</span>
+<span class="sd">            If not read-only, then archive an existing cache file found at the</span>
+<span class="sd">            same path?</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_subset</span><span class="p">(</span><span class="n">IDs</span><span class="p">,</span> <span class="n">combine</span><span class="p">,</span> <span class="n">combine_all</span><span class="p">,</span>
+                        <span class="n">force_combine</span><span class="p">,</span> <span class="n">only_combined</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">posterior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;Handling posterior </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">posterior</span><span class="o">.</span><span class="n">ID</span>
+            <span class="n">run</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">subset_to_plot</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">likelihood</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">likelihood</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Supply a likelihood object to proceed.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+            <span class="n">state_to_restore</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">externally_updated</span>
+            <span class="n">likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_plots</span> <span class="o">=</span> <span class="n">plots</span><span class="p">[</span><span class="n">posterior</span><span class="o">.</span><span class="n">ID</span><span class="p">]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid plot object specification.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">iter</span><span class="p">(</span><span class="n">_plots</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_plots</span><span class="p">,</span> <span class="n">SignalPlot</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid plot object type.&#39;</span><span class="p">)</span>
+                    <span class="n">_plots</span><span class="o">.</span><span class="n">posterior</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">prepend_ID</span>
+                    <span class="n">_plots</span> <span class="o">=</span> <span class="p">[</span><span class="n">_plots</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">_plots</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">SignalPlot</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid plot object type.&#39;</span><span class="p">)</span>
+                        <span class="n">plot</span><span class="o">.</span><span class="n">posterior</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">prepend_ID</span>
+
+            <span class="c1"># assimilate all declared targets</span>
+            <span class="n">_caching_targets</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">_plots</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_caching_targets</span> <span class="o">+=</span> <span class="n">plot</span><span class="o">.</span><span class="n">__caching_targets__</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid specification of caching targets.&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+
+            <span class="c1"># eliminate duplicates (some plot types can share caching targets)</span>
+            <span class="n">caching_targets</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">_caching_targets</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">caching_targets</span><span class="p">:</span>
+                    <span class="n">caching_targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+            <span class="c1"># caching targets are assimilated from plot objects</span>
+            <span class="n">likelihood</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">caching_targets</span> <span class="o">=</span> <span class="n">caching_targets</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">run</span><span class="p">,</span>
+                         <span class="n">likelihood</span><span class="p">,</span>
+                         <span class="n">nsamples</span><span class="p">,</span>
+                         <span class="n">cache</span><span class="p">,</span>
+                         <span class="n">force_cache</span><span class="p">,</span>
+                         <span class="n">cache_dir</span><span class="p">,</span>
+                         <span class="n">read_only</span><span class="p">,</span>
+                         <span class="n">archive</span><span class="p">,</span>
+                         <span class="n">_plots</span><span class="p">)</span>
+
+            <span class="n">likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">state_to_restore</span>
+
+            <span class="k">yield</span> <span class="s1">&#39;Handled posterior </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">posterior</span><span class="o">.</span><span class="n">ID</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span> <span class="o">=</span> <span class="n">plots</span>
+
+        <span class="c1"># in case user needs a handle (e.g., if plot objects created</span>
+        <span class="c1"># via a classmethod), could return handle here</span>
+        <span class="k">yield</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the dictionary of plot objects last processed. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_draw_equally_weighted</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">num_params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get a set of equally weighted samples from a weighted set.</span>
+
+<span class="sd">        ..note::</span>
+
+<span class="sd">            Additional Monte Carlo noise from trimming sample set ignored.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">nsamples</span> <span class="o">&lt;</span> <span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;Number of samples for plotting </span><span class="se">\</span>
+<span class="s1">                                             cannot exceed number of nested </span><span class="se">\</span>
+<span class="s1">                                             samples.&#39;</span>
+
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: 1 - (sum of weights) = </span><span class="si">%.8e</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Weights renormalized to sum to unity.&#39;</span><span class="p">)</span>
+
+        <span class="n">weights</span> <span class="o">/=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nsamples</span><span class="p">,</span>
+                                    <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="n">thetas</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="o">+</span><span class="n">num_params</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">thetas</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_driver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">run</span><span class="p">,</span>
+                <span class="n">likelihood</span><span class="p">,</span>
+                <span class="n">nsamples</span><span class="p">,</span>
+                <span class="n">cache</span><span class="p">,</span>
+                <span class="n">force_cache</span><span class="p">,</span>
+                <span class="n">cache_dir</span><span class="p">,</span>
+                <span class="n">read_only</span><span class="p">,</span>
+                <span class="n">archive</span><span class="p">,</span>
+                <span class="n">plots</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Execute plotting loop given samples. &quot;&quot;&quot;</span>
+
+        <span class="c1"># If has a parameter to plot, use it. Else, draw samples !</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;parameters_vector&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parameters_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parameters_vector</span><span class="p">)</span> <span class="p">,</span> <span class="s1">&#39;Length of the parameter vector does not match likelihood one&#39;</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span><span class="p">(</span><span class="s1">&#39;When provided, parameters vector must be given as an iterable and have matching length with likelihood&#39;</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">thetas</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parameters_vector</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">thetas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plotting the model for the provided parameters vector.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">thetas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_equally_weighted</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">samples</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span>
+                                                <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">))</span>
+
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">signal</span> <span class="c1"># should only be one signal object available</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">signal</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">names</span>
+
+        <span class="k">if</span> <span class="n">cache</span> <span class="ow">and</span> <span class="n">h5py</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">prefix</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">prepend_ID</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;__signal&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="k">if</span> <span class="n">s</span> <span class="k">else</span> <span class="s1">&#39;__&#39;</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;cached__&#39;</span>
+            <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">caching_target_names</span><span class="p">)</span>
+
+            <span class="n">cache</span> <span class="o">=</span> <span class="n">_Cache</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                           <span class="n">cache_dir</span><span class="p">,</span>
+                           <span class="n">read_only</span><span class="p">,</span>
+                           <span class="n">archive</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">do_caching</span><span class="p">(</span><span class="n">thetas</span><span class="p">,</span> <span class="n">force_cache</span><span class="p">):</span>
+                <span class="c1"># skips body if can simply read cache</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_range</span><span class="p">(</span><span class="n">thetas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Signal caching loop&#39;</span><span class="p">):</span>
+                    <span class="n">likelihood</span><span class="p">([</span><span class="n">thetas</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">run</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">])</span>
+                    <span class="n">cache</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">caching_targets</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cache</span> <span class="ow">and</span> <span class="n">h5py</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;You need to install h5py to use caching.&#39;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+            <span class="c1"># order the parameter vector appropriately</span>
+            <span class="n">vector</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta</span><span class="p">[</span><span class="n">run</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">cache</span><span class="p">:</span> <span class="c1"># use the cache if available</span>
+                <span class="c1"># set the parameter values in case needed by plot objects</span>
+                <span class="c1"># that call methods of the signal object, or methods of objects</span>
+                <span class="c1"># that the signal object encapsulates refernences to, an</span>
+                <span class="c1"># example being the interstellar attenuation applied for</span>
+                <span class="c1"># the spectrum plot type</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+
+                <span class="c1"># now restore the signals objects that were cached</span>
+                <span class="n">cached</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cached</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">delattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise resort to likelihood evaluations</span>
+                <span class="n">likelihood</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="n">plot_obj</span><span class="p">,</span> <span class="n">delete_me</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Wrap a plot obj&#39;s next method into a cache-enabled callback. &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
+                <span class="n">cache</span><span class="o">.</span><span class="n">reset_iterator</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">delete_me</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">iter</span><span class="p">(</span><span class="n">delete_me</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">delete_me</span> <span class="o">=</span> <span class="p">[</span><span class="n">delete_me</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">delete_me</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">delattr</span><span class="p">(</span><span class="n">plot_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+            <span class="c1"># ignore x because it is already known by a plot object in</span>
+            <span class="c1"># this more object oriented approach to calling fgivenx:</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+                    <span class="n">update</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">plot_obj</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">callback</span> <span class="c1"># for fgivenx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+                    <span class="n">update</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">plot_obj</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">callback</span>
+
+        <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">plot</span><span class="p">:</span> <span class="c1"># acquire plot as context manager</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">thetas</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span> <span class="c1"># iterate over samples</span>
+
+                <span class="n">truths</span> <span class="o">=</span> <span class="p">[</span><span class="n">run</span><span class="o">.</span><span class="n">truth_vector</span><span class="p">[</span><span class="n">run</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+                <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">truths</span><span class="p">:</span>
+                    <span class="n">likelihood</span><span class="p">(</span><span class="n">truths</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

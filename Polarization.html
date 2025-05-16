@@ -1,0 +1,641 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polarization &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Post-processing" href="Post-processing.html" />
+    <link rel="prev" title="Modeling (without statistics)" href="Modeling_without_statistics.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Polarization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Creating-synthetic-data">Creating synthetic data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-the-data">Fitting the data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Polarization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Polarization.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Polarization">
+<h1>Polarization<a class="headerlink" href="#Polarization" title="Link to this heading"></a></h1>
+<p>This is a short tutorial for modeling polarized X-ray flux from a rapidly rotating neutron star. Detailed discussions on the formation of polarization can be found in <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2020A%26A...643A..84L/abstract">Loktev et al. (2020)</a></p>
+<p>For MSPs, polarization arises from Thomson scattering or comptonization by an accretion shock formed above the hot region. In the case of Thomson scattering, the degree of polarization depends on the angle of propagation respect to the local surface normal. The polarization angle change from the emission site to the observer is governed by the rotating vector model, which incorporates the oblate shape of the NS and relativistic effects due to the rapid rotation. This simple case is implemented
+in this tutorial. For the case of comptonized atmosphere, details can be found in <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2023A%26A...678A..99B/abstract">Bobrikova et al. (2023)</a></p>
+<p>It is important to note that although the magnetic field of the MSP does not influence radiative transfer within the atmospheric slab (i.e., the atmosphere is treated as non-magnetic), it does play a crucial role in shaping and forming the hot spots (HSs).</p>
+<p>Let us first make the initial setup (see the Modeling tutorial for more detailed explanations):</p>
+<p>And then let us make the final integration and plot the results for all Stokes parameters.</p>
+<p>We first check Stokes I profiles (integrated over all energies) for the primary and secondary hot spots:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+from __future__ import print_function, division
+
+import os
+import numpy as np
+import math
+import time
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
+from matplotlib import gridspec
+from matplotlib import cm
+
+import xpsi
+
+from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+
+
+freq = 600.0
+
+bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+                mass = (1.0, 3.0),                       # mass
+                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+                cos_inclination = (0.0, 1.0))            # (Earth) inclination to rotation axis
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=freq))
+
+
+ceding = False
+
+bounds = dict(super_colatitude = (None, None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 0.1),
+              super_temperature = (None, None))
+
+if ceding:
+
+    bounds = dict(super_colatitude=(None,None),
+                  super_radius = (None, None),
+                  phase_shift = (0.0, 1.0),
+                  super_temperature = (None, None),
+                  cede_colatitude = (None, None),
+                  cede_radius = (None, None),
+                  cede_azimuth = (None, None),
+                  cede_temperature = (None, None))
+
+# a simple circular, simply-connected spot
+primary = xpsi.HotRegion(bounds=bounds,
+                            values={}, # no initial values and no derived/fixed
+                            symmetry=True,
+                            #symmetry=False,
+                            omit=False,
+                            cede=ceding,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=64,
+                            #num_leaves=100,
+                            num_leaves=121,
+                            num_rays=200,
+                            do_fast=False,
+                            atm_ext=&quot;Pol_BB_Burst&quot;,
+                            prefix=&#39;p&#39;)
+
+
+class derive(xpsi.Derive):
+    def __init__(self):
+        &quot;&quot;&quot;
+        We can pass a reference to the primary here instead
+        and store it as an attribute if there is risk of
+        the global variable changing.
+
+        This callable can for this simple case also be
+        achieved merely with a function instead of a magic
+        method associated with a class.
+        &quot;&quot;&quot;
+        pass
+
+    def __call__(self, boundto, caller = None):
+        # one way to get the required reference
+        global primary # unnecessary, but for clarity
+        return primary[&#39;super_temperature&#39;] - 0.2
+
+bounds[&#39;super_temperature&#39;] = None # declare fixed/derived variable
+
+secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
+                              values={&#39;super_temperature&#39;: derive()}, # create a callable value
+                              symmetry=True,
+                              omit=False,
+                              cede=ceding,
+                              concentric=False,
+                              sqrt_num_cells=32,
+                              min_sqrt_num_cells=10,
+                              max_sqrt_num_cells=100,
+                              num_leaves=100,
+                              num_rays=200,
+                              do_fast=False,
+                              atm_ext=&quot;Pol_BB_Burst&quot;, #the simplest polarized atmosphere extension
+                              is_antiphased=True,
+                              prefix=&#39;s&#39;) # unique prefix needed because &gt;1 instance
+
+from xpsi import HotRegions
+
+hot = HotRegions((primary, secondary))
+
+h = hot.objects[0]
+
+hot[&#39;p__super_temperature&#39;] = 6.0 # equivalent to ``primary[&#39;super_temperature&#39;] = 6.0``
+
+
+class CustomPhotosphere(xpsi.Photosphere):
+    &quot;&quot;&quot; Implement method for imaging.&quot;&quot;&quot;
+
+    @property
+    def global_variables(self):
+        &quot;&quot;&quot; This method is needed if we also want to ivoke the image-plane signal simulator. &quot;&quot;&quot;
+
+        return np.array([self[&#39;p__super_colatitude&#39;],
+                          self[&#39;p__phase_shift&#39;] * _2pi,
+                          self[&#39;p__super_radius&#39;],
+                          self[&#39;p__super_temperature&#39;],
+                          self[&#39;s__super_colatitude&#39;],
+                          (self[&#39;s__phase_shift&#39;] + 0.5) * _2pi,
+                          self[&#39;s__super_radius&#39;],
+                          self.hot.objects[1][&#39;s__super_temperature&#39;]])
+
+bounds = dict(spin_axis_position_angle = (None, None))
+#Set here stokes=True to calculate the polarized X-ray signal.
+photosphere = CustomPhotosphere(hot = hot, elsewhere = None, stokes=True, bounds=bounds,
+                                values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+
+
+print(photosphere[&#39;mode_frequency&#39;] == spacetime[&#39;frequency&#39;])
+
+star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+
+#Let us first initialize the star with these values but change them later:
+p = [1.4,
+     12.5,
+     0.2,
+     math.cos(1.25),
+     0.0,
+     0.0,
+     1.0,
+     0.075,
+     6.2,
+     0.025,
+     math.pi - 1.0,
+     0.2]
+if ceding:
+    p = [1.4, #mass
+         12.0, #radius
+         0.2, #distance
+         math.cos(1.25), #cos_inclination
+         0.0, # spin_axis_position_angle
+         0.0, #p__phase_shift
+         1.0, #p__super_colatitude
+         0.075, #p__super_radius
+         6.2, #p__super_temperature
+         0.1, #p__cede_colatitude
+         0.1, #p__cede_radius
+         0.0, #p__cede_azimuth
+         6.2, #p__cede_temperature
+         0.025, #s__phase_shift
+         math.pi - 1.0, #s__super_colatitude
+         0.2, #s__super_radius
+         math.pi-1.0, #s__cede_colatitude ..
+         0.3, #s__cede_radius
+         0.0, #s__cede_azimuth
+         6.2] #s__cede_temperature
+
+star(p)
+
+
+#These are the values used in the light curve computation:
+star[&#39;mass&#39;] = 1.4 #2.7088795
+star[&#39;radius&#39;] = 12.0 #20.0 #12.0
+star[&#39;distance&#39;] = 0.2
+incl_deg = 40.0 #90.0 #40.0
+star[&#39;cos_inclination&#39;] = math.cos(math.pi*incl_deg/180.0)#math.cos(2.0)
+theta_deg = 60.0
+star[&#39;p__super_colatitude&#39;] = math.pi*theta_deg/180.0 #0.0 #2.0
+rho_deg = 10.0 #10.0 #0.001 #10.0
+star[&#39;p__super_radius&#39;] = math.pi*rho_deg/180.0
+tplanck = 1.0219978 #1.0 #in keV #1 keV -&gt; log10(T[K]) = 7.06 (out of bounds originally)
+star[&#39;p__super_temperature&#39;] = np.log10(tplanck*11604525.0061657)
+
+
+if ceding:
+    star[&#39;p__cede_colatitude&#39;] = math.pi*theta_deg/180.0
+    star[&#39;p__cede_azimuth&#39;] = 0.0 #0.0
+    star[&#39;p__cede_radius&#39;] = math.pi*rho_deg/180.0+0.02
+    star[&#39;p__cede_temperature&#39;] = np.log10(tplanck*11604525.0061657)
+    star[&#39;s__super_radius&#39;] = math.pi*rho_deg/180.0
+    star[&#39;s__super_colatitude&#39;] = math.pi-math.pi*theta_deg/180.0
+    star[&#39;s__cede_colatitude&#39;] = math.pi-math.pi*theta_deg/180.0
+    star[&#39;s__cede_azimuth&#39;] = 0.1 #math.pi/2.0
+    star[&#39;s__cede_radius&#39;] = math.pi*rho_deg/180.0+0.02
+    star[&#39;s__cede_temperature&#39;] = np.log10(tplanck*11604525.0061657)
+
+
+rcParams[&#39;text.usetex&#39;] = False
+rcParams[&#39;font.size&#39;] = 14.0
+
+def veneer(x, y, axes, lw=1.0, length=8):
+    &quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;
+    if x is not None:
+        if x[1] is not None:
+            axes.xaxis.set_major_locator(MultipleLocator(x[1]))
+        if x[0] is not None:
+            axes.xaxis.set_minor_locator(MultipleLocator(x[0]))
+    else:
+        axes.xaxis.set_major_locator(AutoLocator())
+        axes.xaxis.set_minor_locator(AutoMinorLocator())
+
+    if y is not None:
+        if y[1] is not None:
+            axes.yaxis.set_major_locator(MultipleLocator(y[1]))
+        if y[0] is not None:
+            axes.yaxis.set_minor_locator(MultipleLocator(y[0]))
+    else:
+        axes.yaxis.set_major_locator(AutoLocator())
+        axes.yaxis.set_minor_locator(AutoMinorLocator())
+
+    axes.tick_params(which=&#39;major&#39;, colors=&#39;black&#39;, length=length, width=lw)
+    axes.tick_params(which=&#39;minor&#39;, colors=&#39;black&#39;, length=int(length/2), width=lw)
+    plt.setp(axes.spines.values(), linewidth=lw, color=&#39;black&#39;)
+
+def plot_pulse(stokes=&quot;I&quot;):
+    &quot;&quot;&quot; Plot hot region signals before telescope operation. &quot;&quot;&quot;
+    fig = plt.figure(figsize=(7,7))
+    ax = fig.add_subplot(111)
+
+    #ax.set_ylabel(&#39;Signal [arbitrary normalisation]&#39;)
+    ax.set_xlabel(&#39;Phase [cycles]&#39;)
+
+    if stokes==&quot;I&quot;:
+        temp1 = np.sum(photosphere.signal[0][0], axis=0)
+        temp2 = np.sum(photosphere.signal[1][0], axis=0)
+        ax.set_ylabel(&#39;Signal Stokes I/max(I)&#39;)
+    elif stokes==&quot;Q&quot;:
+        temp1 = np.sum(photosphere.signalQ[0][0], axis=0)
+        temp2 = np.sum(photosphere.signalQ[1][0], axis=0)
+        ax.set_ylabel(&#39;Signal Stokes Q/max(|Q|)&#39;)
+    elif stokes==&quot;U&quot;:
+        temp1 = np.sum(photosphere.signalU[0][0], axis=0)
+        temp2 = np.sum(photosphere.signalU[1][0], axis=0)
+        ax.set_ylabel(&#39;Signal Stokes U/max(|U|)&#39;)
+
+    else:
+         print(&quot;ERROR: Stokes option must be &#39;I&#39;, &#39;Q&#39;, or &#39;U&#39;&quot;)
+         exit()
+
+    ax.plot(hot.phases_in_cycles[0], temp1/np.max(abs(temp1)), &#39;o-&#39;, color=&#39;k&#39;, lw=0.5, markersize=2,label=&#39;Primary HS&#39;)
+    ax.plot(hot.phases_in_cycles[1], temp2/np.max(abs(temp2)), &#39;o-&#39;, color=&#39;r&#39;, lw=0.5, markersize=2,label=&#39;Secondary HS&#39;)
+    ax.legend()
+
+    veneer((0.05,0.2), (0.05,0.2), ax)
+
+    #fig.savefig(&quot;figs/pulse_profile&quot;+stokes+&quot;X.pdf&quot;)
+
+nene = 281 #128
+
+from numpy import logspace
+from numpy import log
+evere=0.5109989e6 # electron volts in elecron rest energy
+x_l, x_u = -3.7 , .3 # lower and upper bounds of the log_10 energy span
+IntEnergy = logspace(x_l,x_u,nene), log(1e1)*(x_u-x_l)/(nene-1.)
+x, x_weight = IntEnergy
+energies = (x*evere)/1e3
+
+star.update() #Calculating the space-time integrals etc.
+
+
+import time
+
+primary.image_order_limit = 1
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.0               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Imported emcee version: 3.1.6
+Imported PyMultiNest.
+Imported UltraNest.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 6.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; that is derived from ulterior variables.
+    &gt; log10(superseding region effective temperature [K]).
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 6.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+Creating parameter:
+    &gt; Named &#34;spin_axis_position_angle&#34; with bounds [-1.571e+00, 1.571e+00].
+    &gt; Spin axis position angle measured from the north counterclock-
+wise to the projection of the rotation axis on the plane of the
+sky [in radians].
+True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>start = time.time()
+photosphere.integrate(energies, threads=1)
+end = time.time()
+print(&quot;Time spent in integration (unpolarized):&quot;,end - start)
+
+plot_pulse(stokes=&quot;I&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Time spent in integration (unpolarized): 3.8012921810150146
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Polarization_6_1.png" src="_images/Polarization_6_1.png" />
+</div>
+</div>
+<p>Let us also check Stokes Q and U profiles:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_pulse(stokes=&quot;Q&quot;)
+plot_pulse(stokes=&quot;U&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Polarization_8_0.png" src="_images/Polarization_8_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Polarization_8_1.png" src="_images/Polarization_8_1.png" />
+</div>
+</div>
+<p>Next, we sum the Stokes parameters for the primary and secondary HS and construct a color-coded plot representing the total Stokes parameters Q and U as a vector diagram. The color gradient corresponds to the pulse phase, as indicated in the subplot displaying the pulse profile.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from matplotlib.collections import LineCollection
+
+def plot_QUplane():
+    &quot;&quot;&quot; Plot Stokes in the Q-U plane &quot;&quot;&quot;
+    fig = plt.figure(figsize=(7,7))
+    ax1 = fig.add_subplot(111)
+
+    ax1.set_xlabel(r&#39;$100 \times Q/I_{max}$&#39;)
+    ax1.set_ylabel(r&#39;$100 \times U/I_{max}$&#39;)
+
+    ph = hot.phases_in_cycles[0]
+    I1 = np.sum(photosphere.signal[0][0], axis=0)
+    Q1 = np.sum(photosphere.signalQ[0][0], axis=0)
+    U1 = np.sum(photosphere.signalU[0][0], axis=0)
+
+    I2 = np.interp(ph, hot.phases_in_cycles[1], np.sum(photosphere.signal[1][0], axis=0))
+    Q2 = np.interp(ph, hot.phases_in_cycles[1], np.sum(photosphere.signalQ[1][0], axis=0))
+    U2 = np.interp(ph, hot.phases_in_cycles[1], np.sum(photosphere.signalU[1][0], axis=0))
+
+    Itot = I1 + I2
+    Qntot = 100*(Q1 + Q2)/np.max(Itot)
+    Untot = 100*(U1 + U2)/np.max(Itot)
+
+    ax1.axis([1.1*np.min(Qntot),1.1*np.max(Qntot),1.1*np.min(Untot),2.7*np.max(Untot)]) #set axis limits. This is [xlow, xhigh, ylow, yhigh]
+
+    segments = [np.column_stack([Qntot[i:i+2], Untot[i:i+2]]) for i in range(len(Qntot) - 1)]
+    lc = LineCollection(segments, cmap=&#39;hsv&#39;,array=ph,linewidth=4)
+    line = ax1.add_collection(lc)
+
+    l, b, h, w = .45, .65, .2, .4
+    ax2 = fig.add_axes([l, b, w, h])
+    segments = [np.column_stack([ph[i:i+2], Itot[i:i+2]/np.max(Itot)]) for i in range(len(ph) - 1)]
+    ax2.axis([0,1,0,1.1])
+    lc = LineCollection(segments, cmap=&#39;hsv&#39;,array=ph,linewidth=4)
+    line = ax2.add_collection(lc)
+    ax2.set_xlabel(&#39;phase&#39;)
+    ax2.set_ylabel(r&#39;$I\,/I_\mathrm{max}$&#39;)
+    veneer((0.05,0.2), (0.05,0.2), ax1)
+    veneer((0.05,0.2), (0.05,0.2), ax2)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_QUplane()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Polarization_11_0.png" src="_images/Polarization_11_0.png" />
+</div>
+</div>
+<section id="Creating-synthetic-data">
+<h2>Creating synthetic data<a class="headerlink" href="#Creating-synthetic-data" title="Link to this heading"></a></h2>
+<p>To produce polarized synthetic data, we can couple X-PSI to ixpeobssim as an input model. The input model file needs to be placed in the <code class="docutils literal notranslate"><span class="pre">config</span></code> folder of the <a class="reference external" href="https://github.com/lucabaldini/ixpeobssim">ixpeobssim repository</a> . An example of the input model file is provided <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/ixpeobssim/config/model_amsp_xpsi.py">here</a>. To prodcue the synthetic Stokes profiles and their associated errors one should execute
+<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">setup.sh</span></code> in the main directory of ixpeobssim and then run a script like <code class="docutils literal notranslate"><span class="pre">simulate_amsp_xpsi.py</span></code> found <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/ixpeobssim/simulate_amsp_xpsi.py">here</a>. For more details, check the ixpeobssim documentation <a class="reference external" href="https://ixpeobssim.readthedocs.io/en/latest/?badge=latest">pages</a>.</p>
+</section>
+<section id="Fitting-the-data">
+<h2>Fitting the data<a class="headerlink" href="#Fitting-the-data" title="Link to this heading"></a></h2>
+<p>Modeling X-ray polarized data using Bayesian inference is not yet part of this tutorial. However, a preliminary example of a such procedure can be found in this example script: <a class="reference external" href="https://github.com/xpsi-group/xpsi/blob/main/examples/examples_modeling_tutorial/TestRun_PolNum_split_inference.py">TestRun_PolNum_split_inference.py</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Modeling_without_statistics.html" class="btn btn-neutral float-left" title="Modeling (without statistics)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Post-processing.html" class="btn btn-neutral float-right" title="Post-processing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1651 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modeling (without statistics) &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Polarization" href="Polarization.html" />
+    <link rel="prev" title="Surface radiation field tools" href="Surface_radiation_field_tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modeling (without statistics)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Constructing-a-star">Constructing a star</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#The-ambient-spacetime">The ambient spacetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#The-photosphere-and-its-constituent-regions">The photosphere and its constituent regions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Star">Star</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Inspecting-functionality">Inspecting functionality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Imaging">Imaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Modeling (without statistics)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Modeling_without_statistics.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Modeling-(without-statistics)">
+<h1>Modeling (without statistics)<a class="headerlink" href="#Modeling-(without-statistics)" title="Link to this heading"></a></h1>
+<p>In this tutorial we build a star object for signal computation, but streamline by omitting any demonstration of statistical modeling (for which there exist other tutorials).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import os
+import numpy as np
+import math
+import time
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
+from matplotlib import gridspec
+from matplotlib import cm
+rcParams[&#39;text.usetex&#39;] = False
+rcParams[&#39;font.size&#39;] = 14.0
+
+import xpsi
+
+from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+from xpsi.utilities import PlottingLibrary as XpsiPlot
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.0.0               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+Check your emcee installation.
+Check your installation of emcee if using the EnsembleSampler
+Imported PyMultiNest.
+Check your UltraNest installation.
+Check your installation of UltraNest if using the UltranestSampler
+Warning: Cannot import torch and test SBI_wrapper.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+<section id="Constructing-a-star">
+<h2>Constructing a star<a class="headerlink" href="#Constructing-a-star" title="Link to this heading"></a></h2>
+<p>We need to build our star. The basic units for building a star are:</p>
+<ul class="simple">
+<li><p>the <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a> class;</p></li>
+<li><p>the <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> class;</p></li>
+<li><p>the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class;</p></li>
+<li><p>the <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere"><span class="std std-ref">Elsewhere</span></a> class (optionally used in conjuction with HotRegion instances);</p></li>
+<li><p>the <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere"><span class="std std-ref">Everywhere</span></a> class (cannot be used with HotRegion instances);</p></li>
+<li><p>and four low-level user-modifiable routines for evaluation of a parametrised specific intensity model.</p></li>
+</ul>
+<p>For this demonstration we will assume that the surface radiation field <em>elsewhere</em> (other than the hot regions) can be ignored in the soft X-ray regime our model instrument is sensitive to. We will not be utilizing the <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere"><span class="std std-ref">Elsewhere</span></a> class, for which their exists a distinct tutorial (<strong>Global surface emission</strong>). For more advanced modelling, we can simply write custom <em>derived</em> classes, and instantiate those derived classes to construct objects for our
+model. In particular, a common pattern will be to subclass the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class. Let’s start with the <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a> class.</p>
+<section id="The-ambient-spacetime">
+<h3>The ambient spacetime<a class="headerlink" href="#The-ambient-spacetime" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>xpsi.Spacetime#? # uncomment to query
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.Spacetime.Spacetime
+</pre></div></div>
+</div>
+<p>We can instantiate the <code class="docutils literal notranslate"><span class="pre">spacetime</span></code> by defining all parameters with a given value. In this case, all parameters will be fixed because the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> are not specified (empty dictionary). <strong>Note that all parameters must be defined at least once in ``bounds`` or ``values``.</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>values = dict(distance =0.150,          # (Earth) distance
+                mass = 1.5,             # mass
+                radius = 12.0,          # equatorial radius
+                cos_inclination = 0.5,  # (Earth) inclination to rotation axis
+                frequency = 300. )      # spin frequency
+
+spacetime = xpsi.Spacetime(bounds={}, values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with fixed value 1.500e+00.
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with fixed value 1.200e+01.
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with fixed value 1.500e-01.
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with fixed value 5.000e-01.
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<p>Alternatively we can specify bounds manually for the free parameters. Using <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> will set the default bounds. The fixed parameters are defined in the <code class="docutils literal notranslate"><span class="pre">values</span></code> dictionary. If both the bounds and a value are defined for a parameters, the value will not be fixed but instead will be set as an initial value.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(distance = (None, None),                   # Default bounds for (Earth) distance
+                mass = (None, None),                     # Default bounds for mass
+                radius = (None, None),                   # Default bounds for equatorial radius
+                cos_inclination = (None, None))          # Default bounds for (Earth) inclination to rotation axis
+
+values = dict(frequency=300.0,                           # Fixed spin frequency
+              mass=1.4)                                  # mass with initial value
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e-03, 3.000e+00] and initial value 1.400e+00.
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [1.000e+00, 2.000e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-02, 3.000e+01].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [-1.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<p>To display the free parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for p in spacetime:
+    print(p)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Gravitational mass [solar masses].
+Coordinate equatorial radius [km].
+Earth distance [kpc].
+Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<p>For the following example in this tutorial, we will specify the bounds of all parameters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+                mass = (1.0, 3.0),                       # mass with default bounds
+                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+                cos_inclination = (0.0, 1.0))            # (Earth) inclination to rotation axis
+
+values = dict(frequency=300.0 )                          # Fixed spin frequency
+
+spacetime = xpsi.Spacetime(bounds=bounds, values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+</section>
+<section id="The-photosphere-and-its-constituent-regions">
+<h3>The photosphere and its constituent regions<a class="headerlink" href="#The-photosphere-and-its-constituent-regions" title="Link to this heading"></a></h3>
+<p>It is not necessary for us to write a custom derived class for the photosphere object, so we will simply instantiate a <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> object. However, we first need an instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> to instantiate the photosphere, and we need to implement a low-level parametrised model for the specific intensity emergent from the photosphere in a local comoving frame.</p>
+<p>The neutron star atmosphere is assumed to be geometrically thin. In the applications thus far, the surface local-comoving-frame radiation field as being described by a single <em>free</em> parameter: the effective temperature. The radiation field is also dependent on the local effective gravitational acceleration, however this is a <em>derived</em> parameter in the model. The parametrised radiation field as a function of energy and angle subtended to the normal to the (plane-parallel) atmosphere in a local
+comoving frame is provided as numerical model data for multi-dimensional interpolation.</p>
+<p>In X-PSI, integration over the surface radiation field is performed via calls to low-level C routines. To reduce likelihood evaluation times, the atmosphere interpolator is written in C, and calls to that interpolator are from C routine. In other words, in X-PSI, <strong>we do not use Python callback functions for evaluation of specific intensities, but C functions which are compiled when the</strong> X-PSI <strong>package is built</strong>. Unfortunately this means that to change the parametrised surface radiation field
+you need to get your hands a little dirty; on the bright side, the body of these functions can be implemented almost completely in the Cython language, so syntactically there is some similarity to Python because the language syntax is somewhat of a hybrid/superset. Beware, however, that the body of these functions must not contain calls to the Python API, and only to external C libraries if required: the code must evaluate to pure C, and not require the Python/C API. Note that the Python global
+interpreter lock is deactivated during integration to enable OpenMP multi-threading in some applications of the integrator; thus the code needs to be thread safe and <code class="docutils literal notranslate"><span class="pre">nogil</span></code> (not require the global interpreter lock, although a context manager could <em>in principle</em> be used to reacquire the lock within the integrator). Also note that if external C libraries are required, that you include a Cython .pxd (header) file in the package which <code class="docutils literal notranslate"><span class="pre">extern</span></code>s the required library components; the library
+also needs to be included and linked in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> at package build-time.</p>
+<p><em>If you have ideas for making this model specification more user-friendly, without, crucially, increasing signal integration time, please submit a pull request.</em></p>
+<p>There are several atmosphere extension modules for users and developers to work with; <code class="docutils literal notranslate"><span class="pre">hot_BB.pyx</span></code>, and <code class="docutils literal notranslate"><span class="pre">hot_Num4D.pyx</span></code> are the built-in options for isotropic blackbody radiation field and numerical 4D-interpolation from a preloaded atmosphere table, and they can be selected with the <code class="docutils literal notranslate"><span class="pre">atm_ext</span></code> option when creating instances of the radiating regions (from <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code>, <code class="docutils literal notranslate"><span class="pre">Elsewhere</span></code>, or <code class="docutils literal notranslate"><span class="pre">Everywhere</span></code> classes); <code class="docutils literal notranslate"><span class="pre">hot_user.pyx</span></code> and <code class="docutils literal notranslate"><span class="pre">elsewhere_user.pyx</span></code> are additional extensions which can
+be replaced by user-developed versions, and used after re-installing X-PSI and setting <code class="docutils literal notranslate"><span class="pre">atm_ext=&quot;user&quot;</span></code> (by default they are the same as <code class="docutils literal notranslate"><span class="pre">hot_BB.pyx</span></code>).</p>
+<p><strong>Note that in X-PSI versions before 2.1.0 the selection of the atmosphere extension needed to be done when installing X-PSI (using installation flags), and not using the atm_ext option as now.</strong></p>
+<p>The following is the contents of the <code class="docutils literal notranslate"><span class="pre">hot_user.pxd</span></code> file which the X-PSI integrators use as the header file for including other C functions in the package (if using the non-modified “user” option).</p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">from</span><span class="w"> </span><span class="nn">.preload</span><span class="w"> </span><span class="k">cimport</span> <span class="n">_preloaded</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">eval_hot_user</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+                     <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
+                     <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
+                     <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
+                     <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">eval_hot_norm_user</span><span class="p">()</span> <span class="k">nogil</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">void</span>* <span class="nf">init_hot_user</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">const</span> <span class="n">_preloaded</span> <span class="o">*</span><span class="n">const</span> <span class="n">preloaded</span><span class="p">)</span> <span class="k">nogil</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">free_hot_user</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
+</pre></div>
+</div>
+<p><strong>You are free to modify these functions in the associated</strong> <code class="docutils literal notranslate"><span class="pre">hot_user.pyx</span></code> <strong>implementation file, and you have almost complete control over the function bodies, but not the signatures.</strong> By default the package includes an isotropic blackbody model:</p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="c">#cython: cdivision=True</span>
+<span class="c">#cython: boundscheck=False</span>
+<span class="c">#cython: nonecheck=False</span>
+<span class="c">#cython: wraparound=False</span>
+
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.math</span><span class="w"> </span><span class="k">cimport</span> <span class="n">exp</span><span class="p">,</span> <span class="nb">pow</span>
+<span class="k">from</span><span class="w"> </span><span class="nn">libc.stdio</span><span class="w"> </span><span class="k">cimport</span> <span class="n">printf</span>
+
+<span class="k">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="k">import</span> <span class="n">_keV</span><span class="p">,</span> <span class="n">_k_B</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">SUCCESS</span><span class="w"> </span><span class="o">=</span> <span class="mf">0</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">erg</span><span class="w"> </span><span class="o">=</span> <span class="mf">1.0e-7</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">Planck_dist_const</span><span class="w"> </span><span class="o">=</span> <span class="mf">5.040366110812353e22</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">k_B</span><span class="w"> </span><span class="o">=</span> <span class="n">_k_B</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">keV</span><span class="w"> </span><span class="o">=</span> <span class="n">_keV</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">k_B_over_keV</span><span class="w"> </span><span class="o">=</span> <span class="n">k_B</span> <span class="o">/</span> <span class="n">keV</span>
+
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="c"># &gt;&gt;&gt; User modifiable functions.</span>
+<span class="c"># &gt;&gt;&gt; Note that the user is entirely free to wrap thread-safe and</span>
+<span class="c"># ... non-parallel external C routines from an external library.</span>
+<span class="c"># &gt;&gt;&gt; Thus the bodies of the following need not be written explicitly in</span>
+<span class="c"># ... the Cython language.</span>
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">void</span>* <span class="nf">init_hot_user</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">const</span> <span class="n">_preloaded</span> <span class="o">*</span><span class="n">const</span> <span class="n">preloaded</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the free management routine free_hot()</span>
+    <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
+    <span class="c"># the user&#39;s responsibility to manage.</span>
+
+    <span class="k">if</span> <span class="n">preloaded</span> <span class="o">!=</span> <span class="bp">NULL</span> <span class="p">:</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;WARNING: Numerical atmosphere data were preloaded, even though those are not used by this atmosphere extension.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="c"># Return NULL if dynamic memory is not required for the model.</span>
+    <span class="k">return</span> <span class="bp">NULL</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">int</span> <span class="nf">free_hot_user</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the initialisation routine init_hot()</span>
+    <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
+    <span class="c"># the user&#39;s responsibility to manage.</span>
+    <span class="c"># The void pointer must be appropriately cast before memory is freed --</span>
+    <span class="c"># only the user can know this at compile time.</span>
+    <span class="c"># Just use free(&lt;void*&gt; data) iff no memory was dynamically</span>
+    <span class="c"># allocated in the function:</span>
+    <span class="c">#   init_local_hot()</span>
+    <span class="c"># because data is expected to be NULL in this case</span>
+
+    <span class="c">#printf(&quot;\nNo data to be freed.&quot;)</span>
+
+    <span class="k">return</span> <span class="n">SUCCESS</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">eval_hot_user</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+                     <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
+                     <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
+                     <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
+                     <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># Arguments:</span>
+    <span class="c"># E = photon energy in keV</span>
+    <span class="c"># mu = cosine of ray zenith angle (i.e., angle to surface normal)</span>
+    <span class="c"># VEC = variables such as temperature, effective gravity, ...</span>
+    <span class="c"># data = numerical model data required for intensity evaluation</span>
+
+    <span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">temp</span><span class="w"> </span><span class="o">=</span> <span class="n">k_B_over_keV</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span> <span class="n">exp</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">temp</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="p">)</span>
+
+<span class="k">cdef</span><span class="w"> </span><span class="kt">double</span> <span class="nf">eval_hot_norm_user</span><span class="p">()</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># Source radiation field normalisation which is independent of the</span>
+    <span class="c"># parameters of the parametrised model -- i.e. cell properties, energy,</span>
+    <span class="c"># and angle.</span>
+    <span class="c"># Writing the normalisation here reduces the number of operations required</span>
+    <span class="c"># during integration.</span>
+    <span class="c"># The units of the specific intensity need to be J/cm^2/s/keV/steradian.</span>
+
+    <span class="k">return</span> <span class="n">erg</span> <span class="o">*</span> <span class="n">Planck_dist_const</span>
+</pre></div>
+</div>
+<p>In most use-cases we apply the <code class="docutils literal notranslate"><span class="pre">hot_Num4D.pyx</span></code> extension to handle the numerical atmosphere data. This extension is presented in <a class="reference internal" href="surface_radiation_field.html#a-numerical-atmosphere"><span class="std std-ref">surface radiation field extension module</span></a>, and is essentially the same as used by <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. (2019)</a> (and the follow-up papers) to implement a numerical atmosphere generated by the NSX atmosphere code (<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2001MNRAS.327.1081H/abstract">Ho &amp; Lai
+(2001)</a>; <a class="reference external" href="https://ui.adsabs.harvard.edu/link_gateway/2009Natur.462...71H/doi:10.1038/nature08525">Ho &amp; Heinke (2009)</a>), courtesy of W.C.G. Ho for NICER modeling efforts. A fully-ionized hydrogen atmosphere was used in <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract">Riley et al. (2019)</a>; also see <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021ApJ...914L..15B/abstract">Bogdanov et al. (2021)</a> and <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract">Riley et al.
+(2021)</a>.</p>
+<p>We now instantiate hot region objects. We can find the required and optional parameter names in the class docstring:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>xpsi.HotRegion#? # uncomment to query
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.HotRegion.HotRegion
+</pre></div></div>
+</div>
+<p>The names can also be found as class attributes as follows (refer to the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class docstring and <a class="reference internal" href="applications.html"><span class="doc">Riley et al. (2019)</span></a> for the meaning of <em>super</em>):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>xpsi.HotRegion.required_names
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;super_colatitude&#39;,
+ &#39;super_radius&#39;,
+ &#39;phase_shift&#39;,
+ &#39;super_temperature (if no custom specification)&#39;]
+</pre></div></div>
+</div>
+<p>The condition <em>if no custom specification</em> means that this name is required if we do not supply custom parameters for the radiation field in the superseding member of the hot region. If we supply custom parameters, we also need to subclass <code class="docutils literal notranslate"><span class="pre">xpsi.HotRegion</span></code> and overwrite the <code class="docutils literal notranslate"><span class="pre">__compute_cellParamVecs</span></code> method to handle our parameters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>xpsi.HotRegion.optional_names
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;omit_colatitude&#39;,
+ &#39;omit_radius&#39;,
+ &#39;omit_azimuth&#39;,
+ &#39;cede_colatitude&#39;,
+ &#39;cede_radius&#39;,
+ &#39;cede_azimuth&#39;,
+ &#39;cede_temperature&#39;]
+</pre></div></div>
+</div>
+<p>For the purpose of illustration, we <em>tie</em> the temperatures of the hot regions together. There is more than one way to achieve this, but we will use the most powerful approach.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = dict(super_colatitude = (None, None),
+              super_radius = (None, None),
+              phase_shift = (0.0, 0.1),
+              super_temperature = (None, None))
+
+# a simple circular, simply-connected spot
+primary = xpsi.HotRegion(bounds=bounds,
+                            values={}, # no initial values and no derived/fixed
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=64,
+                            num_leaves=100,
+                            num_rays=200,
+                            do_fast=False,
+                            atm_ext=&quot;BB&quot;,#default blackbody, other options: &quot;Num4D&quot; or &quot;user&quot;
+                            prefix=&#39;p&#39;) # unique prefix needed because &gt;1 instance
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<p>Note that since the atmospheric local-comoving-frame effective temperature is uniform everywhere within the hot region boundaries, we can use the default value of the <code class="docutils literal notranslate"><span class="pre">symmetry</span></code> keyword, <code class="docutils literal notranslate"><span class="pre">True</span></code>. All other arguments determine the numerical resolution, and have defaults which have been (somewhat arbitrarily) chosen to be result in a likelihood evaluation time of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> s.</p>
+<p>Let’s take a look at the <code class="docutils literal notranslate"><span class="pre">xpsi.Derive</span></code> docstring for guidance:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>xpsi.Derive#? # uncomment to query
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.Parameter.Derive
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class derive(xpsi.Derive):
+    def __init__(self):
+        &quot;&quot;&quot;
+        We can pass a reference to the primary here instead
+        and store it as an attribute if there is risk of
+        the global variable changing.
+
+        This callable can for this simple case also be
+        achieved merely with a function instead of a magic
+        method associated with a class.
+        &quot;&quot;&quot;
+        pass
+
+    def __call__(self, boundto, caller = None):
+        # one way to get the required reference
+        global primary # unnecessary, but for clarity
+        return primary[&#39;super_temperature&#39;] - 0.2
+
+bounds[&#39;super_temperature&#39;] = None # declare fixed/derived variable
+
+secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
+                              values={&#39;super_temperature&#39;: derive()}, # create a callable value
+                              symmetry=True,
+                              omit=False,
+                              cede=False,
+                              concentric=False,
+                              sqrt_num_cells=32,
+                              min_sqrt_num_cells=10,
+                              max_sqrt_num_cells=100,
+                              num_leaves=100,
+                              num_rays=200,
+                              do_fast=False,
+                              is_antiphased=True,
+                              atm_ext=&quot;BB&quot;,
+                              prefix=&#39;s&#39;) # unique prefix needed because &gt;1 instance
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; that is derived from ulterior variables.
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<p>The description <em>derived from ulterior variables</em> means that when we lookup the value, it is calculated dynamically from the values of other (ulterior) model parameters. We clearly expect the temperature of the secondary hot region to behave in this way. A few other varibles do to because of keyword arguments passed upon instantiation of the hot regions. For example, the colatitude of the <em>zero-radii</em> omission and ceding regions (<code class="docutils literal notranslate"><span class="pre">omit=False</span></code> and <code class="docutils literal notranslate"><span class="pre">cede=False</span></code>) are equivalent to the
+colatitude of the centre of the superseding region. The azimuths are <em>relative</em> to the superseding region, and are thus listed as being <em>fixed</em> at zero azimuthal separation. If one of <code class="docutils literal notranslate"><span class="pre">omit</span></code> or <code class="docutils literal notranslate"><span class="pre">cede</span></code> was <code class="docutils literal notranslate"><span class="pre">True</span></code>, and <code class="docutils literal notranslate"><span class="pre">concentric=True</span></code>, a similar setup is performed, but with the radius of <code class="docutils literal notranslate"><span class="pre">omit</span></code> or <code class="docutils literal notranslate"><span class="pre">cede</span></code> being free, fixed (at finite value, but zero achieves the same as <code class="docutils literal notranslate"><span class="pre">False</span></code> for both <code class="docutils literal notranslate"><span class="pre">omit</span></code> and <code class="docutils literal notranslate"><span class="pre">cede</span></code> keyword arguments), or derived.</p>
+<p>We now need to encapsulate the hot region instances in a container with properties expected by the <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> class.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi import HotRegions
+
+hot = HotRegions((primary, secondary))
+</pre></div>
+</div>
+</div>
+<p>Let’s check out the hot regions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hot.objects[0] # &#39;p&#39;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+
+Derived/fixed parameters
+------------------------
+p__cede_colatitude: The colatitude of the centre of the ceding region [radians].
+p__cede_radius: The angular radius of the (circular) ceding region [radians].
+p__cede_azimuth: The azimuth of the centre of the ceding region relative to the
+centre of the superseding region [radians].
+p__omit_colatitude: The colatitude of the centre of the omission region [radians].
+p__omit_radius: The angular radius of the (circular) omission region [radians].
+p__omit_azimuth: The azimuth of the centre of the omission region relative to the
+centre of the superseding region [radians].
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hot.objects[1] # &#39;s&#39;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+s__super_colatitude: The colatitude of the centre of the superseding region [radians].
+s__super_radius: The angular radius of the (circular) superseding region [radians].
+
+Derived/fixed parameters
+------------------------
+s__super_temperature: log10(superseding region effective temperature [K]).
+s__cede_colatitude: The colatitude of the centre of the ceding region [radians].
+s__cede_radius: The angular radius of the (circular) ceding region [radians].
+s__cede_azimuth: The azimuth of the centre of the ceding region relative to the
+centre of the superseding region [radians].
+s__omit_colatitude: The colatitude of the centre of the omission region [radians].
+s__omit_radius: The angular radius of the (circular) omission region [radians].
+s__omit_azimuth: The azimuth of the centre of the omission region relative to the
+centre of the superseding region [radians].
+</pre></div></div>
+</div>
+<p>A list of names, with the prefix, can also be accessed as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>h = hot.objects[0]
+h.names
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;p__phase_shift&#39;,
+ &#39;p__super_colatitude&#39;,
+ &#39;p__super_radius&#39;,
+ &#39;p__super_temperature&#39;,
+ &#39;p__cede_colatitude&#39;,
+ &#39;p__cede_radius&#39;,
+ &#39;p__cede_azimuth&#39;,
+ &#39;p__omit_colatitude&#39;,
+ &#39;p__omit_radius&#39;,
+ &#39;p__omit_azimuth&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>h.prefix
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;p&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>h.get_param(&#39;phase_shift&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The phase of the hot region, a periodic parameter [cycles]
+</pre></div></div>
+</div>
+<p>Let’s set a value for the temperature of the primary hot region:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hot[&#39;p__super_temperature&#39;] = 6.0 # equivalent to ``primary[&#39;super_temperature&#39;] = 6.0``
+</pre></div>
+</div>
+</div>
+<p>Now let’s lookup the temperature of the secondary:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>secondary[&#39;super_temperature&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+5.8
+</pre></div></div>
+</div>
+<p>No value was set explicitly for this secondary temperature: it is looked up dynamically from that of the primary hot region.</p>
+<p>Note that the following access will <em>not</em> work:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># hot[&#39;s__super_temperature&#39;]
+</pre></div>
+</div>
+</div>
+<p>The reason for this is because the temperature of the secondary hot region is a <em>fixed/derived</em> variable. Only <em>free</em> model parameters are merged into larger spaces. A fixed/derived variable needs to be accessed via the subspace that directly encapsulates a reference to it.</p>
+<p>We can now instantitate the photosphere (assuming a blackbody atmosphere, see <a class="reference external" href="https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_Num.py">https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_Num.py</a> for an example when using numerical atmosphere):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere = xpsi.Photosphere(hot = hot, elsewhere = None,
+                                values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>photosphere[&#39;mode_frequency&#39;] == spacetime[&#39;frequency&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>We do not model the surface radiation field <em>elsewhere</em>, and we thus leave the <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> keyword as <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default). <em>Elsewhere</em> means on the surface, exterior to radiating hot regions that are typically expected to span a smaller angular extent; in the current version, the radiation from <em>elsewhere</em>, if explicitly computed is assumed to be time-invariant supposing the hot regions were not present. To account for radiation from <em>elsewhere</em>, a time-invariant signal is first computed,
+meaning an axisymmetric surface local-comoving-frame radiation field is assumed. The time-dependent signals from the hot regions are then computed, and modified by subtracting the specific intensity that would otherwise be generated by the surface local-comoving-frame radiation field from <em>elsewhere</em> (i.e., in place of the hot regions).</p>
+</section>
+<section id="Star">
+<h3>Star<a class="headerlink" href="#Star" title="Link to this heading"></a></h3>
+<p>We can now combine the ambient spacetime, <code class="docutils literal notranslate"><span class="pre">spacetime</span></code>, and the embedded photosphere, <code class="docutils literal notranslate"><span class="pre">photosphere</span></code>, into a model star represented by an instance of <a class="reference internal" href="star.html#xpsi.Star.Star"><span class="std std-ref">Star</span></a>. We do not need to extend this class, so we can simply construct and instantiate a star as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<p>Let’s check out the star object, which merged parameter subspaces associated with objects lower in the hierarchy:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+s__super_colatitude: The colatitude of the centre of the superseding region [radians].
+s__super_radius: The angular radius of the (circular) superseding region [radians].
+</pre></div></div>
+</div>
+<p>Note that only the free parameters are merged into a subspace higher in the object hierarchy. The reason for this is that there is not a clear and common pattern (at present) for accessing fixed/derived variables outside of the primary subspace to which they belong. If you try hard enough, of course, you can still get at them.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>len(star)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+11
+</pre></div></div>
+</div>
+<p>Let’s specify a parameter vector to the <code class="docutils literal notranslate"><span class="pre">star</span></code> subspace with the true model parameter values that we injected to generate the synthetic data rendered above:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>p = [1.4,
+     12.5,
+     0.2,
+     math.cos(1.25),
+     0.0,
+     1.0,
+     0.075,
+     6.2,
+     0.025,
+     math.pi - 1.0,
+     0.2]
+
+star(p)
+</pre></div>
+</div>
+</div>
+<p>The order of the parameters is as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star.params
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Gravitational mass [solar masses] = 1.400e+00,
+ Coordinate equatorial radius [km] = 1.250e+01,
+ Earth distance [kpc] = 2.000e-01,
+ Cosine of Earth inclination to rotation axis = 3.153e-01,
+ The phase of the hot region, a periodic parameter [cycles] = 0.000e+00,
+ The colatitude of the centre of the superseding region [radians] = 1.000e+00,
+ The angular radius of the (circular) superseding region [radians] = 7.500e-02,
+ log10(superseding region effective temperature [K]) = 6.200e+00,
+ The phase of the hot region, a periodic parameter [cycles] = 2.500e-02,
+ The colatitude of the centre of the superseding region [radians] = 2.142e+00,
+ The angular radius of the (circular) superseding region [radians] = 2.000e-01]
+</pre></div></div>
+</div>
+<p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>secondary[&#39;super_temperature&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+6.0
+</pre></div></div>
+</div>
+</section>
+<section id="Inspecting-functionality">
+<h3>Inspecting functionality<a class="headerlink" href="#Inspecting-functionality" title="Link to this heading"></a></h3>
+<p>When we simulate a pulsation signal, it is stored as the <code class="docutils literal notranslate"><span class="pre">signal</span></code> property of the <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. The simulated 1D profile in <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> are obtained by summing the count-rate over output instrument channels. This is done inside the <code class="docutils literal notranslate"><span class="pre">plot_1d_pulse</span></code> method.</p>
+<p>We need some energies (of photons incident in our rest frame) to integrate at:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+</pre></div>
+</div>
+</div>
+<p>We first need to update the star given the parameter vector, and we also show another way to set the parameter value:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;cos_inclination&#39;] = math.cos(2.0)
+
+star.update()
+photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object does not contain the value of the <code class="docutils literal notranslate"><span class="pre">phase</span></code> so we use the ones in the <code class="docutils literal notranslate"><span class="pre">HotRegions</span></code> by setting <code class="docutils literal notranslate"><span class="pre">photosphere_phases=hot.phases_in_cycles</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XpsiPlot.plot_1d_pulse(signal=None,
+                       photosphere=photosphere,
+                       photosphere_phases=hot.phases_in_cycles)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_73_0.png" src="_images/Modeling_without_statistics_73_0.png" />
+</div>
+</div>
+<p>These pulse profiles are the signals incident on the telescope, before operating on them with the response model. The markers, linearly spaced in phase, denote the phase resolution.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. We then call the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;cos_inclination&#39;] = math.cos(1.0)
+
+star.update()
+photosphere.integrate(energies, threads=1)
+
+XpsiPlot.plot_1d_pulse(signal=None,
+                       photosphere=photosphere,
+                       photosphere_phases=hot.phases_in_cycles)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_76_0.png" src="_images/Modeling_without_statistics_76_0.png" />
+</div>
+</div>
+<p>Notice the solid pulses without markers are unchanged from the plot a few cells above, and can be used to guide the eye to the effect of a change in Earth inclination.</p>
+<p>Below we print crude representations of the cell meshes spanning each hot region. The elements of a mesh cell-area array which are finite are not all identical: at the boundary of a hot region the proper area elements are smaller because of partial coverage by radiating material. The sum of all finite proper areas effectively equals the total proper area within a hot-region boundary.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XpsiPlot.plot_meshes(regions=hot.objects)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Plotting the meshes for 2 regions, with 1 temperatures
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_79_1.png" src="_images/Modeling_without_statistics_79_1.png" />
+</div>
+</div>
+<p>Note that the lowest colatitude row is at zero on the y-axis.</p>
+<p>Now, let’s compute the incident specific flux signal normalised to the maximum and plot a pulse in two dimensions.</p>
+<p>Note that if want to obtain the specific flux in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV instead, the output of <code class="docutils literal notranslate"><span class="pre">photosphere.signal</span></code> needs to be divided by distance squared, where distance is measured in meters.</p>
+<p>Also note that we can interpolate the signal in phase as follows.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi.tools import phase_interpolator
+
+# Interpolation in phase with 500 phase bins
+phases = np.linspace(0.0, 1, 500)
+
+# Interpolating and summing spot1 (in photosphere.signal[0]) and spot2 (in photosphere.signal[1])
+# with their respective signal phase shifts.
+
+# SPOT 1 + SPOT 2
+signal_photosphere = phase_interpolator(phases, hot.phases_in_cycles[0], photosphere.signal[0][0], hot[&#39;p__phase_shift&#39;]) +\
+                     phase_interpolator(phases, hot.phases_in_cycles[0], photosphere.signal[1][0], hot[&#39;s__phase_shift&#39;])
+
+XpsiPlot.plot_2d_pulse(signal_photosphere,
+                       x=phases,
+                       y=energies,
+                       rotations=5,
+                       ylabel=r&#39;Energy (keV)&#39;,
+                       cbar_label=r&#39;Signal (normalized by maximum)&#39;,
+                       yticks=[0.2, 0.5, 1.0, 2.0],
+                       normalized=True,
+                      )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_82_0.png" src="_images/Modeling_without_statistics_82_0.png" />
+</div>
+</div>
+<p>Now we increase the phase resolution, and plot a single rotational pulse:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for obj in hot.objects:
+    obj.set_phases(num_leaves = 1024)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star.update()
+photosphere.integrate(energies, threads=1)
+
+# Interpolation in phase with 500 phase bins
+phases = np.linspace(0.0, 1, 500)
+
+# Interpolating and summing spot1 (in photosphere.signal[0]) and spot2 (in photosphere.signal[1])
+# with their respective signal phase shifts.
+
+# SPOT 1 + SPOT 2
+signal_photosphere = phase_interpolator(phases, hot.phases_in_cycles[0], photosphere.signal[0][0], hot[&#39;p__phase_shift&#39;]) +\
+                     phase_interpolator(phases, hot.phases_in_cycles[0], photosphere.signal[1][0], hot[&#39;s__phase_shift&#39;])
+
+XpsiPlot.plot_2d_pulse(signal_photosphere,
+                       x=phases,
+                       y=energies,
+                       rotations=1,
+                       ylabel=r&#39;Energy (keV)&#39;,
+                       cbar_label=r&#39;Signal (normalized by maximum)&#39;,
+                       yticks=[0.2, 0.5, 1.0, 2.0],
+                       normalized=True,
+                      )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_85_0.png" src="_images/Modeling_without_statistics_85_0.png" />
+</div>
+</div>
+<p>Let’s iterate over a monotonically increasing set of values of the hot-region angular radius.</p>
+<p>For objects that derive from <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> we can get the current parameter vector in several ways:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.4,
+ 12.5,
+ 0.2,
+ 0.5403023058681398,
+ 0.0,
+ 1.0,
+ 0.075,
+ 6.2,
+ 0.025,
+ 2.141592653589793,
+ 0.2]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star() == star.vector # possible shortcut to save some characters
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>Finally, let’s play with some geometric parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure(figsize=(7,7))
+ax = fig.add_subplot(111)
+ax.set_ylabel(&#39;photons/cm$^2$/s/keV (normalised by maxima)&#39;)
+ax.set_xlabel(&#39;Phase [cycles]&#39;)
+
+for obj in hot.objects:
+    obj.set_phases(num_leaves = 256)
+
+# let&#39;s play with the angular radius of the primary hot region
+angular_radii = np.linspace(0.01, 1.0, 10)
+
+star[&#39;cos_inclination&#39;] = math.cos(1.25)
+
+for angular_radius in angular_radii:
+    star[&#39;p__super_radius&#39;] = angular_radius # play time
+    star.update()
+    photosphere.integrate(energies, threads=3)
+    temp = np.sum(photosphere.signal[0][0] + photosphere.signal[1][0], axis=0)
+    _ = ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), &#39;k-&#39;, lw=0.5)
+
+star[&#39;cos_inclination&#39;] = math.cos(1.0)
+
+for angular_radius in angular_radii:
+    star[&#39;p__super_radius&#39;] = angular_radius
+    star.update()
+    photosphere.integrate(energies, threads=3)
+    temp = np.sum(photosphere.signal[0][0] + photosphere.signal[1][0], axis=0)
+    _ = ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), &#39;r-&#39;, lw=0.5)
+
+star[&#39;cos_inclination&#39;] = math.cos(0.5)
+
+for angular_radius in angular_radii:
+    star[&#39;p__super_radius&#39;] = angular_radius
+    star.update()
+    photosphere.integrate(energies, threads=3)
+    temp = np.sum(photosphere.signal[0][0] + photosphere.signal[1][0], axis=0)
+    _ = ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), &#39;b-&#39;, lw=0.5)
+
+XpsiPlot.veneer((0.05,0.2), (0.05,0.2), ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_91_0.png" src="_images/Modeling_without_statistics_91_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Imaging">
+<h2>Imaging<a class="headerlink" href="#Imaging" title="Link to this heading"></a></h2>
+<p>We can also image the photosphere to improve visualisation of the signal generation process. This is very brief: a more details are provided in the <strong>Global surface emission</strong> tutorial.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spacetime.a = 0.0 # spacetime spin parameter (~angular momentum)
+spacetime.q = 0.0 # spacetime mass quadrupole moment
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sky_map_kwargs = {&#39;panel_indices&#39;: (0,1,2,3,4,5),
+                  &#39;num_levels&#39;: 100, # in intensity field rendering
+                  &#39;colormap&#39;: cm.Purples_r,   # a colormap like this will make the lowest finite
+                  &#39;phase_average&#39;: False,     # intensity distinct from the black zero-intensity
+                  &#39;annotate_energies&#39;: True,  # background from the surface and behind the star
+                  &#39;energy_annotation_format&#39;: &#39;[%.2f keV]&#39;,
+                  &#39;annotate_location&#39;: (0.025,0.025)}
+
+animate_kwargs = {&#39;cycles&#39;: 8, &#39;fps&#39;: 32}
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># later we will choose a higher phase resolution in
+# order to phase-average, because it reduces artefacts
+# that manifest due to the hard boundary of the hot regions
+for obj in hot.objects:
+    obj.set_phases(num_leaves = 96) # animation will have 3 second period
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>star[&#39;p__super_radius&#39;] = 0.1
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>class CustomPhotospherePlotter(xpsi.PhotospherePlotter):
+    &quot;&quot;&quot; Implement method for imaging.&quot;&quot;&quot;
+
+    @property
+    def global_variables(self):
+        &quot;&quot;&quot; This method is needed if we also want to invoke the image-plane signal simulator. &quot;&quot;&quot;
+
+        return np.array([self.photosphere[&#39;p__super_colatitude&#39;],
+                          self.photosphere[&#39;p__phase_shift&#39;] * 2.0 * math.pi,
+                          self.photosphere[&#39;p__super_radius&#39;],
+                          0.0, #self[&#39;p__cede_colatitude&#39;],
+                          0.0, #self[&#39;p__phase_shift&#39;] * 2.0 * math.pi - self[&#39;p__cede_azimuth&#39;],
+                          0.0, #self[&#39;p__cede_radius&#39;],
+                          self.photosphere[&#39;s__super_colatitude&#39;],
+                          (self.photosphere[&#39;s__phase_shift&#39;] + 0.5) * 2.0 * math.pi,
+                          self.photosphere[&#39;s__super_radius&#39;],
+                          0.0, #self[&#39;s__cede_colatitude&#39;],
+                          0.0, #(self[&#39;s__phase_shift&#39;] + 0.5) * 2.0 * math.pi - self[&#39;s__cede_azimuth&#39;],
+                          0.0, #self[&#39;s__cede_radius&#39;],
+                          self.photosphere[&#39;p__super_temperature&#39;],
+                          0.0, #self[&#39;p__cede_temperature&#39;],
+                          self.photosphere.hot.objects[1][&#39;s__super_temperature&#39;],
+                          0.0]) #self[&#39;s__cede_temperature&#39;]])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plotter = CustomPhotospherePlotter(photosphere)
+plotter.image(reimage = True,
+                  cache_intensities = 1.0, # cache size limit in GBs
+                  energies = np.array([0.01,0.1,0.5,1.0,2.0,5.0]),
+                  phases = hot.phases_in_cycles[0] * _2pi,
+                  sqrt_num_rays = 400,
+                  threads = 4,
+                  max_steps = 100000,
+                  epsrel_ray = 1.0e-12,
+                  plot_sky_maps = True, # activate if you want to plot frames
+                  sky_map_kwargs = sky_map_kwargs,
+                  animate_sky_maps = True, # activate if you want to animate
+                  free_memory = True, # try to free ray-map/intensity cache memory before animating
+                  animate_kwargs = animate_kwargs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz] = 3.000e+02, The phase of the hot region, a periodic parameter [cycles] = 0.000e+00, The colatitude of the centre of the superseding region [radians] = 1.000e+00, The angular radius of the (circular) superseding region [radians] = 1.000e-01, log10(superseding region effective temperature [K]) = 6.200e+00, The phase of the hot region, a periodic parameter [cycles] = 2.500e-02, The colatitude of the centre of the superseding region [radians] = 2.142e+00, The angular radius of the (circular) superseding region [radians] = 2.000e-01]
+Imaging the star...
+Warning: a ray map has not been cached... tracing new ray set...
+Commencing ray tracing and imaging...
+Imaging the star and computing light-curves...
+Calculating image plane boundary...
+Image plane semi-major: 1.00
+Image plane semi-minor: 1.00
+Thread 0 is tracing annulus #0 of rays.
+Thread 0 is tracing annulus #100 of rays.
+Thread 0 is tracing annulus #200 of rays.
+Thread 0 is tracing annulus #300 of rays.
+Warning: cosine aberrated surface zenith angle = -1.55991567e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -9.39012537e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -8.31628268e-05...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -6.39549950e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -5.11681429e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -3.07033381e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -3.07255372e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -5.17969130e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -6.48373520e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -8.50120359e-05...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -1.02009401e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -1.69951233e-03...
+Warning: forcing the aberrated ray to be tangential.
+
+Global ray map computed.
+Coordinates transformed from Boyer-Lindquist to spherical.
+Commencing imaging...Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
+Plotting intensity sky maps...
+Normalising each sky map panel separately...
+Normalised sky map panels separately.
+Rendering image numbers [1, 10]...
+Rendering image numbers (10, 20]...
+Rendering image numbers (20, 30]...
+Rendering image numbers (30, 40]...
+Rendering image numbers (40, 50]...
+Rendering image numbers (50, 60]...
+Rendering image numbers (60, 70]...
+Rendering image numbers (70, 80]...
+Rendering image numbers (80, 90]...
+Rendering image numbers (90, 100]...
+Intensity sky maps plotted.
+Animating intensity sky maps...
+Writing to disk: ./images/skymap_animated.mp4...
+Intensity sky maps animated.
+Star imaged.
+</pre></div></div>
+</div>
+<p>If getting <code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">unknown</span> <span class="pre">file</span> <span class="pre">extension:</span> <span class="pre">.mp4</span></code> from the code block above, try installing ffmpeg e.g., with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">conda-forge/label/gcc7::ffmpeg&quot;</span></code> and then re-start the kernel and re-run the notebook.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%%HTML
+&lt;div align=&quot;middle&quot;&gt;
+&lt;video width=&quot;100%&quot; controls loop&gt;
+    &lt;source src=&quot;images/skymap_animated.mp4&quot; type=&quot;video/mp4&quot;&gt;
+&lt;/video&gt;&lt;/div&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div align="middle">
+<video width="100%" controls loop>
+    <source src="images/skymap_animated.mp4" type="video/mp4">
+</video></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!mkdir images/frames_twospots
+!mv images/*.png images/frames_twospots/.
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+mkdir: impossible de créer le répertoire «images/frames_twospots»: Le fichier existe
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from IPython.display import Image
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Image(&quot;./images/frames_twospots/skymap_0.png&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_104_0.png" src="_images/Modeling_without_statistics_104_0.png" />
+</div>
+</div>
+<p>We freed memory above before animating, and thus lost the cached ray map and intensity cache. The ray map will now be recomputed, and the intensities cached again:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sky_map_kwargs[&#39;phase_average&#39;] = True
+# only one set of panels so why not choose higher res.?
+sky_map_kwargs[&#39;num_levels&#39;] = 500
+
+for obj in hot.objects:
+    obj.set_phases(num_leaves = 260)
+
+plotter.image(reimage = True,
+                  cache_intensities = 1.0, # cache size limit in GBs
+                  energies = np.array([0.01,0.1,0.5,1.0,2.0,5.0]),
+                  phases = hot.phases_in_cycles[0] * _2pi,
+                  sqrt_num_rays = 400,
+                  threads = 4,
+                  max_steps = 100000,
+                  epsrel_ray = 1.0e-12,
+                  plot_sky_maps = True,
+                  sky_map_kwargs = sky_map_kwargs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imaging the star...
+Warning: a ray map has not been cached... tracing new ray set...
+Commencing ray tracing and imaging...
+Imaging the star and computing light-curves...
+Calculating image plane boundary...
+Image plane semi-major: 1.00
+Image plane semi-minor: 1.00
+Thread 0 is tracing annulus #0 of rays.
+Thread 0 is tracing annulus #100 of rays.
+Thread 0 is tracing annulus #200 of rays.
+Thread 0 is tracing annulus #300 of rays.
+Warning: cosine aberrated surface zenith angle = -1.55991567e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -9.39012537e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -8.31628268e-05...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -6.39549950e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -5.11681429e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -3.07033381e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -3.07255372e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -5.17969130e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -6.48373520e-04...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -8.50120359e-05...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -1.02009401e-03...
+Warning: forcing the aberrated ray to be tangential.
+Warning: cosine aberrated surface zenith angle = -1.69951233e-03...
+Warning: forcing the aberrated ray to be tangential.
+
+Global ray map computed.
+Coordinates transformed from Boyer-Lindquist to spherical.
+Commencing imaging...Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
+Plotting intensity sky maps...
+Averaging (specific) intensity over rotational phase...
+Averaged (specific) intensity over rotational phase.
+Normalising each sky map panel separately...
+Normalised sky map panels separately.
+Rendering phase-averaged images...
+Intensity sky maps plotted.
+Star imaged.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>!mv images/skymap_0.png images/frames_twospots/skymap_phase_averaged.png
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Image(&quot;images/frames_twospots/skymap_phase_averaged.png&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Modeling_without_statistics_108_0.png" src="_images/Modeling_without_statistics_108_0.png" />
+</div>
+</div>
+<p>Artefacts are not very discernable, but can be further reduced with a higher phase resolution at higher memory and time cost.</p>
+</section>
+<section id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading"></a></h2>
+<p>In this notebook we constructed a model star and simulated some pulsed X-ray signals.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Surface_radiation_field_tools.html" class="btn btn-neutral float-left" title="Surface radiation field tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Polarization.html" class="btn btn-neutral float-right" title="Polarization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

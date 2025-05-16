@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Likelihood &mdash; x-psi 3.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c3365b21"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Signal" href="signal.html" />
+    <link rel="prev" title="ParameterSubspace" href="parameterSubspace.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="likelihood_api.html">Likelihood API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Likelihood</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Likelihood.Likelihood"><code class="docutils literal notranslate"><span class="pre">Likelihood</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.__call__"><code class="docutils literal notranslate"><span class="pre">Likelihood.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.__str__"><code class="docutils literal notranslate"><span class="pre">Likelihood.__str__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.check"><code class="docutils literal notranslate"><span class="pre">Likelihood.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.llzero"><code class="docutils literal notranslate"><span class="pre">Likelihood.llzero</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.random_near_llzero"><code class="docutils literal notranslate"><span class="pre">Likelihood.random_near_llzero</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.signals"><code class="docutils literal notranslate"><span class="pre">Likelihood.signals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.star"><code class="docutils literal notranslate"><span class="pre">Likelihood.star</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.synthesise"><code class="docutils literal notranslate"><span class="pre">Likelihood.synthesise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xpsi.Likelihood.Likelihood.threads"><code class="docutils literal notranslate"><span class="pre">Likelihood.threads</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="likelihood_api.html">Likelihood API</a></li>
+      <li class="breadcrumb-item active">Likelihood</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/likelihood.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="likelihood">
+<span id="module-xpsi.Likelihood"></span><span id="id1"></span><h1>Likelihood<a class="headerlink" href="#likelihood" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> are called by worker sampling
+processes for evaluation of a likelihood function.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Likelihood.</span></span><span class="sig-name descname"><span class="pre">Likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">star</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_rel_num_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llzero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1e+90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">externally_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a></p>
+<p>A container for all objects related to likelihood evaluation.</p>
+<p>A collective for objects pertaining to a statistical analysis of
+X-ray signals. These objects include X-ray data (sub)sets, the model
+instruments used to acquire these data sets, and the model star and
+model backgrounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>star</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>. This instance is the model star.</p></li>
+<li><p><strong>signals</strong> (<em>list</em>) – <p>Either:</p>
+<blockquote>
+<div><ul>
+<li><p>a single <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance</p></li>
+<li><p>a list of <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances</p></li>
+<li><p>a list of lists of <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>num_energies</strong> (<em>float</em>) – Number of energies to compute specific photon flux signals at for
+likelihood evaluation. These energies will be distributed linearly
+in logarithmic space within the union of waveband coverages
+achieved by some set of instruments. Gaps in waveband coverage will
+be skipped.</p></li>
+<li><p><strong>fast_rel_num_energies</strong> (<em>float</em>) – Fraction of the normal number of energies to use in <em>fast</em> mode.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – The number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for integration. The default
+number of threads used by low-level integration routines is <code class="docutils literal notranslate"><span class="pre">1</span></code>. The
+number can be increased if the parallelisation paradigm on a cluster
+is changed such that, e.g., per node there is one thread per CPU,
+instead of one <code class="docutils literal notranslate"><span class="pre">OpenMPI</span></code> process. It is recommended that
+<a class="reference internal" href="#xpsi.Likelihood.Likelihood.threads" title="xpsi.Likelihood.Likelihood.threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threads</span></code></a> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; more threads are useful when performing
+integrals at high resolution, but not necessarily when integrating
+<em>many</em> times as when sampling, because the MPI parallelisation
+paradigm is invoked.</p></li>
+<li><p><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for MultiNest. Points whose
+log-likelihood is lower than this value are ignored, which is useful
+for defining complicated priors.</p></li>
+<li><p><strong>externally_updated</strong> (<em>bool</em>) – Update the parameter values upon call to the likelihood object?
+If so, then pass <code class="docutils literal notranslate"><span class="pre">False</span></code>. A parameter vector then needs to be passed
+to the likelihood object. Otherwise, safely assume that the
+new parameter values are set externally, e.g., in a prior object
+when inverse sampling the prior for nested sampling.</p></li>
+<li><p><strong>prior</strong> (<em>obj</em>) – Instance of subclass of <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a>.</p></li>
+<li><p><strong>max_energy</strong> (<em>float</em>) – Optional maximum of energy set for signal computation. If no maximum
+is requested (the default), then the maximum is equal to the maximum
+energy from the loaded instrument response models.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reinitialise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the logarithm of the joint likelihood over all pulsations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>list</em>) – Parameter vector if parameters not updated externally.</p></li>
+<li><p><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call <code class="docutils literal notranslate"><span class="pre">self.reinitialise()</span></code>?</p></li>
+<li><p><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.
+To faciliate this, all parameter caches are cleared.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The logarithm of the likelihood.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__str__" title="Link to this definition"></a></dt>
+<dd><p>Get a summary of the parameters constituting the subspace.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hypercube_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loglikelihood_call_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_loglike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_loglike</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logprior_call_vals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_logprior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_logprior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physical_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numpy_allclose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.check" title="Link to this definition"></a></dt>
+<dd><p>Perform checks on the likelihood evaluator and the prior density.</p>
+<p>Can be called from <code class="xref py py-func docutils literal notranslate"><span class="pre">nested()</span></code> to execute a check before
+automatically commencing a sampling process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hypercube_points</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – A set of <code class="docutils literal notranslate"><span class="pre">n</span></code> points in the unit hypercube, where <code class="docutils literal notranslate"><span class="pre">m</span></code> is
+dimensionality (<code class="docutils literal notranslate"><span class="pre">self.num_params</span></code>) of the sampling space – i.e.,
+of the hypercube. If you want to pass the physical points instead,
+just pass <code class="docutils literal notranslate"><span class="pre">None</span></code> here.</p></li>
+<li><p><strong>physical_points</strong> (<em>optional</em><em>(</em><em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em><em>)</em>) – A set of <code class="docutils literal notranslate"><span class="pre">n</span></code> points in the physical parameter space, where
+<code class="docutils literal notranslate"><span class="pre">m</span></code> is dimensionality (<code class="docutils literal notranslate"><span class="pre">self.num_params</span></code>) of the sampling space.
+The <code class="docutils literal notranslate"><span class="pre">hypercube_points</span></code>, if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, will be ignored.</p></li>
+<li><p><strong>force_update</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force everything to be re-calculated regardless of what was computed before.
+This can be used to prevent errors in cases when the automatic check 
+for update need is not working as intended.</p></li>
+<li><p><strong>numpy_allclose</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Determine whether the allclose function of numpy is used when evaluating
+the closeness of the given and calculated likelihood. By default, a fallback
+implementation is used, which also prints the likelihood values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.llzero">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">llzero</span></span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.llzero" title="Link to this definition"></a></dt>
+<dd><p>Get the minimum log-likelihood setting passed to MultiNest.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.random_near_llzero">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_near_llzero</span></span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.random_near_llzero" title="Link to this definition"></a></dt>
+<dd><p>Get the minimum log-likelihood scaled randomly by up to an
+order of magnitude.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.signals">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signals</span></span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.signals" title="Link to this definition"></a></dt>
+<dd><p>Get the list of <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.star">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">star</span></span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.star" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.synthesise">
+<span class="sig-name descname"><span class="pre">synthesise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reinitialise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.synthesise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.synthesise" title="Link to this definition"></a></dt>
+<dd><p>Synthesise pulsation data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>list</em>) – Parameter vector.</p></li>
+<li><p><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call <code class="docutils literal notranslate"><span class="pre">self.reinitialise()</span></code>?</p></li>
+<li><p><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments propagated to custom signal synthesis methods.
+Examples of such arguments include exposure times or
+required total count numbers (see example notebooks).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Likelihood.Likelihood.threads">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">threads</span></span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.threads" title="Link to this definition"></a></dt>
+<dd><p>Get the number of threads spawned for integration.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="parameterSubspace.html" class="btn btn-neutral float-left" title="ParameterSubspace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="signal.html" class="btn btn-neutral float-right" title="Signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
