@@ -86,6 +86,7 @@ class Signal(ParameterSubspace):
                  stokes = "I",
                  min_channel = 0,
                  max_channel = -1,
+                 tolerance = 1e-4,
                  *args,
                  **kwargs):
 
@@ -147,7 +148,7 @@ class Signal(ParameterSubspace):
         if hasattr( self._data , 'instrument' ) and hasattr( self._instrument , 'name' ):
             assert self._data.instrument == self._instrument.name, 'Data and Instrument come from different instruments'
 
-        self._identify_waveband()
+        self._identify_waveband( tolerance=tolerance )
 
         if background is not None:
             if not isinstance(background, Background):
@@ -317,14 +318,18 @@ class Signal(ParameterSubspace):
                 the instrument object.
 
             """
-            a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0]
-            b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0]
+
+            # Check that the tolerance is between 0 and 1
+            assert 0. <= tolerance <= 1. , 'tolerance for waveband must be between 0 and 1'
+
+            # Get the first and last channels of the data in the instrument responseFind
+            a_instrument = self._instrument_index_range_channels[0]
+            b_instrument = self._instrument_index_range_channels[-1] - 1
 
             # Find the channels that are not empty
-            a, b = a_instrument, b_instrument
-            while not self._instrument.matrix[a,:].any():
-                a += 1
-                if a == b_instrument:
+            while not self._instrument.matrix[a_instrument,:].any():
+                a_instrument += 1
+                if a_instrument == b_instrument:
                     raise IndexError('Could not find a non-zero channel in the redistribution to stop at.')
 
             # Now find the first non-zero energy inputs
@@ -332,18 +337,18 @@ class Signal(ParameterSubspace):
                 while self._instrument.matrix[i,j] == 0.0:
                     j += k
                 return j
-            a = search(a, 0, 1)
+            min_energy_index = search(a_instrument, 0, 1)
 
             # Get the cumulative of the response at the last channel
-            RSP_cumulative = self._instrument.matrix[ self._instrument_index_range_channels[-1] ].cumsum()
+            RSP_cumulative = self._instrument.matrix[ b_instrument ].cumsum()
 
-            # Take the first energy index where the cumulative of the redistribution is above the threshold
+            # Find the first energy index where the cumulative of the redistribution is above the threshold
             threshold = ( 1. - tolerance ) * RSP_cumulative[-1]
-            max_energy_index = _np.where( RSP_cumulative > threshold )[0][0]
+            max_energy_index = _np.where( RSP_cumulative >= threshold )[0][0]
 
             # Set the waveband
-            self._input_interval_range = (a, max_energy_index)
-            self._energy_edges = self._instrument.energy_edges[a:max_energy_index + 1]
+            self._input_interval_range = (min_energy_index, max_energy_index + 1)
+            self._energy_edges = self._instrument.energy_edges[a_instrument:max_energy_index + 2]
             self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
 
     @property
