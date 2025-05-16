@@ -12,6 +12,8 @@ from libc.math cimport pow, log, floor, fabs
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
+from ..tools.core cimport are_equal
+
 from GSL cimport (gsl_interp,
                    gsl_interp_alloc,
                    gsl_interp_init,
@@ -152,7 +154,7 @@ def poisson_likelihood_given_background(double exposure_time,
                 a = phases[j] + phase_shift
                 b = phases[j+1] + phase_shift
 
-                if b - a == 1.0:
+                if are_equal(b - a, 1.0):
                     a = 0.0
                     b = 1.0
                 else:

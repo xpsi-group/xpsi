@@ -25,6 +25,8 @@ from xpsi.pixelmesh.RK_IP2S_tracer cimport RK
 from xpsi.pixelmesh.surfaceBisection cimport ZABB
 from xpsi.pixelmesh.get_IP_radius cimport compute_imagePlane_radius
 
+from ..tools.core cimport are_equal
+
 cdef int SUCCESS = 0
 
 cdef double _2pi = 2.0 * M_PI
@@ -141,7 +143,7 @@ cdef int compute_globalRayMap(size_t numThreads,
 
     #printf("\nOrigin (Z, ABB): (%.8e, %.8e)", MAP.ORIGIN[4], MAP.ORIGIN[5])
 
-    if GEOM.a == 0.0 and GEOM.kappa == 0.0:
+    if are_equal(GEOM.a, 0.0) and are_equal(GEOM.kappa, 0.0):
         # calibration for Schwarzschild equatorial b=0 ray
         MAP.refRayTime = GEOM.d - GEOM.R_eq
         MAP.refRayTime += GEOM.r_s * log((GEOM.d - GEOM.r_s) / (GEOM.R_eq - GEOM.r_s))

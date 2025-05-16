@@ -1,6 +1,7 @@
 cdef size_t atmos_extension = 1
 
 from libc.stdio cimport printf
+from ..tools.core cimport are_equal
 
 #Blackbody
 from xpsi.surface_radiation_field.hot_BB cimport (init_hot_BB,
@@ -160,7 +161,7 @@ cdef double eval_hot_I(size_t THREAD,
             I_nom = I_nom + mu_imu*I_hot_imu*dmu
             #I_denom_test = I_denom_test + mu_imu*dmu
             #printf("%d,%.8e,%.8e,%.8e,%.8e,%.8e\n",imu,mu_imu,dmu,I_denom,I_denom_test,I_denom_test*I_nsx_imu)
-        if I_denom == 0.0:
+        if are_equal(I_denom, 0.0):
             I_hot_beam = 0.0
         else:
             I_hot_beam = (I_nom/I_denom)*(1.0+abb*((E)**cbb)*mu+bbb*((E)**dbb)*mu**2)*I_hot

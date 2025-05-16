@@ -9,6 +9,8 @@ cimport numpy as np
 from libc.stdlib cimport malloc, free
 from libc.math cimport exp, pow, log, sqrt, fabs, floor
 
+from ..tools.core cimport are_equal
+
 ctypedef np.uint8_t uint8
 
 from GSL cimport (gsl_interp,
@@ -114,7 +116,7 @@ cdef double marginal_integrand(double B, void *params) noexcept nogil:
         c = a.SCALE * (a.star[j] + B)
         if c > 0.0:
             x += a.data[j] * log(c) - c
-        elif c == 0.0 and a.data[j] == 0.0:
+        elif are_equal(c, 0.0) and are_equal(a.data[j], 0.0):
             #x += log(1) = 0
             pass
         else:
@@ -388,7 +390,7 @@ def eval_marginal_likelihood(double exposure_time,
                     pa = phases[j] + phase_shift
                     pb = phases[j+1] + phase_shift
 
-                    if pb - pa == 1.0:
+                    if are_equal(pb - pa, 1.0):
                         pa = 0.0
                         pb = 1.0
                     else:
@@ -453,7 +455,7 @@ def eval_marginal_likelihood(double exposure_time,
         a.star = &(STAR[i,0])
         a.T_exp = exposure_time
 
-        if av_DATA == 0.0 and av_STAR == 0.0:
+        if are_equal(av_DATA, 0.0) and are_equal(av_STAR, 0.0):
             # zero counts in channel and zero hot region signal
 
             lower = 0.0
@@ -473,15 +475,15 @@ def eval_marginal_likelihood(double exposure_time,
             if B <= B_min:
                 min_counts = -1.0
                 for j in range(0, a.n):
-                    if STAR[i,j] == 0.0:
+                    if are_equal(STAR[i,j], 0.0):
                         min_counts = -2.0
                         break
-                if min_counts == -2.0:
+                if are_equal(min_counts, -2.0):
                     for j in range(0, a.n):
-                        if (min_counts == -2.0 and counts[i,j] > 0.0) or (0.0 < counts[i,j] < min_counts):
+                        if (are_equal(min_counts, -2.0) and counts[i,j] > 0.0) or (0.0 < counts[i,j] < min_counts):
                             min_counts = counts[i,j]
-                if min_counts != -1.0:
-                    if min_counts == -2.0:
+                if not are_equal(min_counts, -1.0):
+                    if are_equal(min_counts, -2.0):
                         B = 0.0
                         B_min = 0.0
                     else:
@@ -558,7 +560,7 @@ def eval_marginal_likelihood(double exposure_time,
                 c = a.SCALE * (a.star[j] + B_for_integrand)
                 if c > 0.0:
                     a.A += a.data[j] * log(c) - c
-                elif c == 0.0 and a.data[j] == 0.0:
+                elif are_equal(c, 0.0) and are_equal(a.data[j], 0.0):
                     #a.A += log(1)
                     pass
                 else:

@@ -16,6 +16,8 @@ from .energy_interpolator import energy_interpolator
 from .synthesise import synthesise_exposure
 from .synthesise import synthesise_given_total_count_number
 
+from libc.math cimport fabs
+
 __interpolants__ = {'Akima': 0, 'Steffen': 1, 'Cubic': 2}
 
 def get_phase_interpolant():
@@ -112,3 +114,9 @@ cdef const gsl_interp_type* _get_energy_interpolant() except *:
             return gsl_interp_cspline
         else:
             raise ValueError('Invalid eneergy interpolant setting.')
+
+cdef bint are_equal(double x, double y, double epsilon = 1.0e-12) noexcept nogil:
+    if(fabs(x - y) < epsilon):
+        return True
+    else:
+        return False
