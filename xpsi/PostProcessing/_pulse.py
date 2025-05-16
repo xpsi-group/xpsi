@@ -448,7 +448,7 @@ class PulsePlot(SignalPlot):
         incident = self._ax.pcolormesh(self._phase_edges,
                                        ref.energy_edges,
                                        total,
-                                       cmap = cm.get_cmap(self._incident_cmap),
+                                       cmap = plt.get_cmap(self._incident_cmap),
                                        linewidth = 0,
                                        rasterized = self._rasterized)
 
@@ -528,7 +528,7 @@ class PulsePlot(SignalPlot):
         registered = self._ax_registered.pcolormesh(self._phases,
                                       ref.data.channels,
                                       total,
-                                      cmap = cm.get_cmap(self._registered_cmap),
+                                      cmap = plt.get_cmap(self._registered_cmap),
                                       linewidth = 0,
                                       rasterized = self._rasterized)
 
