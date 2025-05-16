@@ -64,7 +64,7 @@ For more information, you can take a look at the documentation's
 make sure you take a look at the `Code of Conduct <https://xpsi-group.github.io/xpsi/code_of_conduct.html>`_. 
 
 
-Citing XPSI
+Citing X-PSI
 -----------
 If you find this package useful in your research, please provide the appropriate acknowledgment 
 and citation. `Our documentation <https://xpsi-group.github.io/xpsi/citation.html>`_ provides 
