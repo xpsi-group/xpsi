@@ -135,8 +135,8 @@ cdef void* init_hot_Num4D(size_t numThreads,
         # Full hypercube: 4^5 = 1024 intensities
         D.acc.VEC_CACHE[T] = <double*> malloc(D.p.ndims * sizeof(double))
         
-         # Initialize base nodes and cache for each dimension
-         for i in range(D.p.ndims):
+        # Initialize base nodes and cache for each dimension
+        for i in range(D.p.ndims):
              D.acc.BN[T][i] = 0  # Set initial base nodes to zero
              D.acc.VEC_CACHE[T][i] = D.p.params[i][1]  # Initialize with 
              # atmosphere value
