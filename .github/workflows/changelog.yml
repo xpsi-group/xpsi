@@ -2,28 +2,37 @@ name: changelog
 
 on:
   pull_request:
-    types: [labeled, closed]
+    # fire when the PR is created, updated, reopened, or (re-)labelled
+    types: [opened, synchronize, reopened, labeled]
+
 jobs:
   check-changelog-entry:
-    if: github.event.action == 'labeled' && github.event.label.name == 'ready-for-changelog'
+    # run on every PR event **except** when the PR already carries
+    # the “no-changelog-needed” label
+    if: |
+      !contains(github.event.pull_request.labels.*.name, 'no-changelog-needed')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v3
+
       - name: Check for changelog fragments
         env:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           if compgen -G "changelog.d/$PR_NUMBER.*.rst"; then
-            echo "Changelog exists :)"
+            echo "Changelog entry exists :)"
           else
             echo "Changelog entry not found! :("
             exit 1
           fi
 
   generate-changelog:
-    runs-on: ubuntu-latest
+    # only start when the “ready-for-changelog” label is added
+    # **and** the fragment check above passed
+    if: github.event.action == 'labeled' && github.event.label.name == 'ready-for-changelog'
     needs: check-changelog-entry
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
@@ -32,8 +41,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install changelog dependencies
-        run: |
-          pip install towncrier
+        run: pip install towncrier
 
       - name: Sync with latest PR branch before updating changelog
         run: |
@@ -44,7 +52,7 @@ jobs:
       - name: Run Towncrier to generate changelog
         run: |
           VERSION=$(grep -oP "^__version__\s*=\s*['\"]\K[^'\"]+" xpsi/__init__.py | cut -d. -f1,2)
-          towncrier build --version $VERSION --yes
+          towncrier build --version "$VERSION" --yes
 
       - name: Set up Git identity
         run: |
