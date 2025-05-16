@@ -1,0 +1,1 @@
+The samplers names ``ensemble``, ``nested`` and ``ultranested`` are now deprecated.  Use now ``run_emcee``, ``run_multinest`` and ``run_ultranest``.
