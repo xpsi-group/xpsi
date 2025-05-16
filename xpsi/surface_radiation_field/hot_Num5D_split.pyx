@@ -7,7 +7,12 @@
 This module implements 5 dimensional cubic polynomial Lagrangian interpolation.
 Cubic means there are 4 data points in each dimension for which a polynomial 
 will be built (https://en.wikipedia.org/wiki/Lagrange_polynomial). We have been
-using this specifically for AMXPs, which have a 5D atmosphere table.
+using this specifically for AMXPs, which have a 5D atmosphere table. 'split'
+refers to the split atmosphere interpolation methodology for AMXPs, where we
+first interpolate over 5 dimensions te create a reduced atmosphere table. 
+For uniform hotspots, 3 parameters are always constant, so they are reduced
+away. Then, inside the inner loop in the integrator, 2D interpolation is
+called, which is much faster.
 
 Functions:
     - init_hot_Num5D: initialize the memory-space that will be used by the 
@@ -210,8 +215,6 @@ cdef void* init_hot_Num5D(size_t numThreads,
                                                      k * D.p.BLOCKS[2] + 
                                                      l * D.p.BLOCKS[3] + 
                                                      m] = address[0]
-
-
     # Cast for generalised usage in integration routines
     return <void*> D
 
@@ -307,7 +310,7 @@ cdef double eval_hot(size_t THREAD,
         int update_baseNode[5]  # len = ndims
         int CACHE = 0
 
-    cdef double te, tbb, tau # For AMXPs, I have three parameters in VEC
+    cdef double te, tbb, tau # For AMXPs, ther are three parameters in VEC.
     te = VEC[0]
     tbb = VEC[1]
     tau = VEC[2]

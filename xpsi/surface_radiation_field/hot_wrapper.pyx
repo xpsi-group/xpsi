@@ -1,3 +1,29 @@
+"""
+Inside the integrator_*.pyx, the init_hot, free_hot,eval_hot_I, eval_hot_Q, 
+eval_hot_norm functions will be cimported from the hot_wrapper. The hot wrapper
+contains the functionality to select the right numerical interpolators (init, 
+eval and free) based on integer value of atmos_extension, which the integrator
+inherits from top level python and passes through to init_hot. Note also in 
+eval_hot that the VEC (array of atmosphere parameters) can have a varying 
+number of columns depending on the atmosphere, and that difference is accounted
+for here as well.
+
+Functions:
+    - init_hot: selects the right init_hot depending on atmos_extension
+    so that the right atmosphere memory structure is initiated.
+    - free_hot: selects the right free_hot so that the right memory structure
+    is freed.
+    - eval_hot_I: selects the right eval_hot function to evaluate the 
+    intensity. Optionally, beam_opt is also passed along to eval_hot_I to 
+    select the right beaming function.
+    - eval_hot_Q: same as eval_hot_Q but for stokes Q.
+    - eval_hot_norm: selects the right normalisation depending on atmosphere.
+"""
+
+
+
+
+
 cdef size_t atmos_extension = 1
 
 from libc.stdio cimport printf
@@ -34,13 +60,14 @@ from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
                                                      eval_hot_user_Q,
                                                      eval_hot_norm_user)
 
+#5D atmosphere, so far used for the compton slab atmosphere of AMXPs. 
 from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
                                                eval_hot_Num5D_I,
                                                eval_hot_norm_Num5D,
                                                free_hot_Num5D)
 
 
-#----------------------------------------------------------------------->>>
+#---------------------------------------- beam_opt is also passed along to eval_hot_I.------------------------------->>>
 cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) noexcept nogil:
     global atmos_extension
     atmos_extension=atm_ext
