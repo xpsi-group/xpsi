@@ -96,19 +96,7 @@ class NestedBackend(Run):
                                                 transform(samples[i,:ndims],
                                                           old_API=True)
                         saver(f'{filerootpath}-{ext}{filetype}', transformed)
-
-                # .stats file with same root needed, but do not need to modify
-                # the .stats file contents
-                if not _os.path.isfile(filerootpath + '.stats'):
-                    if _os.path.isfile(_filerootpath + '.stats'):
-                        try:
-                            from shutil import copyfile as _copyfile
-                        except ImportError:
-                            pass
-                        else:
-                            _copyfile(_filerootpath + '.stats',
-                                      filerootpath + '.stats')
-                            
+                         
             # assuming multinest for nestcheck if not specified   
             implementation = kwargs.get('implementation', 'multinest')
 
