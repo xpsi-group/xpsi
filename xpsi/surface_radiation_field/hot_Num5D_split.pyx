@@ -525,11 +525,12 @@ cdef double eval_hot_Num5D_Q(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data) noexcept nogil:
+
     """
-    Same as eval_hot_Num5D_I but returns the stokes Q, which doesn't have to
+    Same as eval_hot_2D_I but returns the stokes Q, which doesn't have to
     be above 0. 
     """
-
+    
     return eval_hot(THREAD,E,mu,VEC,data)
 
 
