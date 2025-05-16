@@ -1,0 +1,1 @@
+cmap related deprecation warnings fixed in the signal plots, the projection tool made compatible with py3.9, and a new error message raised in the background plotter if too few samples

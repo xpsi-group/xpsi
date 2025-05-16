@@ -7,11 +7,13 @@ import numpy as np
 cimport numpy as np
 cimport cython
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow, fabs
+from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 from libcpp cimport bool
 import xpsi
+
+from ..tools.core cimport are_equal
 
 from GSL cimport (gsl_function,
                   gsl_integration_workspace,
@@ -53,12 +55,6 @@ cdef double eval_image_deflection(int order, double psi) noexcept nogil:
         return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
     else:
         return <double>(order) * _pi + pow(-1.0, <double>order) * psi
-
-cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) noexcept nogil:
-    if(fabs(x - y) < epsilon):
-        return True
-    else:
-        return False
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
@@ -153,7 +149,7 @@ cdef void rayIntegrator(size_t thread,
         f_outDef.function = &inDef
         f_outLag.function = &inLag
 
-        if compare_double(sin_alpha,1.0):
+        if are_equal(sin_alpha,1.0):
             r_c_over_r_s = 1.0 / r_s_over_R
             w_R = 0.0
         else:
@@ -313,7 +309,7 @@ def compute_rays(size_t N_T,
 
         if r_s_over_R[i] < 2.0/3.0:
             extreme = _pi - asin(sqrt(1.0 - r_s_over_R[i]) * b_phsph_over_r_s * r_s_over_R[i])
-        elif r_s_over_R[i] == 2.0/3.0:
+        elif are_equal(r_s_over_R[i], 2.0/3.0):
             extreme = _pi/2.0
         elif 2.0/3.0 < r_s_over_R[i] < 1.0:
             extreme = asin(sqrt(1.0 - r_s_over_R[i]) * b_phsph_over_r_s * r_s_over_R[i])

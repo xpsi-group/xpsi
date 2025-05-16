@@ -3,6 +3,7 @@ import getdist.plots
 getdist.chains.print_load_details = False
 from ._global_imports import *
 from nestcheck.data_processing import process_samples_array
+from ._handle_hdf5 import *
 
 def getdist_kde(x, samples, weights, **kwargs):
     """
@@ -35,7 +36,7 @@ def getdist_kde(x, samples, weights, **kwargs):
                                                in_place=True)
     return bcknd.get1DDensity('x').Prob(x)
 
-def process_multinest_run(file_root, base_dir, **kwargs):
+def process_multinest_run(file_root, base_dir, filetype, **kwargs):
     """Modified version of nestcheck.data_processing.process_multinest_run().
     Loads data (both .txt and .npy) from a MultiNest run into the nestcheck 
     dictionary format for analysis.
@@ -46,10 +47,6 @@ def process_multinest_run(file_root, base_dir, **kwargs):
 
     Parameters
     ----------
-    dead_points: ndarray
-        Dead points 
-    live_points: ndarray
-        Live points 
     file_root: str
         Root name for output files. When running MultiNest, this is determined
         by the nest_root parameter.
@@ -65,9 +62,14 @@ def process_multinest_run(file_root, base_dir, **kwargs):
         Nested sampling run dict (see the module docstring for more details).
     """
     # Load dead and live points
-    dead = _np.loadtxt(_os.path.join(base_dir, file_root) + 'dead-birth.txt')
-    live = _np.loadtxt(_os.path.join(base_dir, file_root)
-                      + 'phys_live-birth.txt')
+    if filetype == ".hdf5":
+        filepath = file_root.removesuffix('_transformed') + '.hdf5'
+        dead = load_group_from_hdf5(filepath,ext='transformed_dead-birth')
+        live = load_group_from_hdf5(filepath,ext='transformed_phys_live-birth')
+    elif filetype == ".txt":
+        dead = _np.loadtxt(_os.path.join(base_dir, file_root) + 'dead-birth.txt')
+        live = _np.loadtxt(_os.path.join(base_dir, file_root)
+                        + 'phys_live-birth.txt')   
     # Remove unnecessary final columns
     dead = dead[:, :-2]
     live = live[:, :-1]

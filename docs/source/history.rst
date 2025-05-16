@@ -1,3 +1,7 @@
-.. _history:
+History
+===============
 
-.. include:: ../../CHANGELOG.rst
+.. toctree::
+   :maxdepth: 1
+
+   changelog_docs

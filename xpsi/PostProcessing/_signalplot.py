@@ -435,7 +435,7 @@ class SignalPlot(object, metaclass=ABCMeta):
 
         cb = fgivenx.plot.plot(x=x, y=y, z=pmf,
                            ax=ax,
-                           colors=cm.get_cmap(kwargs.get('cmap', self._cmap)),
+                           colors=plt.get_cmap(kwargs.get('cmap', self._cmap)),
                            lines=kwargs.get('lines_on', self._lines_on),
                            rasterize_contours=self._rasterized,
                            smooth=False) # no additional smoothing with kernel

@@ -1,5 +1,6 @@
 from ._global_imports import *
 from ._run import Run
+from ._handle_hdf5 import *
 
 try:
     from getdist.mcsamples import MCSamples
@@ -42,12 +43,10 @@ class NestedBackend(Run):
 
         # check whether to use .hdf5 files or .txt files 
         if _os.path.isfile(filerootpath+'.hdf5'):
-            loader = _np.load
-            saver = _np.save
+            loader = load_group_from_hdf5
             filetype = ".hdf5"
         else:
             loader = _np.loadtxt
-            saver = _np.savetxt
             filetype = ".txt"
             print("Change output files to .npy to speed up post-processing")
 
@@ -64,12 +63,17 @@ class NestedBackend(Run):
                 transformed[:,:2] = samples[:,:2]
                 for i in range(samples.shape[0]):
                     transformed[i,2:] = transform(samples[i,2:], old_API=True)
-                saver(f'{filerootpath}_transformed{filetype}', transformed) # _transformed.txt
+                if filetype == '.txt':
+                    _np.savetxt(f'{filerootpath}_transformed{filetype}', transformed) # _transformed.txt
+                else:
+                    add_transform_group_to_hdf5(filerootpath, transformed, 
+                                                paramnames, f'transformed-{ext}') ## Paramnames is the all param including derived ones e.g. ST.names 
 
         super(NestedBackend, self).__init__(filepath=f'{filerootpath}_transformed{filetype}',**kwargs) # _transformed.txt
 
         if getdist is not None:
             # getdist backend
+            ## ADD hdf5 option here! 
             self._gd_bcknd = MCSamples(root=f'{filerootpath}_transformed',
                              settings=self.kde_settings,
                              sampler='nested',
@@ -83,9 +87,12 @@ class NestedBackend(Run):
         if self.use_nestcheck: # nestcheck backend
             if transform is not None:
                 for ext in ['dead-birth', 'phys_live-birth']:
-                    _exists = _os.path.isfile(f'{filerootpath}_transformed-{ext}.txt') # _transformed-dead-birth.txt
+                    _exists = _os.path.isfile(filerootpath + ext + filetype)
                     if not _exists or overwrite_transformed:
-                        samples = _np.loadtxt(filerootpath + ext + '.txt') # dead-birth.txt
+                        if filetype == ".txt":
+                            samples = loader(f'{filerootpath}_transformed-{ext}{filetype}')
+                        else:
+                            samples = load_group_from_hdf5(filerootpath + filetype, f'transformed_{ext}')
                         transformed = _np.zeros((samples.shape[0],
                                                  samples.shape[1] + ntransform))
                         transformed[:,ndims+ntransform:] = samples[:,ndims:]
@@ -93,19 +100,18 @@ class NestedBackend(Run):
                             transformed[i,:ndims+ntransform] =\
                                                 transform(samples[i,:ndims],
                                                           old_API=True)
-
-                        _np.savetxt(f'{filerootpath}_transformed-{ext}.txt', transformed) # _transformed-dead-birth.txt
-
+                        _np.savetxt(f'{filerootpath}-{ext}{filetype}', transformed)
+                         
             # assuming multinest for nestcheck if not specified   
             implementation = kwargs.get('implementation', 'multinest')
                 
             if implementation == 'multinest':
                 try:
-                    self._nc_bcknd = process_multinest_run(f'{root}_transformed', base_dir)
+                    self._nc_bcknd = process_multinest_run(f'{root}_transformed', base_dir, filetype)
                 except FileNotFoundError:
-                    self._nc_bcknd = process_multinest_run(f'{root}_transformed-', base_dir)
+                    self._nc_bcknd = process_multinest_run(f'{root}_transformed-', base_dir, filetype)
             elif implementation == 'polychord':
-                self._nc_bcknd = process_polychord_run(f'{root}_transformed', base_dir)
+                self._nc_bcknd = process_polychord_run(f'{root}_transformed', base_dir, filetype)
             else:
                 raise ValueError('Cannot process with nestcheck.')
 

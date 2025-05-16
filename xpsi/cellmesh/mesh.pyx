@@ -12,6 +12,7 @@ from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
 from xpsi.cellmesh.mesh_tools cimport *
+from ..tools.core cimport are_equal
 
 cdef double _2pi = 2.0 * M_PI
 cdef double _hpi = 0.5 * M_PI
@@ -182,7 +183,7 @@ def construct_spot_cellMesh(size_t numThreads,
                 super_4[1] = super_4[1] + M_2PI
 
     # exploit symmetry if no superseding region offset
-    if superColatitude == cedeColatitude and superAzimuth == 0.0:
+    if are_equal(superColatitude, cedeColatitude) and are_equal(superAzimuth, 0.0):
         j_max = <size_t>(sqrt_numCell/2)
     else:
         j_max = sqrt_numCell
@@ -316,7 +317,7 @@ def construct_spot_cellMesh(size_t numThreads,
             elif p5 == 1:
                 cellAreas[i,j] = cellArea
 
-            if superColatitude == cedeColatitude and superAzimuth == 0.0:
+            if are_equal(superColatitude, cedeColatitude) and are_equal(superAzimuth, 0.0):
                 cellAreas[i,sqrt_numCell - 1 - j] = cellAreas[i,j]
 
             leftmost = rightmost
