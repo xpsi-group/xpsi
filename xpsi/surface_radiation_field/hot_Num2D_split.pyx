@@ -32,7 +32,7 @@ ctypedef struct ACCELERATE:
     double **SPACE
     double **DIFF
     double **INTENSITY_CACHE
-    double **VEC_CACH
+    double **VEC_CACHE
 
 ctypedef struct DATA:
     const _preloaded *p 	

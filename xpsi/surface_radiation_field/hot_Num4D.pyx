@@ -135,49 +135,49 @@ cdef void* init_hot_Num4D(size_t numThreads,
         # Full hypercube: 4^5 = 1024 intensities
         D.acc.VEC_CACHE[T] = <double*> malloc(D.p.ndims * sizeof(double))
         
-         # Initialize base nodes and cache for each dimension
-         for i in range(D.p.ndims):
-             D.acc.BN[T][i] = 0  # Set initial base nodes to zero
-             D.acc.VEC_CACHE[T][i] = D.p.params[i][1]  # Initialize with 
-             # atmosphere value
-             D.acc.node_vals[T][2 * i] = D.p.params[i][1]   # Store current and
-             # next atmosphere values as node values
-             D.acc.node_vals[T][2 * i + 1] = D.p.params[i][2]
-     
-             # Calculate the reciprocal of the difference for Lagrangian 
-             # interpolation
-             j = 4 * i
-             D.acc.SPACE[T][j] = 1.0 / (D.p.params[i][0] - D.p.params[i][1])
-             D.acc.SPACE[T][j] /= D.p.params[i][0] - D.p.params[i][2]
-             D.acc.SPACE[T][j] /= D.p.params[i][0] - D.p.params[i][3]
+        # Initialize base nodes and cache for each dimension
+        for i in range(D.p.ndims):
+            D.acc.BN[T][i] = 0  # Set initial base nodes to zero
+            D.acc.VEC_CACHE[T][i] = D.p.params[i][1]  # Initialize with 
+            # atmosphere value
+            D.acc.node_vals[T][2 * i] = D.p.params[i][1]   # Store current and
+            # next atmosphere values as node values
+            D.acc.node_vals[T][2 * i + 1] = D.p.params[i][2]
     
-             D.acc.SPACE[T][j + 1] = 1.0 / (D.p.params[i][1] - D.p.params[i][0])
-             D.acc.SPACE[T][j + 1] /= D.p.params[i][1] - D.p.params[i][2]
-             D.acc.SPACE[T][j + 1] /= D.p.params[i][1] - D.p.params[i][3]
-    
-             D.acc.SPACE[T][j + 2] = 1.0 / (D.p.params[i][2] - D.p.params[i][0])
-             D.acc.SPACE[T][j + 2] /= D.p.params[i][2] - D.p.params[i][1]
-             D.acc.SPACE[T][j + 2] /= D.p.params[i][2] - D.p.params[i][3]
-    
-             D.acc.SPACE[T][j + 3] = 1.0 / (D.p.params[i][3] - D.p.params[i][0])
-             D.acc.SPACE[T][j + 3] /= D.p.params[i][3] - D.p.params[i][1]
-             D.acc.SPACE[T][j + 3] /= D.p.params[i][3] - D.p.params[i][2]
-    
-             D.acc.DIFF[T][j] = D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
-             D.acc.DIFF[T][j] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
-             D.acc.DIFF[T][j] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
-    
-             D.acc.DIFF[T][j + 1] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
-             D.acc.DIFF[T][j + 1] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
-             D.acc.DIFF[T][j + 1] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
-    
-             D.acc.DIFF[T][j + 2] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
-             D.acc.DIFF[T][j + 2] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
-             D.acc.DIFF[T][j + 2] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
-    
-             D.acc.DIFF[T][j + 3] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
-             D.acc.DIFF[T][j + 3] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
-             D.acc.DIFF[T][j + 3] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
+            # Calculate the reciprocal of the difference for Lagrangian 
+            # interpolation
+            j = 4 * i
+            D.acc.SPACE[T][j] = 1.0 / (D.p.params[i][0] - D.p.params[i][1])
+            D.acc.SPACE[T][j] /= D.p.params[i][0] - D.p.params[i][2]
+            D.acc.SPACE[T][j] /= D.p.params[i][0] - D.p.params[i][3]
+   
+            D.acc.SPACE[T][j + 1] = 1.0 / (D.p.params[i][1] - D.p.params[i][0])
+            D.acc.SPACE[T][j + 1] /= D.p.params[i][1] - D.p.params[i][2]
+            D.acc.SPACE[T][j + 1] /= D.p.params[i][1] - D.p.params[i][3]
+   
+            D.acc.SPACE[T][j + 2] = 1.0 / (D.p.params[i][2] - D.p.params[i][0])
+            D.acc.SPACE[T][j + 2] /= D.p.params[i][2] - D.p.params[i][1]
+            D.acc.SPACE[T][j + 2] /= D.p.params[i][2] - D.p.params[i][3]
+   
+            D.acc.SPACE[T][j + 3] = 1.0 / (D.p.params[i][3] - D.p.params[i][0])
+            D.acc.SPACE[T][j + 3] /= D.p.params[i][3] - D.p.params[i][1]
+            D.acc.SPACE[T][j + 3] /= D.p.params[i][3] - D.p.params[i][2]
+   
+            D.acc.DIFF[T][j] = D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
+            D.acc.DIFF[T][j] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
+            D.acc.DIFF[T][j] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
+   
+            D.acc.DIFF[T][j + 1] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
+            D.acc.DIFF[T][j + 1] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
+            D.acc.DIFF[T][j + 1] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
+   
+            D.acc.DIFF[T][j + 2] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
+            D.acc.DIFF[T][j + 2] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
+            D.acc.DIFF[T][j + 2] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
+   
+            D.acc.DIFF[T][j + 3] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
+            D.acc.DIFF[T][j + 3] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
+            D.acc.DIFF[T][j + 3] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
          
 
     cdef double *address = NULL
@@ -250,32 +250,32 @@ cdef double eval_hot_Num4D(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data) noexcept nogil:
-   """
-   Evaluate the intensity of hot regions based on given parameters.
-   
-   Cubic polynomial interpolation:
-   This function implements cubic polynomial interpolation to improve 
-   acceleration properties. Specifically, it avoids recomputing numerical 
-   weights or re-reading intensities when not necessary, optimizing 
-   performance.
-   
-   Arguments:
-       THREAD (size_t): Thread ID used for parallel execution.
-       E (double): Photon energy in units provided by the integrator. For RMPs
-       it is keV. Some conversion is done to match the units in the atmosphere
-       table.
-       mu (double): Cosine of the ray zenith angle (angle to surface normal).
-       VEC (const double *const): Pointer to variables (e.g., temperature in 
-        log10 of K, effective gravity log10 of cm/s^2).
-       data (void *const): Numerical model data required for intensity 
-       evaluation.
-           The function must appropriately cast the void pointer for use.
-           
-   Attributes:
-       noexcept nogil: Indicates that the function does not throw exceptions 
-                      and can be executed without the Global Interpreter Lock
-                      (GIL).
-   """
+    """
+    Evaluate the intensity of hot regions based on given parameters.
+    
+    Cubic polynomial interpolation:
+    This function implements cubic polynomial interpolation to improve 
+    acceleration properties. Specifically, it avoids recomputing numerical 
+    weights or re-reading intensities when not necessary, optimizing 
+    performance.
+    
+    Arguments:
+        THREAD (size_t): Thread ID used for parallel execution.
+        E (double): Photon energy in units provided by the integrator. For RMPs
+        it is keV. Some conversion is done to match the units in the atmosphere
+        table.
+        mu (double): Cosine of the ray zenith angle (angle to surface normal).
+        VEC (const double *const): Pointer to variables (e.g., temperature in 
+         log10 of K, effective gravity log10 of cm/s^2).
+        data (void *const): Numerical model data required for intensity 
+        evaluation.
+            The function must appropriately cast the void pointer for use.
+            
+    Attributes:
+        noexcept nogil: Indicates that the function does not throw exceptions 
+                       and can be executed without the Global Interpreter Lock
+                       (GIL).
+    """
     cdef DATA *D = <DATA*> data
 
     cdef:
