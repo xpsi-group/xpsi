@@ -55,7 +55,8 @@ hearing from you if
 
 * something breaks,
 * you spot bugs, 
-* if there is missing functionality, or you have suggestions for future development,
+* if there is missing functionality, or,
+* you have suggestions for future development,
 
 To get in touch, please `open an issue <https://github.com/xpsi-group/xpsi/issues>`_.
 Even better, if you have code you'd be interested in contributing, please send a 
