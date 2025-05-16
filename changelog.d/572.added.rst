@@ -1,2 +1,2 @@
 Added ``towncrier.toml``, ``changelog.d/README.rst``, and
-``.github/workflows/changelog.yml``.
+ ``.github/workflows/changelog.yml``.
