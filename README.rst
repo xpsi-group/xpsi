@@ -44,8 +44,8 @@ for Linux and for limited MacOS systems.
 Documentation
 -------------
 
-The documentation for XPSI, including a wide range of tutorials and scripts for 
-running XPSI on HPC systems, can be found at `https://xpsi-group.github.io/xpsi/ <https://xpsi-group.github.io/xpsi/>`_.
+The documentation for X-PSI, including a wide range of tutorials and scripts for 
+running X-PSI on HPC systems, can be found at `https://xpsi-group.github.io/xpsi/ <https://xpsi-group.github.io/xpsi/>`_.
 
 How to get in touch or get involved
 -----------------------------------
