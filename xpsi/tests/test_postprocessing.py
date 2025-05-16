@@ -13,7 +13,11 @@ class TestPostProcessing(object):
 
     def setup_class(cls):
 
-        import main as ST
+        #import main as ST
+        from xpsi.utilities.ModelLoader import load_model
+        path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"../../examples/examples_fast/Modules/")
+        ST = load_model( model_path=os.path.join( path ,"main.py") , execution_path=path )
+
         ST.names=['mass','radius','distance','cos_inclination','p__phase_shift',
                   'p__super_colatitude','p__super_radius','p__super_temperature']
         ST.bounds = {'mass':(1.0,1.6),
