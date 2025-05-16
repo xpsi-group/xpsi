@@ -250,32 +250,32 @@ cdef double eval_hot_Num4D(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data) noexcept nogil:
-   """
-   Evaluate the intensity of hot regions based on given parameters.
+    """
+    Evaluate the intensity of hot regions based on given parameters.
    
-   Cubic polynomial interpolation:
-   This function implements cubic polynomial interpolation to improve 
-   acceleration properties. Specifically, it avoids recomputing numerical 
-   weights or re-reading intensities when not necessary, optimizing 
-   performance.
+    Cubic polynomial interpolation:
+    This function implements cubic polynomial interpolation to improve 
+    acceleration properties. Specifically, it avoids recomputing numerical 
+    weights or re-reading intensities when not necessary, optimizing 
+    performance.
    
-   Arguments:
-       THREAD (size_t): Thread ID used for parallel execution.
-       E (double): Photon energy in units provided by the integrator. For RMPs
-       it is keV. Some conversion is done to match the units in the atmosphere
-       table.
-       mu (double): Cosine of the ray zenith angle (angle to surface normal).
-       VEC (const double *const): Pointer to variables (e.g., temperature in 
+    Arguments:
+        THREAD (size_t): Thread ID used for parallel execution.
+        E (double): Photon energy in units provided by the integrator. For RMPs
+        it is keV. Some conversion is done to match the units in the atmosphere
+        table.
+        mu (double): Cosine of the ray zenith angle (angle to surface normal).
+        VEC (const double *const): Pointer to variables (e.g., temperature in 
         log10 of K, effective gravity log10 of cm/s^2).
-       data (void *const): Numerical model data required for intensity 
-       evaluation.
-           The function must appropriately cast the void pointer for use.
+        data (void *const): Numerical model data required for intensity 
+        evaluation.
+            The function must appropriately cast the void pointer for use.
            
-   Attributes:
-       noexcept nogil: Indicates that the function does not throw exceptions 
+    Attributes:
+        noexcept nogil: Indicates that the function does not throw exceptions 
                       and can be executed without the Global Interpreter Lock
                       (GIL).
-   """
+    """
     cdef DATA *D = <DATA*> data
 
     cdef:
