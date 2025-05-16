@@ -8,6 +8,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 **Overview of the available tutorials:**
 
+* :doc:`X-PSI 101<XPSI_101>` is a basic tutorial introducing the key aspects of X-PSI.  In it you will build a very simple model of a single hot spot on a neutron star surface, simulate a pulse profile, and perform parameter estimation.  Start here if you have never used X-PSI before!  
+
 * :doc:`Modeling<Modeling>` is an in-depth tutorial that first covers the structure of X-PSI followed by basic usage of X-PSI. Basic usage includes constructing your first model (e.g. instrument, star, and atmosphere) and constructing a likelihood for nested sampling.
 
 * :doc:`Instrument synergy<Instrument_synergy>` shows how to construct a joint likelihood with data from two instruments.

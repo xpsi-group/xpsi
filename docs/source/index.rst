@@ -28,6 +28,7 @@
    :caption: Tutorials
 
    Start_here
+   XPSI_101
    Modeling
    Instrument_synergy
    Hot_region_complexity

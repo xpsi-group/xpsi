@@ -66,7 +66,8 @@ def plot_1d_pulse(signal=None, photosphere=None, photosphere_phases=None):
     if signal is not None:
         for i, s in enumerate(signal.signals):
             temp = np.sum(s, axis=0)
-            ax.plot(signal.phases[i], temp / np.max(temp), '-', color=colors[i], lw=0.5, label=f"Signal (spot {i+1})")
+            ax.plot(signal.phases[i], temp / np.max(temp), '-', color=colors[i], lw=0.5, markersize=2,
+                    label=f"Signal detected by the telescope (spot {i+1})")
 
     if photosphere is not None:
         if photosphere_phases is None:
@@ -75,9 +76,9 @@ def plot_1d_pulse(signal=None, photosphere=None, photosphere_phases=None):
             for i, p in enumerate(photosphere.signal):
                 temp = np.sum(p[0], axis=0)
                 ax.plot(photosphere_phases[i], temp / np.max(temp), 'o-', color=colors[i], lw=0.5, markersize=2,
-                        label=f"Photosphere (spot {i+1})")
+                        label=f"Photosphere signal at infinity (spot {i+1})")
 
-    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    ax.legend(loc='lower center', bbox_to_anchor=(0.5, 1.01)),
     veneer((0.05, 0.2), (0.05, 0.2), ax)
 
 
