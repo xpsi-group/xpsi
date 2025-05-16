@@ -1,0 +1,2 @@
+Added a note on the potential install issue raised in Github Issue 459 to the FAQ/Common Problems and Install pages.
+

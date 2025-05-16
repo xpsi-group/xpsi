@@ -104,3 +104,51 @@ Weird issues
 .. rubric:: *The import order of pymultinest and numpy may sometimes affect the seed-fixed results.*
 
 The import order of numpy and X-PSI (and thus pymultinest) was observed to sometimes influence the exact sampling results even if fixing the random seeds for both numpy and pymultinest. However, the issue occurred only in specific conda environments (with certain packages/dependencies) and later attempts to reproduce it with newer X-PSI installations have not been successful. See the `GitHub issue <https://github.com/xpsi-group/xpsi/issues/276>`_ for more details.
+
+.. rubric:: *Linker library name format in setup.py may cause issues with install under rare circumstances.*
+
+``setup.py`` has the following if-else block (twice):
+
+.. code-block:: bash
+
+            if 'clang' in os.environ['CC']:
+                libraries += ['inversion.so', 'deflection.so']
+            else:
+                libraries += [':inversion.so', ':deflection.so']
+
+The ``:`` indicates to the GNU linker that the library name should be taken as is, that is, not prepended with ``lib``. [#f1]_
+The linker on Darwin (macOS), probably a BSD(-derived) linker, takes any(?) name that has a extension as the literal name, and won't search for ``lib<name>.dylib`` or ``lib<name>a``. [#f2]_ So that linker does this automagically, whereas the GNU linker wants to be explicit.
+
+Note the use of linker in the above paragraph: it is not the compiler that makes the difference, but the linker. On the command line, it will look like the compiler (the linking step still shows the compiler being used), but under the hood it calls the linker, ``ld``. Therefore, the linker should be the differentiating factor which of the two if-branches is used, not the compiler (or its environment variable, ``CC``).
+
+This issue pops when building X-PSI on macOS with ``gcc`` (note: not the built-in ``gcc``, which is clang in disguise: check ``gcc --version``; but for example ``gcc`` installed with Homebrew), or when using ``clang`` on Linux. Both builds will error at this point when linking with the so-files is done.
+
+A manual, *local*, quick fix is just to insert or remove the colons in front of the library names in ``setup.py``, and the build can continue. But this is only a local solution, and can't be implemented in ``setup.py`` by default.
+
+The linker, however, is trickier to determine than the compiler. But the linker is also tied into the system ecosystem (through system libraries); for example, the GNU linker is not supported on Darwin (though perhaps a BSD linker can be installed on a Linux system).
+Instead, one could try and determine the system OS and use that, instead of the compiler, in the if-statement: ``sys.platform`` may be of use here.
+
+Note that the use cases will be rare: the default compiler on macOS tends to be ``clang`` (installed as part of the XCode tools), and even the default ``gcc`` is just ``clang`` in disguise. On Linux, the majority of times the default compiler is ``gcc``. I don't know which linker the Intel compiler will use; perhaps the GNU linker, perhaps it has its own linker (but given that the OS is formally GNU/Linux, I suspect the linker is the GNU one). Most people are not likely to deviate from this, so the check for ``clang`` tends to nearly always be True for macOS and False for Linux.
+
+.. rubric:: Footnotes
+
+.. [#f1] from the GNU ld manpage:
+
+	.. code-block:: bash
+
+		-l namespec
+		--library=namespec
+		Add the archive or object file specified by namespec to the list of files to link. 
+		This 	option may be used any number of times. If namespec is of the 
+		form :filename, ld will search the library path for a file called filename, 
+		otherwise it will search the library path for a file called libnamespec.a.
+
+
+.. [#f2] from the Darwin ld manpage:
+	
+	.. code-block:: bash
+
+		-lx This option tells the linker to search for libx.dylib or libx.a in the 
+		library search path. If string x is of the form y.o, then that file is 
+		searched for in the same places, but without prepending lib' or 
+		appending .a' or `.dylib' to the filename.

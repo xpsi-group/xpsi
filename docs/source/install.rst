@@ -468,6 +468,10 @@ virtual environment).
     We are encountering issues with installing MultiNest on Mac and we are working on proposing a solution.
 
 
+.. note::
+
+   See the :ref:`faq` page for issues that might arise if you are trying to install on Mac using a non-native ``gcc`` compiler.  
+
 Tips for installing on Windows
 ------------------------------
 
