@@ -9,7 +9,7 @@ which after normalisation should be J/cm^2/s/keV/steradian.
 
 Functions:
     - init_hot_BB_burst: does nothing but must exist for placeholder purposes.
-    - free_hot_BB_burst: does nothing but must exists for placeholder purposes.
+    - free_hot_BB_burst: does nothing but must exist for placeholder purposes.
     - eval_hot_BB_burst_I: evaluate the specific intensty.
     - eval_hot_BB_burst_Q: evaluate stokes Q.
     - eval_hot_BB_norm: normalize.

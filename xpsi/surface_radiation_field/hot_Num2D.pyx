@@ -6,7 +6,7 @@
 """
 This module allows 2D interpolation. The difference between this file and 
 hot_Num2D_split is how vec[0] is here log10(E) instead of E, and this file is
-missing also stokes functionality. Since there are 2 files that to almost the 
+missing also stokes functionality. Since there are 2 files that are almost the 
 same, this file is to be deprecated soon.
 
 

@@ -252,13 +252,13 @@ cdef double eval_hot_Num4D(size_t THREAD,
                      void *const data) noexcept nogil:
     """
     Evaluate the intensity of hot regions based on given parameters.
-    
+
     Cubic polynomial interpolation:
     This function implements cubic polynomial interpolation to improve 
     acceleration properties. Specifically, it avoids recomputing numerical 
     weights or re-reading intensities when not necessary, optimizing 
     performance.
-    
+
     Arguments:
         THREAD (size_t): Thread ID used for parallel execution.
         E (double): Photon energy in units provided by the integrator. For RMPs
