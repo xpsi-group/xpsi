@@ -31,31 +31,6 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v3
 
-      - name: Install Conda environment with Micromamba
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          cache-environment: true
-          cache-environment-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
-          environment-file: environment.yml
-          environment-name: xpsipy3
-          create-args: python=3.10
-
-      - name: Set up GCC
-        run: |
-          sudo apt-get install -y gcc
-        shell: bash -l {0}
-
-      - name: Install gsl
-        run: |
-          sudo apt-get install -y libgsl-dev
-
-      - name: Install X-PSI package
-        run: |
-          python setup.py install
-        shell: bash -l {0}
-        env:
-          CC:   gcc-12
-
       - name: Install changelog dependencies
         run: |
           pip install towncrier
@@ -68,7 +43,8 @@ jobs:
 
       - name: Run Towncrier to generate changelog
         run: |
-          yes n | towncrier build
+          VERSION=$(grep -oP "^__version__\s*=\s*['\"]\K[^'\"]+" xpsi/__init__.py | cut -d. -f1,2)
+          towncrier build --version $VERSION --yes
 
       - name: Set up Git identity
         run: |
