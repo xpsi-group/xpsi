@@ -82,48 +82,31 @@ class NestedBackend(Run):
 
         self.use_nestcheck = use_nestcheck
 
-        if self.use_nestcheck and transform is not None:
-            for ext in [f'dead-birth{filetype}', f'phys_live-birth{filetype}']:
-                # save dead and live points for later use in process_multinest_run():
-                if 'dead-birth' in ext: 
-                    dead_points = samples
-                if 'phys_live-birth' in ext: 
-                    live_points = samples 
-
-                if not _os.path.isfile(filerootpath + ext) or overwrite_transformed:
-                   # transform samples 
-                    transformed = _np.zeros((samples.shape[0],
-                                                samples.shape[1] + ntransform))
-                    transformed[:,ndims+ntransform:] = samples[:,ndims:]
-                    for i in range(samples.shape[0]):
-                        transformed[i,:ndims+ntransform] =\
-                                            transform(samples[i,:ndims],
-                                                        old_API=True)
-                    # save transformed part 
-                    saver(filerootpath + "-" + ext, transformed)
-
-            # .stats file with same root needed, but do not need to modify
-            # the .stats file contents
-            if not _os.path.isfile(filerootpath + '.stats'):
-                if _os.path.isfile(_filerootpath + '.stats'):
-                    try:
-                        from shutil import copyfile as _copyfile
-                    except ImportError:
-                        pass
-                    else:
-                        _copyfile(_filerootpath + '.stats',
-                                    filerootpath + '.stats')
-                            
+        if self.use_nestcheck: # nestcheck backend
+            if transform is not None:
+                for ext in ['dead-birth', 'phys_live-birth']:
+                    _exists = _os.path.isfile(filerootpath + ext + filetype)
+                    if not _exists or overwrite_transformed:
+                        samples = loader(_filerootpath + ext + filetype)
+                        transformed = _np.zeros((samples.shape[0],
+                                                 samples.shape[1] + ntransform))
+                        transformed[:,ndims+ntransform:] = samples[:,ndims:]
+                        for i in range(samples.shape[0]):
+                            transformed[i,:ndims+ntransform] =\
+                                                transform(samples[i,:ndims],
+                                                          old_API=True)
+                        saver(f'{filerootpath}-{ext}{filetype}', transformed)
+                         
             # assuming multinest for nestcheck if not specified   
             implementation = kwargs.get('implementation', 'multinest')
 
             if implementation == 'multinest':
                 try:
-                    self._nc_bcknd = process_multinest_run(dead_points, live_points, root, base_dir=base_dir)
+                    self._nc_bcknd = process_multinest_run(root, base_dir, filetype)
                 except FileNotFoundError:
-                    self._nc_bcknd = process_multinest_run(dead_points, live_points, root + "-", base_dir=base_dir)
+                    self._nc_bcknd = process_multinest_run(root + "-", base_dir, filetype)
             elif implementation == 'polychord':
-                self._nc_bcknd = process_polychord_run(root, base_dir=base_dir)
+                self._nc_bcknd = process_polychord_run(root, base_dir, filetype)
             else:
                 raise ValueError('Cannot process with nestcheck.')
 
