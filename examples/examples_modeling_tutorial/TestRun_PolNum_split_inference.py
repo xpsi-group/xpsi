@@ -741,4 +741,4 @@ if __name__ == '__main__': # sample from the posterior
                     physical_points = p, # externally_updated preserved
                     loglikelihood_call_vals = [true_logl],
                     rtol_loglike = 1.0e-6) # choose a tolerance
-    xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
+    xpsi.Sample.run_multinest(likelihood, prior, check_kwargs, **runtime_params)

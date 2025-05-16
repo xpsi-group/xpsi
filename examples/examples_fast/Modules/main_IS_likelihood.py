@@ -159,6 +159,6 @@ if __name__ == '__main__':
                       'verbose': True}
 
 
-    xpsi.Sample.nested(likelihood, prior, **runtime_params)
+    xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)
 
     print('Sampling took', (time.time()-start)/60, 'minutes')
