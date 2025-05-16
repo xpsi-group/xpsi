@@ -12,7 +12,10 @@ This directory contains "news fragments" which are short files that contain a
 small ReST-formatted text that will be added to the next ``CHANGELOG``.
 
 Each fragment should concisely describe the changes made aimed for X-PSI users
-and not developers.
+and not developers. These files should be made prior to merging a pull request,
+using the pull request number, and then pushed to the online branch (or 
+alternatively via the online GitHub GUI to directly add and commit these files 
+to the branch).
 
 Each file should be named like ``<pull_request_number>.<type>.rst``, where
 ``<pull_request_number>`` is a pull request number, and ``<type>`` is one of:
