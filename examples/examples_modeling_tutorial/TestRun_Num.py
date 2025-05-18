@@ -114,7 +114,10 @@ spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
               phase_shift = (0.0, 0.1),
-              super_temperature = (5.1, 6.8))
+              super_temperature = (5.3, 6.8))
+#Note: The atmosphere table lower limit is 5.1, but we use 5.3 in this example,
+#because the secondary spot temperature is defined to be always 0.2 below the
+#primary spot temperature (just for demonstrating how to derive parameters)
 
 primary = xpsi.HotRegion(bounds=bounds,
                         values={},

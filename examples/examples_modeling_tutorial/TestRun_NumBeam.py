@@ -117,10 +117,13 @@ spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0), star_sha
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
               phase_shift = (0.0, 0.1),
-              super_temperature = (5.1, 6.8),
+              super_temperature = (5.3, 6.8),
               super_abb = (-0.7, 0.7),
-              super_bbb = (-0.7, 0.7))              
-	                    
+              super_bbb = (-0.7, 0.7))
+#Note: The atmosphere table lower limit is 5.1, but we use 5.3 in this example,
+#because the secondary spot temperature is defined to be always 0.2 below the
+#primary spot temperature (just for demonstrating how to derive parameters)
+
 from modules.CustomHotRegion_Beaming import CustomHotRegion
 
 primary =  CustomHotRegion(bounds=bounds,
@@ -539,7 +542,7 @@ runtime_params = {'resume': False,
                   'importance_nested_sampling': False,
                   'multimodal': False,
                   'n_clustering_params': None,
-                  'outputfiles_basename': './run/run_Num',
+                  'outputfiles_basename': './run/run_NumBeam',
                   'n_iter_before_update': 50,
                   'n_live_points': 50,
                   'sampling_efficiency': 0.8,
