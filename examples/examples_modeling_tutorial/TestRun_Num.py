@@ -117,7 +117,7 @@ bounds = dict(super_colatitude = (None, None),
               super_temperature = (5.3, 6.8))
 #Note: The atmosphere table lower limit is 5.1, but we use 5.3 in this example,
 #because the secondary spot temperature is defined here to be always 0.2 below
-#the primary spot temperature (just for demonstrating how to derive parameters)
+#the primary spot temperature (just for demonstrating how to derive parameters).
 
 primary = xpsi.HotRegion(bounds=bounds,
                         values={},
