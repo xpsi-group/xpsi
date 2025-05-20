@@ -46,7 +46,7 @@ The content of the ``environment.yml`` are:
 
 .. code-block:: bash
 
-    name: xpsi_py3
+    name: xpsi
     channels:
         - defaults
         - conda-forge
@@ -87,7 +87,7 @@ an environment manually via
 
 .. code-block:: bash
 
-     conda create -n xpsi_py3
+     conda create -n xpsi
 
 and then install the core dependencies listed in ``basic_environment.yml`` via
 conda.
@@ -96,7 +96,7 @@ Activate the environment as:
 
 .. code-block:: bash
 
-    conda activate xpsi_py3
+    conda activate xpsi
 
 .. note::
 
