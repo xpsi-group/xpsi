@@ -18,10 +18,9 @@ Fixed
 Added
 ^^^^^
 
-- Introduced automatic changelog generation upon PR merge using ``Towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
 - Added a pile-up module for instruments suffering from a "pile-up". (`#538 <https://github.com/xpsi-group/xpsi/pull/538>`__)
 - Multiple imaging tutorial cleaned and brought back to the documentation. (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__)
-- Added ``towncrier.toml``, ``changelog.d/README.rst``, and
+- Introduced automatic changelog generation upon PR merge using ``Towncrier``.  Added ``towncrier.toml``, ``changelog.d/README.rst``, and
    ``.github/workflows/changelog.yml``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
 - Added XPSI 101 tutorial in the documentation (`#581 <https://github.com/xpsi-group/xpsi/pull/581>`__)
 - Unit and continious integration tests added for the commonly used post-processing routines (`#590 <https://github.com/xpsi-group/xpsi/pull/590>`__)
