@@ -1,0 +1,1 @@
+API pages in the documentation were cleaned up.

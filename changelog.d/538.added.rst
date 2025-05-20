@@ -1,0 +1,1 @@
+Added a pile-up module for instruments suffering from a "pile-up".

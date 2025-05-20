@@ -1,0 +1,1 @@
+Multiple imaging tutorial cleaned and brought back to the documentation.
