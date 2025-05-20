@@ -342,13 +342,13 @@ class Signal(ParameterSubspace):
             # Get the cumulative of the response at the last channel
             RSP_cumulative = self._instrument.matrix[ b_instrument ].cumsum()
 
-            # Find the first energy index where the cumulative of the redistribution is above the threshold
+            # Make the first energy index where the cumulative of the redistribution is above the threshold
             threshold = ( 1. - tolerance ) * RSP_cumulative[-1]
             max_energy_index = _np.where( RSP_cumulative >= threshold )[0][0]
 
             # Set the waveband
             self._input_interval_range = (min_energy_index, max_energy_index + 1)
-            self._energy_edges = self._instrument.energy_edges[a_instrument:max_energy_index + 2]
+            self._energy_edges = self._instrument.energy_edges[min_energy_index:max_energy_index + 2]
             self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
 
     @property
