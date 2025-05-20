@@ -53,6 +53,7 @@ The content of the ``environment.yml`` are:
     dependencies:
         - python >= 3.9.0
         - numpy < 2.0.0
+        - cython~= 3.0.11
         - matplotlib == 3.9.2       # STRICT REQUIREMENT FROM FGIVENX
         - scipy
         - wrapt
