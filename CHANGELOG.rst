@@ -1,11 +1,10 @@
-[v3.1] - 2025-05-20
+[v3.1] - 2025-05-21
 ~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-- Introduced automatic changelog generation upon PR merge using ``Towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
-- Here we release the version 3.1. A better summary will be provided a bit later. (`#607 <https://github.com/xpsi-group/xpsi/pull/607>`__)
+- This minor release includes several updates, new features, bug fixes, and documentation changes. See details below.
 
 
 Fixed
@@ -19,6 +18,7 @@ Fixed
 Added
 ^^^^^
 
+- Introduced automatic changelog generation upon PR merge using ``Towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
 - Added a pile-up module for instruments suffering from a "pile-up". (`#538 <https://github.com/xpsi-group/xpsi/pull/538>`__)
 - Multiple imaging tutorial cleaned and brought back to the documentation. (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__)
 - Added ``towncrier.toml``, ``changelog.d/README.rst``, and
@@ -41,7 +41,7 @@ Changed
   `hot_Num5D_split.pyx`, `hot_Num4D.pyx`, `hot_Num2D_split.pyx`, `hot_BB.pyx`, 
   `hot_BB_burst.pyx`. Removed comments from `hot_Num2D.pyx`. (`#595 <https://github.com/xpsi-group/xpsi/pull/595>`__)
 - Changed ``.github/changelog.yml``. (`#598 <https://github.com/xpsi-group/xpsi/pull/598>`__)
-
+- All the ``double == double`` comparisons in the Cython codes were replaced with ``are_equal()`` function that allows 1e-12 tolerance (by default) around the exact value. (`#584 <https://github.com/xpsi-group/xpsi/pull/584>`__)
 
 Deprecated
 ^^^^^^^^^^
@@ -51,13 +51,18 @@ Deprecated
   replaced by `hot_Num2D_split.pyx` (`#595 <https://github.com/xpsi-group/xpsi/pull/595>`__)
 
 
+Removed
+^^^^^^^
+
+- The linking to the rayXpanda package and the codes only used together with that package have been removed. (`#567 <https://github.com/xpsi-group/xpsi/pull/567>`__)
+
+
 Attribution
 ^^^^^^^^^^^
 
 - Mariska Hoogkamer (`#523 <https://github.com/xpsi-group/xpsi/pull/523>`__, `#591 <https://github.com/xpsi-group/xpsi/pull/591>`__)
-- Christine Kazantsev
-  Sebastien Guillot (`#538 <https://github.com/xpsi-group/xpsi/pull/538>`__)
-- Tuomo Salmi (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__, `#590 <https://github.com/xpsi-group/xpsi/pull/590>`__, `#605 <https://github.com/xpsi-group/xpsi/pull/605>`__)
+- Christine Kazantsev, Sebastien Guillot (`#538 <https://github.com/xpsi-group/xpsi/pull/538>`__)
+- Tuomo Salmi (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__, `#567 <https://github.com/xpsi-group/xpsi/pull/567>`__, `#584 <https://github.com/xpsi-group/xpsi/pull/584>`__, `#590 <https://github.com/xpsi-group/xpsi/pull/590>`__, `#605 <https://github.com/xpsi-group/xpsi/pull/605>`__)
 - Anna Watts (`#563 <https://github.com/xpsi-group/xpsi/pull/563>`__, `#564 <https://github.com/xpsi-group/xpsi/pull/564>`__)
 - Devarshi Choudhury (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__, `#585 <https://github.com/xpsi-group/xpsi/pull/585>`__, `#598 <https://github.com/xpsi-group/xpsi/pull/598>`__)
 - Christine Kazantsev, Anna Watts (`#581 <https://github.com/xpsi-group/xpsi/pull/581>`__)
