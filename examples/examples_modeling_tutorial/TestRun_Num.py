@@ -171,7 +171,9 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 
 
 from xpsi import HotRegions
-hot = HotRegions((primary, secondary))
+#hot = HotRegions((primary, secondary))
+hot = HotRegions((primary, ))
+
 h = hot.objects[0]
 hot['p__super_temperature'] = 6.0 # equivalent to ``primary['super_temperature'] = 6.0``
 
@@ -342,10 +344,10 @@ else:
          0.04346870860640872,
          0.8002010406881243,
          1.1165398710637626,
-         5.865655057483478,
-         0.07360477761463673,
-         2.4602238829718432,
-         0.4277092192054918]
+         5.865655057483478] # removed secondary
+         #0.07360477761463673,
+         #2.4602238829718432,
+         #0.4277092192054918]
 star(p)
 star.update()
 
@@ -354,8 +356,8 @@ energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 print("Bolometric pulse for 1st spot:")
 print(repr(np.sum(photosphere.signal[0][0], axis=0)))
-print("Bolometric pulse for 2nd spot:")
-print(repr(np.sum(photosphere.signal[1][0], axis=0)))
+# print("Bolometric pulse for 2nd spot:")
+# print(repr(np.sum(photosphere.signal[1][0], axis=0)))
 
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
@@ -499,19 +501,19 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters # redefine shortcut
 
-        # enforce order in hot region colatitude
-        if ref['p__super_colatitude'] > ref['s__super_colatitude']:
-            return -np.inf
+        # # enforce order in hot region colatitude
+        # if ref['p__super_colatitude'] > ref['s__super_colatitude']:
+        #     return -np.inf
 
-        phi = (ref['p__phase_shift'] - 0.5 - ref['s__phase_shift']) * _2pi
+        # phi = (ref['p__phase_shift'] - 0.5 - ref['s__phase_shift']) * _2pi
 
-        ang_sep = xpsi.HotRegion.psi(ref['s__super_colatitude'],
-                                     phi,
-                                     ref['p__super_colatitude'])
+        # ang_sep = xpsi.HotRegion.psi(ref['s__super_colatitude'],
+        #                              phi,
+        #                              ref['p__super_colatitude'])
 
-        # hot regions cannot overlap
-        if ang_sep < ref['p__super_radius'] + ref['s__super_radius']:
-            return -np.inf
+        # # hot regions cannot overlap
+        # if ang_sep < ref['p__super_radius'] + ref['s__super_radius']:
+        #     return -np.inf
 
 	#print("Calling CustomPrior with these paremeters:",p)
 
@@ -540,10 +542,10 @@ class CustomPrior(xpsi.Prior):
         a = math.cos(a); b = math.cos(b)
         ref['p__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
 
-        idx = ref.index('s__super_colatitude')
-        a, b = ref.get_param('s__super_colatitude').bounds
-        a = math.cos(a); b = math.cos(b)
-        ref['s__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
+        # idx = ref.index('s__super_colatitude')
+        # a, b = ref.get_param('s__super_colatitude').bounds
+        # a = math.cos(a); b = math.cos(b)
+        # ref['s__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
 
         # restore proper cache
         for parameter, cache in zip(ref, to_cache):
@@ -596,7 +598,7 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
 
 wrapped_params = [0]*len(likelihood)
 wrapped_params[likelihood.index('p__phase_shift')] = 1
-wrapped_params[likelihood.index('s__phase_shift')] = 1
+# wrapped_params[likelihood.index('s__phase_shift')] = 1
 
 try:
     os.makedirs("run")
@@ -620,8 +622,27 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl = -6.7261415434e+04
+true_logl =  -6.7645483142e+04 # (only primary) #-6.7261415434e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
-    xpsi.Sample.nested(likelihood, prior,**runtime_params)
+#     xpsi.Sample.nested(likelihood, prior,**runtime_params)
+
+    import time
+    print('time integrator test')
+    
+    
+    n_repeats = 100
+    timings_summed = np.zeros(4)
+    t_start = time.time()
+    
+    for i in range(n_repeats):
+        p_test = prior.inverse_sample()
+        # l_test = likelihood(p, reinitialise=True)
+        l_test = likelihood(p_test, reinitialise=True)
+        timings_summed += hot.objects[0]._integrator_timings
+        # print(l_test)
+    
+    print('full, pre-atmosphere, intensities, phase interpolation')
+    print(f'Timings summed: {timings_summed/n_repeats} seconds, repeats={n_repeats}')
+    print(f'Evaluation takes {(time.time()-t_start)/n_repeats} seconds, repeats={n_repeats}')

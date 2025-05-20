@@ -1163,7 +1163,7 @@ class HotRegion(ParameterSubspace):
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
 
-        super_pulse = self._integrator(threads,
+        super_pulse, self._integrator_timings = self._integrator(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,

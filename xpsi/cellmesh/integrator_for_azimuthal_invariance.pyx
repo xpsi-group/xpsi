@@ -13,6 +13,7 @@ from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
+import time
 
 cdef double _pi = M_PI
 cdef double _hlfpi = M_PI / 2.0
@@ -90,6 +91,42 @@ def integrate(size_t numThreads,
               beam_opt,
               image_order_limit = None):
 
+    
+    cdef:
+        double time_start
+        double time_end
+        double time_2D
+        double time_nE
+        double time_nE_start
+        double time_mu 
+        double time_mu_start
+        double time_invis
+        double time_invis_start
+        double time_leaf
+        double time_leaf_start
+        double time_post
+        double time_post_start
+        double time_post_nE
+        double time_post_nE_start
+        double time_post_k
+        double time_post_k_start
+        double time_setup
+        double time_setup_start
+        double time_ks
+        double time_ks_start
+        double time_flux
+        double time_flux_start
+        double time_cell
+        double time_cell_start
+        double time_I
+        double time_I_start
+        double time_full
+        double time_preatmosphere 
+        double time_intensities 
+        double time_phase_interps
+    
+    time_start = time.time()
+    
     # check for rayXpanda explicitly in case of some linker issue
     cdef double rayXpanda_defl_lim
     cdef bint _use_rayXpanda
@@ -273,11 +310,13 @@ def integrate(size_t numThreads,
     # >>> Integrate.
     # >>>
     #----------------------------------------------------------------------->>>
-    for ii in prange(<signed int>cellArea.shape[0],
-                     nogil = True,
-                     schedule = 'static',
-                     num_threads = N_T,
-                     chunksize = 1):
+    # for ii in prange(<signed int>cellArea.shape[0],
+    #                  nogil = True,
+    #                  schedule = 'static',
+    #                  num_threads = N_T,
+    #                  chunksize = 1):
+        
+    for ii in range(<signed int>cellArea.shape[0]):
 
         # Thread index
         T = threadid(); twoT = 2*T
@@ -340,6 +379,7 @@ def integrate(size_t numThreads,
             InvisFlag[T] = 2 # initialise image order as not visible
             correction_I_E = 0.0
 
+            time_leaf_start = time.time()
             for k in range(leaf_lim):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
                 psi = eval_image_deflection(I, acos(cos_psi))
@@ -559,6 +599,8 @@ def integrate(size_t numThreads,
                         InvisFlag[T] = 1
                         _InvisPhase = k
 
+            time_leaf += time.time() - time_leaf_start
+            time_post_start = time.time()
             if terminate[T] == 1:
                 break # out of image loop
             elif InvisFlag[T] == 2: # no visibility detected
@@ -607,6 +649,7 @@ def integrate(size_t numThreads,
                             j = j + 1
                         if terminate[T] == 1:
                             break # out of energy loop
+            time_post += time.time() - time_post_start
             if terminate[T] == 1:
                 break # out of image loop
         if not _use_rayXpanda:
@@ -673,5 +716,14 @@ def integrate(size_t numThreads,
             return (ERROR, None)
 
     free(terminate)
+    
+    
+    time_end = time.time()
 
-    return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
+    time_full = time_end-time_start
+    time_preatmosphere =  0
+    time_intensities = time_leaf
+    time_phase_interps = time_post
+
+
+    return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C')), np.asarray([time_full, time_preatmosphere, time_intensities, time_phase_interps])
