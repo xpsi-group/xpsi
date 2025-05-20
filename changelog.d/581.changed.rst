@@ -1,1 +1,0 @@
-Modification of the `data.plot` and `plot_one_pulse` for clarity

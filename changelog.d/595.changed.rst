@@ -1,3 +1,0 @@
-More descriptive comments and docstrings added in `hot_wrapper.pyx`,
-`hot_Num5D_split.pyx`, `hot_Num4D.pyx`, `hot_Num2D_split.pyx`, `hot_BB.pyx`, 
-`hot_BB_burst.pyx`. Removed comments from `hot_Num2D.pyx`.

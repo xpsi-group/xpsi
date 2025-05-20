@@ -1,1 +1,0 @@
-Introduced automatic changelog generation upon PR merge using ``Towncrier``.

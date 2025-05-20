@@ -1,2 +1,0 @@
-Marked `hot_Num2D.pyx` to be deprecated in the future because it can be 
-replaced by `hot_Num2D_split.pyx`
