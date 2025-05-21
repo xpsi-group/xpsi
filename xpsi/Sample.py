@@ -1,4 +1,4 @@
-__all__ = ["nested", "ensemble", "ultranested"]
+__all__ = ["nested", "ensemble", "ultranested", "dynested"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
@@ -18,6 +18,10 @@ try:
     from xpsi.UltranestSampler import UltranestSampler
 except ImportError:
     print("""Check your installation of UltraNest if using the UltranestSampler""")
+try:
+    from xpsi.DynestySampler import DynestySampler
+except ImportError:
+    print("""Check your installation of Dynesty if using the DynestySampler""")
 
 posterior = None
 
@@ -353,3 +357,52 @@ def ultranested(likelihood,
     sampler.write_results(sampler_params, out_filename)
 
     return sampler
+
+
+def dynested(likelihood,
+                prior,
+                other_params={},
+                runtime_params={},
+                log_dir = "default_dir/",
+                out_filename="unweighted_post_dynesty_xpsi",
+                MPI = False):
+    # CHANGE DOCSTRING STILL!!
+    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/)
+        package (Buchner 2021).
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.UltranestSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.UltranestSampler` to run the sampler.
+
+    :param use_stepsampler: Boolean indicating if the step sampler is used. In this
+        case the :class:`ultranest.stepsampler.SliceSampler` is used.
+
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the
+        to the instance of :class:`~.UltranestSampler` specifying the step sampler
+        runtime parameters.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.UltranestSampler`
+
+    """
+
+    # initialise the sampler ??kan dat zonder ndim??
+    dsampler = DynestySampler(likelihood, prior, other_params, MPI)
+
+    # start sampling
+    dsampler(runtime_params)
+
+    # print results changeee
+    print(dsampler.results)
+
+    # store output -> make
+    dsampler.write_results(log_dir, out_filename)
+
+    return dsampler

@@ -9,7 +9,10 @@ import time
 import os
 import sys
 
+from xpsi.Sample import dynested
+
 this_directory = os.path.dirname(os.path.abspath(__file__))
+print(this_directory)
 sys.path.append(this_directory)
 
 # Data
@@ -142,22 +145,22 @@ if __name__ == '__main__':
     wrapped_params[likelihood.index('p__phase_shift')] = 1
 
     #The original (more accurate) run settings shown as commented.
-    runtime_params = {'resume': False,
-                      'importance_nested_sampling': False,
-                      'multimodal': False,
-                      'n_clustering_params': None,
-                      'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
-                      'n_iter_before_update': 50, #100,
-                      'n_live_points': 50, #1000,
-                      'sampling_efficiency': 0.3,
-                      'const_efficiency_mode': False,
-                      'wrapped_params': wrapped_params,
-                      'evidence_tolerance': 0.1,
-                      'max_iter': 100, #-1,
-                      'seed' : 0, # Fixing the seed
-                      'verbose': True}
+    # runtime_params = {'resume': False,
+    #                   'importance_nested_sampling': False,
+    #                   'multimodal': False,
+    #                   'n_clustering_params': None,
+    #                   'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
+    #                   'n_iter_before_update': 50, #100,
+    #                   'n_live_points': 50, #1000,
+    #                   'sampling_efficiency': 0.3,
+    #                   'const_efficiency_mode': False,
+    #                   'wrapped_params': wrapped_params,
+    #                   'evidence_tolerance': 0.1,
+    #                   'max_iter': 100, #-1,
+    #                   'seed' : 0, # Fixing the seed
+    #                   'verbose': True}
 
 
-    xpsi.Sample.nested(likelihood, prior, **runtime_params)
+    dynested(likelihood, prior, other_params={'nlive': 100, 'bootstrap': 0}, runtime_params={'maxiter': 100}, MPI=True)
 
     print('Sampling took', (time.time()-start)/60, 'minutes')
