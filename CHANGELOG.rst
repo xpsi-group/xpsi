@@ -10,7 +10,8 @@ Summary
 Fixed
 ^^^^^
 
-- cmap related deprecation warnings fixed in the signal plots, the projection tool made compatible with py3.9, and a new error message raised in the background plotter if too few samples (`#590 <https://github.com/xpsi-group/xpsi/pull/590>`__)
+- Fixes and changes in module generator (see e.g., `#561 <https://github.com/xpsi-group/xpsi/pull/561>`__), plotting tools (see e.g., `#549 <https://github.com/xpsi-group/xpsi/pull/549>`__), and printed warnings (see e.g., `#559 <https://github.com/xpsi-group/xpsi/pull/559>`__)
+- cmap related deprecation warnings fixed in the signal plots, the projection tool made compatible with py3.9, and a new error message raised in the background plotter if too few samples. (`#590 <https://github.com/xpsi-group/xpsi/pull/590>`__).
 - Fixing the nestcheck=True and removing .stats in ``xpsi/PostProcessing/_backends.py``, ``xpsi/PostProcessing/_nestcheck_modifications.py`` (`#591 <https://github.com/xpsi-group/xpsi/pull/591>`__)
 - Fixed the example runs with numerical atmosphere data to not extrapolate beyond the atmosphere table limits. (`#605 <https://github.com/xpsi-group/xpsi/pull/605>`__)
 
@@ -18,7 +19,9 @@ Fixed
 Added
 ^^^^^
 
+- A tutorial about accretion disks added to the documentation. (`#506 <https://github.com/xpsi-group/xpsi/pull/506>`__)
 - Added a pile-up module for instruments suffering from a "pile-up". (`#538 <https://github.com/xpsi-group/xpsi/pull/538>`__)
+- Added a model loader for loading multiple modules easier without cache issues when post-processing. (`#557 <https://github.com/xpsi-group/xpsi/pull/557>`__)
 - Multiple imaging tutorial cleaned and brought back to the documentation. (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__)
 - Introduced automatic changelog generation upon PR merge using ``Towncrier``.  Added ``towncrier.toml``, ``changelog.d/README.rst``, and
    ``.github/workflows/changelog.yml``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
@@ -34,6 +37,7 @@ Changed
 - API pages in the documentation were cleaned up. (`#563 <https://github.com/xpsi-group/xpsi/pull/563>`__)
 - Landing and overview pages simplified in the documentation. (`#564 <https://github.com/xpsi-group/xpsi/pull/564>`__)
 - Older instruction comments in ``CHANGELOG.rst`` updated for ``towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
+- Raised an error if T and logg within atmosphere bounds if using the nsx-model (`#580 <https://github.com/xpsi-group/xpsi/pull/580>`__)
 - Modification of the `data.plot` and `plot_one_pulse` for clarity (`#581 <https://github.com/xpsi-group/xpsi/pull/581>`__)
 - Changed ``towncrier.toml`` and ``.github/changelog.yml``. (`#585 <https://github.com/xpsi-group/xpsi/pull/585>`__)
 - More descriptive comments and docstrings added in `hot_wrapper.pyx`,
@@ -59,13 +63,16 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+- Bas Dorsman (`#506 <https://github.com/xpsi-group/xpsi/pull/506>`__, `#595 <https://github.com/xpsi-group/xpsi/pull/595>`__)
 - Mariska Hoogkamer (`#523 <https://github.com/xpsi-group/xpsi/pull/523>`__, `#591 <https://github.com/xpsi-group/xpsi/pull/591>`__)
 - Christine Kazantsev, Sebastien Guillot (`#538 <https://github.com/xpsi-group/xpsi/pull/538>`__)
-- Tuomo Salmi (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__, `#567 <https://github.com/xpsi-group/xpsi/pull/567>`__, `#584 <https://github.com/xpsi-group/xpsi/pull/584>`__, `#590 <https://github.com/xpsi-group/xpsi/pull/590>`__, `#605 <https://github.com/xpsi-group/xpsi/pull/605>`__)
+- Sebastien Guillot (`#549 <https://github.com/xpsi-group/xpsi/pull/549>`__, `#559 <https://github.com/xpsi-group/xpsi/pull/559>`__)
+- Lucien Mauviard (`#557 <https://github.com/xpsi-group/xpsi/pull/557>`__)
+- Pierre Stammler, Denis Gonzalez-Caniulef (`#561 <https://github.com/xpsi-group/xpsi/pull/561>`__)
+- Tuomo Salmi (`#562 <https://github.com/xpsi-group/xpsi/pull/562>`__, `#567 <https://github.com/xpsi-group/xpsi/pull/567>`__, `#580 <https://github.com/xpsi-group/xpsi/pull/580>`__, `#584 <https://github.com/xpsi-group/xpsi/pull/584>`__, `#590 <https://github.com/xpsi-group/xpsi/pull/590>`__, `#605 <https://github.com/xpsi-group/xpsi/pull/605>`__)
 - Anna Watts (`#563 <https://github.com/xpsi-group/xpsi/pull/563>`__, `#564 <https://github.com/xpsi-group/xpsi/pull/564>`__)
 - Devarshi Choudhury (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__, `#585 <https://github.com/xpsi-group/xpsi/pull/585>`__, `#598 <https://github.com/xpsi-group/xpsi/pull/598>`__)
 - Christine Kazantsev, Anna Watts (`#581 <https://github.com/xpsi-group/xpsi/pull/581>`__)
-- Bas Dorsman (`#595 <https://github.com/xpsi-group/xpsi/pull/595>`__)
 - Evert Rol, Anna Watts (`#599 <https://github.com/xpsi-group/xpsi/pull/599>`__)
 
 
