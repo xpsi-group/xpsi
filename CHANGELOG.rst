@@ -37,7 +37,7 @@ Changed
 - API pages in the documentation were cleaned up. (`#563 <https://github.com/xpsi-group/xpsi/pull/563>`__)
 - Landing and overview pages simplified in the documentation. (`#564 <https://github.com/xpsi-group/xpsi/pull/564>`__)
 - Older instruction comments in ``CHANGELOG.rst`` updated for ``towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
-- Raised an error if T and logg within atmosphere bounds if using the nsx-model (`#580 <https://github.com/xpsi-group/xpsi/pull/580>`__)
+- Raised an error if T and logg are not within the atmosphere bounds if using the nsx-model (`#580 <https://github.com/xpsi-group/xpsi/pull/580>`__)
 - Modification of the `data.plot` and `plot_one_pulse` for clarity (`#581 <https://github.com/xpsi-group/xpsi/pull/581>`__)
 - Changed ``towncrier.toml`` and ``.github/changelog.yml``. (`#585 <https://github.com/xpsi-group/xpsi/pull/585>`__)
 - More descriptive comments and docstrings added in `hot_wrapper.pyx`,
