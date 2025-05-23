@@ -1,1 +1,0 @@
-Older instruction comments in ``CHANGELOG.rst`` updated for ``towncrier``.
