@@ -592,32 +592,36 @@ class Data(object):
         phases = _np.concatenate( (phase_list), axis=0 )
 
         # Do the plot
-        mosaic = [['A','.'],['B','C']]
-        fig,axs = _mpl.pyplot.subplot_mosaic( mosaic , height_ratios=[1.,1.], width_ratios=[3,1], layout='constrained')
-
-        # Plot the pulse
-        ax1 = axs['A']
-        ax1.errorbar( x=phases, y=counts.sum(axis=0), yerr=_np.sqrt( counts.sum(axis=0) ), ds='steps-mid', color='black' )
-        ax1.set_ylabel('Counts')
+        fig,axs = _mpl.pyplot.subplots( 2,2 , height_ratios=[1.,1.], width_ratios=[3,1.5], sharex='col',sharey='row')
+        fig.subplots_adjust(wspace=0, hspace=0)
+        axs[0,1].axis('off')
 
         # Plot the 2D data
-        ax2 = axs['B']
+        ax2 = axs[1,0]
         im = ax2.pcolormesh( phases, self.channels , counts, cmap=colormap)
-        ax2.sharex( ax1 )
         ax2.set_xlabel(r'Phase $\phi$ [cycles]')
         ax2.set_ylabel('PI channel')
         ax2.set_yscale('log')
+
+        # Plot the pulse
+        ax1 = axs[0,0]
+        ax1.sharex( ax2 )
+        ax1.tick_params(direction='in', which='both',labelbottom=False)
+
+        ax1.errorbar( x=phases, y=counts.sum(axis=0), yerr=_np.sqrt( counts.sum(axis=0) ), ds='steps-mid', color='black' )
+        ax1.set_ylabel('Counts')
         
         # Plot the spectrum
-        ax3 = axs['C']
+        ax3 = axs[1,1]
         ax3.sharey( ax2 )
-        ax3.get_yaxis().set_visible(False)
-        ax3.step( counts.sum(axis=1)/2, self.channels , color='black')
         ax3.set_yscale('log')
+        ax3.tick_params(direction='in', which='both',labelbottom=False)
+
+        ax3.step( counts.sum(axis=1)/2, self.channels , color='black')
         ax3.set_xlabel('Cts/chan.')
 
         # Add the colorbar    
-        fig.colorbar( im , ax=ax2 , label='Counts')
+        fig.colorbar( im , ax=ax3 , location='right',  label='Counts')
         fig.set_dpi(dpi)
 
         return fig, axs

@@ -40,7 +40,8 @@ from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
 ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
 
-from .rays cimport eval_image_deflection, invert, link_rayXpanda
+from .rays cimport eval_image_deflection
+from ..tools.core cimport are_equal
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
@@ -77,23 +78,6 @@ def integrate(size_t numThreads,
               atm_ext,
               image_order_limit = None,
               *args):
-
-    # check for rayXpanda explicitly in case of some linker issue
-    cdef double rayXpanda_defl_lim
-    cdef bint _use_rayXpanda
-    try:
-        xpsi.cellmesh.__deactivate_rayXpanda__
-    except AttributeError:
-        _try_rayXpanda = True
-    else:
-        if xpsi.cellmesh.__deactivate_rayXpanda__:
-            _try_rayXpanda = False
-            _use_rayXpanda = 0
-        else:
-            _try_rayXpanda = True
-    finally:
-        if _try_rayXpanda:
-            link_rayXpanda(&_use_rayXpanda, &rayXpanda_defl_lim)
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -147,35 +131,33 @@ def integrate(size_t numThreads,
         double *defl_alt_ptr
         double *alpha_alt_ptr
 
-    if not _use_rayXpanda:
-        accel_alpha_alt = <accel**> malloc(N_T * sizeof(accel*))
-        interp_alpha_alt = <interp**> malloc(N_T * sizeof(interp*))
+    accel_alpha_alt = <accel**> malloc(N_T * sizeof(accel*))
+    interp_alpha_alt = <interp**> malloc(N_T * sizeof(interp*))
 
     for T in range(N_T):
         terminate[T] = 0
         accel_alpha[T] = gsl_interp_accel_alloc()
         interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R)
 
-        if not _use_rayXpanda:
-            accel_alpha_alt[T] = gsl_interp_accel_alloc()
+        accel_alpha_alt[T] = gsl_interp_accel_alloc()
 
     cdef double[:,::1] cos_alpha_alt
     cdef double[:,::1] cos_deflection
-    if not _use_rayXpanda:
-        cos_deflection = np.zeros((deflection.shape[0],
-                                   deflection.shape[1]),
-                                   dtype = np.double)
-        for i in range(<size_t>deflection.shape[0]):
-            for j in range(<size_t>deflection.shape[1]):
-                cos_deflection[i,j] = cos(deflection[i, N_R - j - 1])
 
-        cos_alpha_alt = np.zeros((cos_alpha.shape[0],
-                                  cos_alpha.shape[1]),
-                                  dtype = np.double)
+    cos_deflection = np.zeros((deflection.shape[0],
+                               deflection.shape[1]),
+                               dtype = np.double)
+    for i in range(<size_t>deflection.shape[0]):
+        for j in range(<size_t>deflection.shape[1]):
+            cos_deflection[i,j] = cos(deflection[i, N_R - j - 1])
 
-        for i in range(<size_t>cos_alpha.shape[0]):
-            for j in range(<size_t>cos_alpha.shape[1]):
-                cos_alpha_alt[i,j] = cos_alpha[i, N_R - j - 1]
+    cos_alpha_alt = np.zeros((cos_alpha.shape[0],
+                              cos_alpha.shape[1]),
+                              dtype = np.double)
+
+    for i in range(<size_t>cos_alpha.shape[0]):
+        for j in range(<size_t>cos_alpha.shape[1]):
+            cos_alpha_alt[i,j] = cos_alpha[i, N_R - j - 1]
 
     if image_order_limit is not None:
         image_order = image_order_limit
@@ -207,16 +189,15 @@ def integrate(size_t numThreads,
 
         gsl_interp_accel_reset(accel_alpha[T])
 
-        if not _use_rayXpanda:
-            j = 0
-            while deflection[i,j] <= _hlfpi:
-                j = j + 1
+        j = 0
+        while deflection[i,j] <= _hlfpi:
+            j = j + 1
 
-            defl_alt_ptr = &(cos_deflection[i, N_R - j - 1])
-            alpha_alt_ptr = &(cos_alpha_alt[i, N_R - j - 1])
-            interp_alpha_alt[T] = gsl_interp_alloc(gsl_interp_steffen, j + 1)
-            gsl_interp_init(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, j + 1)
-            gsl_interp_accel_reset(accel_alpha_alt[T])
+        defl_alt_ptr = &(cos_deflection[i, N_R - j - 1])
+        alpha_alt_ptr = &(cos_alpha_alt[i, N_R - j - 1])
+        interp_alpha_alt[T] = gsl_interp_alloc(gsl_interp_steffen, j + 1)
+        gsl_interp_init(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, j + 1)
+        gsl_interp_accel_reset(accel_alpha_alt[T])
 
         defl_ptr = &(deflection[i,0])
         alpha_ptr = &(cos_alpha[i,0])
@@ -249,7 +230,7 @@ def integrate(size_t numThreads,
                 cos_psi = _cos_psi
                 psi = eval_image_deflection(I, _psi)
                 sin_psi = sin(psi)
-                if psi != 0.0 and sin_psi == 0.0: # singularity at poles
+                if not are_equal(psi, 0.0) and are_equal(sin_psi, 0.0): # singularity at poles
                     # hack bypass by slight change of viewing angle
                     if cos_i >= 0.0:
                         _i = inclination + inclination * 1.0e-6 # arbitrary small
@@ -274,10 +255,7 @@ def integrate(size_t numThreads,
                         terminate[T] = 1
                         break # out of image loop
                     else:
-                        if _use_rayXpanda and psi <= rayXpanda_defl_lim:
-                            invert(cos_psi, r_s_over_r[i], &_cos_alpha, &deriv)
-                            deriv = deriv * (1.0 - r_s_over_r[i])
-                        elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
+                        if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
                             _cos_alpha = gsl_interp_eval(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
                             _cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
@@ -285,7 +263,7 @@ def integrate(size_t numThreads,
                     sin_alpha = sqrt(1.0 - _cos_alpha * _cos_alpha)
                     mu = _cos_alpha * cos_gamma
 
-                    if psi != 0.0:
+                    if not are_equal(psi, 0.0):
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
                         if theta_i_over_pi < 0.5:
                             mu = mu + sin_alpha * sin_gamma * cos_delta
@@ -293,7 +271,7 @@ def integrate(size_t numThreads,
                             mu = mu - sin_alpha * sin_gamma * cos_delta
 
                     if mu > 0.0:
-                        if sin_psi != 0.0:
+                        if not are_equal(sin_psi, 0.0):
                             cos_xi = sin_alpha * sin_i * sin(phi[i,j]) / sin_psi
                             superlum = (1.0 + beta * cos_xi)
                             eta = Lorentz / superlum
@@ -302,9 +280,7 @@ def integrate(size_t numThreads,
                             superlum = 1.0
                             eta = Lorentz
 
-                        if _use_rayXpanda and psi <= rayXpanda_defl_lim:
-                            pass
-                        elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
+                        if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
                             deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
@@ -327,16 +303,14 @@ def integrate(size_t numThreads,
                             privateFlux[T,e] += I_E * _GEOM
             if terminate[T] == 1:
                 break # out of azimuth loop
-        if not _use_rayXpanda:
-            gsl_interp_free(interp_alpha_alt[T])
+        gsl_interp_free(interp_alpha_alt[T])
         if terminate[T] == 1:
             break # out of colatitude loop
 
     for T in range(N_T):
         gsl_interp_free(interp_alpha[T])
         gsl_interp_accel_free(accel_alpha[T])
-        if not _use_rayXpanda:
-            gsl_interp_accel_free(accel_alpha_alt[T])
+        gsl_interp_accel_free(accel_alpha_alt[T])
         for e in range(N_E):
             flux[e] += privateFlux[T,e]
 
@@ -345,9 +319,8 @@ def integrate(size_t numThreads,
 
     free(interp_alpha)
     free(accel_alpha)
-    if not _use_rayXpanda:
-        free(interp_alpha_alt)
-        free(accel_alpha_alt)
+    free(interp_alpha_alt)
+    free(accel_alpha_alt)
 
     if atmosphere:
         free_preload(preloaded)

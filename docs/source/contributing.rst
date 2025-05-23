@@ -39,8 +39,8 @@ are on the :ref:`acknowledgements` page).
 Git workflow
 ~~~~~~~~~~~~
 
-GitHub repository
-^^^^^^^^^^^^^^^^^
+Advisory workflow for contributing
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 X-PSI is an open-source project and we aspire that all X-PSI versions required
 for reproducibility of publications have release tags on GitHub.
@@ -82,25 +82,25 @@ advisory workflow.
     git fetch origin main:main
 
 * If the branches have diverged, you can either rebase ``patch/fix_something``
-  on ``main`` or merge ``main`` into ``patch/fix_something``, in either
-  case resolving any conflicts:
+  on ``main`` or merge ``main`` into ``patch/fix_something``, in either case
+  resolving any conflicts:
 
 .. code-block:: bash
 
     git rebase main <or> git merge main
 
 * Note that if you have already pushed ``patch/fix_something`` to a remote
-  repository you own (such as a fork of ``xpsi``; see below), and especially
-  if this is accessible by others (e.g., via  submitted pull request), you
-  should only consider merging ``main`` into ``patch/fix_something`` in
-  order to preserve the branch history.
+  repository you own (such as a fork of ``xpsi``; see below), and especially if
+  this is accessible by others (e.g., via  submitted pull request), you should
+  only consider merging ``main`` into ``patch/fix_something`` in order to
+  preserve the branch history.
 
-* After integrating upstream changes, you might decide to continue working
-  on your branch. Alternatively, you could work on another branch for a
-  different patch or feature. In either case you should repeat the process
-  of integrating upstream changes as appropriate, and as a requirement if
-  preparing for a pull request (although there could be exceptional corner
-  cases wherein an X-PSI team member assists with this merging process).
+* After integrating upstream changes, you might decide to continue working on
+  your branch. Alternatively, you could work on another branch for a different
+  patch or feature. In either case you should repeat the process of integrating
+  upstream changes as appropriate, and as a requirement if preparing for a pull
+  request (although there could be exceptional corner cases wherein an X-PSI
+  team member assists with this merging process).
 
 * Once you are ready to contribute your work to the ``xpsi`` repository,
   generally meaning that you have integrated any upsteam changes from ``xpsi``,
@@ -133,51 +133,56 @@ advisory workflow.
 
     git push
 
-* The pull request will then be reviewed and discussed. The proposed changes
-  will either be  merged or a merge will be pending because we request
-  additional commits on the pull-request topic branch. Your pull request may be
-  declined in some instances because the work reproduces development work that
-  has already been performed but not published; your pull request may also be
-  ultimately declined if it contains changes or implementations that we do not
-  support or cannot maintain, and which cannot for some reason be separated
-  from changes we do support and could maintain. Your intellectual contribution
-  to the project will be gratefully acknowledged in the :ref:`acknowledgements`
-  and/or in the project :ref:`history` if this interaction leads to some form
-  of merged development/implementation by another community member, even if your
-  pull request is ultimately declined.
+Pull Request Handling and Development Workflow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* If you co-authored a pull request with one or more collaborators, you can
-  acknowledge them using the GitHub pull-request GUI as you would for a single
-  commit. When a pull request is accepted, it is typically going to be via a
-  merge-squash unless the history is clean or work will continue to be
-  commited on the topic branch after the merge (where applicable). In this
-  case it is the responsiblity of the X-PSI team member executing the merge
-  to replicate the list of co-authors from the original pull request in the
-  squash message.
+* **Pull request review and outcome:** The pull request will then be reviewed
+  and discussed. The proposed changes will either be  merged or a merge will be
+  pending because we request additional commits on the pull-request topic
+  branch. Your pull request may be declined in some instances because the work
+  reproduces development work that has already been performed but not published;
+  your pull request may also be ultimately declined if it contains changes or
+  implementations that we do not support or cannot maintain, and which cannot
+  for some reason be separated from changes we do support and could maintain.
+  Your intellectual contribution to the project will be gratefully acknowledged
+  in the :ref:`acknowledgements` and/or in the project :ref:`history` if this
+  interaction leads to some form of merged development/implementation by another
+  community member, even if your pull request is ultimately declined.
 
-* When a pull request is merged, conflicts will either need to be resolved
-  locally by you as suggested above, ending in a pull request update, or by an
-  X-PSI team member locally and then merged with or without a pull request.
+* **Acknowledging co-authors:** If you co-authored a pull request with one or
+  more collaborators, you can acknowledge them using the GitHub pull-request GUI
+  as you would for a single commit. When a pull request is accepted, it is
+  typically going to be via a merge-squash unless the history is clean or work
+  will continue to be commited on the topic branch after the merge (where
+  applicable). In this case it is the responsiblity of the X-PSI team member
+  executing the merge to replicate the list of co-authors from the original pull
+  request in the squash message.
 
-* If you are ready to start development on a distinct patch or feature that is
-  not conditional on your open pull requests being merged, then you can apply
-  the workflow above by branching (again) off of an up-to-date ``main``.
-  If your work *is* conditional on your open pull requests, you are free to
-  continue your development by commiting to the relevant topic branch (or
-  according to some other branching scheme). However, there is a risk that more
-  work will be needed if the open pull request is not merged into the central
-  repository; or if only a subset of proposed changes are merged; or conflict
-  resolution does not favour all of the changes you proposed. Of course, such
-  work may nevertheless remain useful in your own applications even if it is
-  never all merged into the central repository. If the pull request is merged
-  after your continuation, and the plan is submit a future pull request, you
-  will have to merge in the ``xpsi/main`` branch before opening another
-  pull request so that the merge conflicts that were already resolved are not
-  raised again.
+* **Handling merge conflicts:** When a pull request is merged, conflicts will
+  either need to be resolved locally by you as suggested above, ending in a pull
+  request update, or by an X-PSI team member locally and then merged with or
+  without a pull request.
 
-* The above workflow also applies to remote branches other than ``main`` that
-  might exist in the ``xpsi`` repository that you wish to contribute to, but
-  this should be a less common pattern.
+* **Developing new features or patches:** If you are ready to start development
+  on a distinct patch or feature that is not conditional on your open pull
+  requests being merged, then you can apply the workflow above by branching
+  (again) off of an up-to-date ``main``. If your work *is* conditional on your
+  open pull requests, you are free to continue your development by commiting to
+  the relevant topic branch (or according to some other branching scheme).
+  However, there is a risk that more work will be needed if the open pull
+  request is not merged into the central repository; or if only a subset of
+  proposed changes are merged; or conflict resolution does not favour all of the
+  changes you proposed. Of course, such work may nevertheless remain useful in
+  your own applications even if it is never all merged into the central
+  repository. If the pull request is merged after your continuation, and the
+  plan is submit a future pull request, you will have to merge in the
+  ``xpsi/main`` branch before opening another pull request so that the merge
+  conflicts that were already resolved are not raised again.
+
+* **Working with non-main branches:** The above workflow also applies to remote
+  branches other than ``main`` that might exist in the ``xpsi`` repository that
+  you wish to contribute to, but this should be a less common pattern.
 
 If you want to contribute a feature, you are welcome to communicate with us
-either on GitHub via issues and pull-requests, or by contacting a team member directly. 
+either on GitHub via issues and pull-requests, or by contacting a team member
+directly. 

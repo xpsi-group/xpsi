@@ -187,6 +187,8 @@ def plotBackgroundSpectrum( XPSI_model,
     # Extract background from samples
     if plot_range:
         posterior = np.loadtxt(samples_path+'post_equal_weights.dat')
+        if posterior.ndim == 1:
+            raise IndexError("*post_equal_weights.dat has only one sample and thus you cannot plot background uncertainty range. Please set plot_range=False.")
         indexR = np.random.randint(low=0, high=len(posterior)-1, size=Nsamples)
         BKG_A = np.array( [extractBKG( p=posterior[indexR[i]][:-1], XPSImodel=XPSI_model, InstrumentName=InstrumentName, given_support=True) for i in range(Nsamples)] )
         sigma = np.std(BKG_A,axis = 0)

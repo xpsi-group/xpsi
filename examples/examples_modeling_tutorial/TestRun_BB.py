@@ -466,4 +466,4 @@ true_logl = -2.6883527522e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
-    xpsi.Sample.nested(likelihood, prior,**runtime_params)
+    xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)

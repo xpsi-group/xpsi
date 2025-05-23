@@ -28,6 +28,7 @@
    :caption: Tutorials
 
    Start_here
+   XPSI_101
    Modeling
    Instrument_synergy
    Hot_region_complexity
@@ -38,6 +39,7 @@
    Post-processing
    Emitting_patterns_2Dprojection
    Accretion_disk
+   Multiple_imaging
    Importance_sampling
    Module_generator_tutorial
    Example_script_and_modules

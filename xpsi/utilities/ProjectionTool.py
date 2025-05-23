@@ -362,7 +362,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         """
         GOAL: filling vectors describing geometries and temperature of hot spots and labels for plots
         ##### INPUTS #####
-        HStag: Hot Spot tag, "p" for primary hot spot (also for single hot spot models); "s" for secondary hot spot
+        HStag: Hot Spot tag, "p" for primary hot spot (also for single hot spot models); "s" for secondary hot spot; "t" for tertiary hot spot
         hot_name: name (according to our naming convention) of the hot spot
         ##### OUTPUTS #####
         phiA: phases of hot spot components [cycle]
@@ -377,13 +377,13 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             print ("ERROR: invalid Key argument (only 'p', 's' and 't' allowed), not ",HStag)
             raise IpyExit
 
-        match HStag:
-            case 'p':
-                Mlab = Plab 
-            case 's':
-                Mlab = Slab
-            case 't':
-                Mlab = Tlab
+        if HStag == 'p':
+            Mlab = Plab
+        elif HStag == 's':
+            Mlab = Slab
+        elif HStag == 't':
+            Mlab = Tlab
+
         labels = [Mlab]
     
         thetaA = []

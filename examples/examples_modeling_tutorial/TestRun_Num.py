@@ -114,7 +114,10 @@ spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
               phase_shift = (0.0, 0.1),
-              super_temperature = (5.1, 6.8))
+              super_temperature = (5.3, 6.8))
+#Note: The atmosphere table lower limit is 5.1, but we use 5.3 in this example,
+#because the secondary spot temperature is defined here to be always 0.2 below
+#the primary spot temperature (just for demonstrating how to derive parameters).
 
 primary = xpsi.HotRegion(bounds=bounds,
                         values={},
@@ -191,45 +194,6 @@ else:
 
 class CustomPhotosphere_num(xpsi.Photosphere):
     """ A photosphere extension to preload the numerical atmosphere NSX. """
-
-    @xpsi.Photosphere.hot_atmosphere.setter
-    def hot_atmosphere_old(self, path):
-        try:
-            NSX = np.loadtxt(path, dtype=np.double)
-        except:
-            print("ERROR: You miss the following file:", path)
-            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
-            exit()
-        logT = np.zeros(35)
-        logg = np.zeros(14)
-        mu = np.zeros(67)
-        logE = np.zeros(166)
-
-        #reorder_buf = np.zeros((35,11,67,166))
-        reorder_buf = np.zeros((35,14,67,166))
-
-        index = 0
-        for i in range(reorder_buf.shape[0]):
-            for j in range(reorder_buf.shape[1]):
-                for k in range(reorder_buf.shape[3]):
-                   for l in range(reorder_buf.shape[2]):
-                        logT[i] = NSX[index,3]
-                        logg[j] = NSX[index,4]
-                        logE[k] = NSX[index,0]
-                        mu[reorder_buf.shape[2] - l - 1] = NSX[index,1]
-                        reorder_buf[i,j,reorder_buf.shape[2] - l - 1,k] = 10.0**(NSX[index,2])
-                        index += 1
-
-        buf = np.zeros(np.prod(reorder_buf.shape))
-
-        bufdex = 0
-        for i in range(reorder_buf.shape[0]):
-            for j in range(reorder_buf.shape[1]):
-                for k in range(reorder_buf.shape[2]):
-                   for l in range(reorder_buf.shape[3]):
-                        buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
-
-        self._hot_atmosphere = (logT, logg, mu, logE, buf)
 
     @xpsi.Photosphere.hot_atmosphere.setter
     def hot_atmosphere(self,path):
@@ -625,4 +589,4 @@ true_logl = -6.7261415434e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
-    xpsi.Sample.nested(likelihood, prior,**runtime_params)
+    xpsi.Sample.run_multinest(likelihood, prior,**runtime_params)

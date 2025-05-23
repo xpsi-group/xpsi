@@ -3,6 +3,24 @@
 #cython: nonecheck=False
 #cython: wraparound=False
 
+"""
+This module implements 4 dimensional cubic polynomial Lagrangian interpolation.
+Cubic means there are 4 data points in each dimension for which a polynomial 
+will be built (https://en.wikipedia.org/wiki/Lagrange_polynomial). We have been
+using this specifically for RMPs, which have a 4D atmosphere table.
+
+Functions:
+    - init_hot_Num4D: initialize the memory-space that will be used by the 
+    variables in the interpolation.
+    - free_hot_Num4D: free the memory-space
+    - eval_hot_Num4D: computes the 4D interpolatin
+    - eval_hot_Num4D_I: wrapper for eval_hot
+    - eval_hot_Num4D_Q: wrapper for eval_hot
+    - eval_hot_norm_Num4D: any multiplicative normalisation of the output of 
+    eval_hot.
+    
+"""
+
 from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs
 from libc.stdio cimport printf, fopen, fclose, fread, FILE
 from GSL cimport gsl_isnan, gsl_isinf
@@ -21,12 +39,19 @@ cdef double k_B_over_keV = k_B / keV
 cdef int VERBOSE = 0
 
 ctypedef struct ACCELERATE:
-    size_t **BN                # base node for interpolation
-    double **node_vals
-    double **SPACE
-    double **DIFF
-    double **INTENSITY_CACHE
-    double **VEC_CACHE
+    size_t **BN		# BN is a pointer to a pointer to a size_t object. 
+    # So that allows to create a dynamic 2D array. The array BN will point to 
+    # data points of a 4*n interpolation hypercube, where n is the amount of 
+    # parameters in the interpolation. BN is later used as an index for node 
+    # vals array.
+    double **node_vals		# For each BN value, there are two double objects 
+    # node_vals. The second one is the next value in the contiguous atmosphere 
+    # array.
+    double **SPACE		# SPACE are the denominators of the Lagrange 
+    # polynomials.
+    double **DIFF		# DIFF are the numerators of the Lagrange polynomials.
+    double **INTENSITY_CACHE	# Caches intensity values for reuse.
+    double **VEC_CACHE		# Cache VEC values for reuse.
 
 # Modify this struct if useful for the user-defined source radiation field.
 # Note that the members of DATA will be shared by all threads and are
@@ -34,34 +59,60 @@ ctypedef struct ACCELERATE:
 # dynamically allocated memory, not shared by threads.
 
 ctypedef struct DATA:
-    const _preloaded *p
-    ACCELERATE acc
+    const _preloaded *p 	# _preloaded is a struct defined in preload.pxd
+    ACCELERATE acc		# Make ACCELERATE object
 
-#----------------------------------------------------------------------->>>
-# >>> User modifiable functions.
-# >>> Note that the user is entirely free to wrap thread-safe and
-# ... non-parallel external C routines from an external library.
-# >>> Thus the bodies of the following need not be written explicitly in
-# ... the Cython language.
-#----------------------------------------------------------------------->>>
-cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) noexcept nogil:
-    # This function must match the free management routine free_hot()
-    # in terms of freeing dynamically allocated memory. This is entirely
-    # the user's responsibility to manage.
-    # Return NULL if dynamic memory is not required for the model
+
+cdef void* init_hot_Num4D(size_t numThreads, 
+                          const _preloaded *const preloaded) noexcept nogil:
+    """
+    Initialize data for hot region intensity evaluation in a multi-threaded 
+    environment.
+    
+    User-Modifiable Function:
+        The user is free to wrap thread-safe and non-parallel external C 
+        routines from an external library. The function body does not 
+        necessarily need to be written in Cython, allowing flexibility 
+        in integrating external code.
+    
+    Memory Management:
+        This function must match the free management routine `free_hot()` to 
+        properly free dynamically allocated memory. Managing memory correctly 
+        is the user's responsibility. The function should return NULL if 
+        dynamic memory is not required for the model.
+    
+    Arguments:
+        numThreads (size_t): Number of threads for parallel execution.
+        preloaded (const _preloaded *const): Preloaded data structure 
+        containing model parameters.
+    
+    Returns:
+        void*: Pointer to the dynamically allocated DATA structure.
+    
+    Attributes:
+        noexcept nogil: Indicates that the function does not throw exceptions 
+                       and can be executed without the Global Interpreter 
+                       Lock (GIL).
+    """
+
 
     if preloaded == NULL :
-        printf("ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.\n")
+        printf("ERROR: The numerical atmosphere data were not preloaded, \
+               which are required by this extension.\n")
 
-    cdef DATA *D = <DATA*> malloc(sizeof(DATA))
-    D.p = preloaded
-
+    cdef DATA *D = <DATA*> malloc(sizeof(DATA))	 # Define DATA object
+    D.p = preloaded  # Store preloaded information from function call in DATA 
+    # object. See also preload.pyx.
+    
+    # These BLOCKS are related to the number of interpolation points needed in 
+    # a hypercube.
     D.p.BLOCKS[0] = 64
     D.p.BLOCKS[1] = 16
     D.p.BLOCKS[2] = 4
 
     cdef size_t T, i, j, k, l
 
+    # Prepare memory slots for ACCELERATE object
     D.acc.BN = <size_t**> malloc(numThreads * sizeof(size_t*))
     D.acc.node_vals = <double**> malloc(numThreads * sizeof(double*))
     D.acc.SPACE = <double**> malloc(numThreads * sizeof(double*))
@@ -69,55 +120,70 @@ cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) 
     D.acc.INTENSITY_CACHE = <double**> malloc(numThreads * sizeof(double*))
     D.acc.VEC_CACHE = <double**> malloc(numThreads * sizeof(double*))
 
+    # Allocate memory for each thread, initializing data structures used for 
+    # interpolation and caching
     for T in range(numThreads):
+        # Allocate memory for base nodes (BN), node values, space differences 
+        # (SPACE), and interpolation differences (DIFF)
         D.acc.BN[T] = <size_t*> malloc(D.p.ndims * sizeof(size_t))
         D.acc.node_vals[T] = <double*> malloc(2 * D.p.ndims * sizeof(double))
-        D.acc.SPACE[T] = <double*> malloc(4 * D.p.ndims * sizeof(double))
-        D.acc.DIFF[T] = <double*> malloc(4 * D.p.ndims * sizeof(double))
-        D.acc.INTENSITY_CACHE[T] = <double*> malloc(256 * sizeof(double))
+        D.acc.SPACE[T] = <double*> malloc(4 * D.p.ndims * sizeof(double))  
+        # Cubic interpolation: 4 nodes per dimension
+        D.acc.DIFF[T] = <double*> malloc(4 * D.p.ndims * sizeof(double))   
+        # Cubic interpolation: 4 difference values per dimension
+        D.acc.INTENSITY_CACHE[T] = <double*> malloc(256 * sizeof(double)) 
+        # Full hypercube: 4^5 = 1024 intensities
         D.acc.VEC_CACHE[T] = <double*> malloc(D.p.ndims * sizeof(double))
+        
+        # Initialize base nodes and cache for each dimension
         for i in range(D.p.ndims):
-            D.acc.BN[T][i] = 0
-            D.acc.VEC_CACHE[T][i] = D.p.params[i][1]
-            D.acc.node_vals[T][2*i] = D.p.params[i][1]
-            D.acc.node_vals[T][2*i + 1] = D.p.params[i][2]
-
-            j = 4*i
-
+            D.acc.BN[T][i] = 0  # Set initial base nodes to zero
+            D.acc.VEC_CACHE[T][i] = D.p.params[i][1]  # Initialize with 
+            # atmosphere value
+            D.acc.node_vals[T][2 * i] = D.p.params[i][1]   # Store current and
+            # next atmosphere values as node values
+            D.acc.node_vals[T][2 * i + 1] = D.p.params[i][2]
+    
+            # Calculate the reciprocal of the difference for Lagrangian 
+            # interpolation
+            j = 4 * i
             D.acc.SPACE[T][j] = 1.0 / (D.p.params[i][0] - D.p.params[i][1])
             D.acc.SPACE[T][j] /= D.p.params[i][0] - D.p.params[i][2]
             D.acc.SPACE[T][j] /= D.p.params[i][0] - D.p.params[i][3]
-
+   
             D.acc.SPACE[T][j + 1] = 1.0 / (D.p.params[i][1] - D.p.params[i][0])
             D.acc.SPACE[T][j + 1] /= D.p.params[i][1] - D.p.params[i][2]
             D.acc.SPACE[T][j + 1] /= D.p.params[i][1] - D.p.params[i][3]
-
+   
             D.acc.SPACE[T][j + 2] = 1.0 / (D.p.params[i][2] - D.p.params[i][0])
             D.acc.SPACE[T][j + 2] /= D.p.params[i][2] - D.p.params[i][1]
             D.acc.SPACE[T][j + 2] /= D.p.params[i][2] - D.p.params[i][3]
-
+   
             D.acc.SPACE[T][j + 3] = 1.0 / (D.p.params[i][3] - D.p.params[i][0])
             D.acc.SPACE[T][j + 3] /= D.p.params[i][3] - D.p.params[i][1]
             D.acc.SPACE[T][j + 3] /= D.p.params[i][3] - D.p.params[i][2]
-
+   
             D.acc.DIFF[T][j] = D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
             D.acc.DIFF[T][j] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
             D.acc.DIFF[T][j] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
-
+   
             D.acc.DIFF[T][j + 1] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
             D.acc.DIFF[T][j + 1] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
             D.acc.DIFF[T][j + 1] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
-
+   
             D.acc.DIFF[T][j + 2] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
             D.acc.DIFF[T][j + 2] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
             D.acc.DIFF[T][j + 2] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][3]
-
+   
             D.acc.DIFF[T][j + 3] = D.acc.VEC_CACHE[T][i] - D.p.params[i][0]
             D.acc.DIFF[T][j + 3] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][1]
             D.acc.DIFF[T][j + 3] *= D.acc.VEC_CACHE[T][i] - D.p.params[i][2]
+         
 
     cdef double *address = NULL
-    # Cache intensity
+    # For the full interpolation hypercube, store all intensities in an array
+    # with the right shape, so all values are lookupable later by knowing the 
+    # i,j,k,l address.
     for T in range(numThreads):
         for i in range(4):
             for j in range(4):
@@ -134,15 +200,27 @@ cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) 
 
 
 cdef int free_hot_Num4D(size_t numThreads, void *const data) noexcept nogil:
-    # This function must match the initialisation routine init_hot()
-    # in terms of freeing dynamically allocated memory. This is entirely
-    # the user's responsibility to manage.
-    # The void pointer must be appropriately cast before memory is freed --
-    # only the user can know this at compile time.
-    # Just use free(<void*> data) iff no memory was dynamically
-    # allocated in the function:
-    #   init_hot()
-    # because data is expected to be NULL in this case
+    """
+    Free dynamically allocated memory associated with hot region data.
+    
+    This function must match the initialization routine `init_hot()` in terms
+    of freeing dynamically allocated memory. It is entirely the user's 
+    responsibility to manage memory correctly.
+    
+    Arguments:
+        numThreads (size_t): Number of threads used for parallel execution.
+        data (void *const): Pointer to dynamically allocated memory. 
+            - The void pointer must be appropriately cast before freeing the 
+            memory.
+            - Use `free(<void*> data)` only if no memory was dynamically 
+            allocated in the function `init_hot()`, as `data` is expected to be
+            NULL in this case.
+    
+    Attributes:
+        noexcept nogil: Indicates that the function does not throw exceptions 
+                       and can be executed without the Global Interpreter Lock
+                       (GIL).
+    """
 
     cdef DATA *D = <DATA*> data
 
@@ -162,28 +240,42 @@ cdef int free_hot_Num4D(size_t numThreads, void *const data) noexcept nogil:
     free(D.acc.DIFF)
     free(D.acc.INTENSITY_CACHE)
     free(D.acc.VEC_CACHE)
-
     free(D)
 
     return SUCCESS
 
-#----------------------------------------------------------------------->>>
-# >>> Cubic polynomial interpolation.
-# >>> Improve acceleration properties... i.e. do not recompute numerical
-# ... weights or re-read intensities if not necessary.
-#----------------------------------------------------------------------->>>
+
 cdef double eval_hot_Num4D(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
                      void *const data) noexcept nogil:
-    # Arguments:
-    # E = photon energy in keV
-    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
-    # VEC = variables such as temperature, effective gravity, ...
-    # data = numerical model data required for intensity evaluation
+    """
+    Evaluate the intensity of hot regions based on given parameters.
 
-    # This function must cast the void pointer appropriately for use.
+    Cubic polynomial interpolation:
+    This function implements cubic polynomial interpolation to improve 
+    acceleration properties. Specifically, it avoids recomputing numerical 
+    weights or re-reading intensities when not necessary, optimizing 
+    performance.
+
+    Arguments:
+        THREAD (size_t): Thread ID used for parallel execution.
+        E (double): Photon energy in units provided by the integrator. For RMPs
+        it is keV. Some conversion is done to match the units in the atmosphere
+        table.
+        mu (double): Cosine of the ray zenith angle (angle to surface normal).
+        VEC (const double *const): Pointer to variables (e.g., temperature in 
+         log10 of K, effective gravity log10 of cm/s^2).
+        data (void *const): Numerical model data required for intensity 
+        evaluation.
+            The function must appropriately cast the void pointer for use.
+            
+    Attributes:
+        noexcept nogil: Indicates that the function does not throw exceptions 
+                       and can be executed without the Global Interpreter Lock
+                       (GIL).
+    """
     cdef DATA *D = <DATA*> data
 
     cdef:
@@ -205,60 +297,67 @@ cdef double eval_hot_Num4D(size_t THREAD,
     vec[2] = mu
     vec[3] = log10(E / E_eff)
 
+    # Loop through each dimension and update the base node if necessary
     while i < D.p.ndims:
-        # if parallel == 31:
-        #     printf("\nDimension: %d", <int>i)
-        update_baseNode[i] = 0
-        if vec[i] < node_vals[2*i] and BN[i] != 0:
-            # if parallel == 31:
-            #     printf("\nExecute block 1: %d", <int>i)
-            update_baseNode[i] = 1
+        update_baseNode[i] = 0  # Initialize: no change to base node
+    
+        # Check if the input value (vec) is smaller than the base node value 
+        # (node_vals[2*i]) and the current base node (BN) is not the first (BN 
+        # is set to zero in init_hot)
+        if vec[i] < node_vals[2 * i] and BN[i] != 0:
+            update_baseNode[i] = 1  # Mark the base node for change
+    
+            # Adjust the base node while the input value remains below the next 
+            # base node value
             while vec[i] < D.p.params[i][BN[i] + 1]:
-                # if parallel == 31:
-                #     printf("\n!")
-                #     printf("\nvec i: %.8e", vec[i])
-                #     printf("\nBase node: %d", <int>BN[i])
-                if BN[i] > 0:
+                if BN[i] > 0:  # If not at the first base node, decrement
                     BN[i] -= 1
-                elif vec[i] <= D.p.params[i][0]:
-                    vec[i] = D.p.params[i][0]
+                elif vec[i] <= D.p.params[i][0]:  # If vec is smaller than the 
+                # first parameter value
+                    vec[i] = D.p.params[i][0]  # Clamp to the first value
                     break
-                elif BN[i] == 0:
+                elif BN[i] == 0:  # If already at the first base node, no 
+                # further adjustment needed
                     break
 
-            node_vals[2*i] = D.p.params[i][BN[i] + 1]
-            node_vals[2*i + 1] = D.p.params[i][BN[i] + 2]
-
-            # if parallel == 31:
-            #     printf("\nEnd Block 1: %d", <int>i)
-
-        elif vec[i] > node_vals[2*i + 1] and BN[i] != D.p.N[i] - 4:
-            # if parallel == 31:
-            #     printf("\nExecute block 2: %d", <int>i)
-            update_baseNode[i] = 1
+            # Update node values based on the updated base node (BN). The +1 
+            # and +2 ensure that the node values correctly surround the input 
+            # value.
+            node_vals[2 * i] = D.p.params[i][BN[i] + 1]     
+            node_vals[2 * i + 1] = D.p.params[i][BN[i] + 2] 
+        
+        # Check if the input value (vec) exceeds the upper node value 
+        # (node_vals[2 * i + 1]) and the current base node (BN) is not the last
+        # one that allows for an update.
+        elif vec[i] > node_vals[2 * i + 1] and BN[i] != D.p.N[i] - 4:
+            update_baseNode[i] = 1  # Mark the base node for change
+        
+            # Move the base node up while the input value remains above the 
+            # next base node value.
             while vec[i] > D.p.params[i][BN[i] + 2]:
-                if BN[i] < D.p.N[i] - 4:
+                if BN[i] < D.p.N[i] - 4:  # If not at the last allowed base 
+                # node, increment BN.
                     BN[i] += 1
-                elif vec[i] >= D.p.params[i][D.p.N[i] - 1]:
+                elif vec[i] >= D.p.params[i][D.p.N[i] - 1]:  # If vec is at the
+                # upper limit, clamp it.
                     vec[i] = D.p.params[i][D.p.N[i] - 1]
                     break
-                elif BN[i] == D.p.N[i] - 4:
+                elif BN[i] == D.p.N[i] - 4:  # If at the last base node, stop
+                # adjusting.
                     break
-
-            node_vals[2*i] = D.p.params[i][BN[i] + 1]
-            node_vals[2*i + 1] = D.p.params[i][BN[i] + 2]
-
-            # if parallel == 31:
-            #     printf("\nEnd Block 2: %d", <int>i)
-
-        # if parallel == 31:
-        #     printf("\nTry block 3: %d", <int>i)
-
+        
+            # Update node values based on the new base node position.
+            node_vals[2 * i] = D.p.params[i][BN[i] + 1]
+            node_vals[2 * i + 1] = D.p.params[i][BN[i] + 2]
+            
+        # Here we avoid extra work with the caching system. We only compute 
+        # this if the query value is not the same as the cached value, or more
+        # obviously if the base node was changed.
         if V_CACHE[i] != vec[i] or update_baseNode[i] == 1:
-            # if parallel == 31:
-            #     printf("\nExecute block 3: %d", <int>i)
             ii = 4*i
-            DIFF[ii] = vec[i] - D.p.params[i][BN[i] + 1]
+            # Go through the work of fetching the numerators. You will need the
+            # query value for that.
+            DIFF[ii] = vec[i] - D.p.params[i][BN[i] + 1]	
             DIFF[ii] *= vec[i] - D.p.params[i][BN[i] + 2]
             DIFF[ii] *= vec[i] - D.p.params[i][BN[i] + 3]
 
@@ -274,41 +373,45 @@ cdef double eval_hot_Num4D(size_t THREAD,
             DIFF[ii + 3] *= vec[i] - D.p.params[i][BN[i] + 1]
             DIFF[ii + 3] *= vec[i] - D.p.params[i][BN[i] + 2]
 
-            V_CACHE[i] = vec[i]
 
-            # if parallel == 31:
-            #     printf("\nEnd block 3: %d", <int>i)
+            V_CACHE[i] = vec[i]	 # Store this input value in the cache for next
+            # time so that work can be skipped.
 
-        # if parallel == 31:
-        #     printf("\nTry block 4: %d", <int>i)
 
-        if update_baseNode[i] == 1:
-            # if parallel == 31:
-            #     printf("\nExecute block 4: %d", <int>i)
-            CACHE = 1
+        # For the denominators you have to redo the work only if the basenode 
+        # was changed. vec[i] is not present in the denominators.
+        if update_baseNode[i] == 1:	
+            CACHE = 1  # If the basenode was changed, this is a cache flag 
+            # indicating that it is the case, to be used later.
             SPACE[ii] = 1.0 / (D.p.params[i][BN[i]] - D.p.params[i][BN[i] + 1])
             SPACE[ii] /= D.p.params[i][BN[i]] - D.p.params[i][BN[i] + 2]
             SPACE[ii] /= D.p.params[i][BN[i]] - D.p.params[i][BN[i] + 3]
 
-            SPACE[ii + 1] = 1.0 / (D.p.params[i][BN[i] + 1] - D.p.params[i][BN[i]])
-            SPACE[ii + 1] /= D.p.params[i][BN[i] + 1] - D.p.params[i][BN[i] + 2]
-            SPACE[ii + 1] /= D.p.params[i][BN[i] + 1] - D.p.params[i][BN[i] + 3]
+            SPACE[ii + 1] = 1.0 / (D.p.params[i][BN[i] + 1] - 
+                                   D.p.params[i][BN[i]])
+            SPACE[ii + 1] /= (D.p.params[i][BN[i] + 1] - 
+                              D.p.params[i][BN[i] + 2])
+            SPACE[ii + 1] /= (D.p.params[i][BN[i] + 1] - 
+                              D.p.params[i][BN[i] + 3])
 
-            SPACE[ii + 2] = 1.0 / (D.p.params[i][BN[i] + 2] - D.p.params[i][BN[i]])
-            SPACE[ii + 2] /= D.p.params[i][BN[i] + 2] - D.p.params[i][BN[i] + 1]
-            SPACE[ii + 2] /= D.p.params[i][BN[i] + 2] - D.p.params[i][BN[i] + 3]
+            SPACE[ii + 2] = 1.0 / (D.p.params[i][BN[i] + 2] -
+                                   D.p.params[i][BN[i]])
+            SPACE[ii + 2] /= (D.p.params[i][BN[i] + 2] - 
+                              D.p.params[i][BN[i] + 1])
+            SPACE[ii + 2] /= (D.p.params[i][BN[i] + 2] - 
+                              D.p.params[i][BN[i] + 3])
 
-            SPACE[ii + 3] = 1.0 / (D.p.params[i][BN[i] + 3] - D.p.params[i][BN[i]])
-            SPACE[ii + 3] /= D.p.params[i][BN[i] + 3] - D.p.params[i][BN[i] + 1]
-            SPACE[ii + 3] /= D.p.params[i][BN[i] + 3] - D.p.params[i][BN[i] + 2]
+            SPACE[ii + 3] = 1.0 / (D.p.params[i][BN[i] + 3] -
+                                   D.p.params[i][BN[i]])
+            SPACE[ii + 3] /= (D.p.params[i][BN[i] + 3] - 
+                              D.p.params[i][BN[i] + 1])
+            SPACE[ii + 3] /= (D.p.params[i][BN[i] + 3] -
+                              D.p.params[i][BN[i] + 2])
 
-            # if parallel == 31:
-            #     printf("\nEnd block 4: %d", <int>i)
-
-        i += 1
-
+        i += 1	# For each dimension (while loop)
     cdef size_t j, k, l, INDEX, II, JJ, KK
     cdef double *address = NULL
+    
     # Combinatorics over nodes of hypercube; weight cgs intensities
     for i in range(4):
         II = i * D.p.BLOCKS[0]
@@ -323,30 +426,36 @@ cdef double eval_hot_Num4D(size_t THREAD,
                     address += BN[3] + l
 
                     temp = DIFF[i] * DIFF[4 + j] * DIFF[8 + k] * DIFF[12 + l]
-                    temp *= SPACE[i] * SPACE[4 + j] * SPACE[8 + k] * SPACE[12 + l]
+                    temp *= (SPACE[i] * SPACE[4 + j] * SPACE[8 + k] * 
+                             SPACE[12 + l])
                     INDEX = II + JJ + KK + l
                     if CACHE == 1:
                         I_CACHE[INDEX] = address[0]
                     I += temp * I_CACHE[INDEX]
 
-    #if gsl_isnan(I) == 1:
-        #printf("\nIntensity: NaN; Index [%d,%d,%d,%d] ",
-                #<int>BN[0], <int>BN[1], <int>BN[2], <int>BN[3])
-
-    #printf("\nBase-nodes [%d,%d,%d,%d] ",
-                #<int>BN[0], <int>BN[1], <int>BN[2], <int>BN[3])
-
     if I < 0.0:
         return 0.0
-    return I * pow(10.0, 3.0 * vec[0])
+    return I * pow(10.0, 3.0 * vec[0]) # back to units required by integrator, 
+    # except normalisation
 
 cdef double eval_hot_norm_Num4D() noexcept nogil:
-    # Source radiation field normalisation which is independent of the
-    # parameters of the parametrised model -- i.e. cell properties, energy,
-    # and angle.
-    # Writing the normalisation here reduces the number of operations required
-    # during integration.
-    # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
-
+    """
+    Calculate the normalization factor for the source radiation field. The
+    normalisation step could be different depending on what is in the
+    atmosphere data.
+    
+    Purpose:
+        This function computes a normalization factor for the specific 
+        intensity of the source radiation field.
+    
+    Returns:
+        double: Normalization factor for the specific intensity in units of 
+                J/cm²/s/keV/steradian.
+    
+    Attributes:
+        noexcept nogil: Indicates that the function does not throw exceptions 
+                       and can be executed without the Global Interpreter Lock
+                       (GIL).
+    """
     return erg / h_keV
 

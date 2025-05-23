@@ -69,46 +69,6 @@ if __name__ == '__main__':
             # by the binary itself
             extra_link_args = ['-Wl,-rpath,%s'%(str(gsl_prefix)+'/lib')]
 
-        # try to get the rayXpanda library:
-        # please modify these compilation steps it does not work for your
-        # environment; this specification of the (shared) object files
-        # seems to work fine for gcc and icc compilers at least
-        try:
-            import rayXpanda
-        except ImportError:
-            print('Warning: the rayXpanda package cannot be imported. '
-                  'Using fallback implementation.')
-            CC = os.environ['CC']
-            sub.call(['%s'%CC,
-                      '-c',
-                      join(_src_dir, 'xpsi/include/rayXpanda/inversion.c'),
-                      '-o',
-                      join(_src_dir, 'xpsi/include/rayXpanda/inversion.o')])
-            sub.call(['%s'%CC,
-                      '-c',
-                      join(_src_dir, 'xpsi/include/rayXpanda/deflection.c'),
-                      '-o',
-                      join(_src_dir, 'xpsi/include/rayXpanda/deflection.o')])
-            use_rayXpanda = False
-        else:
-            use_rayXpanda = True
-
-        if use_rayXpanda:
-            if 'clang' in os.environ['CC']:
-                libraries += ['inversion.so', 'deflection.so']
-            else:
-                libraries += [':inversion.so', ':deflection.so']
-            library_dirs += [rayXpanda.__path__[0]]
-            extra_link_args += ['-Wl,-rpath,%s'%rayXpanda.__path__[0]]
-        else: # get the native dummy interface
-            if 'clang' in os.environ['CC']:
-                libraries += ['inversion.o', 'deflection.o']
-            else:
-                libraries += [':inversion.o', ':deflection.o']
-            library_dirs += [join(_src_dir, 'xpsi/include/rayXpanda')]
-            extra_link_args += ['-Wl,-rpath,%s'%join(_src_dir,
-                                                 'xpsi/include/rayXpanda')]
-
         try:
             print("NOOPENMP =", noopenmp)
             if not noopenmp :
@@ -271,7 +231,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '3.0.6',
+        version = '3.1.0',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
@@ -287,8 +247,7 @@ if __name__ == '__main__':
                     'xpsi/likelihoods',
                     'xpsi/utilities',
                     'xpsi/pixelmesh',
-                    'xpsi/include',
-                    'xpsi/include.rayXpanda'],
+                    'xpsi/include'],
         install_requires = ['numpy'],
         setup_requires = ['cython ~= 3.0.11'],
         package_data = {'': ['README.rst', 'LICENSE']},

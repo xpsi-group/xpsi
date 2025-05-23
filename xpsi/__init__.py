@@ -4,7 +4,7 @@ An open-source package for neutron star astrostatistics.
 
 """
 
-__version__ = "3.0.6"
+__version__ = "3.1.0"
 __author__ = "The X-PSI Core Team"
 
 try:
@@ -51,15 +51,6 @@ if not __XPSI_SETUP__:
 
     from xpsi import global_imports
 
-    try:
-        import rayXpanda
-    except ImportError:
-        __rayXpanda_installed__ = False
-    else:
-        __rayXpanda_installed__ = True
-        from .cellmesh import set_rayXpanda_deflection_limit
-        set_rayXpanda_deflection_limit(global_imports._pi/2.0)
-
     from xpsi.tools import set_phase_interpolant, set_energy_interpolant
     set_phase_interpolant('Akima')
     set_energy_interpolant('Steffen')
@@ -69,7 +60,7 @@ if not __XPSI_SETUP__:
 
     from xpsi.Likelihood import Likelihood
     from xpsi.Data import Data
-    from xpsi.Instrument import Instrument
+    from xpsi.Instrument import Instrument, InstrumentPileup
     from xpsi.Signal import Signal
 
     from xpsi.Star import Star

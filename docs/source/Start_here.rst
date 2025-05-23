@@ -8,6 +8,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 **Overview of the available tutorials:**
 
+* :doc:`X-PSI 101<XPSI_101>` is a basic tutorial introducing the key aspects of X-PSI.  In it you will build a very simple model of a single hot spot on a neutron star surface, simulate a pulse profile, and perform parameter estimation.  Start here if you have never used X-PSI before!  
+
 * :doc:`Modeling<Modeling>` is an in-depth tutorial that first covers the structure of X-PSI followed by basic usage of X-PSI. Basic usage includes constructing your first model (e.g. instrument, star, and atmosphere) and constructing a likelihood for nested sampling.
 
 * :doc:`Instrument synergy<Instrument_synergy>` shows how to construct a joint likelihood with data from two instruments.
@@ -27,6 +29,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 * :doc:`Emitting patterns 2D projection<Emitting_patterns_2Dprojection>` is a tutorial showing how to use the 2D projection tool for the hot emitting regions on the star's surface.
 
 * :doc:`Accretion disk<Accretion_disk>` is a tutorial showing how to set up an accretion disk and add its emission to the emission of a star.
+
+* :doc:`Multiple imaging<Multiple_imaging>` is a tutorial studying the effects of multiple imaging.
 
 * :doc:`Importance sampling<Importance_sampling>` is a tutorial for importance sampling.
 
