@@ -134,10 +134,13 @@ class Instrument(ParameterSubspace):
         try:
             for i in range(matrix.shape[0]):
                 assert matrix[i,:].any()
+        except AssertionError:
+            raise ResponseError('Each row of the matrix must contain at least one positive number.')
+        try:
             for j in range(matrix.shape[1]):
                 assert matrix[:,j].any()
         except AssertionError:
-            raise ResponseError('Each row and column of the matrix must contain at least one positive number.')
+            raise ResponseError('Each column of the matrix must contain at least one positive number.')
         self._matrix = matrix
 
     def construct_matrix(self):
@@ -343,7 +346,7 @@ class Instrument(ParameterSubspace):
         new_matrix = self.matrix[new_channels_indexes]
         empty_channels = _np.all( new_matrix <= threshold, axis=1)
         empty_inputs = _np.all( new_matrix <= threshold, axis=0)
-        
+
         # Apply to matrix and channels directly
         self.matrix = new_matrix[~empty_channels][:,~empty_inputs]
         self.channels = self.channels[new_channels_indexes][ ~empty_channels ]
@@ -426,12 +429,12 @@ class Instrument(ParameterSubspace):
                 assert RMF_instr == ARF_hdul['SPECRESP'].header['INSTRUME']
 
         # Get the values and change the -1 values if requried
+        if min_channel == 0:
+            min_channel = TLMIN
         if max_channel == -1:
             max_channel = DETCHANS -1
         if max_input == -1:
             max_input = NUMGRP
-        channels = _np.arange( min_channel, max_channel+1 )
-        inputs = _np.arange( min_input, max_input+1  )
 
         # Perform routine checks
         assert min_channel >= TLMIN and max_channel <= TLMAX
@@ -441,6 +444,10 @@ class Instrument(ParameterSubspace):
         with fits.open( RMF_path ) as RMF_hdul:
             RMF_MATRIX = RMF_hdul['MATRIX'].data
             RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
+
+        # Get all the channels and input energies
+        channels = _np.array( RMF_EBOUNDS['CHANNEL'] )
+        inputs = _np.arange( 1, NUMGRP+1 )
 
         # Get the channels from the data
         RMF = _np.zeros((DETCHANS, NUMGRP))
@@ -462,18 +469,24 @@ class Instrument(ParameterSubspace):
                 if n_chan == 0:
                     continue
 
-                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                RMF[f_chan-TLMIN:f_chan+n_chan-TLMIN,i] += RMF_line[n_skip:n_skip+n_chan]
                 n_skip += n_chan
+
+        # Get the indexes of channels
+        channels_indexes = _np.where( ( channels >= min_channel ) & ( channels <= max_channel ) )[0]
+        inputs_indexes = _np.where( ( inputs >= min_input ) & ( inputs <= max_input ) )[0]
+        channels = channels[channels_indexes]
+        inputs = inputs[inputs_indexes]
+        RMF = RMF[channels_indexes][:,inputs_indexes]
 
         # Make the RSP, depending on the input files
         if ARF_path is None:
-            RSP = RMF[min_channel:max_channel+1,min_input-1:max_input]
+            RSP = RMF
             ARF_area = RMF.sum( axis=0 )
         else:
             ARF = Table.read(ARF_path, 'SPECRESP')
-            ARF_area = ARF['SPECRESP']
+            ARF_area = ARF['SPECRESP'][inputs_indexes]
             RSP = RMF * ARF_area
-            RSP = RSP[min_channel:max_channel+1,min_input-1:max_input]
 
         # Find empty columns and lines
         empty_channels = _np.all(RSP == 0, axis=1)
@@ -490,7 +503,7 @@ class Instrument(ParameterSubspace):
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
+        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
 
         # Make the instrument
         Instrument = cls(RSP,
@@ -500,8 +513,8 @@ class Instrument(ParameterSubspace):
                          **kwargs)
         
         # Add ARF and RMF for plotting
-        Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
-        Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]
+        Instrument.RMF = RMF[~empty_channels][:,~empty_inputs]
+        Instrument.ARF = ARF_area[~empty_inputs]
         Instrument.name = RMF_instr
 
         return Instrument
