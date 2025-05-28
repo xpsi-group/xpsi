@@ -23,16 +23,14 @@ class DynestySampler(dynesty.DynamicNestedSampler):   # inherits dynamic nested 
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    ~:param n_params: amount of prior parameters
-
-    ~:param other_params: 
+    ~:param other_params: Dictionary ...
 
     """
     def __init__(self,
                  likelihood,
                  prior,
-                 other_params,
-                 MPI):   # do I also need possible extra params? if those wish to be set, library -> dictionary with live points or something?
+                 pool,
+                 other_params):   # do I also need possible extra params? if those wish to be set, library -> dictionary with live points or something?
         
         # raise errors if necessary
         if not isinstance(likelihood, Likelihood):  # both likelihood and prior need to be functions, does this still work then?
@@ -46,34 +44,11 @@ class DynestySampler(dynesty.DynamicNestedSampler):   # inherits dynamic nested 
         
         # Could make some default options here for other_params if wanted
 
-        # initialise sampler with super
-        if MPI or _size > 1: # or _size
-            try:
-                from schwimmbad import MPIPool
-            except ImportError:
-                raise ImportError('Check your schwimmbad package installation.')
-
-            # Initialize the MPI-based pool used for parallelisation.
-            with MPIPool() as pool:
-                if not pool.is_master():
-                    # Wait for instructions from the master process.
-                    pool.wait()
-                    _sys.exit(0)
-
-                #sampling
-                super().__init__(loglikelihood=self.likelihood_function,
+        super().__init__(loglikelihood=self.likelihood_function,
                                 prior_transform=self._prior.inverse_sample,   # function translating a unit cube to the parameter space according to the prior. The input is a 1-d numpy array with length ndim, where each value is in the range [0, 1)
-                                 ndim=len(self._likelihood.prior),   # similar as in main.py
+                                ndim=len(self._likelihood.prior),   # similar as in main.py
                                 pool=pool,
                                 **other_params)  # unpacking dictionary of parameters so that they can be used as all seperate parameters of the function
- 
-        else:
-            # Initialise emcee sampler
-            # original code without parallelization 
-            super().__init__(loglikelihood=self.likelihood_function,
-                            prior_transform=self._prior.inverse_sample,   # function translating a unit cube to the parameter space according to the prior. The input is a 1-d numpy array with length ndim, where each value is in the range [0, 1)
-                            ndim=len(self._likelihood.prior),   # similar as in main.py
-                            **other_params)  # unpacking dictionary of parameters so that they can be used as all seperate parameters of the function
     
     def __call__(self, runtime_params):
         """ Run the sampler until target convergence criteria are fulfilled with the 
@@ -88,7 +63,7 @@ class DynestySampler(dynesty.DynamicNestedSampler):   # inherits dynamic nested 
     def likelihood_function(self, params):
         """Calculate the loglikelihood value for a given set of parameter values.  
         
-        :param params: 1D numpy array of length ...
+        :param params: 1D numpy array of ...
  
         :returns: Float with loglikelihood value for given set of parameter values. 
 
@@ -105,11 +80,11 @@ class DynestySampler(dynesty.DynamicNestedSampler):   # inherits dynamic nested 
         return log_likelihood
     
     def write_results(self, log_dir, out_filename):
-        """ Get output txt file with columns containing weights, -2*loglikelihood, 
-        and parameters, which is the format required for post-processing within X-PSI. 
-        This is additional to output files UltraNest produces.  
+        """ Make output txt file with columns containing weights, -2*loglikelihood, 
+        and parameter values, which is the format required for post-processing within X-PSI. 
+        This is additional to output files Dynesty produces?? (Does it?)
 
-        :param other_params:
+        :param log_dir: String specifying the name of the output folder
 
         :param out_filename: String specifying the name of the output file. 
 

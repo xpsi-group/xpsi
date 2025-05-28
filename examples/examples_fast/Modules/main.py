@@ -138,6 +138,14 @@ p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
 likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
 
+def func(x):
+    print("likelihood works")
+    return -0.5 * np.sum(x**2)
+
+def ptform_test(x):
+    print("prior works")
+    return 10 * x - 5
+
 if __name__ == '__main__':
 
     start = time.time()
@@ -161,6 +169,8 @@ if __name__ == '__main__':
     #                   'verbose': True}
 
 
-    dynested(likelihood, prior, other_params={'nlive': 100, 'bootstrap': 0}, runtime_params={'maxiter': 100}, MPI=True)
+    
+
+    dynested(likelihood, prior, other_params={"nlive": 500, "bootstrap": 0, "periodic": [likelihood.index('p__phase_shift')]}, runtime_params={}, MPI=True)
 
     print('Sampling took', (time.time()-start)/60, 'minutes')

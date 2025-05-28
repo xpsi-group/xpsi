@@ -347,7 +347,8 @@ class HotRegion(ParameterSubspace):
             def __call__(self, boundto, caller):
                 return caller['super_colatitude']
 
-        bindme = BindMe() # to parameter instances
+#        bindme = BindMe() # to parameter instances
+        bindme = 1.0
 
         # to deactivate printing of parameter information if that parameter
         # is initialised but deactivated

@@ -394,10 +394,30 @@ def dynested(likelihood,
     """
 
     # initialise the sampler ??kan dat zonder ndim??
-    dsampler = DynestySampler(likelihood, prior, other_params, MPI)
+    # initialise sampler with super
+    if MPI or _size > 1: # or _size
+        try:
+            from schwimmbad import MPIPool
+        except ImportError:
+            raise ImportError('Check your schwimmbad package installation.')
 
-    # start sampling
-    dsampler(runtime_params)
+        # Initialize the MPI-based pool used for parallelisation.
+        with MPIPool() as pool:
+            if not pool.is_master():
+                # Wait for instructions from the master process.
+                pool.wait()
+                _sys.exit(0)
+
+            dsampler = DynestySampler(likelihood, prior, pool=pool, other_params=other_params)
+            
+            # start sampling
+            dsampler(runtime_params)
+
+    else:
+        dsampler = DynestySampler(likelihood, prior, pool=None, other_params=other_params)
+        
+        # start sampling
+        dsampler(runtime_params)
 
     # print results changeee
     print(dsampler.results)
