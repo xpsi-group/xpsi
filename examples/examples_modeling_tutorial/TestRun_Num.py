@@ -628,21 +628,52 @@ likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True
 if __name__ == '__main__': # sample from the posterior
 #     xpsi.Sample.nested(likelihood, prior,**runtime_params)
 
+    # import time
+    # print('time integrator test')
+    
+    
+    # n_repeats = 100
+    # timings_summed = np.zeros(4)
+    # t_start = time.time()
+    
+    # for i in range(n_repeats):
+    #     p_test = prior.inverse_sample()
+    #     # l_test = likelihood(p, reinitialise=True)
+    #     l_test = likelihood(p_test, reinitialise=True)
+    #     timings_summed += hot.objects[0]._integrator_timings
+    #     # print(l_test)
+    
+    # print('full, pre-atmosphere, intensities, phase interpolation')
+    # print(f'Timings summed: {timings_summed/n_repeats} seconds, repeats={n_repeats}')
+    # print(f'Evaluation takes {(time.time()-t_start)/n_repeats} seconds, repeats={n_repeats}')
+    
     import time
     print('time integrator test')
-    
-    
     n_repeats = 100
+    i=0
+    t_likelihood = 0
     timings_summed = np.zeros(4)
-    t_start = time.time()
     
-    for i in range(n_repeats):
+    while i < n_repeats:
+        # same sample
+        # l_test = self.likelihood(self.p, reinitialise=True)
+        
+        # random samples
+        t_start = time.time()
         p_test = prior.inverse_sample()
-        # l_test = likelihood(p, reinitialise=True)
         l_test = likelihood(p_test, reinitialise=True)
-        timings_summed += hot.objects[0]._integrator_timings
-        # print(l_test)
+        if l_test > -1e89:
+            # print(l_test)
+            timings_summed += hot.objects[0]._integrator_timings
+            t_likelihood += time.time()-t_start
+            i+=1
     
-    print('full, pre-atmosphere, intensities, phase interpolation')
-    print(f'Timings summed: {timings_summed/n_repeats} seconds, repeats={n_repeats}')
-    print(f'Evaluation takes {(time.time()-t_start)/n_repeats} seconds, repeats={n_repeats}')
+    print(f'repeats={n_repeats}')
+    print(f'Evaluation takes {(t_likelihood)/n_repeats:0.3f} seconds')
+    
+    print(f'signal eval: {timings_summed[0]/n_repeats:0.3f} seconds, {timings_summed[0]/t_likelihood*100:0.1f}% of likelihood')
+    print(f'pre-atmosphere: {timings_summed[1]/n_repeats:0.3f} seconds, {timings_summed[1]/t_likelihood*100:0.1f}% of likelihood')
+    print(f'intensities: {timings_summed[2]/n_repeats:0.3f} seconds, {timings_summed[2]/t_likelihood*100:0.1f}% of likelihood')
+    print(f'phase interpolation: {timings_summed[3]/n_repeats:0.3f} seconds, {timings_summed[3]/t_likelihood*100:0.1f}% of likelihood')
+        
+    
