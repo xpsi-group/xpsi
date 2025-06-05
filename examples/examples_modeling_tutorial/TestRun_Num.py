@@ -122,11 +122,11 @@ primary = xpsi.HotRegion(bounds=bounds,
                         omit=False,
                         cede=False,
                         concentric=False,
-                        sqrt_num_cells=32,
+                        sqrt_num_cells=50, #, 32,
                         min_sqrt_num_cells=10,
                         max_sqrt_num_cells=64,
-                        num_leaves=100,
-                        num_rays=200,
+                        num_leaves=30, #100,
+                        num_rays=512, #200,
                         atm_ext="Num4D",
                         image_order_limit=3,
                         prefix='p')
@@ -590,7 +590,7 @@ prior = CustomPrior()
 
 
 likelihood = xpsi.Likelihood(star = star, signals = signal,
-                             num_energies=128,
+                             num_energies=40, #128,
                              threads=1,
                              prior=prior,
                              externally_updated=True)
@@ -622,7 +622,7 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl =  -6.7645483142e+04 # (only primary) #-6.7261415434e+04
+true_logl =  -6.7639978733e+04 # (only primary) #-6.7261415434e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior

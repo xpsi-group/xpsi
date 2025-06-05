@@ -65,7 +65,7 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
                                     num_leaves=num_leaves,
                                     num_rays=200,
                                     split=False,
-                                    atm_ext='Num5D',
+                                    atm_ext='Num4D',
                                     image_order_limit=3,
                                     prefix='p')
 
@@ -402,6 +402,7 @@ for i in range(multiple_times):
 end = time.time()
 print("Time spent in integration:",(end - start)/multiple_times)
 #exit()
+
 
 # print("Bolometric profiles for I, Q, and U:")
 # print(repr(np.sum(photosphere.signal[0][0], axis=0)))

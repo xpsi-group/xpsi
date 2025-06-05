@@ -340,15 +340,15 @@ def integrate(size_t numThreads,
     time_2D = time.time()
 
 
-    # for ii in prange(<signed int>cellArea.shape[0],
-    #                  nogil = True,
-    #                  schedule = 'static',
-    #                  num_threads = N_T,
-    #                  chunksize = 1):
+    for ii in prange(<signed int>cellArea.shape[0],
+                      nogil = True,
+                      schedule = 'static',
+                      num_threads = N_T,
+                      chunksize = 1):
         
         
     # time_cell_start = time.time()
-    for ii in range(<signed int>cellArea.shape[0]):
+    # for ii in range(<signed int>cellArea.shape[0]):
                 
         # time_setup_start = time.time()        
         # counter_cellArea += 1
@@ -419,7 +419,7 @@ def integrate(size_t numThreads,
             InvisFlag[T] = 2 # initialise image order as not visible
             correction_I_E = 0.0
             
-            time_leaf_start = time.time()
+            # time_leaf_start = time.time()
             for k in range(leaf_lim):
                 
                 
@@ -655,8 +655,8 @@ def integrate(size_t numThreads,
                         InvisFlag[T] = 1
                         _InvisPhase = k
                         
-            time_leaf += time.time() - time_leaf_start
-            time_post_start = time.time()
+            # time_leaf += time.time() - time_leaf_start
+            # time_post_start = time.time()
             if terminate[T] == 1:
                 break # out of image loop
             elif InvisFlag[T] == 2: # no visibility detected
@@ -710,7 +710,7 @@ def integrate(size_t numThreads,
                         if terminate[T] == 1:
                             break # out of energy loop
                     # time_post_nE += time.time() - time_post_nE_start   
-            time_post += time.time() - time_post_start
+            # time_post += time.time() - time_post_start
             if terminate[T] == 1:
                 break # out of image loop
                 
@@ -800,8 +800,8 @@ def integrate(size_t numThreads,
   
     time_full = time_end-time_start
     time_preatmosphere =  time_2D-time_start
-    time_intensities = time_leaf
-    time_phase_interps = time_post
+    time_intensities = 0#time_leaf
+    time_phase_interps = 0#time_post
 
     # printf("timer_full=%f\n", )
     # printf("timer_preatmosphere=%f\n",)
