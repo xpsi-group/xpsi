@@ -164,6 +164,10 @@ class Signal(ParameterSubspace):
                 self._support = support
             elif self._instrument.channels.shape[0]==support.shape[0]:
                 self._support = support[a_instrument:b_instrument+1]
+            elif self._original_instrument.channels.shape[0]==support.shape[0]:
+                a_original_instrument = _np.where( self._original_instrument.channels == self._data.channels[0] )[0][0]
+                b_original_instrument = _np.where( self._original_instrument.channels == self._data.channels[-1] )[0][0]
+                self._support = support[a_original_instrument:b_original_instrument+1]
             else:
                 raise TypeError("Data spectrum and background support must the have same shape")
         else:
