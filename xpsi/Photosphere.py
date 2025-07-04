@@ -4,6 +4,7 @@ from xpsi.Spacetime import Spacetime
 from xpsi.HotRegion import HotRegion
 from xpsi.Elsewhere import Elsewhere
 from xpsi.Everywhere import Everywhere
+from xpsi.AnalyticEmissionModels import AnalyticEmissionModels
 
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
@@ -78,6 +79,7 @@ class Photosphere(ParameterSubspace):
     def __init__(self,
                  hot = None, elsewhere = None,
                  everywhere = None,
+                 analytic_models = None,
                  bounds = None, values = None,
                  stokes=False,
                  custom = None,
@@ -115,12 +117,17 @@ class Photosphere(ParameterSubspace):
                 else:
                     raise TypeError('Invalid object for the hot region(s).')
 
+        if analytic_models is not None:
+            if not isinstance(analytic_models, AnalyticEmissionModels):
+                raise TypeError('Invalid object for the analytic emission model(s).')
+            
         self._hot = hot
         self._hot_atmosphere = ()
         self._hot_atmosphere_Q = ()
         self._elsewhere = elsewhere
         self._everywhere = everywhere
         self._stokes = stokes
+        self._analytic_models = analytic_models
         if hot is not None:
             self._surface = self._hot
         else:
@@ -155,12 +162,12 @@ class Photosphere(ParameterSubspace):
                                        value = values.get('spin_axis_position_angle', None))
 
             super(Photosphere, self).__init__(mode_frequency, spin_axis_position_angle,
-                                              hot, elsewhere, everywhere,
+                                              hot, elsewhere, everywhere, analytic_models, 
                                               custom,
                                               **kwargs)
         else:
             super(Photosphere, self).__init__(mode_frequency,
-                                              hot, elsewhere, everywhere,
+                                              hot, elsewhere, everywhere, analytic_models, 
                                               custom,
                                               **kwargs)
 
@@ -470,6 +477,11 @@ class Photosphere(ParameterSubspace):
                                 self,
                                 fast_total_counts,
                                 threads)
+                
+        if self._analytic_models is not None:
+            self._analytic_models.embed(self._spacetime, 
+                                        self,
+                                        threads)
 
     def integrate(self, energies, threads):
         """ Integrate over the photospheric radiation field.
