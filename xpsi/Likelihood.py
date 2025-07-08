@@ -12,6 +12,7 @@ from xpsi.Star import Star
 from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
 from xpsi.Prior import Prior
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.EmissionModels import EmissionModels
 from xpsi import HotRegion
 from xpsi import Elsewhere
 
@@ -76,6 +77,7 @@ class Likelihood(ParameterSubspace):
 
     """
     def __init__(self, star, signals,
+                 emission_models = None,
                  num_energies = 128,
                  fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
@@ -85,6 +87,11 @@ class Likelihood(ParameterSubspace):
 
         self.star = star
         self.signals = signals
+        if isinstance(emission_models, EmissionModels):
+            self._emission_models = emission_models
+        else:
+            print( 'Warning: emission_models is not an EmissionModels object. No emission models will be used' )
+            self._emission_models = None
 
         self._do_fast = False
 
@@ -428,6 +435,17 @@ class Likelihood(ParameterSubspace):
                                   'signal%s.' % prefix)
                             print('Parameter vector: ', super(Likelihood,self).__call__())
                             return self.random_near_llzero
+
+        # Add the other emission models
+        if self._emission_models is not None:
+
+            # Update the emission models if required
+            if force_update:
+                self._emission_models.update()
+
+            # Now that is has been updated, do the integration
+            
+
 
         return star_updated
 

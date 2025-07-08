@@ -1,9 +1,9 @@
 from xpsi.global_imports import *
 
-from xpsi.Parameter import Parameter, Derive
-from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.EmissionModels import EmissionModel
 
-class PowerLaw(ParameterSubspace):
+class PowerLaw( EmissionModel ):
 
     required_names = ['powerlaw_norm',
                       'powerlaw_gamma']
@@ -57,16 +57,16 @@ class PowerLaw(ParameterSubspace):
         # Initiate the parent class
         super(PowerLaw, self).__init__( norm, gamma, oscillation_amplitude, phase_shift,  *args, **kwargs )
         
-    def powerlaw(self, E, phase ):
+    def intensity(self, E, phase ):
         if self.is_pulsed:
             return ( self['norm'] + self['A'] * _np.sin( phase - self['phi0'] ) ) * E^( -self['Gamma'] )
         else:
             return self['norm'] * E^( -self['Gamma'] )
         
-    def integrated_powerlaw(self,
-                            energy_edges,
-                            phases_edges,
-                            is_pulsed = False):
+    def integrate(self,
+                energy_edges,
+                phases_edges,
+                is_pulsed = False):
 
         # Energy term
         energy_term = (1. - self['Gamma']) * ( energy_edges[1:]**(1. - self['Gamma']) - energy_edges[:-1]**(1. - self['Gamma']) )
@@ -78,3 +78,7 @@ class PowerLaw(ParameterSubspace):
         # Get the integrated powerlaw
         integrated_powerlaw = _np.dot( normalization_term[:,_np.newaxis], energy_term[_np.newaxis,:] )
         return integrated_powerlaw
+    
+    # No need to embed but need to override
+    def embed(self):
+        pass
