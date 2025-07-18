@@ -26,7 +26,7 @@ NICER rotation-powered millisecond pulsar papers
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
-**Mauviard et al. 2025** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2025arXiv250614883M/abstract>`_ * A NICER view of the 1.4 solar-mass edge-on pulsar PSR J0614--3329*. See also the associated `Zenodo repository`__.
+**Mauviard et al. 2025** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2025arXiv250614883M/abstract>`_ *A NICER view of the 1.4 solar-mass edge-on pulsar PSR J0614--3329*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo25mauviard: https://doi.org/10.5281/zenodo.15603406
 __ Zenodo25mauviard_
@@ -34,7 +34,7 @@ __ Zenodo25mauviard_
 **Hoogkamer et al. 2025** `(PRD, 112, 023008) <https://ui.adsabs.harvard.edu/abs/2025PhRvD.112b3008H/abstract>`_ *Cross-comparison of sampling algorithms for pulse profile modeling of PSR J0740+6620*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo25hoogkamer: https://doi.org/10.5281/zenodo.14823693
-__ Zenodo25hoogkamer
+__ Zenodo25hoogkamer_
 
 **Salmi et al. 2024b** `(ApJ, 976, 58) <https://ui.adsabs.harvard.edu/abs/2024ApJ...976...58S/abstract>`_ *A NICER View of PSR J1231-1411: A Complex Case*.  See also the associated `Zenodo repository`__.
 
