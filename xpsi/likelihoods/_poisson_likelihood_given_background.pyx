@@ -68,8 +68,8 @@ def poisson_likelihood_given_background(double exposure_time,
         from :obj:`phases`.
 
     :param double[::1] neg_sum_ln_data_factorial:
-        The precomputed output of :func:`~.precomputation` given the data count
-        numbers.
+        The precomputed output of :func:`~.precomputation` (found in
+        default_background_marginalisation.pyx) given the data count numbers.
 
     :param obj allow_negative:
         A boolean or an array of booleans, one per component, declaring whether
