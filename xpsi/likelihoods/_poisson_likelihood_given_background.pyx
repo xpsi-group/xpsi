@@ -35,6 +35,7 @@ def poisson_likelihood_given_background(double exposure_time,
                                         component_phases,
                                         phase_shifts,
                                         double[:,::1] background,
+                                        double[::1] neg_sum_ln_data_factorial=None,
                                         allow_negative = False):
     """ Evaluate the Poisson likelihood.
 
@@ -65,6 +66,10 @@ def poisson_likelihood_given_background(double exposure_time,
         *counts*, whose shape matches the number of channels in each element
         of :obj:`components` and the number of phase intervals constructed
         from :obj:`phases`.
+
+    :param double[::1] neg_sum_ln_data_factorial:
+        The precomputed output of :func:`~.precomputation` given the data count
+        numbers.
 
     :param obj allow_negative:
         A boolean or an array of booleans, one per component, declaring whether
@@ -198,6 +203,8 @@ def poisson_likelihood_given_background(double exposure_time,
         double n = <double>(phases.shape[0] - 1)
 
     for i in range(<size_t>STAR.shape[0]):
+        if neg_sum_ln_data_factorial is not None:
+            LOGLIKE += neg_sum_ln_data_factorial[i]
         for j in range(<size_t>STAR.shape[1]):
             EXPEC = (STAR[i,j] + background[i,j]/n) * exposure_time
 
@@ -206,7 +213,6 @@ def poisson_likelihood_given_background(double exposure_time,
             if(EXPEC > 0.0):
                 LOGLIKE -= EXPEC
                 LOGLIKE += counts[i,j] * log(EXPEC)
-    
             elif(counts[i,j] == 0 and EXPEC == 0):
                 pass
             
