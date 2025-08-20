@@ -73,7 +73,7 @@ Next, install mpi4py, h5py, and astropy:
 
     pip install mpi4py
     pip install h5py
-    pip install astropy
+    pip install "astropy>=5.2,<7.0.0"
 
 To prepare `MultiNest <https://github.com/farhanferoz/MultiNest>`_ from
 ``$HOME``:
