@@ -207,8 +207,7 @@ def gaussian_likelihood_given_background(double exposure_time,
         for j in range(<size_t> STAR.shape[1]):
             sigma_tot2 = pow(errors[i,j],2.0)
             norm = 0.5 * log(2.0*pi*sigma_tot2)
-            LOGLIKE -= ((STAR[i,j] + background[i,j]/n) * exposure_time-counts[i,j])**2/(2.0*sigma_tot2)-norm
+            LOGLIKE -= ((STAR[i,j] + background[i,j]/n) * exposure_time-counts[i,j])**2/(2.0*sigma_tot2)+norm
             STAR[i,j] += background[i,j]/n
             STAR[i,j] *= exposure_time
-
     return (LOGLIKE, np.asarray(STAR, order='C', dtype=np.double))
