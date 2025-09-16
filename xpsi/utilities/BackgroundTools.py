@@ -225,8 +225,8 @@ def plotBackgroundSpectrum( XPSI_model,
     ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=2, label='Data light curve')
     
     # Plotting background support
-    if plot_support and signal.support is not None and signal.support[signal.support>0].any():
-        support = signal.support * data.exposure_time
+    if plot_support and signal._support is not None and signal._support[signal._support>0].any():
+        support = signal._support * data.exposure_time
         ax.fill_between(x0, support[:,0], support[:,1], color='red', alpha = 0.2, label='BKG prior support')
 
     # Finish the plot
