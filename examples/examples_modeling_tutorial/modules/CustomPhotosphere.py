@@ -22,6 +22,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                  stokes=False,
                  custom = None,
                  disk = None,
+                 use_disk = False,
                  **kwargs):
 
         if everywhere is not None:
@@ -59,6 +60,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         self._elsewhere = elsewhere
         self._everywhere = everywhere
         self._stokes = stokes
+        self._use_disk = use_disk # disk occultation
 
         if disk is not None:
             self._disk = disk
@@ -220,12 +222,23 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                     self._signalQ = tuple(map(tuple, tempQ))
                     self._signalU = tuple(map(tuple, tempU))
                 else:
-                    self._signal = self._hot.integrate(self._spacetime,
-                                                   energies,
-                                                   threads,
-                                                   self._hot_atmosphere,
-                                                   self._elsewhere_atmosphere,
-                                                   else_atm_ext)
+                    R_in = self.disk['R_in'] * 1000
+                    # R_in = 24.5 * 1000 # if want a constant R_in
+                    if self._use_disk:
+                        self._signal = self._hot.integrate(self._spacetime,
+                                                    energies,
+                                                    threads,
+                                                    self._hot_atmosphere,
+                                                    self._elsewhere_atmosphere,
+                                                    else_atm_ext,
+                                                    R_in=R_in)
+                    elif not self._use_disk:
+                         self._signal = self._hot.integrate(self._spacetime,
+                                                    energies,
+                                                    threads,
+                                                    self._hot_atmosphere,
+                                                    self._elsewhere_atmosphere,
+                                                    else_atm_ext)
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
 

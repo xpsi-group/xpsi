@@ -28,6 +28,7 @@ class CustomHotRegion(xpsi.HotRegion):
                  bounds,
                  values,
                  symmetry = True,
+                 use_disk=True,
                  omit = False,
                  cede = False,
                  concentric = False,
@@ -51,6 +52,8 @@ class CustomHotRegion(xpsi.HotRegion):
                  image_order_limit = None,
                  fbeam = False,
                  **kwargs):
+        
+        self.use_disk=use_disk
       
 
         doc = """
