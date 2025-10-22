@@ -3,6 +3,20 @@
 #cython: nonecheck=False
 #cython: wraparound=False
 
+"""
+The default atmosphere module, corresponding to an analytical blackbody. 
+Returns specific intensity, which after normalisation should be 
+J/cm^2/s/keV/steradian.
+
+Functions:
+    - init_hot_BB: does nothing but must exist for placeholder purposes.
+    - free_hot_BB: does nothing but must exist for placeholder purposes.
+    - eval_hot_BB: evaluate the specific intensty.
+    - eval_hot_BB_norm: normalize.
+
+"""
+
+
 from libc.math cimport exp, pow
 from libc.stdio cimport printf
 
@@ -17,36 +31,23 @@ cdef double k_B = _k_B
 cdef double keV = _keV
 cdef double k_B_over_keV = k_B / keV
 
-#----------------------------------------------------------------------->>>
-# >>> User modifiable functions.
-# >>> Note that the user is entirely free to wrap thread-safe and
-# ... non-parallel external C routines from an external library.
-# >>> Thus the bodies of the following need not be written explicitly in
-# ... the Cython language.
-#----------------------------------------------------------------------->>>
-cdef void* init_hot_user(size_t numThreads, const _preloaded *const preloaded) noexcept nogil:
-    # This function must match the free management routine free_hot()
-    # in terms of freeing dynamically allocated memory. This is entirely
-    # the user's responsibility to manage.
+cdef void* init_hot_user(size_t numThreads, 
+                       const _preloaded *const preloaded) noexcept nogil:
+    """
+    This function always returns NULL because no memory needs to be 
+    initialised, but must exist for placeholder purposes.
+    """
 
     if preloaded != NULL :
-        printf("WARNING: Numerical atmosphere data were preloaded, even though those are not used by this atmosphere extension.\n") 
-    
-    # Return NULL if dynamic memory is not required for the model.
+        printf("WARNING: Numerical atmosphere data were preloaded, \
+               even though those are not used by this atmosphere extension.\n") 
     return NULL
 
 cdef int free_hot_user(size_t numThreads, void *const data) noexcept nogil:
-    # This function must match the initialisation routine init_hot()
-    # in terms of freeing dynamically allocated memory. This is entirely
-    # the user's responsibility to manage.
-    # The void pointer must be appropriately cast before memory is freed --
-    # only the user can know this at compile time.
-    # Just use free(<void*> data) iff no memory was dynamically
-    # allocated in the function:
-    #   init_local_hot()
-    # because data is expected to be NULL in this case
-
-    #printf("\nNo data to be freed.")
+    """
+    This function always returns SUCCESS = 0 because no memory needs to be 
+    freed, but must exist for placeholder purposes.
+    """
 
     return SUCCESS
 
@@ -55,28 +56,61 @@ cdef double eval_hot_user_I(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data) noexcept nogil:
-    # Arguments:
-    # E = photon energy in keV
-    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
-    # VEC = variables such as temperature, effective gravity, ...
-    # data = numerical model data required for intensity evaluation
+    """
+    Evaluate the specific intensity of hot regions with angular emission pattern.
+    I = I_E * (1.0 + h * mu)  
 
-    cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
+    Arguments:
+        THREAD (size_t): Thread ID used for parallel execution.
+        E (double): Photon energy in electron rest energy for AMXPs. [electron rest mass energy]
+        mu (double): Cosine of the ray zenith angle (angle to surface normal).
+        VEC (const double *const): Pointer to variable h [unitless]
+        data (void *const): This will be pointing to NULL.
 
-    return E * E * E / ( exp(E / temp) - 1.0 )
+    Returns:
+        The output intensity in units J/cm^2/s/keV/steradian. 
+    """
+
+   
+
+    # Angular anisotropy parameter h (stored in VEC[0])
+    #cdef double h = -0.63
+    h = VEC[0]
+   
+
+    # Apply angular emission pattern
+    return (1.0 + h * mu)
 
 cdef double eval_hot_user_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
                      void *const data) noexcept nogil:
-    # Arguments:
-    # E = photon energy in keV
-    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
-    # VEC = variables such as temperature, effective gravity, ...
-    # data = numerical model data required for intensity evaluation
+    """
+    Evaluate the specific intensity of hot regions with angular emission pattern.
+    I = I_E * (1.0 + h * mu)  
 
-    return 0.0
+    Arguments:
+        THREAD (size_t): Thread ID used for parallel execution.
+        E (double): Photon energy in electron rest energy for AMXPs. [electron rest mass energy]
+        mu (double): Cosine of the ray zenith angle (angle to surface normal).
+        VEC (const double *const): Pointer to variable h [unitless]
+        data (void *const): This will be pointing to NULL.
+
+    Returns:
+        The output intensity in units J/cm^2/s/keV/steradian. 
+    """
+
+   
+
+    # Angular anisotropy parameter h (stored in VEC[0])
+    #cdef double h = -0.63
+    h = VEC[0]
+   
+
+    # Apply angular emission pattern
+    return (1.0 + h * mu)
+
 
 cdef double eval_hot_norm_user() noexcept nogil:
     # Source radiation field normalisation which is independent of the
@@ -87,3 +121,49 @@ cdef double eval_hot_norm_user() noexcept nogil:
     # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
     return erg * Planck_dist_const
+
+#cdef double eval_hot_BB(size_t THREAD,
+                     #double E,
+                     #double mu,
+                     #const double *const VEC,
+                     #void *const data) noexcept nogil:
+    #"""
+    #Evaluate the specific intensity of hot regions based on photon E and temp.
+    #mu and other parameters in VEC don't play role here.
+    
+    #Arguments:
+    #    THREAD (size_t): Thread ID used for parallel execution.
+    #    E (double): Photon energy in electron rest energy for AMXPs.
+    #    mu (double): Cosine of the ray zenith angle (angle to surface normal).
+    #    VEC (const double *const): Pointer to variables (e.g., temperature, 
+    #                                                     effective gravity).
+    #    data (void *const): This will be pointing to NULL.
+        
+    #Returns:
+    #    double: Calculated intensity value to be normalised.
+        
+    #Attributes:
+    #    noexcept nogil: Indicates that the function does not throw exceptions 
+    #                   and can be executed without the Global Interpreter Lock 
+    #                   (GIL).
+    #"""
+
+#    cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
+
+#    return E * E * E / ( exp(E / temp) - 1.0 )
+
+#cdef double eval_hot_norm_BB() noexcept nogil:
+#    """
+#    Source radiation field normalisation which is independent of the parameters
+#    of the parametrised model -- i.e. cell properties, energy, and angle.
+#    Writing the normalisation here reduces the number of operations required
+##    during integration. The units of the specific intensity need to be 
+#    J/cm^2/s/keV/steradian.
+#    
+#    Attributes:
+#        noexcept nogil: Indicates that the function does not throw exceptions 
+#                       and can be executed without the Global Interpreter Lock
+#                       (GIL).
+#    """#
+#
+#    return erg * Planck_dist_const

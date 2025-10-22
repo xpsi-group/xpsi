@@ -6,6 +6,7 @@ cdef double eval_hot_user_I(size_t THREAD,
                      const double *const VEC,
                      void *const data) noexcept nogil
 
+
 cdef double eval_hot_user_Q(size_t THREAD,
                      double E,
                      double mu,
