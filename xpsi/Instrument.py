@@ -319,7 +319,7 @@ class Instrument(ParameterSubspace):
     def trim_response(self, 
                       min_channel=0,
                       max_channel=-1,
-                      threshold=1e-5 ):
+                      tolerance=1e-5 ):
         """ Trim the instrument response to the specified channel range.
 
         :param int min_channel:
@@ -328,9 +328,10 @@ class Instrument(ParameterSubspace):
         :param int max_channel:
             The maximum channel number to include in the trimmed response.
 
-        :param float threshold:
-            The threshold value to use for trimming the instrument response.
-            Channels / inputs with a total response below this value will be removed.
+        :param float tolerance:
+            The tolerance value to use for trimming the instrument response.
+            Inputs are trimmed so that all the channels keep (1-tolerance) quantiles of the total response. 
+            This allows to trim in an intelligent manner long tails of the response with little weight.
 
         """
         
@@ -342,34 +343,42 @@ class Instrument(ParameterSubspace):
         old_channels = self.channels
         new_channels_indexes = [ min_channel <= c <= max_channel for c in self.channels]
 
-        # Find empty columns and lines
-        new_matrix = self.matrix[new_channels_indexes]
-        empty_channels = _np.all( new_matrix <= threshold, axis=1)
-        empty_inputs = _np.all( new_matrix <= threshold, axis=0)
+        # Adapt the matrix channel wise
+        self.matrix = self.matrix[new_channels_indexes]
+        self.channels = self.channels[new_channels_indexes]
 
-        # Apply to matrix and channels directly
-        self.matrix = new_matrix[~empty_channels][:,~empty_inputs]
-        self.channels = self.channels[new_channels_indexes][ ~empty_channels ]
+        # Compute the cumulative of the response for all the channels
+        cumsum = self.matrix.cumsum(axis=1)
+        for i in range( cumsum.shape[0] ):
+            cumsum[i] /= cumsum[i,-1]
+
+        # Extract with the adapted percentile
+        under_tolerance = [ _np.all( cumsum[:,i] <= 1 - tolerance ) for i in range( cumsum.shape[1] ) ]
+        new_input_indexes = _np.where( under_tolerance )[-1]
+
+        # Re-trim the response
+        self.matrix = self.matrix[:,new_input_indexes]
 
         # Get the edges of energies for both input and channel
-        new_energy_edges = [ self.energy_edges[k] for k in range(len(empty_inputs)) if not empty_inputs[k] ]
+        new_energy_edges = [ self.energy_edges[k] for k in new_input_indexes ]
         self.energy_edges = _np.hstack( (new_energy_edges , self.energy_edges[ _np.where( self.energy_edges == new_energy_edges[-1] )[0] + 1 ] ) )
         if hasattr( self , 'channel_edges' ):
             new_channels_edges = [ self.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
             self.channel_edges = _np.hstack( (new_channels_edges , self.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
 
         # Print if any trimming happens
-        if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only values <= {threshold}.\n '
-                  f'Now min_energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
-        if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n '
+        if len(old_channels) > len(self.channels):
+            print(f'Triming channels of the response matrix because a smaller channel range has been requested.\n '
                   f'Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
+
+        if len(under_tolerance) > len(new_input_indexes):
+            print(f'Triming energy inputs of the response matrix with tolerance {tolerance}.\n '
+                  f'Now min_energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
 
         # If ARF and RMF, trim them
         if hasattr( self , 'ARF' ):
-            self.RMF = self.RMF[new_channels_indexes][~empty_channels][:,~empty_inputs]
-            self.ARF = self.ARF[~empty_inputs]
+            self.RMF = self.RMF[new_channels_indexes][:,new_input_indexes]
+            self.ARF = self.ARF[new_input_indexes]
 
     @classmethod
     @make_verbose('Loading instrument response matrix from OGIP compliant files',
