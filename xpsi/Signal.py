@@ -14,7 +14,9 @@ from xpsi.tools.energy_integrator import energy_integrator
 from abc import abstractmethod
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.tools.synthesise import synthesise_exposure as _synthesise_expo
 
+from astropy.io import fits
 from copy import deepcopy
 
 class LikelihoodError(xpsiError):
@@ -758,6 +760,258 @@ class Signal(ParameterSubspace):
         chi2 = _np.sum( (pulse_data - pulse_model)**2 / pulse_model )
 
         return chi2
+    
+    ################ Sythesize data example and useful functions ################
+
+    def synthesise_exposure(self,
+                exposure_time,
+                data_BKG,
+                instrument_name,
+                backscal_ratio=1.0,
+                name='synthetic',
+                directory='./',
+                seed=None,
+                save_background=True,
+                **kwargs):
+        
+            """ Synthesise data set in FITS format that can be used in input of X-PSI.
+            Data can be synthesised with or without background.
+            
+            :param float exposure_time: 
+                Exposure time in seconds.
+
+            :param array data_BKG: 
+                Array of expected background counts in the background extraction region.
+                It can be either integers or floats if needed.
+            
+            :param str instrument_name: 
+                Instrument name to be written to the header. 
+                Beware that it must be the same as the one in the background and response files.
+                
+            :param float backscal_ratio: 
+                Ratio of the backscal parameters of the background to the source one. 
+                This is used to rescale the background counts to be extracted from a 
+                similar area as the source ones. 
+                If the input background is considered from the same region as the source, set it to 1.
+            
+            :param str name: 
+                Base name of synthetic data files.
+                
+            :param str directory: 
+                Directory in which to write the synthetic data files.
+                
+            :param int seed: 
+                Random seed for the pseudo-random number generator.
+                
+            :param bool save_background: 
+                If True, the synthetic background is saved in the FITS file.
+                If False, it is not saved.
+                For NICER for instance, it does not need to be saved as it is unknown.
+            """
+            
+            # Create or find directory
+            try:
+                if not _os.path.isdir(directory):
+                    _os.mkdir(directory)
+            except OSError:
+                print('Cannot create write directory.')
+                raise
+    
+            # Rescale background
+            rescaled_background = data_BKG / backscal_ratio
+            expected_background_counts = rescaled_background.sum()
+            background_txt = rescaled_background.flatten()
+
+            # Make the phase resolved background (constant for all phases but needed for _synthesise_expo)
+            background_syn = _np.zeros((len(self._data.channels),len(self._data.phases)-1))      
+            for j in range(len(self._data.phases)-1):
+                background_syn[:,j] = background_txt/(len(self._data.phases)-1)
+    
+            # Synthesise
+            self._expected_counts, synthetic, _  = _synthesise_expo(exposure_time,
+                                                                self._data.phases,
+                                                                self._signals,
+                                                                self._phases,
+                                                                self._shifts,
+                                                                expected_background_counts,
+                                                                background_syn,
+                                                                gsl_seed=seed)
+            
+            # Write expected counts
+            kwargs = {'channels':self._data.channels,
+                    'counts':self._expected_counts,
+                    'filename':_os.path.join(directory, name),
+                    'instrument':instrument_name,
+                    'exposure':exposure_time,
+                    'backscale':1.0}
+            self._write(**kwargs)
+
+            # Write synthetic counts (Poisson realisation of expected counts)
+            kwargs['counts'] = synthetic
+            kwargs['filename'] += '_realization'
+            self._write(**kwargs)
+
+            # If requested, write background
+            if save_background:
+
+                # Write expected background
+                kwargs = {'channels':self._data.channels,
+                    'counts':data_BKG.flatten(),
+                    'filename':_os.path.join(directory, name+'_bkg'),
+                    'instrument':instrument_name,
+                    'exposure':exposure_time,
+                    'backscale':backscal_ratio}
+                self._write(**kwargs)
+
+                # Write synthetic background (Poisson realisation of expected background)
+                kwargs['counts'] = _np.random.poisson( data_BKG.flatten() )
+                kwargs['filename'] += '_realization'
+                self._write(**kwargs)
+
+
+    def _write(self, **kwargs):
+        """ Wrapper to write either PHA or EVT file.
+        This depends on whether the data is phase-resolved or not. """
+
+        if len(self._data.phases) > 2:
+            self._write_EVT(**kwargs)
+        else:
+            self._write_PHA(**kwargs)
+
+
+    def _write_EVT(self, 
+                channels,
+                counts,
+                filename,
+                instrument,
+                exposure, 
+                backscale ):
+        """ Write an event file in the FITS format. This is used for phase resolved data.
+         
+        :param array channels: 
+            Array of channels for which data is written.
+        
+        :param array counts: 
+            2D Array of counts, matching the channels on the 1st dimension, for which data is written.
+        
+        :param str filename: 
+            Name of the FITS file.
+        
+        :param str instrument: 
+            Instrument name to be written to the header. 
+            Beware that it must be the same as the one in the background and response files. 
+        
+        :param float exposure: 
+            Exposure time in seconds to be written to the header.
+        
+        :param float backscale: 
+            Backscale parameter to be written to the header.
+        """
+
+        # Create the header
+        header = {
+            'INSTRUME': instrument, 
+            'HDUCLAS1': 'EVENTS',
+            'HDUCLAS2': 'none',
+            'DATE': '2025-07-31',
+            'EXPOSURE': exposure,
+            'BACKSCAL': backscale,
+            'ANCRFILE': 'none',
+            'RESPFILE': 'none'
+        }
+
+        # Get the phase array
+        phase_borders = _np.linspace( 0., 1., counts.shape[1]+1 )
+        phase_centers = (phase_borders[1:] + phase_borders[:-1]) / 2
+        PI, PULSE_PHASE = [], []
+
+        # Fill the arrays
+        for i in range(counts.shape[0]):
+            for j in range(counts.shape[1]):
+                for k in range( int(counts[i,j]) ):
+                    PI.append( channels[i] )
+                    PULSE_PHASE.append( phase_centers[j] )
+
+        # Create the columns
+        cols = [
+            fits.Column(name='PI', array=_np.array(PI), format='1J'),
+            fits.Column(name='PULSE_PHASE', array=_np.array(PULSE_PHASE), format='D'),
+        ]
+
+        # Create a primary HDU (header/data unit) for the header info
+        primary_hdu = fits.PrimaryHDU()
+        bin_table = fits.BinTableHDU.from_columns(cols, name='EVENTS')
+
+        # Set header keywords
+        for key, value in header.items():
+            bin_table.header[key] = value
+
+        # Create the FITS file (PHA file)
+        hdul = fits.HDUList([primary_hdu, bin_table])
+
+        # Save to a PHA file
+        hdul.writeto(filename+'.evt', overwrite=True)
+
+    def _write_PHA(self, 
+                channels,
+                counts,
+                filename,
+                instrument,
+                exposure, 
+                backscale ):
+        """ Write a spectrum file in the FITS format. This is used for data with no phase information.
+         
+        :param array channels: 
+            Array of channels for which data is written.
+        
+        :param array counts: 
+            1D Array of counts, matching the channels, for which data is written.
+        
+        :param str filename: 
+            Name of the FITS file.
+        
+        :param str instrument: 
+            Instrument name to be written to the header. 
+            Beware that it must be the same as the one in the background and response files. 
+        
+        :param float exposure: 
+            Exposure time in seconds to be written to the header.
+        
+        :param float backscale: 
+            Backscale parameter to be written to the header.
+        """
+
+        # Create the header
+        header = {
+            'INSTRUME': instrument, 
+            'HDUCLAS1': 'SPECTRUM',
+            'HDUCLAS2': 'none',
+            'DATE': '2025-07-31',
+            'EXPOSURE': exposure,
+            'BACKSCAL': backscale,
+            'ANCRFILE': 'none',
+            'RESPFILE': 'none',
+        }
+
+        # Create the columns
+        cols = [
+            fits.Column(name='CHANNEL', array=channels, format='1J'),
+            fits.Column(name='COUNTS', array=counts, format='D'),
+        ]
+
+        # Create a primary HDU (header/data unit) for the header info
+        primary_hdu = fits.PrimaryHDU()
+        bin_table = fits.BinTableHDU.from_columns(cols, name='SPECTRUM')
+
+        # Set header keywords
+        for key, value in header.items():
+            bin_table.header[key] = value
+
+        # Create the FITS file (PHA file)
+        hdul = fits.HDUList([primary_hdu, bin_table])
+
+        # Save to a PHA file
+        hdul.writeto(filename+'.pha', overwrite=True)
             
 
 
