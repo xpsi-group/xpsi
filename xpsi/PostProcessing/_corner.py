@@ -499,7 +499,10 @@ class CornerPlotter(PostProcessor):
             contour_args = self.get_attr('contours')
             contour_args.reverse()
 
-            if len(getdist_bcknds) == 1:
+            if "legend_labels" in kwargs:
+                legend_labels = kwargs.pop('legend_labels')
+                assert len(legend_labels) == len(getdist_bcknds), 'There must be as many legend labels as runs to plot.'
+            elif len(getdist_bcknds) == 1:
                 legend_labels = None
             elif len(self._subset) > 1:
                 legend_labels = self.get_attr('parent_ID')
@@ -672,7 +675,8 @@ class CornerPlotter(PostProcessor):
                             bootstrap = bootstrap,
                             n_simulate = kwargs.get('n_simulate'),
                             force_draw = force_draw_i,
-                            prior_samples_fname=prior_samples_fname)
+                            prior_samples_fname=prior_samples_fname,
+                            priors_identical=priors_identical)
 
                 if (i==0 and priors_identical):
                     break
@@ -754,7 +758,8 @@ class CornerPlotter(PostProcessor):
                            KL_divergence, KL_base,
                            bootstrap, n_simulate,
                            force_draw,
-                           prior_samples_fname):
+                           prior_samples_fname,
+                           priors_identical=False):
         """ Crudely estimate the prior density.
 
         Kullback-Leibler divergence estimated in bits for a combined run or
@@ -790,6 +795,8 @@ class CornerPlotter(PostProcessor):
                  _np.save(samples_npy,samples)
 
         color, lw = (run.contours[key] for key in ('color', 'lw'))
+        if priors_identical:
+            color = 'black'
 
         quantiles = [None] * 3
 
