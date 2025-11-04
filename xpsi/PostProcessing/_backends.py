@@ -102,11 +102,11 @@ class NestedBackend(Run):
 
             if implementation == 'multinest':
                 try:
-                    self._nc_bcknd = process_multinest_run(root, base_dir, filetype)
+                    self._nc_bcknd = process_multinest_run(root.split('_transformed')[0], base_dir, filetype)
                 except FileNotFoundError:
-                    self._nc_bcknd = process_multinest_run(root + "-", base_dir, filetype)
+                    self._nc_bcknd = process_multinest_run(root.split('_transformed')[0] + "-", base_dir, filetype)
             elif implementation == 'polychord':
-                self._nc_bcknd = process_polychord_run(root, base_dir, filetype)
+                self._nc_bcknd = process_polychord_run(root.split('_transformed')[0], base_dir, filetype)
             else:
                 raise ValueError('Cannot process with nestcheck.')
 
