@@ -494,16 +494,18 @@ class Instrument(ParameterSubspace):
         RSP = RSP[~empty_channels][:,~empty_inputs]
         channels = channels[ ~empty_channels ]
         inputs = inputs[ ~empty_inputs ]
-        if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
-                  f'Now min_energy={inputs[0]} and max_energy={inputs[-1]}')
-        if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only 0 values.\n'
-                  f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
         channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
+
+        # Print informations
+        if empty_inputs.sum() > 0:
+            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
+                  f'Now min_energy={energy_edges[0]} and max_energy={energy_edges[-1]}')
+        if empty_channels.sum() > 0:
+            print(f'Triming the response matrix because it contains columns with only 0 values.\n'
+                  f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
 
         # Make the instrument
         Instrument = cls(RSP,
