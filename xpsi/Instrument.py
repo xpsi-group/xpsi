@@ -506,7 +506,7 @@ class Instrument(ParameterSubspace):
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        energies = (ARF['ENERG_LO']+ARF['ENERG_HI'][:])/2
+        energies = (RMF_MATRIX['ENERG_LO']+RMF_MATRIX['ENERG_HI'])/2
         channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
 
         # Print informations
@@ -528,7 +528,7 @@ class Instrument(ParameterSubspace):
         Instrument.RMF = RMF[~empty_channels][:,~empty_inputs]
         Instrument.ARF = ARF_area[~empty_inputs]
         Instrument.name = RMF_instr
-        Instrument.energies = energies[~empty_inputs]
+        Instrument.energies = energies[inputs_indexes][~empty_inputs]
 
         return Instrument
 
