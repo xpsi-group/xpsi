@@ -506,6 +506,7 @@ class Instrument(ParameterSubspace):
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
+        energies = (ARF['ENERG_LO']+ARF['ENERG_HI'][:])/2
         channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
 
         # Print informations
@@ -527,6 +528,7 @@ class Instrument(ParameterSubspace):
         Instrument.RMF = RMF[~empty_channels][:,~empty_inputs]
         Instrument.ARF = ARF_area[~empty_inputs]
         Instrument.name = RMF_instr
+        Instrument.energies = energies[~empty_inputs]
 
         return Instrument
 
@@ -550,103 +552,14 @@ class InstrumentPileup(Instrument):
                   'Response matrix loaded')
     def from_ogip_fits(cls,
               Data_path,
-              ARF_path,
-              RMF_path,
-              min_channel=0,
-              max_channel=-1,
-              min_input=1,
-              max_input=-1,
               bounds=dict(),
               values=dict(),
-              datafolder=None,
               **kwargs):
         
         """ Load any instrument response matrix. """
-
-        if datafolder:
-            ARF_path = _os.path.join( datafolder, ARF_path )
-            RMF_path = _os.path.join( datafolder, RMF_path )
-            Data_path = _os.path.join( datafolder, Data_path )
-
-        # Open useful values in ARF/RMF    
-        with fits.open( ARF_path ) as ARF_hdul:
-            ARF_header = ARF_hdul['SPECRESP'].header
-        ARF_instr = ARF_header['INSTRUME']
-            
-        with fits.open( RMF_path ) as RMF_hdul:
-            RMF_header = RMF_hdul['MATRIX'].header
-        RMF_instr = RMF_header['INSTRUME'] 
-        DETCHANS = RMF_header['DETCHANS']
-        NUMGRP = RMF_header['NAXIS2']
-        TLMIN = RMF_header['TLMIN4']
-        TLMAX = RMF_header['TLMAX4']
-
-        # Get the values and change the -1 values if requried
-        if max_channel == -1:
-            max_channel = DETCHANS -1
-        if max_input == -1:
-            max_input = NUMGRP
-        channels = _np.arange( min_channel, max_channel+1 )
-        inputs = _np.arange( min_input, max_input+1  )
-
-        # Perform routine checks
-        assert ARF_instr == RMF_instr
-        assert min_channel >= TLMIN and max_channel <= TLMAX
-        assert min_input >= 0 and max_input <= NUMGRP
-
-        # If everything in order, get the data
-        with fits.open( RMF_path ) as RMF_hdul:
-            RMF_MATRIX = RMF_hdul['MATRIX'].data
-            RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
-
-        # Get the channels from the data
-        RMF = _np.zeros((DETCHANS, NUMGRP))
-        for i, (N_GRP, F_CHAN, N_CHAN, RMF_line) in enumerate( zip(RMF_MATRIX['N_GRP'], RMF_MATRIX['F_CHAN'], RMF_MATRIX['N_CHAN'], RMF_MATRIX['MATRIX']) ):
-
-            # Skip if needed
-            if N_GRP == 0:
-                continue
-
-            # Check the values
-            if not isinstance(F_CHAN, _np.ndarray ):
-                F_CHAN = [F_CHAN]
-                N_CHAN = [N_CHAN]
-
-            # Add the values to the RMF
-            n_skip = 0 
-            for f_chan, n_chan in zip(F_CHAN,N_CHAN):
-
-                if n_chan == 0:
-                    continue
-
-                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
-                n_skip += n_chan
-
-        # Make the RSP
-        ARF = Table.read(ARF_path, 'SPECRESP')
-        ARF_area = ARF['SPECRESP']
-
-        # Extract the required matrix
-        RSP = RMF * ARF_area
-        RSP = RSP[min_channel:max_channel+1,min_input-1:max_input]
-
-        # Find empty columns and lines
-        empty_channels = _np.all(RSP == 0, axis=1)
-        empty_inputs = _np.all(RSP == 0, axis=0)
-        RSP = RSP[~empty_channels][:,~empty_inputs]
-        channels = channels[ ~empty_channels ]
-        inputs = inputs[ ~empty_inputs ]
-        if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains lines with only 0 values.\n Now min_input={inputs[0]} and max_input={inputs[-1]}')
-        if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only 0 values.\n Now min_channel={channels[0]} and max_channel={channels[-1]}')
-
-        # Get the edges of energies for both input and channel
-        energy_edges = _np.append( ARF['ENERG_LO'][inputs-1], ARF['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        energies = (ARF['ENERG_LO']+ARF['ENERG_HI'][:])/2
-
-        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
     
+        # Load the default instrument class
+        Instrument = super().from_ogip_fits(**kwargs)
 
         ## -------- INITIALIZATION OF THE PILEUP ---------------
 
@@ -654,7 +567,7 @@ class InstrumentPileup(Instrument):
         alpha_grade = Parameter('grade_migration',
                     strict_bounds = (0.0,1.0),
                     bounds = bounds.get('grade_migration', None),
-                    doc = 'Grade migration factor : probability that the piled event is not rejected as “bad event”',
+                    doc = 'Grade migration factor : probability that the piled event is not rejected as "bad event"',
                     symbol = r'$G_n$',
                     value = values.get('grade_migration', None))
     
@@ -686,10 +599,19 @@ class InstrumentPileup(Instrument):
                     symbol = r'$N_{phot}$',
                     value = values.get('npiled', 5)) #or 30 in sherpa
 
+        # Open the headers for values
         with fits.open( Data_path ) as hdul:
             Data_header = hdul['SPECTRUM'].header 
 
+        if kwargs.get( 'datafolder', None ) is not None:
+            ARF_path = _os.path.join( kwargs.get( 'datafolder'), kwargs.get( 'ARF_path' ) )
+        else:
+            ARF_path = kwargs.get( 'ARF_path' )
+        with fits.open( ARF_path ) as hdul:
+            ARF_header = hdul['SPECRESP'].header 
+
         ## make sure that EXPTIME and FRACEXPO exist - should be the case if it's Chandra data
+        ## EXPTIME is in the _evt2.fits file, might need to be manually copied to the data file
         frametime = Data_header['EXPTIME']
         frac_expo = ARF_header['FRACEXPO']
 
@@ -707,17 +629,8 @@ class InstrumentPileup(Instrument):
                     symbol = r'$f_{expo}$',
                     value = frac_expo) 
 
-        Instrument = cls(RSP,
-                        energy_edges,
-                        channels,
-                        channel_energy_edges,
-                        alpha_grade,psffrac,nregions,g0,npiled,frame,fracexpo,
-                        **kwargs)
-    
-        # Add ARF and RMF
-        Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
-        Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]
-        Instrument.energies = energies[min_input-1:max_input][~empty_inputs]
+        # Merge the parameters
+        Instrument.merge(alpha_grade,psffrac,nregions,g0,npiled,frame,fracexpo)
 
         ##Initialization of the pileup module
         pileup = XrayPileup(Instrument)

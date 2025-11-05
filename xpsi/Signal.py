@@ -129,13 +129,12 @@ class Signal(ParameterSubspace):
             except AttributeError:
                 print('WARNING : There is no counts in data object. This is normal if you are trying to synthesise data.'
                       'Otherwise something is very wrong and do not continue')
-            self._instrument.trim_response(min_channel, max_channel)
+            self._instrument.trim_response(min_channel, max_channel, tolerance=tolerance)
             if hasattr(self._instrument, 'pileup'):
                 self._instrument.pileup.instrument.trim_response(min_channel, max_channel)
                 self._instrument.pileup.arf_data = self._instrument.pileup.instrument.ARF
                 self._instrument.pileup.rmf_data = self._instrument.pileup.instrument.RMF
                 self._instrument.pileup.energies = self._instrument.pileup.instrument.energies
-            self._instrument.trim_response(min_channel, max_channel, tolerance=tolerance)
 
         # Check that the channel arrays match
         a, b = data.index_range
