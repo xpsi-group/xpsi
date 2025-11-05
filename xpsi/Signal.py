@@ -131,7 +131,7 @@ class Signal(ParameterSubspace):
                       'Otherwise something is very wrong and do not continue')
             self._instrument.trim_response(min_channel, max_channel, tolerance=tolerance)
             if hasattr(self._instrument, 'pileup'):
-                self._instrument.pileup.instrument.trim_response(min_channel, max_channel)
+                self._instrument.pileup.instrument.trim_response(min_channel, max_channel, tolerance=tolerance)
                 self._instrument.pileup.arf_data = self._instrument.pileup.instrument.ARF
                 self._instrument.pileup.rmf_data = self._instrument.pileup.instrument.RMF
                 self._instrument.pileup.energies = self._instrument.pileup.instrument.energies
