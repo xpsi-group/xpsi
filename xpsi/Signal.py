@@ -172,7 +172,16 @@ class Signal(ParameterSubspace):
             if not isinstance(interstellar, Interstellar):
                 raise TypeError('Invalid type for an interstellar object.')
             else:
-                self._interstellar = interstellar
+                # Check that interstellar extinction has values lower than 1
+                fake_signal =_np.ones_like( self._instrument.energy_edges )
+                for p in interstellar.params:
+                    p.value = (p.bounds[0] +  p.bounds[1]) / 2
+                interstellar( self._instrument.energy_edges , fake_signal )
+                if not _np.all( fake_signal <= 1.0 ):
+                    raise ValueError('Interstellar attenuation must be lower than 1. ' \
+                    'This may happen when extrapolating interstellar attenuation.')
+                else:
+                    self._interstellar = interstellar
         else:
             self._interstellar = None
 
