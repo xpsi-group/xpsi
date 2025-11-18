@@ -206,9 +206,13 @@ if __name__ == '__main__':
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integratorIQU',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
+                'xpsi.cellmesh.integrator_for_azimuthal_invariance_disk',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance_split',
+                'xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk',
                 'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance',
+                'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_disk',
                 'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split',
+                'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk',
                 'xpsi.cellmesh.integrator_for_time_invariance',
                 'xpsi.pixelmesh.METRIC_qK',
                 'xpsi.pixelmesh.RODES_qK',
@@ -220,6 +224,9 @@ if __name__ == '__main__':
                 'xpsi.pixelmesh.globalRayMap',
                 'xpsi.surface_radiation_field.local_variables',
                 'xpsi.pixelmesh.integrator']
+    # modnames = ['xpsi.cellmesh.integrator_for_azimuthal_invariance_disk']
+    
+
 
     extensions = []
 
