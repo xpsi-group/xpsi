@@ -44,7 +44,7 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
             bounds,
             values,
             symmetry = True,
-            use_disk = False,
+            disk_blocking = False,
             interpolator = 'split',
             omit = False,
             cede = False,
@@ -71,7 +71,7 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
             **kwargs
             ):
         
-        self._use_disk = use_disk
+        self._disk_blocking = disk_blocking
  
 
         
@@ -232,20 +232,20 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
             if self._split:
-                if not self._use_disk:
+                if not self._disk_blocking:
                     from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
                     from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU 
-                elif self._use_disk:
+                elif self._disk_blocking:
                     from xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator
                     # print("xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator")
                     from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integratorIQU
                     # print("xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integrator")
 
             else:
-                if not self._use_disk:
+                if not self._disk_blocking:
                     from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
                     from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
-                elif self._use_disk:
+                elif self._disk_blocking:
                     from xpsi.cellmesh.integrator_for_azimuthal_invariance_disk import integrate as _integrator
                     from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_disk import integrate as _integratorIQU
 
@@ -305,7 +305,7 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
             
-        if self._use_disk:
+        if self._disk_blocking:
              super_pulse = self._integrator(threads,    
                                             R_in,    # here R_in is added                   
                                             st.R, 
@@ -335,7 +335,7 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
                                             atm_ext_else,
                                             self.beam_opt,
                                             self._image_order_limit)
-        elif not self._use_disk:
+        elif not self._disk_blocking:
              super_pulse = self._integrator(threads,                       
                                             st.R,
                                             st.Omega,
