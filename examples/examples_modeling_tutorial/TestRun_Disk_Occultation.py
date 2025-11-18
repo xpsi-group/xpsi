@@ -44,12 +44,11 @@ from modules.CustomHotRegion_Accreting import CustomHotRegion_Accreting
 
 num_leaves=30
 
-disk_blocking=True # use disk occultation or not
+disk_blocking=True # False is an override for iff you want disk emission but no blocking. Otherwise if no disk emission there will automatically be no blocking.
 
 primary = CustomHotRegion_Accreting(bounds=bounds,
                                     values={},
                                     symmetry=True,
-                                    disk_blocking=disk_blocking,
                                     omit=False,
                                     cede=False,
                                     concentric=False,
@@ -67,7 +66,6 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
 secondary = CustomHotRegion_Accreting(bounds=bounds,
                                       values={},
                                       symmetry=True,
-                                      disk_blocking=disk_blocking,
                                       omit=False,
                                       cede=False,
                                       concentric=False,
@@ -81,10 +79,7 @@ secondary = CustomHotRegion_Accreting(bounds=bounds,
                                       image_order_limit=3,
                                       prefix='s')
 
-if disk_blocking:
-    from modules.CustomHotRegions import CustomHotRegions_DiskOccultation as HotRegions
-elif not disk_blocking:
-    from xpsi import HotRegions
+from xpsi import HotRegions
 
 hot = HotRegions((primary,secondary))
 
@@ -328,8 +323,13 @@ from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 
 stokes = False
 bounds = dict(spin_axis_position_angle = (None, None))
-photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=stokes, disk=disk, bounds=bounds,
-                                values=dict(mode_frequency = spacetime['frequency']), disk_blocking=disk_blocking)
+photosphere = CustomPhotosphere_NumA5(hot = hot, 
+                                      elsewhere = elsewhere, 
+                                      stokes=stokes, 
+                                      disk=disk, 
+                                      bounds=bounds,
+                                      values=dict(mode_frequency = spacetime['frequency']), 
+                                      disk_blocking=disk_blocking)
 
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'

@@ -22,7 +22,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                  stokes=False,
                  custom = None,
                  disk = None,
-                 disk_blocking = False,
+                 disk_blocking = True, #override, set to false iff disk but no blocking (unphysical but ok, just to test)
                  **kwargs):
 
         if everywhere is not None:
@@ -222,23 +222,19 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                     self._signalQ = tuple(map(tuple, tempQ))
                     self._signalU = tuple(map(tuple, tempU))
                 else:
-                    R_in = self.disk['R_in'] * 1000
-                    # R_in = 24.5 * 1000 # if want a constant R_in
-                    if self._disk_blocking:
-                        self._signal = self._hot.integrate(self._spacetime,
-                                                    energies,
-                                                    threads,
-                                                    self._hot_atmosphere,
-                                                    self._elsewhere_atmosphere,
-                                                    else_atm_ext,
-                                                    R_in=R_in)
-                    elif not self._disk_blocking:
-                         self._signal = self._hot.integrate(self._spacetime,
-                                                    energies,
-                                                    threads,
-                                                    self._hot_atmosphere,
-                                                    self._elsewhere_atmosphere,
-                                                    else_atm_ext)
+                    if self._disk is not None and self._disk_blocking == True: 
+                        R_in = self.disk['R_in'] * 1000 # in meters now
+                    elif self._disk is None or self._disk_blocking == False:
+                        R_in = 1e6 # default value with no disk
+                   
+                    self._signal = self._hot.integrate(self._spacetime,
+                                                energies,
+                                                threads,
+                                                self._hot_atmosphere,
+                                                self._elsewhere_atmosphere,
+                                                else_atm_ext,
+                                                R_in=R_in)
+
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
 
@@ -247,7 +243,6 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                     for i in range(self._signal[0][0].shape[1]):
                         self._signal[0][0][:,i] += spectrum    
     
-            # print('signal inside customphotosphere: ', self._signal)
             if self._disk is not None: 
                 self.disk_spectrum = self._disk(energies)
                 for i in range(self._signal[0][0].shape[1]):
