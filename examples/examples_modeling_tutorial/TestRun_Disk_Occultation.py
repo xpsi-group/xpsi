@@ -1,11 +1,5 @@
 '''
-Test script with the polarized 3+2 numerical atmosphere applied to a one-spot model.
-
-Prequisities:
-Before running the script, add the atmosphere data to the model_data subdirectory:
-Bobrikova_compton_slab_I.npz and Bobrikova_compton_slab_Q.npz. See the
-example script in xpsi/examples/produce_atmos_lookuptable for producing these files
-from those provided in https://github.com/AnnaBobrikova/ComptonSlabTables.
+Test script with disk occultation (Two hotspots).
 '''
 
 import os
@@ -29,14 +23,7 @@ this_directory = os.path.dirname(os.path.abspath(__file__))
 from xpsi.global_imports import  _keV, _k_B
 k_B_over_keV = _k_B / _keV
 
-
 from modules.helper_functions import get_T_in_log10_Kelvin
-
-
-
-use_disk=True # use disk occultation or not
-atm_ext = 'user' # Chose different atmosphere ('user' or 'Num5D')
-split = False # False in case using Linear atmosphere model (i.e. 'user')
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
@@ -45,29 +32,24 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
 
 spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=447.8718))
 
+bounds = dict(super_colatitude = (None, None),
+            super_radius = (None, None),
+            phase_shift = (0.0, 0.1),
+            super_tbb = (0.001, 0.003),
+            super_tau = (0.5, 3.5),
+            super_te = (40.0, 200.0))
+
 from xpsi.Parameter import Parameter
 from modules.CustomHotRegion_Accreting import CustomHotRegion_Accreting
 
-if atm_ext == 'user':
-    bounds = dict(super_colatitude = (None, None),
-              super_radius = (None, None),
-              phase_shift = (0.0, 0.1),
-              super_h = (-1, 1))
-
-elif atm_ext == 'Num5D':
-    bounds = dict(super_colatitude = (None, None),
-                super_radius = (None, None),
-                phase_shift = (0.0, 0.1),
-                super_tbb = (0.001, 0.003),
-                super_tau = (0.5, 3.5),
-                super_te = (40.0, 200.0))
-
 num_leaves=30
+
+disk_blocking=True # use disk occultation or not
 
 primary = CustomHotRegion_Accreting(bounds=bounds,
                                     values={},
                                     symmetry=True,
-                                    use_disk=use_disk,
+                                    disk_blocking=disk_blocking,
                                     omit=False,
                                     cede=False,
                                     concentric=False,
@@ -76,8 +58,8 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
                                     max_sqrt_num_cells=64, #100
                                     num_leaves=num_leaves,
                                     num_rays=200,
-                                    split=split,
-                                    atm_ext=atm_ext,
+                                    split=True,
+                                    atm_ext='Num5D',
                                     image_order_limit=3,
                                     prefix='p')
                             
@@ -85,7 +67,7 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
 secondary = CustomHotRegion_Accreting(bounds=bounds,
                                       values={},
                                       symmetry=True,
-                                      use_disk=use_disk,
+                                      disk_blocking=disk_blocking,
                                       omit=False,
                                       cede=False,
                                       concentric=False,
@@ -94,18 +76,17 @@ secondary = CustomHotRegion_Accreting(bounds=bounds,
                                       max_sqrt_num_cells=64, #100
                                       num_leaves=num_leaves,
                                       num_rays=200,
-                                      split=split,
-                                      atm_ext=atm_ext,
+                                      split=True,
+                                      atm_ext='Num5D',
                                       image_order_limit=3,
                                       prefix='s')
 
-if use_disk:
+if disk_blocking:
     from modules.CustomHotRegions import CustomHotRegions_DiskOccultation as HotRegions
-elif not use_disk:
+elif not disk_blocking:
     from xpsi import HotRegions
 
 hot = HotRegions((primary,secondary))
-
 
 use_elsewhere = False #True
 
@@ -133,9 +114,6 @@ _c_cgs = _c*1E2
 k_B_over_keV = _k_B / _keV
 import numpy as np
 from scipy.integrate import quad
-
-
-
 
 class Disk(ParameterSubspace):
      
@@ -340,9 +318,9 @@ class k_disk_derive(Derive):
    
 
 k_disk = k_disk_derive()
-T_in = get_T_in_log10_Kelvin(0.16845756373108872) #(0.29)
-R_in = 0.246E+02 #55.0
-values = {'T_in':T_in,'R_in':R_in,'K_disk': 0.0}
+T_in = get_T_in_log10_Kelvin(0.16845756373108872) 
+R_in = 0.246E+02 
+values = {'T_in':T_in,'R_in':R_in,'K_disk': 0.0} # no disk emission
 bounds_disk = {'T_in': (3., 10.), 'R_in': (0., 1e3), 'K_disk': None}
 disk = Disk(bounds=bounds_disk, values=values)
 
@@ -351,13 +329,12 @@ from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 stokes = False
 bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=stokes, disk=disk, bounds=bounds,
-                                values=dict(mode_frequency = spacetime['frequency']), use_disk=use_disk)
+                                values=dict(mode_frequency = spacetime['frequency']), disk_blocking=disk_blocking)
 
-if atm_ext == 'Num5D':
-    photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
-    photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
-else:
-    print('using linear atmosphere model in the photosphere')
+
+photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
+photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
+
 photosphere['mode_frequency'] == spacetime['frequency']
 
 star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
@@ -389,49 +366,28 @@ te_s = 100
 tau_s = 2.0
 
 
-super_h_p = -0.65
-super_h_s = -0.65
-if atm_ext == 'Num5D':
-    p = [mass,
-        radius,
-        distance,
-        cos_i,
-        phase_shift_p,
-        super_colatitude_p,
-        super_radius_p,
-        tbb_p,
-        te_p,
-        tau_p,
-        phase_shift_s,
-        super_colatitude_s,
-        super_radius_s,
-        tbb_s,
-        te_s,
-        tau_s,
-        T_in,
-        R_in]
-elif atm_ext == 'user':
-    p = [mass,
-        radius,
-        distance,
-        cos_i,
-        phase_shift_p,
-        super_colatitude_p,
-        super_radius_p,
-        super_h_p,
-        phase_shift_s,
-        super_colatitude_s,
-        super_radius_s,
-        super_h_s,
-        T_in,
-        R_in]
+p = [mass,
+    radius,
+    distance,
+    cos_i,
+    phase_shift_p,
+    super_colatitude_p,
+    super_radius_p,
+    tbb_p,
+    te_p,
+    tau_p,
+    phase_shift_s,
+    super_colatitude_s,
+    super_radius_s,
+    tbb_s,
+    te_s,
+    tau_s,
+    T_in,
+    R_in]
 
-print(len(p))
-print("star expects:", star.params, "parameters",len(star.params))
 
 if stokes:
     p.insert(4, chi0)  # spin axis position angle
-
 
 
 # elsewhere
@@ -446,7 +402,7 @@ star.update()
 start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-energies = np.logspace(np.log10(0.2), np.log10(30.0), 40, base=10.0)
+energies = np.logspace(np.log10(0.2), np.log10(10.0), 40, base=10.0)
 multiple_times = 100
 for i in range(multiple_times):
     photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
