@@ -14,19 +14,17 @@ from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
 
+cdef:
+    double _pi = M_PI 
+    double _hlfpi = M_PI / 2.0
+    double _2pi = 2.0 * M_PI
+    double keV = xpsi.global_imports._keV
+    double c = xpsi.global_imports._c
 
-#定义常数
-cdef double _pi = M_PI 
-cdef double _hlfpi = M_PI / 2.0
-cdef double _2pi = 2.0 * M_PI
-cdef double keV = xpsi.global_imports._keV
-cdef double c = xpsi.global_imports._c
-
-cdef int SUCCESS = 0
-cdef int ERROR = 1
-
-cdef int VERBOSE = 1
-cdef int QUIET = 0
+    int SUCCESS = 0
+    int ERROR = 1
+    int VERBOSE = 1
+    int QUIET = 0
 
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
@@ -106,9 +104,7 @@ def integrate(size_t numThreads,
               double R_in = 1e6):
 
 
-    cdef const gsl_interp_type *_interpolant
 
-    _interpolant = _get_phase_interpolant()
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -158,14 +154,12 @@ def integrate(size_t numThreads,
         double E_electronrest
         double cos_psi_d, sin_psi_d      # geometric quantities
         double impact_b, r_psi_d         # impact parameter and radial coordinate
-
-        
-
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
+        double[:,::1] cos_alpha_alt
+        double[:,::1] cos_deflection
 
         int *terminate = <int*> malloc(N_T * sizeof(int))
-        
         int *CalcRaysFlag = <int*> malloc(N_T * sizeof(int))
         int *InvisFlag = <int*> malloc(N_T * sizeof(int))
         double *InvisStep = <double*> malloc(N_T * sizeof(double))
@@ -175,15 +169,12 @@ def integrate(size_t numThreads,
         interp **interp_alpha = <interp**> malloc(N_T * sizeof(interp*))
         interp **interp_alpha_alt = NULL
         interp **interp_lag = <interp**> malloc(N_T * sizeof(interp*))
-
-        # Intensity spline interpolation
         double **PHASE = <double**> malloc(N_T * sizeof(double*))
         double **PROFILE = <double**> malloc(N_T * sizeof(double*))
-
         accel **accel_PROFILE = <accel**> malloc(N_T * sizeof(accel*))
         interp **interp_PROFILE = <interp**> malloc(N_T * sizeof(interp*))
-
         size_t *BLOCK = <size_t*> malloc(N_E * sizeof(size_t))
+        double* I_data_2D
 
         double *defl_ptr
         double *alpha_ptr
@@ -192,7 +183,19 @@ def integrate(size_t numThreads,
         double *lag_ptr
         double *profile_ptr
         double *phase_ptr
+        
+        # initialise the source radiation field
+        _preloaded *hot_preloaded = NULL
+        _preloaded *ext_preloaded = NULL
+        void *hot_data = NULL
+        void *ext_data = NULL
+        
+        double[:,:,::1] correction
+        int perform_correction
+        
+        const gsl_interp_type *_interpolant
 
+    _interpolant = _get_phase_interpolant()
     accel_alpha_alt = <accel**> malloc(N_T * sizeof(accel*))
     interp_alpha_alt = <interp**> malloc(N_T * sizeof(interp*))
 
@@ -212,9 +215,13 @@ def integrate(size_t numThreads,
     for p in range(N_E):
         BLOCK[p] = p * N_L
 
-    cdef double[:,::1] cos_alpha_alt
-    cdef double[:,::1] cos_deflection
 
+
+
+    # deflection is computed in the file ray.pyx
+    # deflection.shape[0]: different radii R
+    # deflection.shape[1]: different incident angles alpha
+    
     cos_deflection = np.zeros((deflection.shape[0],
                                deflection.shape[1]),
                                dtype = np.double)
@@ -240,20 +247,11 @@ def integrate(size_t numThreads,
     else:
         leaf_lim = (N_L + 1)/2
 
-    # initialise the source radiation field
-    cdef _preloaded *hot_preloaded = NULL
-    cdef _preloaded *ext_preloaded = NULL
-    cdef void *hot_data = NULL
-    cdef void *ext_data = NULL
-
     if hot_atmosphere:
         hot_preloaded = init_preload(hot_atmosphere)
         hot_data = init_hot_Num5D(N_T, hot_preloaded)
     else:
         hot_data = init_hot_Num5D(N_T, NULL)
-
-    cdef double[:,:,::1] correction
-    cdef int perform_correction
 
     if correction_srcCellParams is not None:
         perform_correction = 1
@@ -273,13 +271,16 @@ def integrate(size_t numThreads,
     # >>>
     #----------------------------------------------------------------------->>>
   
-    cdef double* I_data_2D
     I_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data)
     atmosphere_2D = make_atmosphere_2D(I_data_2D, hot_data)
 
-    # initiate data 2D
+
     hot_preloaded_2D = init_preload(atmosphere_2D)
     hot_data_2D = init_hot_2D(N_T, hot_preloaded_2D)
+
+    # Loop over all grid points
+    # cellArea.shape[0]: colatitude
+    # cellArea.shape[1]: azimuth
 
     for ii in prange(<signed int>cellArea.shape[0],
                      nogil = True,
@@ -290,12 +291,11 @@ def integrate(size_t numThreads,
         # Thread index
         T = threadid(); twoT = 2*T
         i = <size_t> ii
-        # printf("%d\n", ii)
+
         j = 0
+        
         # use this to decide whether or not to compute parallel:
         # Does the local vicinity of the parallel contain radiating material?
-
-
         while j < <size_t>cellArea.shape[1]:
             if CELL_RADIATES[i,j] == 1:
                 J = j
@@ -350,8 +350,8 @@ def integrate(size_t numThreads,
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2 # initialise image order as not visible
             correction_I_E = 0.0
-           
-            for k in range(leaf_lim):
+
+            for k in range(leaf_lim):  # loop over time points
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
@@ -371,15 +371,17 @@ def integrate(size_t numThreads,
                     psi = eval_image_deflection(I, acos(cos_psi))
                     sin_psi = sin(psi)
 
+                # visibility check 1: confirm psi is smaller than the maximum deflection angle maxDeflection[i]
+                # meaning: when the deflection angle = the angle between the surface normal and the line of sight, the ray can be visible.
+
                 if psi <= maxDeflection[i]: 
-                    if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
-                        # some crude diagnostic output
+                    if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax): #extrapolation is not allowed
                         printf("Interpolation error: deflection = %.16e\n", psi)
                         printf("Out of bounds: min = %.16e\n", interp_alpha[T].xmin)
                         printf("Out of bounds: max = %.16e\n", interp_alpha[T].xmax)
                         terminate[T] = 1
                         break # out of phase loop
-                    else:
+                    else: # obtain alpha via interpolation
                         if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
                             _cos_alpha = gsl_interp_eval(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
@@ -398,7 +400,9 @@ def integrate(size_t numThreads,
                             mu = mu + sin_alpha * sin_gamma * cos_delta
                         else:
                             mu = mu - sin_alpha * sin_gamma * cos_delta
-
+                    
+                    # visibility check 2: mu > 0.0
+                    # meaning: only outward-emitted rays can be visible, inward-emitted ones are blocked by the star
                     if mu > 0.0: 
                         if R_in < 1e6: # there is a disk, so block certain rays.
                             cos_psi_d = (cos_i * cos_psi - cos_theta_i) / sqrt(cos_i * cos_i + cos_theta_i * cos_theta_i - 2 * cos_i * cos_theta_i * cos_psi) #Ibragimov & Poutanen (2009), Equation (C2)
@@ -463,16 +467,7 @@ def integrate(size_t numThreads,
                             for p in range(N_E):
                                 E_prime = energies[p] / _Z
                                 E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
-                                
-                                # printf("E_electronrest %.8e\n", E_electronrest)
-                                # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
-                                # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
-                                # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
-
-
                                 I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D)
-
-                                # printf("I_E2D = %.8e\n", I_E2D)
 
                                 if perform_correction == 1:
                                     correction_I_E = eval_elsewhere(T,
@@ -535,6 +530,16 @@ def integrate(size_t numThreads,
 
                     # reset visibility flag
                     InvisFlag[T] = 0
+                    
+                    # Usage of InvisFlag[T]:
+                    # - At the initial step of calculation, set InvisFlag[T] = 2
+                    # - At visible time points (for some k), InvisFlag[T] is updated to 0
+                    # - At invisible time points, InvisFlag[T] is updated to 1
+                    # Therefore:
+                    #   2 → 0 : the k where InvisFlag[T] = 0 marks the first visible time point
+                    #   0 → 1 : transition from visible to invisible (not at initial step)
+                    #   1 → 0 : transition from invisible to visible (not at initial step)
+                    # - If the ray remains invisible throughout one time loop, InvisFlag[T] stays at 2
 
                 elif CalcRaysFlag[T]==0:
                     if InvisFlag[T] == 0:
