@@ -44,7 +44,6 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
             bounds,
             values,
             symmetry = True,
-            disk_blocking = False,
             interpolator = 'split',
             omit = False,
             cede = False,
@@ -70,8 +69,6 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
             atm_ext='Num5D',
             **kwargs
             ):
-        
-        self._disk_blocking = disk_blocking
  
 
         
@@ -218,195 +215,195 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
         #    self._cede_cellParamVecs[...,1] *= self['cede_tbb']
         #    self._cede_cellParamVecs[...,2] *= self['cede_tau']
 
-    @property
-    def symmetry(self):
-        """ Get the symmetry declaration (controls integrator invocation). """
-        return self._symmetry
+    # @property
+    # def symmetry(self):
+    #     """ Get the symmetry declaration (controls integrator invocation). """
+    #     return self._symmetry
 
-    @symmetry.setter
-    def symmetry(self, declaration):
-        if not isinstance(declaration, bool):
-            raise TypeError('Declare symmetry existence with a boolean.')
+    # @symmetry.setter
+    # def symmetry(self, declaration):
+    #     if not isinstance(declaration, bool):
+    #         raise TypeError('Declare symmetry existence with a boolean.')
 
-        self._symmetry = declaration
-        # find the required integrator
-        if declaration: # can we safely assume azimuthal invariance?
-            if self._split:
-                if not self._disk_blocking:
-                    from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
-                    from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU 
-                elif self._disk_blocking:
-                    from xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator
-                    # print("xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator")
-                    from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integratorIQU
-                    # print("xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integrator")
+    #     self._symmetry = declaration
+    #     # find the required integrator
+    #     if declaration: # can we safely assume azimuthal invariance?
+    #         if self._split:
+    #             if not self._disk_blocking:
+    #                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
+    #                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU 
+    #             elif self._disk_blocking:
+    #                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator
+    #                 # print("xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator")
+    #                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integratorIQU
+    #                 # print("xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integrator")
 
-            else:
-                if not self._disk_blocking:
-                    from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
-                    from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
-                elif self._disk_blocking:
-                    from xpsi.cellmesh.integrator_for_azimuthal_invariance_disk import integrate as _integrator
-                    from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_disk import integrate as _integratorIQU
+    #         else:
+    #             if not self._disk_blocking:
+    #                 from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+    #                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
+    #             elif self._disk_blocking:
+    #                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_disk import integrate as _integrator
+    #                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_disk import integrate as _integratorIQU
 
-        else: # more general purpose
-            if self._split:
-                raise TypeError("Split version of the integrator has not been implemented for symmetry=False.")
-            from xpsi.cellmesh.integrator import integrate as _integrator
-            from xpsi.cellmesh.integratorIQU import integrate as _integratorIQU
-        self._integrator = _integrator
-        self._integratorIQU = _integratorIQU
+    #     else: # more general purpose
+    #         if self._split:
+    #             raise TypeError("Split version of the integrator has not been implemented for symmetry=False.")
+    #         from xpsi.cellmesh.integrator import integrate as _integrator
+    #         from xpsi.cellmesh.integratorIQU import integrate as _integratorIQU
+    #     self._integrator = _integrator
+    #     self._integratorIQU = _integratorIQU
 
 
-    def integrate(self, st, energies, threads, # here photosphere should also send the disk
-                  hot_atmosphere, elsewhere_atmosphere, atm_ext_else, R_in = None):
-        # print("R_in = ", R_in)
-        """ Integrate over the photospheric radiation field.
+    # def integrate(self, st, energies, threads, # here photosphere should also send the disk
+    #               hot_atmosphere, elsewhere_atmosphere, atm_ext_else, R_in = None):
+    #     # print("R_in = ", R_in)
+    #     """ Integrate over the photospheric radiation field.
 
-        Calls the CellMesh integrator, with or without exploitation of
-        azimuthal invariance of the radiation field of the hot region.
+    #     Calls the CellMesh integrator, with or without exploitation of
+    #     azimuthal invariance of the radiation field of the hot region.
 
-        :param st: Instance of :class:`~.Spacetime.Spacetime`.
+    #     :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
-        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
-                         in keV.
+    #     :param energies: A one-dimensional :class:`numpy.ndarray` of energies
+    #                      in keV.
 
-        :param int threads: Number of ``OpenMP`` threads for pulse
-                            integration.
+    #     :param int threads: Number of ``OpenMP`` threads for pulse
+    #                         integration.
 
-        """
-        if self.fast_mode and not self.do_fast:
-            try:
-                if self.cede:
-                    return (None, None)
-            except AttributeError:
-                return (None,)
+    #     """
+    #     if self.fast_mode and not self.do_fast:
+    #         try:
+    #             if self.cede:
+    #                 return (None, None)
+    #         except AttributeError:
+    #             return (None,)
 
-        leaves = self._fast_leaves if self.fast_mode else self._leaves
-        phases = self._fast_phases if self.fast_mode else self._phases
-        num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
+    #     leaves = self._fast_leaves if self.fast_mode else self._leaves
+    #     phases = self._fast_phases if self.fast_mode else self._phases
+    #     num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
 
-        if isinstance(energies, tuple):
-            try:
-                super_energies, cede_energies = energies
-            except ValueError:
-                super_energies = energies[0]
-                try:
-                    self._cede_cellArea
-                except AttributeError:
-                    pass
-                else:
-                    cede_energies = super_energies
-        else:
-            super_energies = cede_energies = energies
+    #     if isinstance(energies, tuple):
+    #         try:
+    #             super_energies, cede_energies = energies
+    #         except ValueError:
+    #             super_energies = energies[0]
+    #             try:
+    #                 self._cede_cellArea
+    #             except AttributeError:
+    #                 pass
+    #             else:
+    #                 cede_energies = super_energies
+    #     else:
+    #         super_energies = cede_energies = energies
 
-        if self.atm_ext==2 or self.atm_ext==4 or self._split:
-            if hot_atmosphere == ():
-                raise AtmosError('The numerical atmosphere data were not preloaded, '
-                                 'even though that is required by the current atmosphere extension.')
+    #     if self.atm_ext==2 or self.atm_ext==4 or self._split:
+    #         if hot_atmosphere == ():
+    #             raise AtmosError('The numerical atmosphere data were not preloaded, '
+    #                              'even though that is required by the current atmosphere extension.')
             
-        if self._disk_blocking:
-             super_pulse = self._integrator(threads,    
-                                            R_in,    # here R_in is added                   
-                                            st.R, 
-                                            st.Omega,
-                                            st.r_s,
-                                            st.i,
-                                            self._super_cellArea,
-                                            self._super_r,
-                                            self._super_r_s_over_r,
-                                            self._super_theta,
-                                            self._super_phi,
-                                            self._super_cellParamVecs,
-                                            self._super_radiates,
-                                            self._super_correctionVecs,
-                                            num_rays,
-                                            self._super_deflection,
-                                            self._super_cos_alpha,
-                                            self._super_lag,
-                                            self._super_maxDeflection,
-                                            self._super_cos_gamma,
-                                            super_energies,
-                                            leaves,
-                                            phases,
-                                            hot_atmosphere,
-                                            elsewhere_atmosphere,
-                                            self.atm_ext,
-                                            atm_ext_else,
-                                            self.beam_opt,
-                                            self._image_order_limit)
-        elif not self._disk_blocking:
-             super_pulse = self._integrator(threads,                       
-                                            st.R,
-                                            st.Omega,
-                                            st.r_s,
-                                            st.i,
-                                            self._super_cellArea,
-                                            self._super_r,
-                                            self._super_r_s_over_r,
-                                            self._super_theta,
-                                            self._super_phi,
-                                            self._super_cellParamVecs,
-                                            self._super_radiates,
-                                            self._super_correctionVecs,
-                                            num_rays,
-                                            self._super_deflection,
-                                            self._super_cos_alpha,
-                                            self._super_lag,
-                                            self._super_maxDeflection,
-                                            self._super_cos_gamma,
-                                            super_energies,
-                                            leaves,
-                                            phases,
-                                            hot_atmosphere,
-                                            elsewhere_atmosphere,
-                                            self.atm_ext,
-                                            atm_ext_else,
-                                            self.beam_opt,
-                                            self._image_order_limit)
+    #     if self._disk_blocking:
+    #          super_pulse = self._integrator(threads,    
+    #                                         R_in,    # here R_in is added                   
+    #                                         st.R, 
+    #                                         st.Omega,
+    #                                         st.r_s,
+    #                                         st.i,
+    #                                         self._super_cellArea,
+    #                                         self._super_r,
+    #                                         self._super_r_s_over_r,
+    #                                         self._super_theta,
+    #                                         self._super_phi,
+    #                                         self._super_cellParamVecs,
+    #                                         self._super_radiates,
+    #                                         self._super_correctionVecs,
+    #                                         num_rays,
+    #                                         self._super_deflection,
+    #                                         self._super_cos_alpha,
+    #                                         self._super_lag,
+    #                                         self._super_maxDeflection,
+    #                                         self._super_cos_gamma,
+    #                                         super_energies,
+    #                                         leaves,
+    #                                         phases,
+    #                                         hot_atmosphere,
+    #                                         elsewhere_atmosphere,
+    #                                         self.atm_ext,
+    #                                         atm_ext_else,
+    #                                         self.beam_opt,
+    #                                         self._image_order_limit)
+    #     elif not self._disk_blocking:
+    #          super_pulse = self._integrator(threads,                       
+    #                                         st.R,
+    #                                         st.Omega,
+    #                                         st.r_s,
+    #                                         st.i,
+    #                                         self._super_cellArea,
+    #                                         self._super_r,
+    #                                         self._super_r_s_over_r,
+    #                                         self._super_theta,
+    #                                         self._super_phi,
+    #                                         self._super_cellParamVecs,
+    #                                         self._super_radiates,
+    #                                         self._super_correctionVecs,
+    #                                         num_rays,
+    #                                         self._super_deflection,
+    #                                         self._super_cos_alpha,
+    #                                         self._super_lag,
+    #                                         self._super_maxDeflection,
+    #                                         self._super_cos_gamma,
+    #                                         super_energies,
+    #                                         leaves,
+    #                                         phases,
+    #                                         hot_atmosphere,
+    #                                         elsewhere_atmosphere,
+    #                                         self.atm_ext,
+    #                                         atm_ext_else,
+    #                                         self.beam_opt,
+    #                                         self._image_order_limit)
 
 
-        if super_pulse[0] == 1:
-            raise PulseError('Fatal numerical error during superseding-'
-                             'region pulse integration.')
+    #     if super_pulse[0] == 1:
+    #         raise PulseError('Fatal numerical error during superseding-'
+    #                          'region pulse integration.')
 
-        try:
-            cede_pulse = self._integrator(threads,
-                                          st.R,
-                                          st.Omega,
-                                          st.r_s,
-                                          st.i,
-                                          self._cede_cellArea,
-                                          self._cede_r,
-                                          self._cede_r_s_over_r,
-                                          self._cede_theta,
-                                          self._cede_phi,
-                                          self._cede_cellParamVecs,
-                                          self._cede_radiates,
-                                          self._cede_correctionVecs,
-                                          num_rays,
-                                          self._cede_deflection,
-                                          self._cede_cos_alpha,
-                                          self._cede_lag,
-                                          self._cede_maxDeflection,
-                                          self._cede_cos_gamma,
-                                          cede_energies,
-                                          leaves,
-                                          phases,
-                                          hot_atmosphere,
-                                          elsewhere_atmosphere,
-                                          self.atm_ext,
-                                          atm_ext_else,
-                                          self.beam_opt,
-                                          self._image_order_limit)
-        except AttributeError:
-            pass
-        else:
-            if cede_pulse[0] == 1:
-                raise PulseError('Fatal numerical error during ceding-region '
-                                 'pulse integration.')
-            else:
-                return (super_pulse[1], cede_pulse[1])
+    #     try:
+    #         cede_pulse = self._integrator(threads,
+    #                                       st.R,
+    #                                       st.Omega,
+    #                                       st.r_s,
+    #                                       st.i,
+    #                                       self._cede_cellArea,
+    #                                       self._cede_r,
+    #                                       self._cede_r_s_over_r,
+    #                                       self._cede_theta,
+    #                                       self._cede_phi,
+    #                                       self._cede_cellParamVecs,
+    #                                       self._cede_radiates,
+    #                                       self._cede_correctionVecs,
+    #                                       num_rays,
+    #                                       self._cede_deflection,
+    #                                       self._cede_cos_alpha,
+    #                                       self._cede_lag,
+    #                                       self._cede_maxDeflection,
+    #                                       self._cede_cos_gamma,
+    #                                       cede_energies,
+    #                                       leaves,
+    #                                       phases,
+    #                                       hot_atmosphere,
+    #                                       elsewhere_atmosphere,
+    #                                       self.atm_ext,
+    #                                       atm_ext_else,
+    #                                       self.beam_opt,
+    #                                       self._image_order_limit)
+    #     except AttributeError:
+    #         pass
+    #     else:
+    #         if cede_pulse[0] == 1:
+    #             raise PulseError('Fatal numerical error during ceding-region '
+    #                              'pulse integration.')
+    #         else:
+    #             return (super_pulse[1], cede_pulse[1])
             
       
-        return (super_pulse[1],)
+    #     return (super_pulse[1],)

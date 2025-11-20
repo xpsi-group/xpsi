@@ -1117,8 +1117,14 @@ class HotRegion(ParameterSubspace):
         else:
             self._concentric = concentric
 
-    def integrate(self, st, energies, threads,
-                  hot_atmosphere, elsewhere_atmosphere, atm_ext_else):
+    def integrate(self, 
+                  st, 
+                  energies, 
+                  threads,
+                  hot_atmosphere, 
+                  elsewhere_atmosphere, 
+                  atm_ext_else, 
+                  R_in=1e6):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -1190,7 +1196,8 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
-                                       self._image_order_limit)
+                                       self._image_order_limit,
+                                       R_in=R_in)
 
         if super_pulse[0] == 1:
             raise PulseError('Fatal numerical error during superseding-'
@@ -1224,7 +1231,8 @@ class HotRegion(ParameterSubspace):
                                           self.atm_ext,
                                           atm_ext_else,
                                           self.beam_opt,
-                                          self._image_order_limit)
+                                          self._image_order_limit,
+                                          R_in=R_in)
         except AttributeError:
             pass
         else:
@@ -1235,8 +1243,15 @@ class HotRegion(ParameterSubspace):
                 return (super_pulse[1], cede_pulse[1])
         return (super_pulse[1],)
 
-    def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else):
+    def integrate_stokes(self, 
+                         st, 
+                         energies, 
+                         threads,
+                         hot_atmosphere_I, 
+                         hot_atmosphere_Q, 
+                         elsewhere_atmosphere, 
+                         atm_ext_else, 
+                         R_in=1e6):
         """ Integrate Stokes parameters over the photospheric radiation field.
 
         Calls the CellMesh Stokes integrators, with or without exploitation of
@@ -1309,7 +1324,8 @@ class HotRegion(ParameterSubspace):
                                    self.atm_ext,
                                    atm_ext_else,
                                    self.beam_opt,
-                                   self._image_order_limit)
+                                   self._image_order_limit,
+                                   R_in=R_in)
 
         super_pulse = all_pulses[0], all_pulses[1]
         super_pulse_Q = all_pulses[0], all_pulses[2]
@@ -1350,7 +1366,8 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
-                                       self._image_order_limit)
+                                       self._image_order_limit,
+                                       R_in=R_in)
             cede_pulse = all_pulses[0], all_pulses[1] #success and flux
             cede_pulse_Q = all_pulses[0], all_pulses[2]
             cede_pulse_U = all_pulses[0], all_pulses[3]
