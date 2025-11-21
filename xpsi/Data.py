@@ -225,6 +225,8 @@ class Data(object):
          # Make the table of required channels
         assert min_channel >= self.channels[0] 
         assert max_channel <= self.channels[-1]
+        if max_channel == -1:
+            max_channel = self.channels[-1]
         new_channels = [ min_channel <= c <= max_channel for c in self.channels]
 
         # Trim the counts and channels
@@ -488,6 +490,8 @@ class Data(object):
             counts_data = spectrum['RATE']
             exposure = _np.double(1.0)
 
+        TLMIN= _np.int32(Header['TLMIN1'])
+
         # No channels specified, use everything
         if channels is None:
             min_channel = _np.min( channel_data )
@@ -497,6 +501,20 @@ class Data(object):
             min_channel = channels[0]
             max_channel = channels[-1]
             
+        if 'QUALITY' in spectrum.columns.names :
+            print('Bad bins detected...')
+            quality=spectrum['QUALITY']
+            qualchannels = _np.where(quality==0)
+            spectrum = spectrum[qualchannels]
+            print(r'Spectrum reduced to {} channels'.format(_np.shape(qualchannels)[1]))
+            #channel_data = spectrum['CHANNEL']
+            channel_data = _np.arange(TLMIN, TLMIN+len(spectrum['CHANNEL']))
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+            print(channel_data, channels, qualchannels)
+            counts_data = spectrum['COUNTS']
+       
          # Get intrinsinc values
         first = 0
         last = max_channel - min_channel
