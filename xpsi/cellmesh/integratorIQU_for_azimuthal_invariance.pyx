@@ -159,6 +159,10 @@ def integrate(size_t numThreads,
         double cos_psi_d, sin_psi_d      # geometric quantities
         double impact_b, r_psi_d         # impact parameter and radial coordinate
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         double[:,:,::1] privateFlux_I = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,:,::1] privateFlux_Q = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,:,::1] privateFlux_U = np.zeros((N_T, N_E, N_P), dtype = np.double)

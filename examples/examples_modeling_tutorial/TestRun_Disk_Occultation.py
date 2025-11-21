@@ -402,7 +402,7 @@ star.update()
 start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-energies = np.logspace(np.log10(0.2), np.log10(10.0), 40, base=10.0)
+energies = np.logspace(np.log10(0.2), np.log10(20.0), 40, base=10.0)
 multiple_times = 100
 for i in range(multiple_times):
     photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use

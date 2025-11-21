@@ -390,6 +390,7 @@ def integrate(size_t numThreads,
                         else:
                             mu = mu - sin_alpha * sin_gamma * cos_delta
 
+<<<<<<< Updated upstream
                     # if mu > 0.0: # inside here can be visible (according to mu)
                     #     cos_psi_d = (cos_i * cos_psi - cos_theta_i) / sqrt(cos_i * cos_i + cos_theta_i * cos_theta_i - 2 * cos_i * cos_theta_i * cos_psi) #Ibragimov & Poutanen (2009), Equation (C2)
                     #     sin_psi_d = sqrt(1 - cos_psi_d * cos_psi_d)
@@ -419,6 +420,139 @@ def integrate(size_t numThreads,
                 if CalcRaysFlag[T]==1:
                     if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin: 
                         deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
+=======
+                    if mu > 0.0:
+                        if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
+                            deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
+                        else:
+                            deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+                            deriv = exp( log(fabs(deriv)) - log(fabs(sin_psi)) ) # singularity hack above
+
+                        if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
+                            printf("Interpolation error: deflection = %.16e\n", psi)
+                            printf("Out of bounds: min = %.16e\n", interp_lag[T].xmin)
+                            printf("Out of bounds: max = %.16e\n", interp_lag[T].xmax)
+                            terminate[T] = 1
+                            break # out of phase loop
+                        else:
+                            _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
+
+                        for ks in range(2):
+                            if (0 < k < leaf_lim - 1
+                                    or (k == 0 and ks == 0)
+                                    or (k == leaf_lim - 1 and N_L%2 == 1 and ks == 0)
+                                    or (k == leaf_lim - 1 and N_L%2 == 0)):
+
+                                if ks == 0:
+                                    _kdx = k
+                                else:
+                                    _kdx = N_L - 1 - k # switch due to symmetry
+
+                                # phase asymmetric now
+                                if not are_equal(psi, 0.0):
+                                    cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
+                                    superlum = (1.0 + beta * cos_xi)
+                                    eta = Lorentz / superlum
+                                else:
+                                    cos_xi = 0.0
+                                    superlum = 1.0
+                                    eta = Lorentz
+
+                                _Z = eta * Grav_z
+                                _ABB = mu * eta
+                                ##_GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
+                                _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta * eta/ superlum
+
+                                PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
+                                # specific intensities
+                                for p in range(N_E):
+                                    E_prime = energies[p] / _Z
+                                    
+                                    if hot_atm == 6:
+                                        E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                                        E_prime = E_electronrest
+
+                                    # printf("__ABB: %.8e, \n", _ABB)
+                                    # printf("E_electronrest %.8e\n", E_electronrest)
+                                    # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
+                                    # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
+                                    # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
+                                    # printf("beam_opt %ld\n", _beam_opt)
+
+
+                                    I_E = eval_hot_I(T,
+                                                   E_prime,
+                                                   _ABB,
+                                                   &(srcCellParams[i,J,0]),
+                                                   hot_data,
+                                                   _beam_opt)
+                                    
+                                    # printf("I_E = %.8e\n", I_E)
+
+                                    if perform_correction == 1:
+                                        correction_I_E = eval_elsewhere(T,
+                                                                        E_prime,
+                                                                        _ABB,
+                                                                        &(correction[i,J,0]),
+                                                                        ext_data,
+                                                                        0)
+                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
+
+                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
+
+
+                        if k == 0: # if initially visible at first/last phase steps
+                            # periodic
+                            PHASE[T][N_L - 1] = PHASE[T][0] + _2pi
+                            for p in range(N_E):
+                                (PROFILE[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE[T] + BLOCK[p])[0]
+                        elif k > 0 and InvisFlag[T] == 2: # initially not visible
+                            # calculate the appropriate phase increment for
+                            # phase steps through non-visible fraction of cycle
+                            InvisStep[T] = leaves[k] / <double>k
+
+                            # increment phase from start to end of non-visible
+                            # interval
+                            # first up to the periodic boundary
+                            for m in range(N_L - k, N_L):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                            # set the specific intensities to zero
+                            for p in range(N_E):
+                                for m in range(N_L - k, N_L):
+                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+
+                            # handle the duplicate points at the periodic
+                            # boundary which are needed for interpolation
+                            PHASE[T][0] = PHASE[T][N_L - 1] - _2pi
+
+                            # now after the periodic boundary up to the step
+                            # where image becomes visible
+                            for m in range(1, k):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                            # set the reminaing specific intensities to zero
+                            for p in range(N_E):
+                                (PROFILE[T] + BLOCK[p])[0] = 0.0
+                                for m in range(1, k):
+                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+                        elif InvisFlag[T] == 1: # handle linearly spaced phases
+                            InvisStep[T] = PHASE[T][k] - PHASE[T][_InvisPhase - 1]
+                            InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
+
+                            for m in range(_InvisPhase, k):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                            InvisStep[T] = PHASE[T][N_L - _InvisPhase] - PHASE[T][N_L - 1 - k]
+                            InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
+
+                            for m in range(N_L - k, N_L - _InvisPhase):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                        # reset visibility flag
+                        InvisFlag[T] = 0
+
+>>>>>>> Stashed changes
                     else:
                         deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                         deriv = exp(log(fabs(deriv)) - log(fabs(sin_psi)) ) # singularity hack above

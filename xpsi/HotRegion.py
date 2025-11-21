@@ -242,6 +242,7 @@ class HotRegion(ParameterSubspace):
                  bounds,
                  values,
                  symmetry = True,
+                #  use_disk = False,
                  omit = False,
                  cede = False,
                  concentric = False,
@@ -288,7 +289,12 @@ class HotRegion(ParameterSubspace):
         if not isinstance(self._split, bool):
             raise TypeError("The 'split' argument signifies split atmosphere interpolation and must be a boolean.")
 
+        # self._use_disk = use_disk
+        # print('use_disk: ',use_disk)
+
         self.symmetry = symmetry
+        print('symmetry: ', symmetry)
+     
 
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
@@ -520,11 +526,23 @@ class HotRegion(ParameterSubspace):
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
             if self._split:
+                # if not self._use_disk:
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
-                from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU
+                # future stuff
+                from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU 
+                # elif self._use_disk:
+                #     from xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator
+                #     print("xpsi.cellmesh.integrator_for_azimuthal_invariance_split_disk import integrate as _integrator")
+                #     # future stuff
+                #     from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integratorIQU
+                #     print("xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split_disk import integrate as _integrator")
+
+                # from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU 
+                
             else:
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
+
         else: # more general purpose
             if self._split:
                 raise TypeError("Split version of the integrator has not been implemented for symmetry=False.")
@@ -1168,9 +1186,11 @@ class HotRegion(ParameterSubspace):
             if hot_atmosphere == ():
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
-
+            
+        # print('super_pulse = self._integrator(threads,', st.i, self._super_cellArea)
+        
         super_pulse = self._integrator(threads,
-                                       st.R,
+                                       st.R, # here st.R_in should be added
                                        st.Omega,
                                        st.r_s,
                                        st.i,
@@ -1240,7 +1260,17 @@ class HotRegion(ParameterSubspace):
                 raise PulseError('Fatal numerical error during ceding-region '
                                  'pulse integration.')
             else:
+                # self.disk_r_psi_d = super_pulse[2]
+                # self.disk_cos_psi_d = super_pulse[3]
+                # self.disk_cos_psi = super_pulse[4]
+                # self.disk_cos_alpha = super_pulse[5]
+
                 return (super_pulse[1], cede_pulse[1])
+            
+        # self.disk_r_psi_d = super_pulse[2]
+        # self.disk_cos_psi_d = super_pulse[3]
+        # self.disk_cos_psi = super_pulse[4]
+        # self.disk_cos_alpha = super_pulse[5]
         return (super_pulse[1],)
 
     def integrate_stokes(self, 
