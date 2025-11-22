@@ -8,6 +8,7 @@ from xpsi.Background import Background
 from xpsi.Interstellar import Interstellar
 
 from xpsi.tools.energy_integrator import energy_integrator
+from xpsi.tools.energy_integrator_2Dedges import energy_integrator_2Dedges
 #from xpsi.tools.energy_interpolator import energy_interpolator
 #from xpsi.tools.phase_integrator import phase_integrator
 
@@ -16,6 +17,8 @@ from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
 from copy import deepcopy
+
+from scipy import sparse
 
 class LikelihoodError(xpsiError):
     """ Raised if there is a problem with the value of the log-likelihood. """
@@ -120,6 +123,19 @@ class Signal(ParameterSubspace):
         else:
             self._instrument = instrument
             self._original_instrument = deepcopy( instrument )
+            
+        if self._instrument._quality_checks == True:
+            #import pdb; pdb.set_trace()
+            newRSP=self._instrument.matrix[:, self._instrument.goodchannels[0]]
+            empty_inputs = _np.all( newRSP == 0, axis=1)
+            if (empty_inputs==True).any():
+                newRSP = newRSP[:][~empty_inputs]
+                edgesmin=self._instrument.energy_edges[:-1][_np.where(empty_inputs==False)[0]]
+                edgesmax=self._instrument.energy_edges[1:][_np.where(empty_inputs==False)[0]]
+                self._instrument.energy_edges=_np.stack((edgesmin,edgesmax))
+            self._instrument.matrix=newRSP
+            self._instrument.channels=self._data.channels
+            
 
         # Trimming the data and response so they fit together
         if min_channel != 0 or max_channel != -1:
@@ -129,17 +145,26 @@ class Signal(ParameterSubspace):
                 print('WARNING : There is no counts in data object. This is normal if you are trying to synthesise data.'
                       'Otherwise something is very wrong and do not continue')
             self._instrument.trim_response(min_channel, max_channel)
+            if hasattr(self._instrument, 'pileup'):
+                self._instrument.pileup.instrument.trim_response(min_channel, max_channel)
+                self._instrument.pileup.arf_data = self._instrument.pileup.instrument.ARF
+                self._instrument.pileup.rmf_data = self._instrument.pileup.instrument.RMF
+                self._instrument.pileup.energies = self._instrument.pileup.instrument.energies
 
+        # Check that the channel arrays match
         a, b = data.index_range
-        if (len(self._data.channels) != len(self._instrument.channels[a:b])):
-            raise ChannelError( 'Size of the channel array declared for event data '
-                                'does not match the size of the channel array declared'
-                                ' for the loaded instrument response (sub)matrix.')
+        if ( len(self._data.channels) != (b-a) ):
+            raise ChannelError( 'Size of the channel array declared for event data does not match the declared size.')
 
-        if (self._data.channels != self._instrument.channels[a:b]).any():
-            raise ChannelError('Channel array declared for event data does not '
-                               'match channel array declared for the loaded '
-                               'instrument response (sub)matrix.')
+        # Check that channels of instrument and data can be matched, 
+        try:
+            a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0] 
+            b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0] 
+            self._instrument_index_range_channels = ( a_instrument, b_instrument + 1 )
+            assert not (self._data.channels != self._instrument.channels[a_instrument:b_instrument+1]).any()
+        except ChannelError or IndexError:
+            raise ChannelError('Channel array declared for event data does not match channel array declared for the loaded '
+                            'instrument response (sub)matrix. The data channels need to be a subset of the instrument channels.')
 
         # Check that they come from the same instrument
         if hasattr( self._data , 'instrument' ) and hasattr( self._instrument , 'name' ):
@@ -156,9 +181,14 @@ class Signal(ParameterSubspace):
             self._background = None
 
         if support is not None:
-
             if self._data.counts.shape[0]==support.shape[0]:
                 self._support = support
+            elif self._instrument.channels.shape[0]==support.shape[0]:
+                self._support = support[a_instrument:b_instrument+1]
+            elif self._original_instrument.channels.shape[0]==support.shape[0]:
+                a_original_instrument = _np.where( self._original_instrument.channels == self._data.channels[0] )[0][0]
+                b_original_instrument = _np.where( self._original_instrument.channels == self._data.channels[-1] )[0][0]
+                self._support = support[a_original_instrument:b_original_instrument+1]
             else:
                 raise TypeError("Data spectrum and background support must the have same shape")
         else:
@@ -296,11 +326,6 @@ class Signal(ParameterSubspace):
     def original_data(self):
         """ Get the a copy of the original instance of :class:`~.Data.Data`."""
         return self._original_data
-
-    @property
-    def original_instrument(self):
-        """ Get the a copy of the original instance of :class:`~.Instrument.Instrument`."""
-        return self._original_instrument
     
     @property
     def photosphere(self):
@@ -325,6 +350,7 @@ class Signal(ParameterSubspace):
             """
             a, b = self._data.index_range
 
+            # Now find the first non-zero energy inputs
             def search(i, j, k):
                 while self._instrument.matrix[i,j] == 0.0:
                     j += k
@@ -336,6 +362,8 @@ class Signal(ParameterSubspace):
             self._input_interval_range = (a, b)
             self._energy_edges = self._instrument.energy_edges[a:b + 1]
             self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
+            if self._energy_mids.ndim == 2:
+                self._energy_mids = self._energy_mids[0]
 
     @property
     def fast_energies(self):
@@ -391,10 +419,16 @@ class Signal(ParameterSubspace):
                     if component is None:
                         fast_total_counts.append(None)
                     else:
-                        integrated = energy_integrator(threads,
-                                                       component,
-                                                       _np.log10(self.fast_energies),
-                                                       _np.log10(self._energy_edges))
+                        if self._energy_edges.ndim == 2:
+                            integrated = energy_integrator_2Dedges(threads,
+                                                           component,
+                                                           _np.log10(self.fast_energies),
+                                                           _np.log10(self._energy_edges))
+                        else:
+                            integrated = energy_integrator(threads,
+                                                           component,
+                                                           _np.log10(self.fast_energies),
+                                                           _np.log10(self._energy_edges))
 
                         # move interstellar to star?
                         if self._interstellar is not None:
@@ -402,7 +436,7 @@ class Signal(ParameterSubspace):
 
                         temp = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
                         fast_total_counts.append(_np.sum(temp))
 
@@ -441,11 +475,18 @@ class Signal(ParameterSubspace):
 
             for hotRegion in signals:
                 integrated = None
+                #import pdb; pdb.set_trace()
                 for component in hotRegion:
-                    temp = energy_integrator(threads,
-                                             component,
-                                             _np.log10(self._energies),
-                                             _np.log10(self._energy_edges))
+                    if self._energy_edges.ndim == 2:
+                        temp = energy_integrator_2Dedges(threads,
+                                                 component,
+                                                 _np.log10(self._energies),
+                                                 _np.log10(self._energy_edges))
+                    else:                         
+                        temp = energy_integrator(threads,
+                                                 component,
+                                                 _np.log10(self._energies),
+                                                 _np.log10(self._energy_edges))
                     try:
                         integrated += temp
                     except TypeError:
@@ -454,12 +495,13 @@ class Signal(ParameterSubspace):
                 if self.cache:
                     self.incident_flux_signals = integrated.copy()
 
+                #pdb.set_trace()
                 if self._interstellar is not None:
                     self._interstellar(self._energy_mids, integrated)
 
                 self.signals = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
             if self._background is not None:
                 try:
@@ -472,7 +514,7 @@ class Signal(ParameterSubspace):
                 self._background.registered_background = \
                                 self._instrument(self._background.incident_background,
                                                  self._input_interval_range,
-                                                 self._data.index_range)
+                                                 self._instrument_index_range_channels)
 
     @property
     def num_components(self):
@@ -791,10 +833,17 @@ def construct_energy_array(num_energies, signals, max_energy=None):
                 try:
                     MAX
                 except NameError:
-                    MAX = signal.energy_edges[-1]
+                    if signal.energy_edges.ndim==2:
+                        MAX = signal.energy_edges[1][-1]
+                    else:
+                        MAX = signal.energy_edges[-1]
                     s = signal
 
-                E = signal.energy_edges[-1]
+                if signal.energy_edges.ndim==2:
+                    E = signal.energy_edges[1][-1]
+                else:
+                    E = signal.energy_edges[-1]
+                
                 if E > MAX:
                     MAX = E
                     s = signal
@@ -807,9 +856,16 @@ def construct_energy_array(num_energies, signals, max_energy=None):
                     try:
                         MIN
                     except NameError:
-                        MIN = signal.energy_edges[0]
+                        if signal.energy_edges.ndim==2:
+                            MIN = signal.energy_edges[0][0]
+                        else:    
+                            MIN = signal.energy_edges[0]
 
-                    E = signal.energy_edges[0]
+                    if signal.energy_edges.ndim==2:
+                        E = signal.energy_edges[0][0]
+                    else:
+                        E = signal.energy_edges[0]
+                        
                     if E < MIN:
                         MIN = E
 
@@ -819,7 +875,11 @@ def construct_energy_array(num_energies, signals, max_energy=None):
             del MAX
 
         # find global limits
-        _signal_max = ordered[0].energy_edges[-1]
+        if ordered[0].energy_edges.ndim==2:
+            _signal_max = ordered[0].energy_edges[1][-1]
+        else:
+            _signal_max = ordered[0].energy_edges[-1]
+        
         if max_energy is not None and max_energy < _signal_max:
             MAX = max_energy
 
@@ -841,9 +901,16 @@ def construct_energy_array(num_energies, signals, max_energy=None):
             try:
                 MIN
             except NameError:
-                MIN = signal.energy_edges[0]
+                if signal.energy_edges.ndim==2:
+                    MIN = signal.energy_edges[0][0]
+                else:
+                    MIN = signal.energy_edges[0]
 
-            E = signal.energy_edges[0]
+            if signal.energy_edges.ndim==2:
+                E = signal.energy_edges[0][0]
+            else:
+                E = signal.energy_edges[0]
+            
             if E < MIN:
                 MIN = E
 

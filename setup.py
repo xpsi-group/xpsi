@@ -182,6 +182,7 @@ if __name__ == '__main__':
                 'xpsi.cellmesh.rays',
                 'xpsi.tools.energy_interpolator',
                 'xpsi.tools.energy_integrator',
+                'xpsi.tools.energy_integrator_2Dedges',
                 'xpsi.tools.phase_integrator',
                 'xpsi.tools.phase_interpolator',
                 'xpsi.tools.synthesise',

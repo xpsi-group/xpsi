@@ -11,6 +11,7 @@ from .phase_integrator import phase_integrator
 from .phase_interpolator import phase_interpolator
 
 from .energy_integrator import energy_integrator
+from .energy_integrator_2Dedges import energy_integrator_2Dedges
 from .energy_interpolator import energy_interpolator
 
 from .synthesise import synthesise_exposure
@@ -18,7 +19,7 @@ from .synthesise import synthesise_given_total_count_number
 
 from libc.math cimport fabs
 
-__interpolants__ = {'Akima': 0, 'Steffen': 1, 'Cubic': 2}
+__interpolants__ = {'Akima': 0, 'Steffen': 1, 'Cubic': 2, 'Linear': 3}
 
 def get_phase_interpolant():
     """ Get the globally-set phase interpolant. """
@@ -36,7 +37,7 @@ def set_phase_interpolant(interpolant):
 
     :param str interpolant:
         Name of the spline interpolant. Options are "Akima" (default), "Steffen"
-        (pre-v0.6 choice), and "Cubic". The first and last have periodic
+        (pre-v0.6 choice), "Linear" and "Cubic". The first and last have periodic
         boundary conditions.
 
     """
@@ -67,7 +68,7 @@ def set_energy_interpolant(interpolant):
 
     :param str interpolant:
         Name of the spline interpolant. Options are "Akima" (default), "Steffen"
-        (pre-v0.6 choice), and "Cubic". All have natural boundary conditions.
+        (pre-v0.6 choice), "Linear" and "Cubic". All have natural boundary conditions.
 
     """
     global __energy_interpolant__
@@ -95,6 +96,8 @@ cdef const gsl_interp_type* _get_phase_interpolant() except *:
             return gsl_interp_steffen
         elif __phase_interpolant__ == 2:
             return gsl_interp_cspline_periodic
+        elif __phase_interpolant__ == 3:
+            return gsl_interp_linear
         else:
             raise ValueError('Invalid phase interpolant setting.')
 
@@ -112,8 +115,10 @@ cdef const gsl_interp_type* _get_energy_interpolant() except *:
             return gsl_interp_steffen
         elif __energy_interpolant__ == 2:
             return gsl_interp_cspline
+        elif __energy_interpolant__ == 3:
+            return gsl_interp_linear
         else:
-            raise ValueError('Invalid eneergy interpolant setting.')
+            raise ValueError('Invalid energy interpolant setting.')
 
 cdef bint are_equal(double x, double y, double epsilon = 1.0e-12) noexcept nogil:
     if(fabs(x - y) < epsilon):

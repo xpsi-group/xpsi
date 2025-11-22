@@ -181,8 +181,12 @@ def plotBackgroundSpectrum( XPSI_model,
     print( f"Maximum counts in an energy bin : {np.max( HotRegion_spectra.sum(axis=0) )}")
     
     # Extract channels
-    x0 = signal.instrument.channel_edges
-    x0 = ( x0[:-1] + x0[1:] ) / 2
+    if signal.instrument.channel_edges.ndim == 2:
+        x01, x02 = signal.instrument.channel_edges[0], signal.instrument.channel_edges[1]
+        x0 = (x01+x02)/2
+    else:
+        x0 = signal.instrument.channel_edges
+        x0 = ( x0[:-1] + x0[1:] ) / 2
     
     # Extract background from samples
     if plot_range:
@@ -225,8 +229,8 @@ def plotBackgroundSpectrum( XPSI_model,
     ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=2, label='Data light curve')
     
     # Plotting background support
-    if plot_support and signal.support is not None and signal.support[signal.support>0].any():
-        support = signal.support * data.exposure_time
+    if plot_support and signal._support is not None and signal._support[signal._support>0].any():
+        support = signal._support * data.exposure_time
         ax.fill_between(x0, support[:,0], support[:,1], color='red', alpha = 0.2, label='BKG prior support')
 
     # Finish the plot

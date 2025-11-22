@@ -79,6 +79,12 @@ class Instrument(ParameterSubspace):
         of edges must be :math:`p + 1`. The edges must be monotonically
         increasing. These edges will correspond to the nominal response matrix
         and any deviation from this matrix (see above).
+    
+    :param ndarray[p+1] quality_checks:
+        Check if spectra counts present good quality. Default is False.  
+    
+    :param ndarray[p+1] goodchannels:
+        Instrument channel numbers for which we have good quality.
 
     :param tuple args:
         Container of parameter instances.
@@ -89,14 +95,22 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, channels, channel_edges=None,
+    def __init__(self, matrix, energy_edges, channels, channel_edges=None, quality_checks=False, goodchannels=None,
                  *args, **kwargs):
 
         self.matrix = matrix
-        self.energy_edges = energy_edges
         self.channels = channels
+        self._quality_checks = quality_checks
+        if self._quality_checks==True:
+            try:
+                #self._quality_checks = quality_checks
+                self._goodchannels = goodchannels
+            except TypeError:
+                raise ChannelError('If quality is checked, then a list of good channels must be returned')
+        self.energy_edges = energy_edges
         if channel_edges is not None:
             self.channel_edges = channel_edges
+        
 
         super(Instrument, self).__init__(*args, **kwargs)
 
@@ -134,10 +148,13 @@ class Instrument(ParameterSubspace):
         try:
             for i in range(matrix.shape[0]):
                 assert matrix[i,:].any()
+        except AssertionError:
+            raise ResponseError('Each row of the matrix must contain at least one positive number.')
+        try:
             for j in range(matrix.shape[1]):
                 assert matrix[:,j].any()
         except AssertionError:
-            raise ResponseError('Each row and column of the matrix must contain at least one positive number.')
+            raise ResponseError('Each column of the matrix must contain at least one positive number.')
         self._matrix = matrix
 
     def construct_matrix(self):
@@ -218,13 +235,27 @@ class Instrument(ParameterSubspace):
             except TypeError:
                 raise EdgesError('Energy edges must be in a one-dimensional array of positive increasing values.')
 
+        
         try:
-            assert energy_edges.ndim == 1
-            assert (energy_edges >= 0.0).all()
-            assert energy_edges.shape[0] == self._matrix.shape[1] + 1
-            assert not (energy_edges[1:] <= energy_edges[:-1]).any()
+            #"""
+            if self._quality_checks==True:
+                if energy_edges.ndim == 2 :
+                    for i in range(energy_edges.ndim):
+                        assert (energy_edges[i] >= 0.0).all()
+                        assert not (energy_edges[i, 1:] <= energy_edges[i, :-1]).any()
+            else:
+                assert energy_edges.ndim == 1
+                assert (energy_edges >= 0.0).all()
+                assert energy_edges.shape[0] == self._matrix.shape[1] + 1
+                assert not (energy_edges[1:] <= energy_edges[:-1]).any()
+            #"""
+            #assert energy_edges.ndim == 1
+            #assert (energy_edges >= 0.0).all()
+            #assert energy_edges.shape[0] == self._matrix.shape[1] + 1
+            #assert not (energy_edges[1:] <= energy_edges[:-1]).any()
         except AssertionError:
-            raise EdgesError('Energy edges must be in a one-dimensional array of positive increasing values, with a '
+            raise EdgesError('Unless if there are bad channels causing the removal of response contribution from some energy bins,' 
+                             'energy edges must be in a one-dimensional array of positive increasing values, with a '
                              'length equal to number of energy intervals in the matrix + 1.')
 
         self._energy_edges = energy_edges
@@ -266,12 +297,19 @@ class Instrument(ParameterSubspace):
                 raise EdgesError('Channel edges must be in a one-dimensional array of positive increasing values.')
 
         try:
-            assert channel_edges.ndim == 1
-            assert (channel_edges >= 0.0).all()
-            assert channel_edges.shape[0] == self._matrix.shape[0] + 1
-            assert not (channel_edges[1:] <= channel_edges[:-1]).any()
+            if self._quality_checks==True:
+                assert channel_edges.ndim == 2
+                for i in range(channel_edges.ndim):
+                    assert (channel_edges[i] >= 0.0).all()
+                    assert not (channel_edges[i, 1:] <= channel_edges[i, :-1]).any()
+                #assert channel_edges.shape[0] == self._matrix.shape[0] + 1
+            else:
+                assert channel_edges.ndim == 1
+                assert (channel_edges >= 0.0).all()
+                assert channel_edges.shape[0] == self._matrix.shape[0] + 1
+                assert not (channel_edges[1:] <= channel_edges[:-1]).any()
         except AssertionError:
-            raise EdgesError('Channel edges must be in a one-dimensional array of positive increasing values, with a '
+            raise EdgesError('Unless if there are bad channels, channel edges must be in a one-dimensional array of positive increasing values, with a '
                              'length equal to the number of channel intervals in the matrix + 1.')
 
         self._channel_edges = channel_edges
@@ -311,12 +349,39 @@ class Instrument(ParameterSubspace):
 
         yield
 
+    @property
+    def goodchannels(self):
+        """ Get the array of channels with good quality.
+
+        """
+        return self._goodchannels
+
+    @goodchannels.setter
+    @make_verbose('Setting channels with good quality',
+                  'Good channels set')
+    def goodchannels(self, channel_array):
+        if not isinstance(channel_array, _np.ndarray):
+            try:
+                channel_array = _np.array(channel_array)
+            except TypeError:
+                raise ChannelError('Channel numbers must be in an array.')
+
+        try:
+            assert channel_array.ndim == 1
+            assert (channel_array >= 0).all()
+        except AssertionError:
+            raise ChannelError('Good channel numbers must be in a one-dimensional array of positive integers (including zero)')
+
+        self._goodchannels = channel_array
+
+        yield
+    
     @make_verbose('Trimming instrument response',
                   'Instrument response trimmed')
     def trim_response(self, 
                       min_channel=0,
                       max_channel=-1,
-                      threshold=1e-5 ):
+                      threshold=1e-5):
         """ Trim the instrument response to the specified channel range.
 
         :param int min_channel:
@@ -328,7 +393,7 @@ class Instrument(ParameterSubspace):
         :param float threshold:
             The threshold value to use for trimming the instrument response.
             Channels / inputs with a total response below this value will be removed.
-
+        
         """
         
         # Make the table of required channels
@@ -343,7 +408,7 @@ class Instrument(ParameterSubspace):
         new_matrix = self.matrix[new_channels_indexes]
         empty_channels = _np.all( new_matrix <= threshold, axis=1)
         empty_inputs = _np.all( new_matrix <= threshold, axis=0)
-        
+
         # Apply to matrix and channels directly
         self.matrix = new_matrix[~empty_channels][:,~empty_inputs]
         self.channels = self.channels[new_channels_indexes][ ~empty_channels ]
@@ -352,8 +417,20 @@ class Instrument(ParameterSubspace):
         new_energy_edges = [ self.energy_edges[k] for k in range(len(empty_inputs)) if not empty_inputs[k] ]
         self.energy_edges = _np.hstack( (new_energy_edges , self.energy_edges[ _np.where( self.energy_edges == new_energy_edges[-1] )[0] + 1 ] ) )
         if hasattr( self , 'channel_edges' ):
-            new_channels_edges = [ self.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
-            self.channel_edges = _np.hstack( (new_channels_edges , self.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
+            if hasattr(self, 'goodchannels'):
+                EMINS, EMAXS = self.channel_edges[0], self.channel_edges[1]
+                MINMAXS = _np.concatenate([EMINS,EMAXS])
+                minmaxs = MINMAXS.tolist()
+                old_channels_edges = _np.sort(np.array(list(dict.fromkeys(minmaxs))))
+                new_channels_edges = [ old.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
+                allchannel_edges = _np.hstack( (new_channels_edges , old.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
+                EnewMINS = allchannel_edges[:-1][self.goodchannels]
+                EnewMAXS = allchannel_edges[1:][self.goodchannels]
+                self.channel_edges = _np.stack((EnewMINS,EnewMAXS))
+                
+            else:
+                new_channels_edges = [ self.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
+                self.channel_edges = _np.hstack( (new_channels_edges , self.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
 
         # Print if any trimming happens
         if empty_inputs.sum() > 0:
@@ -379,6 +456,7 @@ class Instrument(ParameterSubspace):
               min_input=1,
               max_input=-1,
               datafolder=None,
+              Data_path=None,
               **kwargs):
         """ Loading method for Instrument using OGIP defined ARF/RMF or RSP.
 
@@ -388,6 +466,9 @@ class Instrument(ParameterSubspace):
         :param str | None ARF_path:
             The path to the ARF file which should be OGIP compliant or None if the RMF_path points to a RSP file. 
 
+         :param str | None Data_path:
+            The path to the Data file which should be OGIP compliant. Only to mention if there are quality information.
+        
         :param int min_channel:
             The minimum channel for which the instrument response is loaded.
 
@@ -408,6 +489,7 @@ class Instrument(ParameterSubspace):
         """
 
         if datafolder:
+            Data_path = _os.path.join( datafolder, Data_path ) if Data_path is not None else None
             ARF_path = _os.path.join( datafolder, ARF_path ) if ARF_path is not None else None
             RMF_path = _os.path.join( datafolder, RMF_path )
 
@@ -426,12 +508,12 @@ class Instrument(ParameterSubspace):
                 assert RMF_instr == ARF_hdul['SPECRESP'].header['INSTRUME']
 
         # Get the values and change the -1 values if requried
+        if min_channel == 0:
+            min_channel = TLMIN
         if max_channel == -1:
             max_channel = DETCHANS -1
         if max_input == -1:
             max_input = NUMGRP
-        channels = _np.arange( min_channel, max_channel+1 )
-        inputs = _np.arange( min_input, max_input+1  )
 
         # Perform routine checks
         assert min_channel >= TLMIN and max_channel <= TLMAX
@@ -441,6 +523,10 @@ class Instrument(ParameterSubspace):
         with fits.open( RMF_path ) as RMF_hdul:
             RMF_MATRIX = RMF_hdul['MATRIX'].data
             RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
+
+        # Get all the channels and input energies
+        channels = _np.array( RMF_EBOUNDS['CHANNEL'] )
+        inputs = _np.arange( 1, NUMGRP+1 )
 
         # Get the channels from the data
         RMF = _np.zeros((DETCHANS, NUMGRP))
@@ -462,18 +548,24 @@ class Instrument(ParameterSubspace):
                 if n_chan == 0:
                     continue
 
-                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                RMF[f_chan-TLMIN:f_chan+n_chan-TLMIN,i] += RMF_line[n_skip:n_skip+n_chan]
                 n_skip += n_chan
+
+        # Get the indexes of channels
+        channels_indexes = _np.where( ( channels >= min_channel ) & ( channels <= max_channel ) )[0]
+        inputs_indexes = _np.where( ( inputs >= min_input ) & ( inputs <= max_input ) )[0]
+        channels = channels[channels_indexes]
+        inputs = inputs[inputs_indexes]
+        RMF = RMF[channels_indexes][:,inputs_indexes]
 
         # Make the RSP, depending on the input files
         if ARF_path is None:
-            RSP = RMF[min_channel:max_channel+1,min_input-1:max_input]
+            RSP = RMF
             ARF_area = RMF.sum( axis=0 )
         else:
             ARF = Table.read(ARF_path, 'SPECRESP')
-            ARF_area = ARF['SPECRESP']
+            ARF_area = ARF['SPECRESP'][inputs_indexes]
             RSP = RMF * ARF_area
-            RSP = RSP[min_channel:max_channel+1,min_input-1:max_input]
 
         # Find empty columns and lines
         empty_channels = _np.all(RSP == 0, axis=1)
@@ -490,18 +582,32 @@ class Instrument(ParameterSubspace):
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
+        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
+        
+        # If required, check for quality.
+        quality_checks=False
+        goodchannels=None
+        if Data_path is not None:
+            with fits.open( Data_path ) as Data_hdul:
+                try:
+                    QUAL = Data_hdul['SPECTRUM'].data['QUALITY']
+                    quality_checks=True
+                    goodchannels=_np.where(QUAL==0)
+                except TypeError:
+                    raise ChannelError('Quality of source channels should be specified!')
 
         # Make the instrument
         Instrument = cls(RSP,
                          energy_edges,
                          channels,
                          channel_energy_edges,
+                         quality_checks=quality_checks,
+                         goodchannels=goodchannels,
                          **kwargs)
         
         # Add ARF and RMF for plotting
-        Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
-        Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]
+        Instrument.RMF = RMF[~empty_channels][:,~empty_inputs]
+        Instrument.ARF = ARF_area[~empty_inputs]
         Instrument.name = RMF_instr
 
         return Instrument
