@@ -84,13 +84,9 @@ secondary = CustomHotRegion_Accreting(bounds=bounds,
                                       image_order_limit=3,
                                       prefix='s')
 
-if disk_blocking:
-    from modules.CustomHotRegions import CustomHotRegions_DiskOccultation as HotRegions
-elif not disk_blocking:
-    from xpsi import HotRegions
+from xpsi import HotRegions
 
 hot = HotRegions((primary,secondary))
-
 
 use_elsewhere = False #True
 

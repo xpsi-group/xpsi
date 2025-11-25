@@ -406,171 +406,171 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
     #             return (super_pulse[1], cede_pulse[1])
             
     
-        return (super_pulse[1],)
+    #     return (super_pulse[1],)
     
 
 
-    def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else, R_in = None):
-        """ Integrate Stokes parameters over the photospheric radiation field.
+    # def integrate_stokes(self, st, energies, threads,
+    #               hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else, R_in = None):
+    #     """ Integrate Stokes parameters over the photospheric radiation field.
 
-        Calls the CellMesh Stokes integrators, with or without exploitation of
-        azimuthal invariance of the radiation field of the hot region.
+    #     Calls the CellMesh Stokes integrators, with or without exploitation of
+    #     azimuthal invariance of the radiation field of the hot region.
 
-        :param st: Instance of :class:`~.Spacetime.Spacetime`.
+    #     :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
-        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
-                         in keV.
+    #     :param energies: A one-dimensional :class:`numpy.ndarray` of energies
+    #                      in keV.
 
-        :param int threads: Number of ``OpenMP`` threads for pulse
-                            integration.
+    #     :param int threads: Number of ``OpenMP`` threads for pulse
+    #                         integration.
 
-        """
-        if self.fast_mode and not self.do_fast:
-            try:
-                if self.cede:
-                    return (None, None)
-            except AttributeError:
-                return (None,)
+    #     """
+    #     if self.fast_mode and not self.do_fast:
+    #         try:
+    #             if self.cede:
+    #                 return (None, None)
+    #         except AttributeError:
+    #             return (None,)
 
-        leaves = self._fast_leaves if self.fast_mode else self._leaves
-        phases = self._fast_phases if self.fast_mode else self._phases
-        num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
+    #     leaves = self._fast_leaves if self.fast_mode else self._leaves
+    #     phases = self._fast_phases if self.fast_mode else self._phases
+    #     num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
 
-        if isinstance(energies, tuple):
-            try:
-                super_energies, cede_energies = energies
-            except ValueError:
-                super_energies = energies[0]
-                try:
-                    self._cede_cellArea
-                except AttributeError:
-                    pass
-                else:
-                    cede_energies = super_energies
-        else:
-            super_energies = cede_energies = energies
+    #     if isinstance(energies, tuple):
+    #         try:
+    #             super_energies, cede_energies = energies
+    #         except ValueError:
+    #             super_energies = energies[0]
+    #             try:
+    #                 self._cede_cellArea
+    #             except AttributeError:
+    #                 pass
+    #             else:
+    #                 cede_energies = super_energies
+    #     else:
+    #         super_energies = cede_energies = energies
 
-        if self.atm_ext==2 or self.atm_ext==4 or self._split:
-            if hot_atmosphere_I == () or hot_atmosphere_Q == ():
-                raise AtmosError('The numerical atmosphere data were not preloaded, '
-                                 'even though that is required by the current atmosphere extension.')
+    #     if self.atm_ext==2 or self.atm_ext==4 or self._split:
+    #         if hot_atmosphere_I == () or hot_atmosphere_Q == ():
+    #             raise AtmosError('The numerical atmosphere data were not preloaded, '
+    #                              'even though that is required by the current atmosphere extension.')
             
-        if self._disk_blocking:
-            all_pulses = self._integratorIQU(threads,
-                                    R_in,
-                                    st.R,
-                                    st.Omega,
-                                    st.r_s,
-                                    st.i,
-                                    self._super_cellArea,
-                                    self._super_r,
-                                    self._super_r_s_over_r,
-                                    self._super_theta,
-                                    self._super_phi,
-                                    self._super_cellParamVecs,
-                                    self._super_radiates,
-                                    self._super_correctionVecs,
-                                    num_rays,
-                                    self._super_deflection,
-                                    self._super_cos_alpha,
-                                    self._super_lag,
-                                    self._super_maxDeflection,
-                                    self._super_cos_gamma,
-                                    super_energies,
-                                    leaves,
-                                    phases,
-                                    hot_atmosphere_I,
-                                    hot_atmosphere_Q,
-                                    elsewhere_atmosphere,
-                                    self.atm_ext,
-                                    atm_ext_else,
-                                    self.beam_opt,
-                                    self._image_order_limit)
+    #     if self._disk_blocking:
+    #         all_pulses = self._integratorIQU(threads,
+    #                                 R_in,
+    #                                 st.R,
+    #                                 st.Omega,
+    #                                 st.r_s,
+    #                                 st.i,
+    #                                 self._super_cellArea,
+    #                                 self._super_r,
+    #                                 self._super_r_s_over_r,
+    #                                 self._super_theta,
+    #                                 self._super_phi,
+    #                                 self._super_cellParamVecs,
+    #                                 self._super_radiates,
+    #                                 self._super_correctionVecs,
+    #                                 num_rays,
+    #                                 self._super_deflection,
+    #                                 self._super_cos_alpha,
+    #                                 self._super_lag,
+    #                                 self._super_maxDeflection,
+    #                                 self._super_cos_gamma,
+    #                                 super_energies,
+    #                                 leaves,
+    #                                 phases,
+    #                                 hot_atmosphere_I,
+    #                                 hot_atmosphere_Q,
+    #                                 elsewhere_atmosphere,
+    #                                 self.atm_ext,
+    #                                 atm_ext_else,
+    #                                 self.beam_opt,
+    #                                 self._image_order_limit)
                                     
             
-        if not self._disk_blocking:
-            all_pulses = self._integratorIQU(threads,
-                                    st.R,
-                                    st.Omega,
-                                    st.r_s,
-                                    st.i,
-                                    self._super_cellArea,
-                                    self._super_r,
-                                    self._super_r_s_over_r,
-                                    self._super_theta,
-                                    self._super_phi,
-                                    self._super_cellParamVecs,
-                                    self._super_radiates,
-                                    self._super_correctionVecs,
-                                    num_rays,
-                                    self._super_deflection,
-                                    self._super_cos_alpha,
-                                    self._super_lag,
-                                    self._super_maxDeflection,
-                                    self._super_cos_gamma,
-                                    super_energies,
-                                    leaves,
-                                    phases,
-                                    hot_atmosphere_I,
-                                    hot_atmosphere_Q,
-                                    elsewhere_atmosphere,
-                                    self.atm_ext,
-                                    atm_ext_else,
-                                    self.beam_opt,
-                                    self._image_order_limit)            
+    #     if not self._disk_blocking:
+    #         all_pulses = self._integratorIQU(threads,
+    #                                 st.R,
+    #                                 st.Omega,
+    #                                 st.r_s,
+    #                                 st.i,
+    #                                 self._super_cellArea,
+    #                                 self._super_r,
+    #                                 self._super_r_s_over_r,
+    #                                 self._super_theta,
+    #                                 self._super_phi,
+    #                                 self._super_cellParamVecs,
+    #                                 self._super_radiates,
+    #                                 self._super_correctionVecs,
+    #                                 num_rays,
+    #                                 self._super_deflection,
+    #                                 self._super_cos_alpha,
+    #                                 self._super_lag,
+    #                                 self._super_maxDeflection,
+    #                                 self._super_cos_gamma,
+    #                                 super_energies,
+    #                                 leaves,
+    #                                 phases,
+    #                                 hot_atmosphere_I,
+    #                                 hot_atmosphere_Q,
+    #                                 elsewhere_atmosphere,
+    #                                 self.atm_ext,
+    #                                 atm_ext_else,
+    #                                 self.beam_opt,
+    #                                 self._image_order_limit)            
 
-        super_pulse = all_pulses[0], all_pulses[1]
-        super_pulse_Q = all_pulses[0], all_pulses[2]
-        super_pulse_U = all_pulses[0], all_pulses[3]
+    #     super_pulse = all_pulses[0], all_pulses[1]
+    #     super_pulse_Q = all_pulses[0], all_pulses[2]
+    #     super_pulse_U = all_pulses[0], all_pulses[3]
 
 
-        if super_pulse[0] == 1:
-            raise PulseError('Fatal numerical error during superseding-'
-                             'region pulse integration.')
+    #     if super_pulse[0] == 1:
+    #         raise PulseError('Fatal numerical error during superseding-'
+    #                          'region pulse integration.')
 
-        try:
+    #     try:
   
-            all_pulses = self._integratorIQU(threads,
-                                       st.R,
-                                       st.Omega,
-                                       st.r_s,
-                                       st.i,
-                                       self._cede_cellArea,
-                                       self._cede_r,
-                                       self._cede_r_s_over_r,
-                                       self._cede_theta,
-                                       self._cede_phi,
-                                       self._cede_cellParamVecs,
-                                       self._cede_radiates,
-                                       self._cede_correctionVecs,
-                                       num_rays,
-                                       self._cede_deflection,
-                                       self._cede_cos_alpha,
-                                       self._cede_lag,
-                                       self._cede_maxDeflection,
-                                       self._cede_cos_gamma,
-                                       cede_energies,
-                                       leaves,
-                                       phases,
-                                       hot_atmosphere_I,
-                                       hot_atmosphere_Q, 
-                                       elsewhere_atmosphere,
-                                       self.atm_ext,
-                                       atm_ext_else,
-                                       self.beam_opt,
-                                       self._image_order_limit)
-            cede_pulse = all_pulses[0], all_pulses[1] #success and flux
-            cede_pulse_Q = all_pulses[0], all_pulses[2]
-            cede_pulse_U = all_pulses[0], all_pulses[3]
+    #         all_pulses = self._integratorIQU(threads,
+    #                                    st.R,
+    #                                    st.Omega,
+    #                                    st.r_s,
+    #                                    st.i,
+    #                                    self._cede_cellArea,
+    #                                    self._cede_r,
+    #                                    self._cede_r_s_over_r,
+    #                                    self._cede_theta,
+    #                                    self._cede_phi,
+    #                                    self._cede_cellParamVecs,
+    #                                    self._cede_radiates,
+    #                                    self._cede_correctionVecs,
+    #                                    num_rays,
+    #                                    self._cede_deflection,
+    #                                    self._cede_cos_alpha,
+    #                                    self._cede_lag,
+    #                                    self._cede_maxDeflection,
+    #                                    self._cede_cos_gamma,
+    #                                    cede_energies,
+    #                                    leaves,
+    #                                    phases,
+    #                                    hot_atmosphere_I,
+    #                                    hot_atmosphere_Q, 
+    #                                    elsewhere_atmosphere,
+    #                                    self.atm_ext,
+    #                                    atm_ext_else,
+    #                                    self.beam_opt,
+    #                                    self._image_order_limit)
+    #         cede_pulse = all_pulses[0], all_pulses[1] #success and flux
+    #         cede_pulse_Q = all_pulses[0], all_pulses[2]
+    #         cede_pulse_U = all_pulses[0], all_pulses[3]
 
    
-        except AttributeError:
-            pass
-        else:
-            if cede_pulse[0] == 1:
-                raise PulseError('Fatal numerical error during ceding-region '
-                                 'pulse integration.')
-            else:
-                return (super_pulse[1], cede_pulse[1]), (super_pulse_Q[1], cede_pulse_Q[1]), (super_pulse_U[1], cede_pulse_U[1])
-        return (super_pulse[1],), (super_pulse_Q[1],), (super_pulse_U[1],)
+    #     except AttributeError:
+    #         pass
+    #     else:
+    #         if cede_pulse[0] == 1:
+    #             raise PulseError('Fatal numerical error during ceding-region '
+    #                              'pulse integration.')
+    #         else:
+    #             return (super_pulse[1], cede_pulse[1]), (super_pulse_Q[1], cede_pulse_Q[1]), (super_pulse_U[1], cede_pulse_U[1])
+    #     return (super_pulse[1],), (super_pulse_Q[1],), (super_pulse_U[1],)
