@@ -199,8 +199,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
                 if self._stokes:
                     R_in = self.disk['R_in'] * 1000
-                    print(R_in)
-
+                    # print(R_in)
                     # R_in = 24.5 * 1000 # if want a constant R_in
                     if self._disk_blocking:
                         self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
@@ -237,8 +236,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                     self._signalU = tuple(map(tuple, tempU))
                 else:
                     R_in = self.disk['R_in'] * 1000
-                    print(R_in)
-
+                    # print(R_in)
                     if self._disk_blocking:
                         self._signal = self._hot.integrate(self._spacetime,
                                                     energies,
