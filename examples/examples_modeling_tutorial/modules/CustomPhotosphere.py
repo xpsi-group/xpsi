@@ -103,9 +103,6 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                                        doc = doc,
                                        symbol = r'$\chi_{0}$',
                                        value = values.get('spin_axis_position_angle', None))
-
-            # print('everywhere:', everywhere)
-            # print('hotregion:', hot)
             
             super(CustomPhotosphere_NumA5, self).__init__(mode_frequency=mode_frequency, spin_axis_position_angle=spin_axis_position_angle,
                                               hot=hot, elsewhere=elsewhere, everywhere=everywhere,
