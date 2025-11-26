@@ -1,0 +1,1 @@
+Added optional blocking of rays due to an accretion disk, based on Ibragimov & Poutanen (2009).  
