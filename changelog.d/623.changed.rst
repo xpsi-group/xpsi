@@ -1,6 +1,0 @@
-* In the example modules,``CustomHotregion_Accreting.py`` has been modified to accomodate the linear model from Molkov et al. 2024 as a "user" option, alongside the Bobrikova atmosphere as the "Num5D" option.
-* In the example modules, ``CustomPhotosphere.py`` can now accomodate disk obscuration. 
-* The azimuthal integrators (regular, IQU, and split) now feature the ``R_in`` keyword argument for disk blocking of rays due to being obscured by an accretion disk. The math used is taken from Ibragimov & Poutanen (2009), appendix B. `R_in` has a default value of `1e6` (corresponding to 1000 km), at which point the disk is so large that practically speaking no blocking would occur. In that case however, the blocking calculation is skipped, ensuring no extra computation time is introduced here, e.g. for RMPs. 
-* ``HotRegion.py`` and ``HotRegions.py`` now feature the ``R_in`` keyword arguments, which are passed to the integrators. Default values are ``1e6``, in which case blocking calculations are skipped.
-* The ``integrator_for_azimuthal_invariance.pyx`` now features new comments that detail how the disk obscuration works as well as other comments that explain in more detail how the intensity calculation works.
-

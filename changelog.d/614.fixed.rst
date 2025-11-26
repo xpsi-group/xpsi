@@ -1,1 +1,0 @@
-The Poisson likelihood with a fixed background was modified so that it can have the correct normalization if the user provides the precomputed ln-data-factorial term (as already done for the default background marginalized likelihoods). In addition, the normalizations of the Gaussian ln-likelihood functions (in the Gaussian extensions) were fixed to have the correct sign.

@@ -1,3 +1,0 @@
-* Yinghan Mao (code development)
-* Bas Dorsman (code development)
-* Tuomo Salmi (reviewing and testing)

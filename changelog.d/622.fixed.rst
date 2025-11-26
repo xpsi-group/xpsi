@@ -1,1 +1,0 @@
-Fix issue [#620](https://github.com/xpsi-group/xpsi/issues/620) where the interstellar attenuation could be greater than one, although it should not.
