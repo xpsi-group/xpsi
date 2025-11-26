@@ -220,9 +220,6 @@ if __name__ == '__main__':
                 'xpsi.pixelmesh.globalRayMap',
                 'xpsi.surface_radiation_field.local_variables',
                 'xpsi.pixelmesh.integrator']
-    # modnames = ['xpsi.cellmesh.integrator_for_azimuthal_invariance_disk']
-    
-
 
     extensions = []
 

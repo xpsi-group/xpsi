@@ -289,9 +289,6 @@ class HotRegion(ParameterSubspace):
             raise TypeError("The 'split' argument signifies split atmosphere interpolation and must be a boolean.")
 
         self.symmetry = symmetry
-        print('symmetry: ', symmetry)
-     
-
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
