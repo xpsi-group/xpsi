@@ -194,6 +194,7 @@ if __name__ == '__main__':
                 'xpsi.surface_radiation_field.core',
                 'xpsi.surface_radiation_field.preload',
                 'xpsi.surface_radiation_field.hot_user',
+                'xpsi.surface_radiation_field.hot_user_molkov',
                 'xpsi.surface_radiation_field.hot_BB',
                 'xpsi.surface_radiation_field.hot_Num4D',
                 'xpsi.surface_radiation_field.hot_BB_burst',
