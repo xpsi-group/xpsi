@@ -56,7 +56,6 @@ num_leaves=30
 primary = CustomHotRegion_Accreting(bounds=bounds,
                                     values={},
                                     symmetry=True,
-                                    use_disk=True,
                                     omit=False,
                                     cede=False,
                                     concentric=False,
@@ -368,8 +367,6 @@ p = [mass,  # grav mass
      tau,
      T_in,
      R_in]
-
-print(len(p))
 
 if stokes:
     p.insert(4, chi0)  # spin axis position angle
