@@ -22,7 +22,6 @@ Added
 
   Now, if the priors are identical (i.e. ``priors_identical=True`` in ``CornerPlotter.plot()``), plot them in black. (`#619 <https://github.com/xpsi-group/xpsi/pull/619>`__)
 - * New ``TestRun_Disk_Occultation.py`` and ``TestRun_Disk_Occultation_IQU.py`` have been added which demonstrate the usage of the disk blocking.
-  * New ``hot_user_molkov``, which is an optional user atmosphere for AMXPs used in Molkov et al. 2024. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
 
 
 Changed
