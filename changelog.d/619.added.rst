@@ -1,0 +1,3 @@
+Added the possibility to add custom legend labels in the corner plot. This has become necessary as the multi-modal cornerplot gives default name to new modes. This can be done with a new parameter in the ``CornerPlotter.plot()`` function such as ``legend_labels=['list','of','my','labels']``.
+
+Now, if the priors are identical (i.e. ``priors_identical=True`` in ``CornerPlotter.plot()``), plot them in black.

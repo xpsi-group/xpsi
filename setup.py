@@ -188,7 +188,6 @@ if __name__ == '__main__':
                 'xpsi.tools.core',
                 'xpsi.likelihoods.default_background_marginalisation',
                 'xpsi.likelihoods._poisson_likelihood_given_background',
-                'xpsi.likelihoods._poisson_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_QnUn',                
                 'xpsi.surface_radiation_field.core',
