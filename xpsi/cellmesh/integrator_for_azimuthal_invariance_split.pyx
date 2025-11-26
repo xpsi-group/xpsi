@@ -26,7 +26,6 @@ cdef:
     int VERBOSE = 1
     int QUIET = 0
 
-#从 X-PSI 封装的 GSL（GNU Scientific Library）插值工具导入函数
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
                                        gsl_interp_alloc,
@@ -41,16 +40,12 @@ from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_isnan,
                                        gsl_isinf)
 
-#为了调用简单而重命名
 ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
-
-
 
 from .rays cimport eval_image_deflection
 from ..tools.core cimport are_equal
 
-#导入一些其他的xpsi函数
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
@@ -178,7 +173,6 @@ def integrate(size_t numThreads,
         size_t *BLOCK = <size_t*> malloc(N_E * sizeof(size_t))
         double* I_data_2D
 
- #      一些指针
         double *defl_ptr
         double *alpha_ptr
         double *defl_alt_ptr
@@ -202,7 +196,6 @@ def integrate(size_t numThreads,
     accel_alpha_alt = <accel**> malloc(N_T * sizeof(accel*))
     interp_alpha_alt = <interp**> malloc(N_T * sizeof(interp*))
 
-#   初始化插值线程
     for T in range(N_T):
         terminate[T] = 0
         accel_alpha[T] = gsl_interp_accel_alloc()
@@ -263,7 +256,6 @@ def integrate(size_t numThreads,
     else:
         perform_correction = 0
 
-    # 初始化非热点辐射（elsewhere）
     if perform_correction == 1:
         if elsewhere_atmosphere:
             ext_preloaded = init_preload(elsewhere_atmosphere)
@@ -301,8 +293,6 @@ def integrate(size_t numThreads,
         
         # use this to decide whether or not to compute parallel:
         # Does the local vicinity of the parallel contain radiating material?
-        # 循环检查该面元是否存在 发光单元格（CELL_RADIATES[i,j]==1）
-        # 若整行都不发光，continue → 跳过该面元
 
         while j < <size_t>cellArea.shape[1]:
             if CELL_RADIATES[i,j] == 1:
