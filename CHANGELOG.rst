@@ -1,37 +1,36 @@
-[v3.2] - 2025-11-26
+[v3.2] - 2025-11-27
 ~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-- Added optional blocking of rays due to an accretion disk, based on Ibragimov & Poutanen (2009). (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- The main addition is an optional ray-blocking feature due to an accretion disk, following Ibragimov & Poutanen (2009)(`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__). Additional minor updates are listed below.
 
 
 Fixed
 ^^^^^
 
 - The Poisson likelihood with a fixed background was modified so that it can have the correct normalization if the user provides the precomputed ln-data-factorial term (as already done for the default background marginalized likelihoods). In addition, the normalizations of the Gaussian ln-likelihood functions (in the Gaussian extensions) were fixed to have the correct sign. (`#614 <https://github.com/xpsi-group/xpsi/pull/614>`__)
-- Fix issue [#620](https://github.com/xpsi-group/xpsi/issues/620) where the interstellar attenuation could be greater than one, although it should not. (`#622 <https://github.com/xpsi-group/xpsi/pull/622>`__)
+- Fix issue (`#620 <https://github.com/xpsi-group/xpsi/issues/620>`__) where the interstellar attenuation could be greater than one, although it should not. (`#622 <https://github.com/xpsi-group/xpsi/pull/622>`__)
 
 
 Added
 ^^^^^
 
-- Added details of 3 new published papers and 1 new submitted paper (`#612 <https://github.com/xpsi-group/xpsi/pull/612>`__)
-- Added the possibility to add custom legend labels in the corner plot. This has become necessary as the multi-modal cornerplot gives default name to new modes. This can be done with a new parameter in the ``CornerPlotter.plot()`` function such as ``legend_labels=['list','of','my','labels']``.
-
-  Now, if the priors are identical (i.e. ``priors_identical=True`` in ``CornerPlotter.plot()``), plot them in black. (`#619 <https://github.com/xpsi-group/xpsi/pull/619>`__)
-- * New ``TestRun_Disk_Occultation.py`` and ``TestRun_Disk_Occultation_IQU.py`` have been added which demonstrate the usage of the disk blocking.
+- Added details of 3 new published papers and 1 new submitted paper. (`#612 <https://github.com/xpsi-group/xpsi/pull/612>`__)
+- Added the possibility to add custom legend labels in the corner plot. This has become necessary as the multi-modal cornerplot gives default name to new modes. This can be done with a new parameter in the ``CornerPlotter.plot()`` function such as ``legend_labels=['list','of','my','labels']``. (`#619 <https://github.com/xpsi-group/xpsi/pull/619>`__)
+- Now, if the priors are identical (i.e. ``priors_identical=True`` in ``CornerPlotter.plot()``), plot them in black. (`#619 <https://github.com/xpsi-group/xpsi/pull/619>`__)
+- New ``TestRun_Disk_Occultation.py`` and ``TestRun_Disk_Occultation_IQU.py`` have been added which demonstrate the usage of the disk blocking. (`#622 <https://github.com/xpsi-group/xpsi/pull/622>`__)
 
 
 Changed
 ^^^^^^^
 
-- * In the example modules,``CustomHotregion_Accreting.py`` has been modified to accomodate the linear model from Molkov et al. 2024 as a "user" option, alongside the Bobrikova atmosphere as the "Num5D" option.
-  * In the example modules, ``CustomPhotosphere.py`` can now accomodate disk obscuration. 
-  * The azimuthal integrators (regular, IQU, and split) now feature the ``R_in`` keyword argument for disk blocking of rays due to being obscured by an accretion disk. The math used is taken from Ibragimov & Poutanen (2009), appendix B. `R_in` has a default value of `1e6` (corresponding to 1000 km), at which point the disk is so large that practically speaking no blocking would occur. In that case however, the blocking calculation is skipped, ensuring no extra computation time is introduced here, e.g. for RMPs. 
-  * ``HotRegion.py`` and ``HotRegions.py`` now feature the ``R_in`` keyword arguments, which are passed to the integrators. Default values are ``1e6``, in which case blocking calculations are skipped.
-  * The ``integrator_for_azimuthal_invariance.pyx`` now features new comments that detail how the disk obscuration works as well as other comments that explain in more detail how the intensity calculation works. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- In the example modules,``CustomHotregion_Accreting.py`` has been modified to accomodate the linear model from Molkov et al. 2024 as a "user" option, alongside the Bobrikova atmosphere as the "Num5D" option. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- In the example modules, ``CustomPhotosphere.py`` can now accomodate disk obscuration. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- The azimuthal integrators (regular, IQU, and split) now feature the ``R_in`` keyword argument for disk blocking of rays due to being obscured by an accretion disk. The math used is taken from Ibragimov & Poutanen (2009), appendix B. `R_in` has a default value of `1e6` (corresponding to 1000 km), at which point the disk is so large that practically speaking no blocking would occur. In that case however, the blocking calculation is skipped, ensuring no extra computation time is introduced here, e.g. for RMPs. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- ``HotRegion.py`` and ``HotRegions.py`` now feature the ``R_in`` keyword arguments, which are passed to the integrators. Default values are ``1e6``, in which case blocking calculations are skipped. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- The ``integrator_for_azimuthal_invariance.pyx`` now features new comments that detail how the disk obscuration works as well as other comments that explain in more detail how the intensity calculation works. (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
 
 
 Removed
@@ -43,11 +42,11 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+- Yinghan Mao (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- Bas Dorsman (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
+- Tuomo Salmi (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__, `#614 <https://github.com/xpsi-group/xpsi/pull/614>`__)
+- Lucien Mauviard (`#622 <https://github.com/xpsi-group/xpsi/pull/622>`__, `#619 <https://github.com/xpsi-group/xpsi/pull/619>`__)
 - Anna Watts (`#612 <https://github.com/xpsi-group/xpsi/pull/612>`__)
-- Tuomo Salmi (`#614 <https://github.com/xpsi-group/xpsi/pull/614>`__)
-- * Yinghan Mao (code development)
-  * Bas Dorsman (code development)
-  * Tuomo Salmi (reviewing and testing) (`#623 <https://github.com/xpsi-group/xpsi/pull/623>`__)
 
 
 [v3.1] - 2025-05-23
