@@ -319,7 +319,7 @@ class Instrument(ParameterSubspace):
     def trim_response(self, 
                       min_channel=0,
                       max_channel=-1,
-                      tolerance=1e-5 ):
+                      tolerance=0.0 ):
         """ Trim the instrument response to the specified channel range.
 
         :param int min_channel:
@@ -327,11 +327,13 @@ class Instrument(ParameterSubspace):
 
         :param int max_channel:
             The maximum channel number to include in the trimmed response.
+            -1 will use the last channel.
 
         :param float tolerance:
             The tolerance value to use for trimming the instrument response.
             Inputs are trimmed so that all the channels keep (1-tolerance) quantiles of the total response. 
-            This allows to trim in an intelligent manner long tails of the response with little weight.
+            This allows to trim long tails of the response with little weight.
+            If zero, no trimming is performed.
 
         """
         
@@ -353,7 +355,7 @@ class Instrument(ParameterSubspace):
             cumsum[i] /= cumsum[i,-1]
 
         # Extract with the adapted percentile
-        under_tolerance = [ _np.all( cumsum[:,i] <= 1 - tolerance ) for i in range( cumsum.shape[1] ) ]
+        under_tolerance = [ _np.any( cumsum[:,i] <= 1 - tolerance ) for i in range( cumsum.shape[1] ) ]
         new_input_indexes = _np.where( under_tolerance )[-1]
 
         # Re-trim the response
@@ -405,12 +407,14 @@ class Instrument(ParameterSubspace):
 
         :param int max_channel:
             The maximum channel for which the instrument response is loaded.
+            -1 will use the last channel.
 
         :param int min_input:
             The minimum input energy number for which the instrument response is loaded.
 
         :param int max_input:
             The maximum input energy number for which the instrument response is loaded.
+            -1 will use the last input.
 
         :param str | None datafolder:
             The path to the folder which contains both ARF and RMF files, if not specified in RMF_path or ARF_path.

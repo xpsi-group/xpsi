@@ -86,7 +86,7 @@ class Signal(ParameterSubspace):
                  stokes = "I",
                  min_channel = 0,
                  max_channel = -1,
-                 tolerance = 1e-5,
+                 tolerance = 0.0,
                  *args,
                  **kwargs):
 

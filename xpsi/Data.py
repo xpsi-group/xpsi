@@ -219,7 +219,8 @@ class Data(object):
             The minimum channel number to include in the trimmed data.
 
         :param int max_channel:
-            The maximum channel number to include in the trimmed data.
+            The maximum channel number to include in the trimmed data. 
+            -1 will use the last channel.
         """
         
          # Make the table of required channels
