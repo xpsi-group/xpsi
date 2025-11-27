@@ -1,1 +1,1 @@
-The "threshold" argument for Instruement triming has been removed and replaced by "tolerance" as the method used for timming has been changed.
+The "threshold" argument for Instrument trimming has been removed and replaced by "tolerance" as the method used for trimming has been changed.

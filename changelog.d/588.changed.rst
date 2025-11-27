@@ -1,4 +1,4 @@
-Changed the behaviour of instrument trimming. The "threshold" method was replaced with a "tolerance" method. Now, the response for each channel has a cumulative computed over the full energy range. 
-We now select the maximum energy for the model by imposing the cumulative of all the channels to reach the (1-tolerance) quantile.
+Changed the behaviour of instrument trimming. The "threshold" method was replaced with a "tolerance" method. Now, the response for each channel has a cumulative distribution computed over the full energy range.
+We now select the maximum energy for the model by imposing the cumulative sum across all the channels to reach the (1-tolerance) quantile.
 
-Changed the structure of ``InstrumentPileup`` in order to simplify it 
+Changed the structure of ``InstrumentPileup`` in order to simplify it.
