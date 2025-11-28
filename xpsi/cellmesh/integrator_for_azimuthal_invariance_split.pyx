@@ -370,7 +370,7 @@ def integrate(size_t numThreads,
                     sin_psi = sin(psi)
 
                 # visibility check 1: confirm psi is smaller than the maximum deflection angle maxDeflection[i]
-                # meaning: when the deflection angle = the angle between the surface normal and the line of sight, the ray can be visible.
+                # meaning:  the ray can reach the observer only if its deflection angle would be smaller than that allowed by gravity (i.e., the compactness of the star).
 
                 if psi <= maxDeflection[i]: 
                     if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax): #extrapolation is not allowed
@@ -400,7 +400,7 @@ def integrate(size_t numThreads,
                             mu = mu - sin_alpha * sin_gamma * cos_delta
                     
                     # visibility check 2: mu > 0.0
-                    # meaning: only outward-emitted rays can be visible, inward-emitted ones are blocked by the star
+                    # meaning: only rays emitted at angles below 90 deg from the surface normal are visible
                     if mu > 0.0: 
                         if R_in < 1e6: # there is a disk, so block certain rays.
                             cos_psi_d = (cos_i * cos_psi - cos_theta_i) / sqrt(cos_i * cos_i + cos_theta_i * cos_theta_i - 2 * cos_i * cos_theta_i * cos_psi) #Ibragimov & Poutanen (2009), Equation (C2)

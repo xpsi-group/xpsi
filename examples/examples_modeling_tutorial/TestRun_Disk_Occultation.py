@@ -44,7 +44,7 @@ from modules.CustomHotRegion_Accreting import CustomHotRegion_Accreting
 
 num_leaves=30
 
-disk_blocking=True # False is an override for iff you want disk emission but no blocking. Otherwise if no disk emission there will automatically be no blocking.
+disk_blocking=True # False is an override for if you want disk emission but no blocking. Otherwise if no disk emission there will automatically be no blocking.
 
 primary = CustomHotRegion_Accreting(bounds=bounds,
                                     values={},

@@ -22,7 +22,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                  stokes=False,
                  custom = None,
                  disk = None,
-                 disk_blocking = True, #override, set to false iff disk but no blocking (unphysical but ok, just to test)
+                 disk_blocking = True, #override, set to false if disk but no blocking (unphysical but ok, just to test)
                  **kwargs):
 
         if everywhere is not None:
@@ -256,4 +256,4 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
             if self._disk is not None: 
                 self.disk_spectrum = self._disk(energies)
                 for i in range(self._signal[0][0].shape[1]):
-                    self._signal[0][0][:,i] += self.disk_spectrum    
+                    self._signal[0][0][:,i] += self.disk_spectrum
