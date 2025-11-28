@@ -112,7 +112,7 @@ class CustomSignal(xpsi.Signal):
                                           self._sigmas,
                                           kwargs.get('llzero'))
 
-NICER.trim_response(min_channel=20, max_channel=200, threshold=2.)
+NICER.trim_response(min_channel=20, max_channel=200, tolerance=1e-5)
 signal = CustomSignal(data = data,
                         instrument = NICER,
                         background = None,
@@ -462,7 +462,7 @@ likelihood.clear_cache()
 likelihood.externally_updated = True
 
 # let's require that checks pass before starting to sample
-true_logl = -2.6883527522e+04
+true_logl = -2.6848565597e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior

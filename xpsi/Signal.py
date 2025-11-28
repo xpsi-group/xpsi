@@ -86,6 +86,7 @@ class Signal(ParameterSubspace):
                  stokes = "I",
                  min_channel = 0,
                  max_channel = -1,
+                 tolerance = 0.0,
                  *args,
                  **kwargs):
 
@@ -128,18 +129,27 @@ class Signal(ParameterSubspace):
             except AttributeError:
                 print('WARNING : There is no counts in data object. This is normal if you are trying to synthesise data.'
                       'Otherwise something is very wrong and do not continue')
-            self._instrument.trim_response(min_channel, max_channel)
+            self._instrument.trim_response(min_channel, max_channel, tolerance=tolerance)
+            if hasattr(self._instrument, 'pileup'):
+                self._instrument.pileup.instrument.trim_response(min_channel, max_channel, tolerance=tolerance)
+                self._instrument.pileup.arf_data = self._instrument.pileup.instrument.ARF
+                self._instrument.pileup.rmf_data = self._instrument.pileup.instrument.RMF
+                self._instrument.pileup.energies = self._instrument.pileup.instrument.energies
 
+        # Check that the channel arrays match
         a, b = data.index_range
-        if (len(self._data.channels) != len(self._instrument.channels[a:b])):
-            raise ChannelError( 'Size of the channel array declared for event data '
-                                'does not match the size of the channel array declared'
-                                ' for the loaded instrument response (sub)matrix.')
+        if ( len(self._data.channels) != (b-a) ):
+            raise ChannelError( 'Size of the channel array declared for event data does not match the declared size.')
 
-        if (self._data.channels != self._instrument.channels[a:b]).any():
-            raise ChannelError('Channel array declared for event data does not '
-                               'match channel array declared for the loaded '
-                               'instrument response (sub)matrix.')
+        # Check that channels of instrument and data can be matched, 
+        try:
+            a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0] 
+            b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0] 
+            self._instrument_index_range_channels = ( a_instrument, b_instrument + 1 )
+            assert not (self._data.channels != self._instrument.channels[a_instrument:b_instrument+1]).any()
+        except ChannelError or IndexError:
+            raise ChannelError('Channel array declared for event data does not match channel array declared for the loaded '
+                            'instrument response (sub)matrix. The data channels need to be a subset of the instrument channels.')
 
         # Check that they come from the same instrument
         if hasattr( self._data , 'instrument' ) and hasattr( self._instrument , 'name' ):
@@ -156,9 +166,14 @@ class Signal(ParameterSubspace):
             self._background = None
 
         if support is not None:
-
             if self._data.counts.shape[0]==support.shape[0]:
                 self._support = support
+            elif self._instrument.channels.shape[0]==support.shape[0]:
+                self._support = support[a_instrument:b_instrument+1]
+            elif self._original_instrument.channels.shape[0]==support.shape[0]:
+                a_original_instrument = _np.where( self._original_instrument.channels == self._data.channels[0] )[0][0]
+                b_original_instrument = _np.where( self._original_instrument.channels == self._data.channels[-1] )[0][0]
+                self._support = support[a_original_instrument:b_original_instrument+1]
             else:
                 raise TypeError("Data spectrum and background support must the have same shape")
         else:
@@ -296,11 +311,6 @@ class Signal(ParameterSubspace):
     def original_data(self):
         """ Get the a copy of the original instance of :class:`~.Data.Data`."""
         return self._original_data
-
-    @property
-    def original_instrument(self):
-        """ Get the a copy of the original instance of :class:`~.Instrument.Instrument`."""
-        return self._original_instrument
     
     @property
     def photosphere(self):
@@ -325,6 +335,7 @@ class Signal(ParameterSubspace):
             """
             a, b = self._data.index_range
 
+            # Now find the first non-zero energy inputs
             def search(i, j, k):
                 while self._instrument.matrix[i,j] == 0.0:
                     j += k
@@ -402,7 +413,7 @@ class Signal(ParameterSubspace):
 
                         temp = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
                         fast_total_counts.append(_np.sum(temp))
 
@@ -459,7 +470,7 @@ class Signal(ParameterSubspace):
 
                 self.signals = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
             if self._background is not None:
                 try:
@@ -472,7 +483,7 @@ class Signal(ParameterSubspace):
                 self._background.registered_background = \
                                 self._instrument(self._background.incident_background,
                                                  self._input_interval_range,
-                                                 self._data.index_range)
+                                                 self._instrument_index_range_channels)
 
     @property
     def num_components(self):
