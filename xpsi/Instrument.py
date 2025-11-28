@@ -331,7 +331,7 @@ class Instrument(ParameterSubspace):
 
         :param float tolerance:
             The tolerance value to use for trimming the instrument response.
-            Inputs are trimmed so that all the channels keep (1-tolerance) quantiles of the total response. 
+            Trimming occurs at the first energy where every channel’s cumulative response is above the (1−tolerance) quantile.
             This allows to trim long tails of the response with little weight.
             If zero, no trimming is performed.
 
