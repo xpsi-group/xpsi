@@ -1,1 +1,0 @@
-Fix for issues #534 and #574
