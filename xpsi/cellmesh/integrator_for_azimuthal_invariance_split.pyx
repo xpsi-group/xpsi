@@ -151,6 +151,7 @@ def integrate(size_t numThreads,
         double E_electronrest
         double cos_psi_d, sin_psi_d      # geometric quantities
         double impact_b, r_psi_d         # impact parameter and radial coordinate
+        double r_s_i                     # schwarzschild radius at the cell location
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
         double[:,::1] cos_alpha_alt
@@ -405,8 +406,9 @@ def integrate(size_t numThreads,
                         if R_in < 1e6: # there is a disk, so block certain rays.
                             cos_psi_d = (cos_i * cos_psi - cos_theta_i) / sqrt(cos_i * cos_i + cos_theta_i * cos_theta_i - 2 * cos_i * cos_theta_i * cos_psi) #Ibragimov & Poutanen (2009), Equation (C2)
                             sin_psi_d = sqrt(1 - cos_psi_d * cos_psi_d)
-                            impact_b = R * sin_alpha / sqrt(1 - r_s / R) # impact parameter
-                            r_psi_d = sqrt((r_s * r_s * (1 - cos_psi_d) * (1 - cos_psi_d)) / (4 * (1 + cos_psi_d) * (1 + cos_psi_d)) +  ((impact_b * impact_b) / (sin_psi_d * sin_psi_d))) - (r_s * (1 - cos_psi_d)) / (2 * (1 + cos_psi_d)) ##Ibragimov & Poutanen (2009), Equation (B9)
+                            r_s_i = r_s_over_r[i]*radius
+                            impact_b = radius * sin_alpha / sqrt(1 - r_s_over_r[i]) # impact parameter
+                            r_psi_d = sqrt((r_s_i * r_s_i * (1 - cos_psi_d) * (1 - cos_psi_d)) / (4 * (1 + cos_psi_d) * (1 + cos_psi_d)) +  ((impact_b * impact_b) / (sin_psi_d * sin_psi_d))) - (r_s_i * (1 - cos_psi_d)) / (2 * (1 + cos_psi_d)) ##Ibragimov & Poutanen (2009), Equation (B9)
                             if theta_i_over_pi < 0.5 or (theta_i_over_pi > 0.5 and r_psi_d < R_in):
                                 CalcRaysFlag[T]=1
                             else: #theta > pi/2 and (theta < pi/2 or r_psi_d > R_in), don't calculate.

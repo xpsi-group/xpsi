@@ -13,8 +13,7 @@ import numpy as np
 class CustomHotRegion_Accreting(xpsi.HotRegion):
     """Custom implementation of HotRegion. Accreting Atmosphere model by 
     Anna Bobrikova if atm_ext = 'Num5D'. The parameters are ordered 
-    I(E < mu < tau < tbb < te). if atm_ext = 'user' a linear model can be used
-    that was used in Molkov et al. 2024.
+    I(E < mu < tau < tbb < te).
     
     E is energy.
     mu is cos of zenith angle.
