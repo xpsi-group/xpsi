@@ -1169,6 +1169,12 @@ class HotRegion(ParameterSubspace):
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
         
+        if st.i > _np.pi/2 and R_in != 1e6:
+            print('WARNING: disk blocking assumes that the inclination is '
+                  'smaller than 90 degrees. However, inclination > 90 degrees.'
+                  ' Formula for r_psi_d in the integrator is incorrect in this'
+                  ' case.')
+        
         super_pulse = self._integrator(threads,
                                        st.R,
                                        st.Omega,
