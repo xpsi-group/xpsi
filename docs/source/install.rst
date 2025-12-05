@@ -46,13 +46,14 @@ The content of the ``environment.yml`` are:
 
 .. code-block:: bash
 
-    name: xpsi_py3
+    name: xpsi
     channels:
         - defaults
         - conda-forge
     dependencies:
         - python >= 3.9.0
         - numpy < 2.0.0
+        - cython~= 3.0.11
         - matplotlib == 3.9.2       # STRICT REQUIREMENT FROM FGIVENX
         - scipy
         - wrapt
@@ -86,7 +87,7 @@ an environment manually via
 
 .. code-block:: bash
 
-     conda create -n xpsi_py3
+     conda create -n xpsi
 
 and then install the core dependencies listed in ``basic_environment.yml`` via
 conda.
@@ -95,7 +96,7 @@ Activate the environment as:
 
 .. code-block:: bash
 
-    conda activate xpsi_py3
+    conda activate xpsi
 
 .. note::
 

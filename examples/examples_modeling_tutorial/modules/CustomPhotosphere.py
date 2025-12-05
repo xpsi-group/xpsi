@@ -22,6 +22,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                  stokes=False,
                  custom = None,
                  disk = None,
+                 disk_blocking = True, #override, set to false if disk but no blocking (unphysical but ok, just to test)
                  **kwargs):
 
         if everywhere is not None:
@@ -59,6 +60,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         self._elsewhere = elsewhere
         self._everywhere = everywhere
         self._stokes = stokes
+        self._disk_blocking = disk_blocking # disk occultation
 
         if disk is not None:
             self._disk = disk
@@ -101,9 +103,6 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                                        doc = doc,
                                        symbol = r'$\chi_{0}$',
                                        value = values.get('spin_axis_position_angle', None))
-
-            # print('everywhere:', everywhere)
-            # print('hotregion:', hot)
             
             super(CustomPhotosphere_NumA5, self).__init__(mode_frequency=mode_frequency, spin_axis_position_angle=spin_axis_position_angle,
                                               hot=hot, elsewhere=elsewhere, everywhere=everywhere,
@@ -195,14 +194,25 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                 except:
                     else_atm_ext = None
 
+                R_in = self.disk['R_in'] * 1000
                 if self._stokes:
-                    self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
-                                                   energies,
-                                                   threads,
-                                                   self._hot_atmosphere,
-                                                   self._hot_atmosphere_Q,
-                                                   self._elsewhere_atmosphere,
-                                                   else_atm_ext)
+                    if self._disk_blocking:
+                        self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
+                                                    energies,
+                                                    threads,
+                                                    self._hot_atmosphere,
+                                                    self._hot_atmosphere_Q,
+                                                    self._elsewhere_atmosphere,
+                                                    else_atm_ext,
+                                                    R_in=R_in)
+                    elif not self._disk_blocking:
+                        self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
+                                                        energies,
+                                                        threads,
+                                                        self._hot_atmosphere,
+                                                        self._hot_atmosphere_Q,
+                                                        self._elsewhere_atmosphere,
+                                                        else_atm_ext)
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
                     if not isinstance(self._signalQ[0], tuple):
@@ -220,12 +230,21 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                     self._signalQ = tuple(map(tuple, tempQ))
                     self._signalU = tuple(map(tuple, tempU))
                 else:
-                    self._signal = self._hot.integrate(self._spacetime,
-                                                   energies,
-                                                   threads,
-                                                   self._hot_atmosphere,
-                                                   self._elsewhere_atmosphere,
-                                                   else_atm_ext)
+                    if self._disk_blocking:
+                        self._signal = self._hot.integrate(self._spacetime,
+                                                    energies,
+                                                    threads,
+                                                    self._hot_atmosphere,
+                                                    self._elsewhere_atmosphere,
+                                                    else_atm_ext,
+                                                    R_in=R_in)
+                    elif not self._disk_blocking:
+                         self._signal = self._hot.integrate(self._spacetime,
+                                                    energies,
+                                                    threads,
+                                                    self._hot_atmosphere,
+                                                    self._elsewhere_atmosphere,
+                                                    else_atm_ext)
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
 
@@ -234,8 +253,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                     for i in range(self._signal[0][0].shape[1]):
                         self._signal[0][0][:,i] += spectrum    
     
-            # print('signal inside customphotosphere: ', self._signal)
             if self._disk is not None: 
                 self.disk_spectrum = self._disk(energies)
                 for i in range(self._signal[0][0].shape[1]):
-                    self._signal[0][0][:,i] += self.disk_spectrum    
+                    self._signal[0][0][:,i] += self.disk_spectrum

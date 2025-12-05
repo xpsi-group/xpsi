@@ -188,7 +188,6 @@ if __name__ == '__main__':
                 'xpsi.tools.core',
                 'xpsi.likelihoods.default_background_marginalisation',
                 'xpsi.likelihoods._poisson_likelihood_given_background',
-                'xpsi.likelihoods._poisson_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_QnUn',                
                 'xpsi.surface_radiation_field.core',
@@ -231,7 +230,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '3.0.6',
+        version = '3.2.0',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
