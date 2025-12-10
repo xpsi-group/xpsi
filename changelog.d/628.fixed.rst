@@ -1,0 +1,1 @@
+Corrected a bug in ``InstrumentPileup`` to call ``super()``, where the RMF and ARF arguments were missing and needed.
