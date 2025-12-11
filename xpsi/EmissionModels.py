@@ -8,55 +8,50 @@ class EmissionModel( ParameterSubspace , metaclass=ABCMeta ):
     def __init__(self, *args, **kwargs):
         super( EmissionModel, self ).__init__( *args, **kwargs )
 
-    @abstractmethod
-    def integrate(self, st, energies, threads, *args, **kwargs):
-        pass
+    # @abstractmethod
+    # def integrate(self, **kwargs):
+    #     pass
 
-    @abstractmethod
-    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
+    # @abstractmethod
+    def embed(self, spacetime, threads):
         pass
 
 
 class EmissionModels( ParameterSubspace ):
-    pass
 
     def __init__( self, 
-                 emission_models, 
+                 components, 
                  *args, **kwargs ):
         
         # Everything must be an EmissionModel
         try:
-            for model in emission_models:
+            if isinstance( components, EmissionModel ):
+                components = [components]
+            for model in components:
                 assert isinstance(model, EmissionModel), 'Invalid type for emission model. Must be EmissionModel.'
         except:
             raise TypeError('emission_models must be an interable of EmissionModel.')
         
         # Save it all
-        self.emission_models = emission_models
-        super( EmissionModels, self ).__init__( *args, **kwargs )
+        self.components = components
+        super( EmissionModels, self ).__init__( components, *args, **kwargs )
 
-    def integrate(self, st, energies, threads,
+    def integrate(self, energies, threads,
                   *args, **kwargs):
         """ Integrate over the emission models (same as for HotRegions)"""
-        if not isinstance(energies, tuple):
-            energies = [energies] * len(self)
 
         signals = []
-        for model, E in zip(self._emission_models, energies):
-            signals.append(model.integrate(st, E,
+        for model in self.components:
+            signals.append(model.integrate( energies,
                                          threads,
                                          *args, **kwargs ))
 
         return tuple(signals)
     
-    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
-        """ Embed the emission models. """
+    def update(self, threads=1, force_update=False):
+        """ Embed the emission models into the ambient spacetime. """
 
-        if fast_total_counts is None:
-            fast_total_counts = [None] * len(self)
-
-        for obj, fast in zip(self._objects, fast_total_counts):
-            obj.embed(spacetime,
-                      photosphere,
-                      fast,
-                      threads, *args)
+        # TODO link this to the spacetime
+        for model in self.components:
+            if model.needs_update or force_update:
+                model.embed( 1, threads )

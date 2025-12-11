@@ -12,7 +12,7 @@ from xpsi.Star import Star
 from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
 from xpsi.Prior import Prior
 from xpsi.ParameterSubspace import ParameterSubspace
-from xpsi.EmissionModels import EmissionModels
+from xpsi.EmissionModels import EmissionModel, EmissionModels
 from xpsi import HotRegion
 from xpsi import Elsewhere
 
@@ -89,6 +89,8 @@ class Likelihood(ParameterSubspace):
         self.signals = signals
         if isinstance(emission_models, EmissionModels):
             self._emission_models = emission_models
+        elif isinstance(emission_models, EmissionModel):
+            self._emission_models = EmissionModels(emission_models)
         else:
             print( 'Warning: emission_models is not an EmissionModels object. No emission models will be used' )
             self._emission_models = None
@@ -137,7 +139,7 @@ class Likelihood(ParameterSubspace):
             self.prior = prior
 
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))
+        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]), self._emission_models)
 
     @property
     def threads(self):
@@ -342,6 +344,11 @@ class Likelihood(ParameterSubspace):
                     print('Parameter vector: ', super(Likelihood,self).__call__())
                     return self.random_near_llzero
 
+            # Add emission models from outside the photosphere
+            if self._emission_models is not None:
+                self._emission_models.update(self.threads,force_update=force_update)
+                self._emission_models.integrate(signals[0].energies, self.threads)
+
             star_updated = True
 
         # register the signals by operating with the instrument response
@@ -405,6 +412,13 @@ class Likelihood(ParameterSubspace):
                             signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
                     else:
                         raise TypeError('Signal type must be either I, Q, U, Qn, or Un.')
+                    
+                    # Add emission models from outside the photosphere\
+                    if self._emission_models is not None:
+                        print('Registering emission models...')
+                        signal.register(tuple( [self._divide(component._signal, self._star.spacetime.d_sq)]
+                                               for component in self._emission_models.components),
+                                        fast_mode=fast_mode, threads=self.threads)
                     reregistered = True
                 else:
                     reregistered = False
@@ -436,16 +450,6 @@ class Likelihood(ParameterSubspace):
                             print('Parameter vector: ', super(Likelihood,self).__call__())
                             return self.random_near_llzero
 
-        # Add the other emission models
-        if self._emission_models is not None:
-
-            # Update the emission models if required
-            if force_update:
-                self._emission_models.update()
-
-            # Now that is has been updated, do the integration
-            
-
 
         return star_updated
 
@@ -460,6 +464,7 @@ class Likelihood(ParameterSubspace):
 
         self.__init__(self._star,
                       self._signals,
+                      self._emission_models,
                       self._num_energies,
                       self._fast_rel_num_energies,
                       self._threads,
