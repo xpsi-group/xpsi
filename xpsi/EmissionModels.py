@@ -10,12 +10,11 @@ class EmissionModel( ParameterSubspace , metaclass=ABCMeta ):
         # First load the parameters
         super( EmissionModel, self ).__init__( *args, **kwargs )
 
-        # Get some default values if needed
-        self._num_leaves = kwargs.pop('num_leaves', None)
-        if self._num_leaves is not None:
-            self._phases =  _np.linspace(0.0, 1.0, int(self._num_leaves))
-
-
+        # Check if everything needed is well defined
+        assert hasattr(self, '_num_leaves'), 'Number of leaves must be defined.'
+        assert hasattr(self, '_phases'), 'Array of phases used for computations must be defined.'
+        assert isinstance(self._num_leaves, int), 'Number of leaves must be an integer.' 
+        assert self._num_leaves > 5, 'Number of leaves must be greater than 5 for energy integrator.'
     # @abstractmethod
     # def integrate(self, **kwargs):
     #     pass
