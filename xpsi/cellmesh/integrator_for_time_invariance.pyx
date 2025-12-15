@@ -96,7 +96,7 @@ def integrate(size_t numThreads,
         double radius # Radial coordinate of pixel; TP
         double psi, _psi # Colatitude relative to star-observer direction; TP
         double cos_psi, sin_psi, _cos_psi, _i, _cos_i, _sin_i
-        double deriv # $\frac{d\cos\alpha}{d\cos\phi}$; TP
+        double deriv # $\frac{d\cos\alpha}{d\cos\psi}$; TP
         double beta # Surface velocity in the local NRF; TP
         double _cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
         double sin_alpha

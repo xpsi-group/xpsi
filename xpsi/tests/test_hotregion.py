@@ -606,4 +606,17 @@ class TestHotRegion(object):
         energies = np.linspace(1,2,10) # keV
         test_hotregion.integrate(test_spacetime, energies, 1, test_photosphere.hot_atmosphere, test_photosphere.elsewhere_atmosphere, atm_ext_else)
         
-
+    def test_integrate_runs_Rin_value(self):
+        # Just testing that the integrate function runs with default atmosphere with an inner disk radius. Not tested yet the values that come out.
+       
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+        test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
+    
+        test_hotregion.fast_mode=False
+        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+        
+        atm_ext_else = None
+        energies = np.linspace(1,2,10) # keV
+        test_hotregion.integrate(test_spacetime, energies, 1, test_photosphere.hot_atmosphere, test_photosphere.elsewhere_atmosphere, atm_ext_else, R_in=2.5e4) #25 km inner disk radius
+      

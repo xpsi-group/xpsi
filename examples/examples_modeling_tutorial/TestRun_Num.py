@@ -585,7 +585,7 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl = -6.7261415434e+04
+true_logl = -6.7642953934e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior

@@ -95,8 +95,14 @@ class HotRegions(ParameterSubspace):
                       fast,
                       threads, *args)
 
-    def integrate(self, st, energies, threads,
-                  hot_atmosphere, elsewhere_atmosphere, atm_ext_else):
+    def integrate(self, 
+                  st, 
+                  energies, 
+                  threads,
+                  hot_atmosphere, 
+                  elsewhere_atmosphere, 
+                  atm_ext_else,
+                  R_in=1e6):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -120,13 +126,21 @@ class HotRegions(ParameterSubspace):
                                          threads,
                                          hot_atmosphere,
                                          elsewhere_atmosphere,
-                                         atm_ext_else))
+                                         atm_ext_else,
+                                         R_in=R_in))
 
         return tuple(signals)
 
 
-    def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else):
+    def integrate_stokes(self, 
+                         st, 
+                         energies, 
+                         threads,
+                         hot_atmosphere_I, 
+                         hot_atmosphere_Q, 
+                         elsewhere_atmosphere, 
+                         atm_ext_else,
+                         R_in=1e6):
         """ Integrate Stokes parameters over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -153,7 +167,8 @@ class HotRegions(ParameterSubspace):
                                          hot_atmosphere_I,
                                          hot_atmosphere_Q,
                                          elsewhere_atmosphere,
-                                         atm_ext_else)
+                                         atm_ext_else,
+                                         R_in=R_in)
             signals.append(sigs[0])
             signalsQ.append(sigs[1])
             signalsU.append(sigs[2])
