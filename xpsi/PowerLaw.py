@@ -59,32 +59,9 @@ class PowerLaw( EmissionModel ):
 
         # Initiate the parent class
         super(PowerLaw, self).__init__( norm, gamma, oscillation_amplitude, phase_shift, **kwargs ) #prefix in kwargs
-        
-    # def intensity(self, E, phase ):
-    #     if self.is_pulsed:
-    #         return ( self['norm'] + self['A'] * _np.sin( phase - self['phi0'] ) ) * E^( -self['gamma'] )
-    #     else:
-    #         return self['norm'] * E^( -self['gamma'] )
-    
+
 
     def integrate(self, energies, threads, *args, **kwargs):
 
         table = self['norm'] * _np.ones((self._num_leaves, len(energies))) * energies**( -self['gamma'] )
-        self.signal = (table,)
-        print('Integrated PowerLaw')
-
-    # def integrate_with_bin_edges(self,
-    #             energy_edges,
-    #             phases_edges,
-    #             is_pulsed = False):
-
-    #     # Energy term
-    #     energy_term = (1. - self['gamma']) * ( energy_edges[1:]**(1. - self['gamma']) - energy_edges[:-1]**(1. - self['gamma']) )
-    #     phases_width = phases_edges[1:] - phases_edges[:-1]
-    #     normalization_term = self['norm'] * 2. * _np.pi * phases_width
-    #     if is_pulsed:
-    #         normalization_term += self['A'] * ( _np.sin( 2.*_np.pi*(phases_edges[1:]-self['phi0']) ) - _np.sin( 2.*_np.pi*(phases_edges[:-1]-self['phi0']) ) )
-
-    #     # Get the integrated powerlaw
-    #     integrated_powerlaw = _np.dot( normalization_term[:,_np.newaxis], energy_term[_np.newaxis,:] )
-    #     return integrated_powerlaw
+        self.signal = (_np.ascontiguousarray(table.T),)
