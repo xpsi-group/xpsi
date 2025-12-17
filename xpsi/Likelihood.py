@@ -87,15 +87,7 @@ class Likelihood(ParameterSubspace):
 
         self.star = star
         self.signals = signals
-        if isinstance(emission_models, EmissionModels):
-            self._emission_models = emission_models
-        elif isinstance(emission_models, EmissionModel):
-            self._emission_models = EmissionModels(emission_models)
-        elif emission_models is None:
-            self._emission_models = None
-        else:
-            print( 'Warning: emission_models is not an EmissionModels object. No emission models will be used' )
-            self._emission_models = None
+        self.emission_models = emission_models
 
         self._do_fast = False
 
@@ -259,6 +251,27 @@ class Likelihood(ParameterSubspace):
             pass # nothing to be done
 
     @property
+    def emission_models(self):
+        return self._emission_models
+
+    @emission_models.setter
+    def emission_models(self, models):
+        if isinstance(models, EmissionModels):
+            self._emission_models = models
+        elif isinstance(models, EmissionModel):
+            self._emission_models = EmissionModels(models)
+        elif models is None:
+            self._emission_models = None
+        else:
+            print( 'Warning: emission_models is not an EmissionModels object. No emission models will be used' )
+            self._emission_models = None
+
+        # Reference to parameter container into the emission models
+        if self._emission_models is not None:
+            for model in self._emission_models:
+                model.parameters = self # a reference to the parameter container
+
+    @property
     def llzero(self):
         """ Get the minimum log-likelihood setting passed to MultiNest. """
         return self._llzero
@@ -402,10 +415,8 @@ class Likelihood(ParameterSubspace):
 
                     # Add emission models from outside the photosphere
                     if self._emission_models is not None:
-                        signal.register(tuple( tuple(self._divide(component,
-                                                                self._star.spacetime.d_sq)
-                                                            for component in hot_region)
-                                                    for hot_region in self._emission_models.signal),
+                        signal.register(tuple( tuple( component for component in model)
+                                                    for model in self._emission_models.signal),
                                         fast_mode=fast_mode, threads=self.threads, reset=False)
 
                     reregistered = True
