@@ -595,7 +595,7 @@ def integrate(size_t numThreads,
                                     cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
                                     chi_0 = atan2(sin_chi_0,cos_chi_0)
 
-                                    if not are_equal(psi, 0.0):
+                                    if not are_equal(sin_psi, 0.0):
                                         sin_alpha_over_sin_psi = sin_alpha/sin_psi
                                     else: #using small-angle limit of the Beloborodov (2002) approximation
                                         sin_alpha_over_sin_psi = Grav_z
