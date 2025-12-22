@@ -123,6 +123,7 @@ def integrate(size_t numThreads,
         double beta # Surface velocity in the local NRF; TP
         double _cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
         double sin_alpha
+        double sin_alpha_over_sin_psi
         double cos_delta # Unit sphere trigonometric identity; TP
         double cos_gamma # Surface normal tilt w.r.t outward radial direction; TP
         double cos_xi # Emission angle relative to the NRF surface velocity; TP
@@ -372,8 +373,6 @@ def integrate(size_t numThreads,
 
                 if not are_equal(psi, 0.0) and are_equal(sin_psi, 0.0): # singularity at poles
                     # hack bypass by slight change of viewing angle
-                    printf("sinpsi = %.6e\n", sin_psi)
-                    printf("psi = %.6e\n", psi)
                     if cos_i >= 0.0:
                         _i = inclination + inclination * 1.0e-6 # arbitrary small
                         _cos_i = cos(_i)
@@ -479,14 +478,19 @@ def integrate(size_t numThreads,
                             cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
                             chi_0 = atan2(sin_chi_0,cos_chi_0)
 
+                            if not are_equal(sin_psi, 0.0):
+                                sin_alpha_over_sin_psi = sin_alpha/sin_psi
+                            else: #using small-angle limit of the Beloborodov (2002) approximation
+                                sin_alpha_over_sin_psi = Grav_z
+
                             #Notes: mu = cos_sigma , Lorentz = 1/Gamma, mu0=eta*mu, cos_xi defined with no minus sign
-                            sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha/sin_psi #times sin alpha sin sigma
+                            sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha_over_sin_psi #times sin alpha sin sigma
                             cos_chi_1 = cos_gamma - _cos_alpha*mu  #times sin alpha sin sigma 
                             chi_1 = atan2(sin_chi_1,cos_chi_1)
 
                             sin_lambda = sin_theta_i*cos_gamma - sin_gamma*cos_theta_i
                             cos_lambda = cos_theta_i*cos_gamma + sin_theta_i*sin_gamma
-                            cos_eps = (sin_alpha/sin_psi)*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
+                            cos_eps = sin_alpha_over_sin_psi*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
 
                             sin_chi_prime = cos_eps*eta*mu*beta/Lorentz
                             cos_chi_prime = (1. - mu**2 /(1. + beta*cos_xi))
