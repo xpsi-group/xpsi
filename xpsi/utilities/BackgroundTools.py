@@ -176,7 +176,7 @@ def plotBackgroundSpectrum( XPSI_model,
 
     # Get expected counts from both spots
     num_components = signal.num_components
-    HotRegion_spectra = np.array( [ np.sum(signal.signals[i], axis=1)/float(len(signal.phases[0]))*data.exposure_time for i in range(num_components)] )
+    HotRegion_spectra = np.array( [ np.sum(signal.signals[i], axis=1)/float(len(signal.phases[i]))*data.exposure_time for i in range(num_components)] )
     Expected_Spectrum = signal.expected_counts.sum(axis = 1) 
     print( f"Maximum counts in an energy bin : {np.max( HotRegion_spectra.sum(axis=0) )}")
     

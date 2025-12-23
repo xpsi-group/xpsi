@@ -26,7 +26,7 @@ class EmissionModel( ParameterSubspace , metaclass=ABCMeta ):
         assert hasattr(self, '_num_leaves'), 'Number of leaves must be defined.'
         assert hasattr(self, '_phases'), 'Array of phases used for computations must be defined.'
         assert isinstance(self._num_leaves, int), 'Number of leaves must be an integer.' 
-        assert self._num_leaves > 5, 'Number of leaves must be greater than 5 for energy integrator.'
+        assert self._num_leaves >= 5, 'Number of leaves must be greater than 5 for energy integrator.'
 
     def integrate(self, energies, threads, *args, **kwargs):
         pass
