@@ -155,12 +155,12 @@ class Photosphere(ParameterSubspace):
                                        value = values.get('spin_axis_position_angle', None))
 
             super(Photosphere, self).__init__(mode_frequency, spin_axis_position_angle,
-                                              hot, elsewhere, everywhere,
+                                              hot, elsewhere, everywhere, 
                                               custom,
                                               **kwargs)
         else:
             super(Photosphere, self).__init__(mode_frequency,
-                                              hot, elsewhere, everywhere,
+                                              hot, elsewhere, everywhere, 
                                               custom,
                                               **kwargs)
 
@@ -470,7 +470,7 @@ class Photosphere(ParameterSubspace):
                                 self,
                                 fast_total_counts,
                                 threads)
-
+                
     def integrate(self, energies, threads):
         """ Integrate over the photospheric radiation field.
 

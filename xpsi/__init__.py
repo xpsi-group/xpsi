@@ -72,6 +72,8 @@ if not __XPSI_SETUP__:
     from xpsi.Elsewhere import Elsewhere
     from xpsi.Everywhere import Everywhere
 
+    from xpsi.EmissionModels import EmissionModel, EmissionModels, PowerLaw
+
     from xpsi.Background import Background
     from xpsi.Interstellar import Interstellar
 
