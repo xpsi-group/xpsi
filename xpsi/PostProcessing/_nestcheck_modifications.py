@@ -69,13 +69,18 @@ def process_multinest_run(file_root, base_dir, filetype, **kwargs):
         dead = _np.loadtxt(_os.path.join(base_dir, file_root) + 'dead-birth.txt')
         live = _np.loadtxt(_os.path.join(base_dir, file_root)
                         + 'phys_live-birth.txt')   
-    # Remove unnecessary final columns
-    dead = dead[:, :-2]
-    live = live[:, :-1]
-    assert dead[:, -2].max() < live[:, -2].min(), (
+    # Get the individual modes numbers from the live points
+    modes = _np.unique( live[:,-1] )
+
+    # Do the check for each mode
+    for m in modes:
+        deadMode = dead[ dead[:,-1] == m ]
+        liveMode = live[ live[:,-1] == m ]
+        # Remove unnecessary final columns
+        assert liveMode[:,-3].min() > deadMode[:,-4].max(), (
         'final live points should have greater logls than any dead point!',
-        dead, live)
-    ns_run = process_samples_array(_np.vstack((dead, live)), **kwargs)
+        m, deadMode, liveMode)
+    ns_run = process_samples_array(_np.vstack((dead[:,:-2], live[:,:-1])), **kwargs)
     assert _np.all(ns_run['thread_min_max'][:, 0] == -_np.inf), (
         'As MultiNest does not currently perform dynamic nested sampling, all '
         'threads should start by sampling the whole prior.')
