@@ -130,6 +130,11 @@ Instead, one could try and determine the system OS and use that, instead of the 
 
 Note that the use cases will be rare: the default compiler on macOS tends to be ``clang`` (installed as part of the XCode tools), and even the default ``gcc`` is just ``clang`` in disguise. On Linux, the majority of times the default compiler is ``gcc``. I don't know which linker the Intel compiler will use; perhaps the GNU linker, perhaps it has its own linker (but given that the OS is formally GNU/Linux, I suspect the linker is the GNU one). Most people are not likely to deviate from this, so the check for ``clang`` tends to nearly always be True for macOS and False for Linux.
 
+.. rubric:: *During the convergence with MultiNest, the returned values for the total number of samples and the acceptance rate become negative*
+
+In the ``nested.F90`` code from MultiNest, the total number of samples is determined as a 32-bit integer variable. However, when MultiNest is running for more complex hot spots geometry models with X-PSI, the total of required samples can reach beyond the maximum value of such integers, which is approximately 2.14e9. At that point, MultiNest keeps converging, but makes the sampling with the total number of samples starting from the minimum value of 32-bit integers (-2.14e9). The acceptance rate becomes negative too, as it is dependant of the total number of samples.
+
+
 .. rubric:: Footnotes
 
 .. [#f1] from the GNU ld manpage:
