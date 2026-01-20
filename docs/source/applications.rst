@@ -101,6 +101,11 @@ __ Zenodo_
 PPM for accreting/bursting neutron stars
 ****************************************  
 
+**Dorsman et al. 2026** `(MNRAS, 545, staf1983) <https://ui.adsabs.harvard.edu/abs/2026MNRAS.545f1983D/abstract>`_ *Pulse profile modelling of the accretion-powered millisecond pulsar SAX J1808.4-3658 using NICER data from its 2019 and 2022 outbursts*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo26dorsman: https://doi.org/10.5281/zenodo.17232362
+__ Zenodo26dorsman_
+
 **Das et al. 2025** `(ApJ, 987, 34) <https://ui.adsabs.harvard.edu/abs/2025ApJ...987...34D/abstract>`_ *Pulse Profiles of Accreting Neutron Stars from GRMHD Simulations*.
 
 **Kini et al. 2025** `(MNRAS, 541, 46) <https://ui.adsabs.harvard.edu/abs/2025MNRAS.541...46K/abstract>`_ *Impact of Accretion Assumptions on Pulse Profile Modelling of Superburst Oscillations in 4U 1636-536*. See also the associated `Zenodo repository`__.

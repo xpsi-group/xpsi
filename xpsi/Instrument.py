@@ -556,6 +556,8 @@ class InstrumentPileup(Instrument):
                   'Response matrix loaded')
     def from_ogip_fits(cls,
               Data_path,
+              ARF_path,
+              RMF_path,
               bounds=dict(),
               values=dict(),
               **kwargs):
@@ -563,7 +565,7 @@ class InstrumentPileup(Instrument):
         """ Load any instrument response matrix. """
     
         # Load the default instrument class
-        Instrument = super().from_ogip_fits(**kwargs)
+        Instrument = super().from_ogip_fits(RMF_path, ARF_path=ARF_path, **kwargs) 
 
         ## -------- INITIALIZATION OF THE PILEUP ---------------
 
@@ -608,9 +610,8 @@ class InstrumentPileup(Instrument):
             Data_header = hdul['SPECTRUM'].header 
 
         if kwargs.get( 'datafolder', None ) is not None:
-            ARF_path = _os.path.join( kwargs.get( 'datafolder'), kwargs.get( 'ARF_path' ) )
-        else:
-            ARF_path = kwargs.get( 'ARF_path' )
+            ARF_path = _os.path.join( kwargs.get( 'datafolder'), ARF_path )
+
         with fits.open( ARF_path ) as hdul:
             ARF_header = hdul['SPECRESP'].header 
 

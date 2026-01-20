@@ -70,7 +70,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'x-psi'
-copyright = '2019-2025 the X-PSI Core Team'
+copyright = '2019-2026 the X-PSI Core Team'
 author = 'X-PSI Core Team'
 
 # The version info for the project you're documenting, acts as replacement for
