@@ -7,8 +7,8 @@ from abc import ABCMeta
 class EmissionModel( ParameterSubspace , metaclass=ABCMeta ):
     """Base class for any emission model.
 
-    An emission model needs to have an ``integrate`` method defined to compute the flux in [photon/cm^2/s].
-    An ``embed`` method to embed the model into the ambient spacetime can be setup if needed.
+    An emission model needs to have an ``integrate`` method defined to compute the flux in [photon/cm^2/s/keV].
+    An ``embed`` method to embed the model into the ambient spacetime can be setup if needed.  
     Otherwise it can be left blank.
 
     """
@@ -133,8 +133,8 @@ class PowerLaw( EmissionModel ):
 
     $$F_E = K E^{-\Gamma} \left( 1 + A\cos(2\pi (\phi - \phi_0) ) \right)$$ 
 
-    where F_E is the flux in [photon/cm^2/s] at energy E, K is the normalization
-    (value of the unabsorbed powerlaw in [photon/cm^2/s] at 1keV), $\Gamma$ is the
+    where F_E is the flux in [photon/cm^2/s/keV] at energy E, K is the normalization
+    (value of the unabsorbed powerlaw in [photon/cm^2/s/keV] at 1keV), $\Gamma$ is the
     power of the powerlaw, A is the pulsation amplitude, and $\phi_0$ is the pulsation phase.
 
     :param dict bounds:
@@ -181,14 +181,14 @@ class PowerLaw( EmissionModel ):
         norm = Parameter('norm',
                         strict_bounds = (0.0, _np.infty),
                         bounds = bounds.get('norm', None),
-                        doc = "Normalization of the PowerLaw",
+                        doc = "Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV",
                         symbol = 'K',
                         value = values.get('norm', None))
         
         gamma = Parameter('gamma',
                 strict_bounds = (0.0, _np.infty),
                 bounds = bounds.get('gamma', None),
-                doc = "Power of the PowerLaw",
+                doc = "Photon index of the PowerLaw",
                 symbol = r'$\gamma$',
                 value = values.get('gamma', None))
         
@@ -226,7 +226,7 @@ class PowerLaw( EmissionModel ):
                 strict_bounds = (0. , 1.),
                 bounds = phase_shift_bounds,
                 doc = "Phase shift of the PowerLaw",
-                symbol = r'$\Delta \phi$',
+                symbol = r'$\phi_0$',
                 value = phase_shift_value)
         
         # Set the value of num_leaves

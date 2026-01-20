@@ -258,7 +258,7 @@ class Likelihood(ParameterSubspace):
     def emission_models(self, models):
         if isinstance(models, EmissionModels):
             self._emission_models = models
-        elif isinstance(models, EmissionModel):
+        elif isinstance(models, EmissionModel) or isinstance( models, tuple ) or isinstance( models, list):
             self._emission_models = EmissionModels(models)
         elif models is None:
             self._emission_models = None
