@@ -1,0 +1,6 @@
+``EmissonModels`` have been added. They offer a way to include any model you want alongside X-PSI and can have parameters that can be fitted. 
+They are provided with a ``PowerLaw`` model. A notebook explaining the code and structure is also provided.
+
+Added interface of the emission models to the ``Likelihood`` and ``Signal``.
+
+Added a ``reset`` option to the Signal registration, which is by default ``True`` and execute the same as before. The option ``reset=False`` is useful for emission models.
