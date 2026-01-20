@@ -64,6 +64,19 @@ class EmissionModel( ParameterSubspace , metaclass=ABCMeta ):
             raise TypeError('A ParameterSubspace object is required.')
         self._parameters = obj
 
+    def buildPhaseIndependentSignal(self, phase_independent_signal):
+        phases_array = _np.ones((self._num_leaves,))
+        return self.buildSignal( phase_independent_signal, phases_array )
+
+    def buildSinusoidalSignal(self, phase_independent_signal):
+        phases_array = 1 + self['oscillation_amplitude'] * _np.cos( _2pi * ( self._phases - self['phase_shift'] ) )
+        return self.buildSignal( phase_independent_signal, phases_array )
+
+    def buildSignal( self, energy_dependent_signal , phase_modulation ):
+        signal = _np.outer(phase_modulation, energy_dependent_signal) 
+        return (_np.ascontiguousarray(signal.T),)
+
+
 class EmissionModels( ParameterSubspace ):
     """ A collection of emission models, used for interfacing with the Likelihood and signal registering. 
 
@@ -153,10 +166,10 @@ class PowerLaw( EmissionModel ):
 
     """
     required_names = ['norm',
-                      'gamma']
-
-    optional_names = ['oscillation_amplitude',
+                      'gamma',
                       'phase_shift']
+
+    optional_names = ['oscillation_amplitude']
     
     def __init__(self, 
                  bounds,
@@ -169,7 +182,7 @@ class PowerLaw( EmissionModel ):
                         strict_bounds = (0.0, _np.infty),
                         bounds = bounds.get('norm', None),
                         doc = "Normalization of the PowerLaw",
-                        symbol = 'norm',
+                        symbol = 'K',
                         value = values.get('norm', None))
         
         gamma = Parameter('gamma',
@@ -213,7 +226,7 @@ class PowerLaw( EmissionModel ):
                 strict_bounds = (0. , 1.),
                 bounds = phase_shift_bounds,
                 doc = "Phase shift of the PowerLaw",
-                symbol = r'$\phi_0$',
+                symbol = r'$\Delta \phi$',
                 value = phase_shift_value)
         
         # Set the value of num_leaves
@@ -225,14 +238,12 @@ class PowerLaw( EmissionModel ):
 
 
     def integrate_phase_independent(self, energies, threads, *args, **kwargs):
-
-        table = self['norm'] * _np.ones((self._num_leaves, len(energies))) * energies**( -self['gamma'] ) / self._num_leaves
-        self.signal = (_np.ascontiguousarray(table.T),)
+        powerlaw = self.powerlaw(energies)
+        self.signal = self.buildPhaseIndependentSignal(powerlaw)
 
     def integrate_pulsed(self, energies, threads, *args, **kwargs):
+        powerlaw = self.powerlaw(energies)
+        self.signal = self.buildSinusoidalSignal(powerlaw)
 
-        # Make a table of the phases
-        phases_array = 1 + self['oscillation_amplitude'] * _np.cos( _2pi * ( self._phases - self['phase_shift'] ) )
-        powerlaw_array = energies**( -self['gamma'] )
-        table = self['norm'] * _np.outer(phases_array, powerlaw_array) / self._num_leaves
-        self.signal = (_np.ascontiguousarray(table.T),)
+    def powerlaw(self, energies):
+        return self['norm'] * energies**( -self['gamma'] )

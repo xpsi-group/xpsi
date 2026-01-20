@@ -430,8 +430,12 @@ class Likelihood(ParameterSubspace):
                             kws = kwargs.pop(signal.prefix)
                         except AttributeError:
                             kws = {}
-
                         shifts = [h['phase_shift'] for h in hot.objects]
+                        
+                        # For simplicity when building the emission models, the shift are applied during integration for these
+                        if self._emission_models is not None:
+                            shifts = shifts + [0.0] * len(self._emission_models)
+
                         signal.shifts = _np.array(shifts)
                         signal.synthesise(threads=self._threads, **kws)
                     else:
@@ -439,10 +443,9 @@ class Likelihood(ParameterSubspace):
                             hot = photosphere.surface
                             shifts = [h['phase_shift'] for h in hot.objects]
 
-                            # Add model shifts if needed
+                            # For simplicity when building the emission models, the shift are applied during integration for these
                             if self._emission_models is not None:
-                                shifts_emission_models = [model['phase_shift'] for model in self._emission_models]
-                                shifts = shifts + shifts_emission_models
+                                shifts = shifts + [0.0] * len(self._emission_models)
 
                             signal.shifts = _np.array(shifts)
                             signal(threads=self._threads, llzero=self._llzero)
