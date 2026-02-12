@@ -273,6 +273,11 @@ parser.add_argument('--elsewhere-atmosphere-load',
                     help='Does a numeric atmosphere table need to be loaded from disk for elsewhere?',
                     comment=True)
 
+parser.add_argument('--additive-powerlaw-model',
+                    action='store_true',
+                    help='Implement additional powerlaw model, for non-thermal emission',
+                    comment=True)
+
 parser.add_argument('--attenuation-model',
                     type=str,
                     help='Name of interstellar attenuation model, e.g., tbnew.',
@@ -389,6 +394,9 @@ if args.model is None:
                                   args.hot_atmosphere_model)
     if args.elsewhere_atmosphere_model is not None:
         args.model += ' + {}'.format(args.elsewhere_atmosphere_model)
+    
+    if args.additive_powerlaw_model:
+        args.model += ' + PWL'
 
 # Creating Main module
 module = (
@@ -669,7 +677,7 @@ parser.add_argument('--{0}-arf-path', type=str, help='{1} {0} ARF file.',
 
 parser.add_argument('--{0}-rmf-path', type=str, help='{1} {0} RMF file.',
                     )
-                    
+
 parser.add_argument('--{0}-datafolder', type=str, help='Absolute or relative path to the folder where the {1} {0} files, in FITS format, are stored.',
                     )
 
@@ -928,7 +936,7 @@ parser.add_argument('--neutral-hydrogen-column-density-bounds',
                     comment=True,
                     comment_line_above='rule')
 
-parser.add_argument('--neural-hydrogen-column-density-prior',
+parser.add_argument('--neutral-hydrogen-column-density-prior',
                     type=str,
                     nargs='*',
                     action=NullAction,
@@ -1324,6 +1332,13 @@ parser.add_argument('--elsewhere-temperature-bounds',
                     comment_line_above='elsewhere flags',
                     comment=True)
 
+parser.add_argument('--elsewhere-temperature-prior',
+                    type=str,
+                    nargs='*',
+                    action=NullAction,
+                    help='Prior inverse CDF of log10(temperature [K]) elsewhere. {4}',
+                    comment=True)
+
 parser.add_argument('--elsewhere-temperature-value',
                     type=str,
                     action=CompileAction,
@@ -1344,7 +1359,8 @@ parser.add_argument('--elsewhere-num-rays',
     '''.format(_bounds_default_notice,
                _value_notice,
                _derived_notice,
-               0 if args.elsewhere_atmosphere_load else 2)
+               0 if args.elsewhere_atmosphere_load else 2,
+               _CDF_notice)
     )
 
     if args.elsewhere_atmosphere_load:
@@ -1360,6 +1376,104 @@ parser.add_argument('--elsewhere-atmosphere-size',
                     empty_lines_below=2)
         '''.format(_bounds_default_notice)
         )
+
+if args.additive_powerlaw_model:
+    module += (
+    '''
+parser.add_argument('--additive-powerlaw-norm-bounds',
+                    type=str,
+                    nargs=2,
+                    action=CompileAction,
+                    help='Bounds of the powerlaw normalization factor. {0}',
+                    comment_line_above='Additive powerlaw flags',
+                    comment=True)
+                    
+parser.add_argument('--additive-powerlaw-norm-prior',
+                    type=str,
+                    nargs='*',
+                    action=NullAction,
+                    help='Prior inverse CDF of powerlaw normalization factor. {3}',
+                    comment=True)
+
+parser.add_argument('--additive-powerlaw-norm-value',
+                    type=str,
+                    action=CompileAction,
+                    help='Value of powerlaw normalization factor. {1} {2}',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--additive-powerlaw-gamma-bounds',
+                    type=str,
+                    nargs=2,
+                    action=CompileAction,
+                    help='Bounds of the powerlaw photon index. {0}',
+                    comment=True)
+                    
+parser.add_argument('--additive-powerlaw-gamma-prior',
+                    type=str,
+                    nargs='*',
+                    action=NullAction,
+                    help='Prior inverse CDF of powerlaw photon index. {3}',
+                    comment=True)
+
+parser.add_argument('--additive-powerlaw-gamma-value',
+                    type=str,
+                    action=CompileAction,
+                    help='Value of powerlaw photon index. {1} {2}',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--additive-powerlaw-to-be-pulsed',
+                    action='store_true',
+                    help='Should the powerlaw be modelled on the pulse profile?',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--additive-powerlaw-oscillation-amplitude-bounds',
+                    type=str,
+                    nargs=2,
+                    action=CompileAction,
+                    help='Bounds of the pulsed powerlaw oscillation amplitude. {0}',
+                    comment=True)
+                    
+parser.add_argument('--additive-powerlaw-oscillation-amplitude-prior',
+                    type=str,
+                    nargs='*',
+                    action=NullAction,
+                    help='Prior inverse CDF of pulsed powerlaw oscillation amplitude. {3}',
+                    comment=True)
+
+parser.add_argument('--additive-powerlaw-oscillation-amplitude-value',
+                    type=str,
+                    action=CompileAction,
+                    help='Value of pulsed powerlaw oscillation amplitude. {1} {2}',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--additive-powerlaw-phase-shift-bounds',
+                    type=str,
+                    nargs=2,
+                    action=CompileAction,
+                    help='Bounds of the pulsed powerlaw phase shift. {0}',
+                    comment=True)
+
+parser.add_argument('--additive-powerlaw-phase-shift-value',
+                    type=str,
+                    action=CompileAction,
+                    help='Value of pulsed powerlaw phase shift. {1} {2}',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--additive-powerlaw-num-leaves',
+                    type=int,
+                    default=64,
+                    help='Number of phases on unit interval at which to compute the pulsed powerlaw signal.',
+                    empty_lines_below=2)
+    '''.format(_bounds_default_notice,
+               _value_notice,
+               _derived_notice,
+               _CDF_notice)
+    )
 
 module += (
 '''
@@ -1674,8 +1788,12 @@ bounds = dict({2} = parse_bounds(args.{0}_{2}_bounds,
                                    default_to_free = False))
 
 {0}.instrument = CustomInstrument.from_ogip_fits(
-                                  ARF_path=args.{0}_arf_path,
                                   RMF_path=args.{0}_rmf_path,
+                                  ARF_path=args.{0}_arf_path,
+                                  min_channel=args.{0}_channel_bounds[0],
+                                  max_channel=args.{0}_channel_bounds[1],
+                                  min_input=args.{0}_input_bounds[0],
+                                  max_input=args.{0}_input_bounds[1],
                                   bounds=bounds,
                                   values=values,
                                   datafolder=args.{0}_datafolder,
@@ -1689,7 +1807,10 @@ bounds = dict({2} = parse_bounds(args.{0}_{2}_bounds,
 if args.{0}_background_path:
     bkgpath = os.path.join(args.{0}_datafolder, args.{0}_background_path)
 elif hasattr ({0}.data, 'backfile'):
-    bkgpath = os.path.join(args.{0}_datafolder, {0}.data.backfile)
+    if {0}.data.backfile != 'NONE':
+        bkgpath = os.path.join(args.{0}_datafolder, {0}.data.backfile)
+    else:
+        bkgpath = None
 else:
     bkgpath = None
     
@@ -1906,8 +2027,6 @@ bounds = dict(phase_shift = parse_bounds(args.{0}_phase_shift_bounds,
                           instrument = {0}.instrument,
                           interstellar = interstellar,
                           background = {0}.background_model,
-                          min_channel = args.{0}_channel_bounds[0],
-                          max_channel = args.{0}_channel_bounds[1],
                           cache = False if __name__ == '__main__' else True,
                           bounds = bounds,
                           values = values,
@@ -2285,6 +2404,49 @@ photosphere.elsewhere_atmosphere = args.elsewhere_atmosphere_path
     '''
     )
 
+if args.additive_powerlaw_model:
+    module += (
+    '''
+bounds = dict(norm = parse_bounds(args.additive_powerlaw_norm_bounds,
+                                          args.additive_powerlaw_norm_value),
+              gamma = parse_bounds(args.additive_powerlaw_gamma_bounds,
+                                          args.additive_powerlaw_gamma_value))
+
+values = dict(norm = parse_value(args.additive_powerlaw_norm_value),
+              gamma = parse_value(args.additive_powerlaw_gamma_value))
+
+if args.additive_powerlaw_to_be_pulsed:
+    bounds['oscillation_amplitude'] = parse_bounds(args.additive_powerlaw_oscillation_amplitude_bounds,
+                                         args.additive_powerlaw_oscillation_amplitude_value)
+    
+    values['oscillation_amplitude'] = parse_value(args.additive_powerlaw_oscillation_amplitude_value)
+    
+    bounds['phase_shift'] = parse_bounds(args.additive_powerlaw_phase_shift_bounds,
+                                         args.additive_powerlaw_phase_shift_value)
+    
+    values['phase_shift'] = parse_value(args.additive_powerlaw_phase_shift_value)
+    
+    AddEmissionModel= xpsi.PowerLaw(bounds=bounds,
+                            values=values,
+                            pulsed=True,
+                            num_leaves=args.additive_powerlaw_num_leaves,
+                            prefix='pl'
+                            )
+else:
+    AddEmissionModel= xpsi.PowerLaw(bounds=bounds,
+                            values=values,
+                            prefix='pl'
+                            )
+  
+    '''
+    )
+else:
+    module += (
+    '''
+AddEmissionModel = None    
+    '''
+    )
+
 module += (
 '''
 star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
@@ -2293,6 +2455,7 @@ prior = CustomPrior()
 
 likelihood = xpsi.Likelihood(star = star,
                              signals = signals,
+                             emission_models = AddEmissionModel,
                              num_energies = args.number_energies,
                              threads = args.openmp_threads,
                              externally_updated = args.parameters_externally_updated if args.parameters_externally_updated is not None else True,
@@ -2370,7 +2533,32 @@ class CustomSignal(xpsi.Signal):
     def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
                  epsilon = 1.0e-3, sigmas = 10.0, support = None, *args, **kwargs):
         """ Perform precomputation. """
+'''.format(args.model,
+           _telescopes,
+           args.source)
+)
 
+if args.use_fits_format:
+    module += (
+'''
+        super(CustomSignal, self).__init__(support=support, *args, **kwargs)
+
+        try:
+            self._precomp = precomputation(self._data.counts.astype(np.int32))
+        except AttributeError:
+            print('No data... can synthesise data but cannot evaluate a '
+                  'likelihood function.')
+        else:
+            self._workspace_intervals = workspace_intervals
+            self._epsabs = epsabs
+            self._epsrel = epsrel
+            self._epsilon = epsilon
+            self._sigmas = sigmas
+'''
+    )
+else:
+    module += (
+'''
         super(CustomSignal, self).__init__(*args, **kwargs)
 
         try:
@@ -2398,7 +2586,11 @@ class CustomSignal(xpsi.Signal):
     @support.setter
     def support(self, obj):
         self._support = obj
+'''
+    )
 
+module += (
+'''
     def __call__(self, *args, **kwargs):
         self.loglikelihood, self.expected_counts, self.background_signal, self.background_signal_given_support = \\
                 eval_marginal_likelihood(self._data.exposure_time,
@@ -2415,11 +2607,8 @@ class CustomSignal(xpsi.Signal):
                                           self._epsilon,
                                           self._sigmas,
                                           kwargs.get('llzero'),
-                                          background={3})
-'''.format(args.model,
-           _telescopes,
-           args.source,
-           'None' if not args.background_model else 'self.background.registered_background')
+                                          background={0})
+'''.format('None' if not args.background_model else 'self.background.registered_background')
 )
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_signal_module)), module)
@@ -2865,6 +3054,39 @@ parser.add_argument('--{0}-super-temperature-prior',
 
     add_cede_temperature_prior(1)
 
+if args.elsewhere_atmosphere_model is not None:
+    module += (
+    '''
+parser.add_argument('--elsewhere-temperature-prior',
+                    type=str,
+                    nargs='*',
+                    action=CompileAction,
+                    help='Prior inverse CDF of log10(temperature [K]) elsewhere. {0}')    
+    '''.format(_CDF_notice)
+    )
+
+if args.additive_powerlaw_model:
+    module += (
+    '''
+parser.add_argument('--additive-powerlaw-norm-prior',
+                    type=str,
+                    nargs='*',
+                    action=CompileAction,
+                    help='Prior inverse CDF of powerlaw normalization factor. {0}')
+    
+parser.add_argument('--additive-powerlaw-gamma-prior',
+                    type=str,
+                    nargs='*',
+                    action=CompileAction,
+                    help='Prior inverse CDF of powerlaw photon index. {0}')
+    
+parser.add_argument('--additive-powerlaw-oscillation-amplitude-prior',
+                    type=str,
+                    nargs='*',
+                    action=CompileAction,
+                    help='Prior inverse CDF of pulsed powerlaw oscillation amplitude. {0}') 
+    '''.format(_CDF_notice)
+    )
 
 module += (
 '''
@@ -3799,8 +4021,8 @@ if args.use_fits_format:
     @make_verbose('Loading instrument response matrix',
                   'Response matrix loaded')
     def from_ogip_fits(cls,
-              ARF_path,
               RMF_path,
+              ARF_path=None,
               min_channel=0,
               max_channel=-1,
               min_input=1,
@@ -3813,15 +4035,19 @@ if args.use_fits_format:
         """ Load any instrument response matrix. """
 
         if datafolder:
-            ARF_path = os.path.join( datafolder, ARF_path )
+            ARF_path = os.path.join( datafolder, ARF_path ) if ARF_path is not None else None
             RMF_path = os.path.join( datafolder, RMF_path )
 
-        # Open useful values in ARF/RMF    
-        with fits.open( ARF_path ) as ARF_hdul:
-            ARF_instr = ARF_hdul['SPECRESP'].header['INSTRUME']
+        # Open useful values in ARF/RMF
+        if ARF_path is not None:
+            with fits.open( ARF_path ) as ARF_hdul:
+                ARF_instr = ARF_hdul['SPECRESP'].header['INSTRUME']
             
         with fits.open( RMF_path ) as RMF_hdul:
-            RMF_header = RMF_hdul['MATRIX'].header
+            if 'SPECRESP MATRIX' in RMF_hdul :
+                RMF_header = RMF_hdul['SPECRESP MATRIX'].header
+            else:
+                RMF_header = RMF_hdul['MATRIX'].header
         RMF_instr = RMF_header['INSTRUME'] 
         DETCHANS = RMF_header['DETCHANS']
         NUMGRP = RMF_header['NAXIS2']
@@ -3849,7 +4075,11 @@ if args.use_fits_format:
 
         # If everything in order, get the data
         with fits.open( RMF_path ) as RMF_hdul:
-            RMF_MATRIX = RMF_hdul['MATRIX'].data
+            if 'SPECRESP MATRIX' in RMF_hdul :
+                RMF_MATRIX = RMF_hdul['SPECRESP MATRIX'].data
+            else:
+                RMF_MATRIX = RMF_hdul['MATRIX'].data
+
             RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
 
         # Get the channels from the data
@@ -3872,15 +4102,19 @@ if args.use_fits_format:
                 if n_chan == 0:
                     continue
 
-                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                RMF[f_chan-TLMIN:f_chan-TLMIN+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
                 n_skip += n_chan
 
         # Make the RSP
-        ARF = Table.read(ARF_path, 'SPECRESP')
-        ARF_area = ARF['SPECRESP']
+        if ARF_path is None:
+            RSP = RMF
+            ARF_area = RMF.sum( axis=0 )
+        else:
+            ARF = Table.read(ARF_path, 'SPECRESP')
+            ARF_area = ARF['SPECRESP']
+            RSP = RMF * ARF_area
 
         # Extract the required matrix
-        RSP = RMF * ARF_area
         RSP = RSP[min_channel:max_channel+1,min_input-1:max_input]
 
         # Find empty columns and lines
@@ -3895,8 +4129,8 @@ if args.use_fits_format:
             print(f'Triming the response matrix because it contains columns with only 0 values.\\n Now min_channel={channels[0]} and max_channel={channels[-1]}')
 
         # Get the edges of energies for both inputand channel
-        energy_edges = np.append( ARF['ENERG_LO'][inputs-1], ARF['ENERG_HI'][inputs[-1]-1]).astype(dtype=np.double)
-        channel_energy_edges = np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
+        energy_edges = np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=np.double)
+        channel_energy_edges = np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
 
         # Make the scaling
         alpha_name = 'energy_independent_effective_area_scaling_factor'
