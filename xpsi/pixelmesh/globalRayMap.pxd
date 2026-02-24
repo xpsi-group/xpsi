@@ -34,4 +34,5 @@ cdef int compute_globalRayMap(size_t numThreads,
                               const _GEOM *const GEOM,
                               RAY_MAP *const MAP,
                               _RAY **RAYS,
-                              int force_circular) noexcept nogil
+                              int force_circular,
+                              int obl_surfgrav_ind) noexcept nogil

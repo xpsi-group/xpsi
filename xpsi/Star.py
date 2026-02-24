@@ -18,11 +18,21 @@ class Star(ParameterSubspace):
                               :class:`~.Photosphere`.
 
     """
-    def __init__(self, spacetime, photospheres):
+    def __init__(self, spacetime, photospheres, name=None):
         if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
 
         self._spacetime = spacetime
+
+        if name is None:
+            # Choose default model here
+            self._spacetime.obl_surfgrav = "universal"
+        else:
+            self._spacetime.obl_surfgrav = name
+
+        #print("Yves", self._spacetime.obl_surfgrav, self._spacetime.obl_surfgrav_ind)
+
+
 
         try:
             assert isinstance(photospheres, list)

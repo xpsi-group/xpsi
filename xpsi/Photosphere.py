@@ -91,7 +91,7 @@ class Photosphere(ParameterSubspace):
             if not isinstance(everywhere, Everywhere):
                 raise TypeError('Invalid type for everywhere object.')
             self._everywhere_atmosphere = ()
-            
+
         elif hot is None and elsewhere is None:
             pass # can call image-plane extensions
 
@@ -166,12 +166,12 @@ class Photosphere(ParameterSubspace):
 
     def load_NSX_table( self, path, Tcol=4, gcol=5, mucol=1, Ecol=0, spe_Icol=2 ):
         """
-        Loading the nsx atmosphere table provided in path 
-        giving the colums in the table corresponding to 
-        - the logarithm of local comoving effective temperature logTeff(K) (Tcol, default=4), 
-        - the logarithm of effective surface gravity logg(cm s^-2) (gcol, default=5), 
-        - the cosine of the angle from the local surface normal mu = cos(theta) (mucol, default=1), 
-        - the logarithm of the photon energy log(E/kTeff) (Ecol, default=0) 
+        Loading the nsx atmosphere table provided in path
+        giving the colums in the table corresponding to
+        - the logarithm of local comoving effective temperature logTeff(K) (Tcol, default=4),
+        - the logarithm of effective surface gravity logg(cm s^-2) (gcol, default=5),
+        - the cosine of the angle from the local surface normal mu = cos(theta) (mucol, default=1),
+        - the logarithm of the photon energy log(E/kTeff) (Ecol, default=0)
         - the one-dimensional buffer of specific intensity log(Inu/Teff^3) (spe_Icol, default=2)
         """
 
@@ -356,7 +356,7 @@ class Photosphere(ParameterSubspace):
         else:
             """ Implement if required. """
             raise NotImplementedError('Implement setter if required.')
-    
+
     @property
     def everywhere_atmosphere(self):
         """ Get the numerical atmosphere buffers for eerywhere if used.
@@ -492,6 +492,7 @@ class Photosphere(ParameterSubspace):
                     T_low, T_high = self._hot_atmosphere[0][0], self._hot_atmosphere[0][len(self._hot_atmosphere[0])-1]
                     g_low, g_high = self._hot_atmosphere[1][0], self._hot_atmosphere[1][len(self._hot_atmosphere[1])-1]
 
+
                     for ipar in hot.names:
                         if "temperature" in ipar:
                             temperature = hot[ipar]
@@ -502,7 +503,8 @@ class Photosphere(ParameterSubspace):
                     grav = effective_gravity(_np.array([1.0, 0.0]),
                                              _np.array([ref.R] * 2 ),
                                              _np.array([ref.zeta] * 2),
-                                             _np.array([ref.epsilon] * 2))
+                                             _np.array([ref.epsilon] * 2),
+                                             ref._obl_surfgrav_ind)
 
                     for g in grav:
                         if not g_low <= g <= g_high:
@@ -522,7 +524,8 @@ class Photosphere(ParameterSubspace):
                 grav = effective_gravity(_np.array([1.0, 0.0]),
                                          _np.array([ref.R] * 2 ),
                                          _np.array([ref.zeta] * 2),
-                                         _np.array([ref.epsilon] * 2))
+                                         _np.array([ref.epsilon] * 2),
+                                          ref._obl_surfgrav_ind)
 
                 for g in grav:
                     if not g_low <= g <= g_high:
@@ -607,7 +610,7 @@ class Photosphere(ParameterSubspace):
 
         """
         return self._signal
-        
+
     @property
     def signalQ(self):
         """ Get the stored Stokes Q signal.
@@ -625,7 +628,7 @@ class Photosphere(ParameterSubspace):
             raise Exception("Need to set stokes=True for the Photosphere object "
             "to calculate Stokes Q signal.")
         return self._signalQ
-        
+
     @property
     def signalU(self):
         """ Get the stored Stokes U signal.

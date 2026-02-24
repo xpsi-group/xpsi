@@ -322,6 +322,7 @@ def intensity_from_globals(double[::1] energies,
                            double R_eq,
                            double zeta,
                            double epsilon,
+                           int obl_surfgrav_ind,
                            atmosphere = None,
                            atmos_extension = "BB",
                            size_t numTHREADS = 1):
@@ -431,7 +432,7 @@ def intensity_from_globals(double[::1] energies,
     GEOM.R_eq = R_eq
     GEOM.epsilon = epsilon
     GEOM.zeta = zeta
-    GEOM.star_shape_ind = 0 #assuming only oblate stars (Algendy & Morsink 2014) for global variables.
+    GEOM.obl_surfgrav_ind = obl_surfgrav_ind #assuming only oblate stars (Algendy & Morsink 2014) for global variables.
 
     cdef fptr_init init_ptr = init_hot
     cdef fptr_free free_ptr = free_hot
@@ -518,7 +519,7 @@ def effective_gravity(double[::1] cos_colatitude,
                       double[::1] R_eq,
                       double[::1] zeta,
                       double[::1] epsilon,
-                      str star_shape = "AGM_14"):
+                      int obl_surfgrav_ind):
     """ Approximate local effective gravity using a universal relation.
     (or a spherical star if setting star_shape="sphere")
 
@@ -559,14 +560,14 @@ def effective_gravity(double[::1] cos_colatitude,
 
     cdef unsigned int i
 
-    allowed_models = ["AGM_14","sphere"]
-    cdef unsigned int star_shape_ind = allowed_models.index(star_shape)
+    #allowed_models = ["AGM_14","sphere"]
+    #cdef unsigned int obl_surfgrav_ind = allowed_models.index(star_shape)
 
     for i in range(<size_t>gravity.shape[0]):
         gravity[i] = effectiveGravity(cos_colatitude[i],
                                       R_eq[i],
                                       zeta[i],
                                       epsilon[i],
-                                      star_shape_ind)
+                                      obl_surfgrav_ind)
 
     return np.asarray(gravity, dtype = np.double, order = 'C')

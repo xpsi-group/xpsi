@@ -1,9 +1,19 @@
 from xpsi.global_imports import *
-
 from xpsi.utils import make_verbose
-
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
+
+from xpsi.surface_radiation_field.effective_gravity_universal import (py_dimless_moment_of_inertia_i as dimless_moment_of_inertia_i,
+                                                             py_oblateness_func_o2 as oblateness_func_o2,
+                                                             py_beta1_coeff as beta1_coeff)
+
+def _normalise_key(name):
+    """Normalise user input for robust key matching."""
+    return " ".join(name.strip().lower().split())
+
+
+def _format_allowed(keys):
+    return ", ".join(sorted(keys))
 
 class Spacetime(ParameterSubspace):
     """ The ambient Schwarzschild spacetime and Earth coordinates.
@@ -33,15 +43,47 @@ class Spacetime(ParameterSubspace):
     characters than ``self[<name>]``.
 
     """
+
+    STAR_OBLATENESS_SURFGRAV_CANONICAL = {
+        "universal": 0,
+        "sphere": 1,
+        "psr j0030+0451": 2,
+        "psr j0740+6620": 3,
+        "psr j0437-4715": 4,
+        "psr j1231-1411": 5,
+        "psr j0614-3329": 6,}
+
+    # Aliases -> canonical key
+    STAR_OBLATENESS_SURFGRAV_ALIASES = {
+        # universal/AGM-type synonyms
+        "default": "universal",
+        "agm_14": "universal",
+        "algendy": "universal",
+        "morsink": "universal",
+        "morsink 2007": "universal",
+        "universal relation": "universal",
+
+        # shorthand pulsar names
+        "j0030": "psr j0030+0451",
+        "j0740": "psr j0740+6620",
+        "j0437": "psr j0437-4715",
+        "j1231": "psr j1231-1411",
+        "j0614": "psr j0614-3329",}
+
     required_names = ['frequency',
                       'mass',
                       'radius',
                       'distance',
                       'cos_inclination']
 
-    def __init__(self, bounds, values, star_shape="AGM_14"):
+    def __init__(self, bounds, values, obl_surfgrav=None):
 
-        self.star_shape = star_shape
+        self._obl_surfgrav = None
+        self._obl_surfgrav_ind = None
+
+        if obl_surfgrav is not None:
+            self.obl_surfgrav = obl_surfgrav
+
 
         if not isinstance(bounds, dict) or not isinstance(values, dict):
              raise TypeError("Both bounds and values need to be dictionaries.")
@@ -61,7 +103,7 @@ class Spacetime(ParameterSubspace):
                       value = values.get('mass', None))
 
         R = Parameter('radius',
-                      strict_bounds = (1.0, 20.0),
+                      strict_bounds = (1.0, 40.0),
                       bounds = bounds.get('radius', None),
                       doc = 'Coordinate equatorial radius [km]',
                       symbol = r'$R_{\rm eq}$',
@@ -83,29 +125,46 @@ class Spacetime(ParameterSubspace):
 
         super(Spacetime, self).__init__(f, M, R, D, cosi)
 
+
+    @classmethod
+    def resolve_obl_surfgrav(cls, name):
+        """Resolve user-provided name/alias to (canonical_key, backend_index)."""
+        if not isinstance(name, str) or not name.strip():
+            raise TypeError("obl_surfgrav must be a non-empty string.")
+
+        key = _normalise_key(name)
+        key = cls.STAR_OBLATENESS_SURFGRAV_ALIASES.get(key, key)
+
+        try:
+            ind = cls.STAR_OBLATENESS_SURFGRAV_CANONICAL[key]
+        except KeyError as e:
+            allowed = _format_allowed(cls.STAR_OBLATENESS_SURFGRAV_CANONICAL.keys())
+            raise ValueError(
+                f"Unknown oblateness and surface gravity for '{name}'. "
+                f"Allowed canonical keys: {allowed}") from e
+
+        return key, int(ind)
+
+    @classmethod
+    def available_obl_surfgrav(cls):
+        return tuple(sorted(cls.STAR_OBLATENESS_SURFGRAV_CANONICAL.keys()))
+
     @property
-    def star_shape(self):
-        """ Get the the shape of the star. """
-        return self._star_shape
+    def obl_surfgrav(self):
+        return self._obl_surfgrav
 
-    @star_shape.setter
-    def star_shape(self,star_shape):
-        """ Set the shape of the star. """
-        allowed_models = ["AGM_14","sphere"]
-        if star_shape not in allowed_models:
-            raise TypeError("Invalid star_shape option.")
-        self._star_shape = star_shape
-        self._star_shape_ind = allowed_models.index(star_shape)
+    @obl_surfgrav.setter
+    def obl_surfgrav(self, name):
+        key, ind = self.resolve_obl_surfgrav(name)
+        self._obl_surfgrav = key
+        self._obl_surfgrav_ind = ind
 
     @property
-    def star_shape_ind(self):
-        """ Get the the index of shape model. """
-        return self._star_shape_ind
-
-    @star_shape_ind.setter
-    def star_shape_ind(self,star_shape_ind):
-        """ Get the the index of shape model. """
-        self._star_shape_ind = star_shape_ind
+    def obl_surfgrav_ind(self):
+        if self._obl_surfgrav_ind is None:
+            raise RuntimeError(
+                "obl_surfgrav was not set. Set it via Star(name=...) or spacetime.obl_surfgrav=...")
+        return self._obl_surfgrav_ind
 
     @property
     def M(self):
@@ -162,7 +221,7 @@ class Spacetime(ParameterSubspace):
     def zeta(self):
         """ Get the derived parameter ``zeta`` for universal relations.
 
-        A dimensionless function of stellar properties.
+        A dimensionless function of stellar properties. This is the  compactness
 
         See Morsink et al. (2007), and AlGendy & Morsink (2014).
 
@@ -176,7 +235,7 @@ class Spacetime(ParameterSubspace):
     def epsilon(self):
         """ Get the derived parameter ``epsilon`` for universal relations.
 
-        A dimensionless function of stellar properties.
+        A dimensionless function of stellar properties. This is omega bar squared
 
         See Morsink et al. (2007), and AlGendy & Morsink (2014).
 
@@ -190,7 +249,7 @@ class Spacetime(ParameterSubspace):
     def a(self):
         """ Get the spin parameter, first order in spin.
 
-        See AlGendy & Morsink (2014).
+        See AlGendy & Morsink (2014). a=J/(Mc)
 
         """
         try:
@@ -198,7 +257,7 @@ class Spacetime(ParameterSubspace):
         except AttributeError:
             zeta = self.zeta
 
-            I_dimless = _m.sqrt(zeta) * (1.136 - 2.53 * zeta + 5.6 * zeta * zeta)
+            I_dimless = _m.sqrt(zeta) * dimless_moment_of_inertia_i(zeta, self._obl_surfgrav_ind)
 
             a = self.R * self.R * self.Omega * I_dimless / _c
 
@@ -229,7 +288,7 @@ class Spacetime(ParameterSubspace):
         except AttributeError:
              temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
              temp -= self.a * self.a / (self.r_g * self.r_g)
-             return temp + 0.4554 * 4.0 * self.epsilon * self.zeta / 3.0
+             return temp + beta1_coeff(self._obl_surfgrav_ind) * 4.0 * self.epsilon * self.zeta / 3.0
 
     @q.setter
     def q(self, q):

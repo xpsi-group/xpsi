@@ -6,7 +6,7 @@
 from libc.math cimport M_PI, M_PI_2
 from libc.math cimport sqrt, sin, cos, tan, asin, acos, atan, fabs, exp, pow
 from libc.math cimport fmin, fmax, floor, ceil
-
+from xpsi.surface_radiation_field.effective_gravity_universal cimport oblateness_func_o2
 from ..tools.core cimport are_equal
 
 cdef double M_2PI = 2.0 * M_PI
@@ -18,9 +18,9 @@ cdef double _h = 6.62607004e-34
 cdef double radiusNormalised(double mu,
                              double epsilon,
                              double zeta,
-                             int star_shape_ind) noexcept nogil:
+                             int obl_surfgrav_ind) noexcept nogil:
     """
-    Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy & 
+    Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy &
     Morsink (2014) (see Eq. 20 and Table 1 for coefficient values), or assuming a spherical star.
     In the former case, this function models the shape of a rotating neutron star based on its spin and compactness.
     It uses the colatitude (`mu`), the dimensionless spin parameter (`epsilon`), and the compactness
@@ -31,70 +31,68 @@ cdef double radiusNormalised(double mu,
         position on the star's surface, where mu is between -1 and 1.
 
     :param double epsilon:
-        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or 
+        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or
         Eq. 10 from Morsink et al. (2007)).
 
     :param double zeta:
-        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 1 or Eq. 9 from 
+        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 1 or Eq. 9 from
         Morsink et al. (2007)).
 
-    :param int star_shape_ind:
-        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or 
-        to a spherical star (1). 
+    :param int obl_surfgrav_ind:
+        Integer flag selecting the oblateness / surface-gravity relation used by the backend.
+        The mapping is defined in ``Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL``.
 
-    :return: 
+    Current conventions are:
+      - 0 : Universal oblate relation (AlGendy & Morsink 2014)
+      - 1 : Spherical star
+      - 2 : PSR J0030+0451–calibrated relation
+      - 3 : PSR J0740+6620–calibrated relation
+      - 4 : PSR J0437−4715–calibrated relation
+      - 5 : PSR J1231−1411–calibrated relation
+      - 6 : PSR J0614−3329–calibrated relation
+
+    :return:
         The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
         from the center of the star at a given colatitude, scaled by the equatorial radius.
     :rtype: double
     """
 
-    if(star_shape_ind == 0):  # AlGendy & Morsink 2014 oblateness
-        return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * mu * mu
-    elif(star_shape_ind == 1):  # A spherical star
-        return 1.0
-    else:
-        raise TypeError("Invalid star_shape option!")
+    return 1.0 + epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind) * mu * mu
 
 cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
                     double zeta,
-                    int star_shape_ind) noexcept nogil:
+                    int obl_surfgrav_ind) noexcept nogil:
     """
     Calculate f(theta) based on Equation 3 of Morsink et al. (2007), or set f=0 in case of a sphere.
 
-    :param double mu: 
+    :param double mu:
         The cosine of the colatitude angle (theta). This parameter defines the angular
         position on the star's surface, where mu is between -1 and 1.
 
-    :param double radiusNormed: 
+    :param double radiusNormed:
         The normalized radius, typically a dimensionless quantity derived from a physical radius.
 
-    :param double epsilon: 
+    :param double epsilon:
         The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 10).
 
-    :param double zeta: 
+    :param double zeta:
         The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 9).
 
-    :param int star_shape_ind:
-        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or 
+    :param int obl_surfgrav_ind:
+        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or
         to a spherical star (1).
 
-    :return: 
+    :return:
         The computed value of f_theta, representing the normalized derivative of the radius.
     :rtype: double
     """
 
     cdef double radiusDerivNormed
 
-    radiusDerivNormed = -2.0 * epsilon * (-0.788 + 1.030 * zeta) * mu * sqrt(1.0 - mu * mu)
-
-    if(star_shape_ind == 0):  # AlGendy & Morsink 2014 oblateness
-        return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
-    elif(star_shape_ind == 1):  # A spherical star
-        return 0.0
-    else:
-        raise TypeError("Invalid star_shape option!")
+    radiusDerivNormed = -2.0 * epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind) * mu * sqrt(1.0 - mu * mu)
+    return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
 
 cdef double integrand(double theta, void *params) noexcept nogil:
 
@@ -107,10 +105,10 @@ cdef double integrand(double theta, void *params) noexcept nogil:
         double epsilon = (<double*> params)[0]
         double zeta = (<double*> params)[1]
         int av = <int>(<double*> params)[2]
-        int star_shape_ind = <int>(<double*> params)[3]
+        int obl_surfgrav_ind = <int>(<double*> params)[3]
 
-    radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
-    f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
+    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
+    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
 
     if (av == 0):
         eval_integrand = radius * radius * sqrt(1.0 + f * f) * sin(theta)
@@ -124,7 +122,7 @@ cdef double integrateArea(double lower_lim,
                           double R_eq,
                           double epsilon,
                           double zeta,
-                          int star_shape_ind,
+                          int obl_surfgrav_ind,
                           int av,
                           gsl_integration_cquad_workspace *w) noexcept nogil:
 
@@ -135,7 +133,7 @@ cdef double integrateArea(double lower_lim,
     params[0] = epsilon
     params[1] = zeta
     params[2] = <double> av
-    params[3] = <double> star_shape_ind
+    params[3] = <double> obl_surfgrav_ind
 
     cdef gsl_function F
     F.function = integrand
@@ -315,13 +313,13 @@ cdef double cell_integrand(double theta, void *params) noexcept nogil:
     cdef double phi_a = (<double**>params)[7][0]
     cdef double phi_b = (<double**>params)[8][0]
     cdef int verbose = (<int**>params)[9][0]
-    cdef int star_shape_ind = (<int**>params)[10][0]
+    cdef int obl_surfgrav_ind = (<int**>params)[10][0]
 
     cdef double mu = cos(theta)
     cdef double radius, f
 
-    radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
-    f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
+    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
+    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
 
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
@@ -433,7 +431,7 @@ cdef double integrateCell(double theta_a,
                           double R_eq,
                           double epsilon,
                           double zeta,
-                          int star_shape_ind,
+                          int obl_surfgrav_ind,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -456,7 +454,7 @@ cdef double integrateCell(double theta_a,
     params[7] = &phi_a
     params[8] = &phi_b
     params[9] = &verbose
-    params[10] = &star_shape_ind
+    params[10] = &obl_surfgrav_ind
 
     cdef gsl_function F
     F.function = &cell_integrand
@@ -740,14 +738,14 @@ cdef double spot_integrand(double theta, void *params) noexcept nogil:
     cdef int Lorentz = <int>((<double*>params)[7])
     cdef double R_eq = (<double*>params)[8]
     cdef double Omega = (<double*>params)[9]
-    cdef int star_shape_ind = <int>((<double*>params)[10])
+    cdef int obl_surfgrav_ind = <int>((<double*>params)[10])
     cdef double r_s_over_r
 
     cdef double mu = cos(theta)
     cdef double radius, f
 
-    radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
-    f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
+    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
+    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
 
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
@@ -818,7 +816,7 @@ cdef double integrateSpot(double theta_a,
                           double R_eq,
                           double epsilon,
                           double zeta,
-                          int star_shape_ind,
+                          int obl_surfgrav_ind,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -843,7 +841,7 @@ cdef double integrateSpot(double theta_a,
     params[7] = <double> Lorentz
     params[8] = R_eq
     params[9] = Omega
-    params[10] = <double> star_shape_ind
+    params[10] = <double> obl_surfgrav_ind
 
     cdef gsl_function F
     F.function = &spot_integrand
@@ -898,7 +896,7 @@ def allocate_cells(size_t num_cells,
                    double Omega,
                    double zeta,
                    double epsilon,
-                   int star_shape_ind,
+                   int obl_surfgrav_ind,
                    double superRadius,
                    double cedeRadius,
                    double superColatitude,
@@ -959,7 +957,7 @@ def allocate_cells(size_t num_cells,
                                       R_eq,
                                       epsilon,
                                       zeta,
-                                      star_shape_ind,
+                                      obl_surfgrav_ind,
                                       0,
                                       w)
 
@@ -968,7 +966,7 @@ def allocate_cells(size_t num_cells,
                                R_eq,
                                epsilon,
                                zeta,
-                               star_shape_ind,
+                               obl_surfgrav_ind,
                                superColatitude,
                                superRadius,
                                holeRadius,
@@ -1046,7 +1044,7 @@ def allocate_cells(size_t num_cells,
                                           R_eq,
                                           epsilon,
                                           zeta,
-                                          star_shape_ind,
+                                          obl_surfgrav_ind,
                                           0,
                                           w)
 
@@ -1060,7 +1058,7 @@ def allocate_cells(size_t num_cells,
                                      R_eq,
                                      epsilon,
                                      zeta,
-                                     star_shape_ind,
+                                     obl_surfgrav_ind,
                                      cedeColatitude,
                                      cedeRadius,
                                      superRadius,

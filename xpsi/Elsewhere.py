@@ -57,7 +57,7 @@ class Elsewhere(ParameterSubspace):
         "BB": Analytical blackbody (default),
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
         atmosphere data,
-        "user": A user-provided extension which can be set up by replacing the contents of 
+        "user": A user-provided extension which can be set up by replacing the contents of
         the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
         (if not changed, "user" is the same as "BB").
 
@@ -218,7 +218,7 @@ class Elsewhere(ParameterSubspace):
                                                      st.R,
                                                      st.zeta,
                                                      st.epsilon,
-                                                     st.star_shape_ind)
+                                                     st.obl_surfgrav_ind)
 
     def _compute_rays(self, st, threads):
         """ Trace (integrate) a set of rays.
