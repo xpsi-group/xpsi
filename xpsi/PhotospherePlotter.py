@@ -1700,8 +1700,9 @@ class PhotospherePlotter( Photosphere ):
 
         yield None
 
-    def _get_sky_map_info(self): 
-        """_summary_
+    def _prepare_sky_map_data(self): 
+        """Extracting and preparing azimuth, photon intensities, and contour 
+        levels plotting sky maps. 
         """
         # information for vertical lines mesh grid 
         phi = _np.copy(self.images[4][...]) #  azimuth mapped to point (x,y) on image plane (1D array)
@@ -1720,8 +1721,11 @@ class PhotospherePlotter( Photosphere ):
         phi_lvls = _np.linspace(_np.min(phi[phi > -100.0]),
                         _np.max(phi[phi > -100.0]), 25)
         
-        # photon intensity information for hotspots 
-        intensity = self.images [-1][0,0,:]
+        # photon intensities for hotspots 
+        if self.images[-1] is None:
+            raise ValueError('You need to cache intensity sky maps in the image '
+                        'function if you want to plot them.')
+        intensity = self.images[-1][0,0,:]
         min_intensity = _np.min(intensity[intensity > 0.0])
         max_intensity = _np.max(intensity)
         intensity_lvls = _np.linspace(min_intensity,
@@ -1730,13 +1734,11 @@ class PhotospherePlotter( Photosphere ):
         return phi, phi_lvls, intensity, intensity_lvls
 
     def plot_sky_map(self): 
-        """Plot 4 projections (2x2) with a single colorbar.
-        
-        Input:
-        plotter_list: list of CustomPhotospherePlotter objects (length 4)
+        """Plot the photon specific intensity sky map with a normalized 
+         temperature colorbar.
         """
 
-        phi, phi_lvls, intensity, intensity_lvls = self._get_sky_map_info()
+        phi, phi_lvls, intensity, intensity_lvls = self._prepare_sky_map_data()
 
         fig = plt.figure(figsize=(12,10))
         ax = plt.gca()
