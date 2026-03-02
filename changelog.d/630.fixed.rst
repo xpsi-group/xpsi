@@ -1,1 +1,0 @@
-Polarization angle correction for small sin(psi) to avoid divisions by zero
