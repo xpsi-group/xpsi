@@ -1,0 +1,1 @@
+Added how to recompute the evidence after importance sampling in the Importance Sampling notebook. To do so, the weights normalization value (needed to rescale the evidence) is printed when running the sampling in `Sample.py'.
