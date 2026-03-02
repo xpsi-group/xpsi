@@ -254,7 +254,7 @@ Finally, to build and install from the X-PSI clone root, execute:
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python setup.py install [--user]
+    CC=<path/to/compiler/executable> pip install . [--user]
 
 The ``--user`` flag is optional and specifies where the package is installed;
 if you want to install the package in a virtual environment (as recommended), omit this flag.
@@ -337,7 +337,7 @@ Alternatively, to build X-PSI in-place:
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python setup.py build_ext -i
+    CC=<path/to/compiler/executable> pip install --no-build-isolation -e .
 
 This will build extension modules in the source code directory. You must in
 this case ensure that the source code directory is on your ``PYTHONPATH``
@@ -369,7 +369,7 @@ To rebuild the documentation after a change to source code docstrings:
 
 .. code-block:: bash
 
-    [CC=<path/to/compiler/executable>] python setup.py install [--user]; cd
+    [CC=<path/to/compiler/executable>] pip install . [--user]; cd
     docs; make clean; make html; cd ..
 
 The ``.html`` files can then be found in ``xpsi/docs/build/html``, along with the
@@ -422,8 +422,7 @@ already present in the Mac OS:
 
     brew install llvm
 
-Also use homebrew to install ``cmake``, ``gfortran`` (with ``gcc``) and
-``open-mpi`.
+Also use homebrew to install ``cmake``, ``gfortran`` (with ``gcc``) and ``open-mpi`.
 
 .. code-block:: bash
 
@@ -513,7 +512,7 @@ Install ``X-PSI`` using:
 
 .. code-block:: bash
 
-    CC=/opt/homebrew/opt/llvm/bin/clang python setup.py install [--user]
+    CC=/opt/homebrew/opt/llvm/bin/clang pip install . [--user]
 
 
 If you are facing problems with this installation (e.g., linker problems, or
@@ -521,14 +520,14 @@ If you are facing problems with this installation (e.g., linker problems, or
 
 .. code-block:: bash
 
-    CC=/opt/homebrew/opt/llvm/bin/clang python setup.py install --noopenmp [--user]
+    XPSI_NO_OPENMP=1 CC=/opt/homebrew/opt/llvm/bin/clang pip install . [--user]
 
 
 You may also try to use the MacOS native version of ``clang``:
 
 .. code-block:: bash
 
-    CC=/usr/bin/clang python setup.py install --noopenmp [--user] 
+    XPSI_NO_OPENMP=1 CC=/usr/bin/clang CC=gcc pip install . [--user] 
 
 
 
