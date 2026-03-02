@@ -1,3 +1,25 @@
+[v3.2] - 2026-03-02
+~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+- Corrected a bug in ``InstrumentPileup`` to call ``super()``, where the RMF and ARF arguments were missing and needed. (`#628 <https://github.com/xpsi-group/xpsi/pull/628>`__)
+- Polarization angle correction for small sin(psi) to avoid divisions by zero (`#630 <https://github.com/xpsi-group/xpsi/pull/630>`__)
+
+
+Added
+^^^^^
+
+- Added instructions for installation on MacOS with proper MultiNest (using open-mpi). (`#648 <https://github.com/xpsi-group/xpsi/pull/648>`__)
+
+
+Attribution
+^^^^^^^^^^^
+
+- Tuomo Salmi (`#630 <https://github.com/xpsi-group/xpsi/pull/630>`__)
+
+
 [v3.2] - 2025-12-01
 ~~~~~~~~~~~~~~~~~~~
 
