@@ -397,7 +397,7 @@ OS. Here we note some of the changes required.
 After creating the environment using the ``environment.yml`` file, 
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
-and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython ~= 3.0.11``
+and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy >= 5.2, < 7.0.0``, ``astropy`` and ``cython ~= 3.0.11``
 if not using the ``environment.yml``. You may use the file as a reference of the
 packages required).
 
