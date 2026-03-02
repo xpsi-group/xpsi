@@ -456,17 +456,17 @@ Other than that, follow the MacOS (with homebrew) instructions below (written fo
     cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
     mkdir build
     cd build
-    CC=/opt/homebrew/bin/gcc-15 FC=/opt/homebrew/bin/mpif90 CXX=/opt/homebrew/bin/g++-15 cmake -DCMAKE_C_COMPILER=/opt/homebrew/bin/gcc-15 -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/g++-15 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    CC=/opt/homebrew/opt/llvm/bin/clang FC=/opt/homebrew/bin/mpif90 CXX=/opt/homebrew/opt/llvm/bin/clang++ cmake -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
     make
     ls ../lib/
 
 .. note::
 
-    In the compilation command of MultiNest above, note that the full path to ``gcc`` and ``g++`` are provided with the
-    environment flags ``CC=`` and ``CXX=``, but **also** with the ``cmake`` flags ``-DCMAKE_C_COMPILER=`` and
-    ``-DCMAKE_CXX_COMPILER=``.  The compilation of MultiNest on MacOS has not been attempted with clang (native or
-    from Homebrew so far).  As mentioned above, it is important to use ``mpif90`` installed with homebrew and not the
-    one possibly present with ``anaconda`` (when doing ``which mpif90``).
+    In the compilation command of MultiNest above, note that the full path to ``clang`` and ``clang++`` are
+    provided with the environment flags ``CC=`` and ``CXX=``, but **also** with the ``cmake`` flags
+    ``-DCMAKE_C_COMPILER=`` and ``-DCMAKE_CXX_COMPILER=``.   The compilation of MultiNest on MacOS also works with
+    with the homebrew-install version of ``gcc``.  As mentioned above, it is important to use ``mpif90`` installed
+    with homebrew and not the one possibly present with ``anaconda`` (when doing ``which mpif90``).
 
 
 Installing other dependencies on MacOS
@@ -487,18 +487,19 @@ Install ``pymultinest`` (see above)
 Update all libraries and paths needed for MacOS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. note::
+    Note that the paths below are for ARM chips.  For Intel chips, the path might be ``/usr/local/opt/llvm``, etc.
+
+
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=/Users/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$LD_LIBRARY_PATH
-    export DYLD_LIBRARY_PATH=/Users/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$DYLD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$LD_LIBRARY_PATH
+    export DYLD_LIBRARY_PATH=/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$DYLD_LIBRARY_PATH
     export LD_LIBRARY_PATH="/opt/homebrew/opt/openmpi/lib:$LD_LIBRARY_PATH"
     export PATH=$PATH:/opt/homebrew/opt/openmpi/bin
     export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
     export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
     export KMP_DUPLICATE_LIB_OK=TRUE
-
-.. note::
-    Note that the path above are for ARM chips.  For Intel chips, the path might be ``/usr/local/opt/llvm``, etc.
 
 
 Consider adding these lines directly in your bashrc (or equivalent file for a
