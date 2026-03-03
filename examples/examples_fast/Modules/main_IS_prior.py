@@ -63,9 +63,29 @@ Instrument = CustomInstrument.from_response_files(ARF =ARF,
                                              min_input = 10,
                                              channel=[10,301])
 
+data_background = np.loadtxt(this_directory+"/../Data/xpsi_synthetic_background.dat")
+registered_true_background = data_background[:, 1]
+registered_true_background_rate = registered_true_background/data.exposure_time
+
+#Setting the lower and upper limits for the background:
+support = np.ones((len(registered_true_background_rate), 2), dtype=np.double)
+support[:,0] = 0.9*registered_true_background_rate
+support[:,1] = 1.1*registered_true_background_rate
+
+for i in range(support.shape[0]):
+    if support[i,1] == 0.0:
+        for j in range(1, support.shape[0]):
+            if i+j < support.shape[0] and support[i+j,1] > 0.0:
+                support[i,1] = support[i+j,1]
+                break
+            elif i-j >= 0 and support[i-j,1] > 0.0:
+                support[i,1] = support[i-j,1]
+                break
+
 # # Signal
 signal = CustomSignal(data = data,
                       instrument = Instrument,
+                      support=support,
                       interstellar = None,
                       cache = True,
                       workspace_intervals = 1000,
@@ -129,8 +149,7 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
 # Crucial step, if the likelihood check fails, then something went terrible wrong :)
 p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
-likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
-
+likelihood.check(None, [-3.2552616905e+04], 1.0e-5, physical_points=[p])
 
 if __name__ == '__main__':
 
