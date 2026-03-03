@@ -52,7 +52,7 @@ jobs:
         pip install .
       shell: bash -l {0}
       env:
-        CC:   gcc-15
+        CC:   gcc
     - name : build docs
       run: | 
         make html
