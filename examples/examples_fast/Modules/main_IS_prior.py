@@ -146,7 +146,7 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
                              externally_updated = True,
                              prior = prior)
 
-# Crucial step, if the likelihood check fails, then something went terrible wrong :)
+# Crucial step: if the likelihood check fails, then something went terribly wrong :)
 p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
 likelihood.check(None, [-3.2552616905e+04], 1.0e-5, physical_points=[p])
