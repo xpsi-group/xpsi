@@ -68,7 +68,7 @@ jobs:
     #   echo $LD_LIBRARY_PATH
     - name: install X-PSI package
       run: |
-        python setup.py install
+        pip install .
       shell: bash -l {0}
       env:
         CC:   gcc-12

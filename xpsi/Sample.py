@@ -337,6 +337,8 @@ def importance(target, importance,
 
     yield 'Renormalising weights'
     if _rank == 0:
+        ### SAVE THE NORMALISATION CONSTANT TO RESCALE THE EVIDENCE
+        print("normalisation constant = ",_np.sum(_ref[:,0]))
         # renormalise
         _ref[:,0] /= _np.sum(_ref[:,0])
 

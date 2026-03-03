@@ -249,6 +249,7 @@ def plotBackgroundSpectrum( XPSI_model,
         ax.fill_between(x0, np.abs(mean-2*sigma), (mean+2*sigma), color =mycolors[7],alpha = 0.4,label =lBs.replace(r'1\sigma',r'2\sigma'))
     ax.plot(x0,BKG,color =mycolors[6],label = lBp,lw = 1)
     
+
     # Plotting data and expected values
     ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=2, label='Expected signal')  # lw=3
     ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=1, label='Data light curve') # lw=2
