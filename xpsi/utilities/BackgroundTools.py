@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy import integrate
 
 def readModeSummary(samples_path,
              mode_number=0,
@@ -176,7 +176,7 @@ def plotBackgroundSpectrum( XPSI_model,
 
     # Get expected counts from both spots
     num_components = signal.num_components
-    HotRegion_spectra = np.array( [ np.sum(signal.signals[i], axis=1)/float(len(signal.phases[0]))*data.exposure_time for i in range(num_components)] )
+    HotRegion_spectra = np.array( [ integrate.simpson( y=signal.signals[i], x=signal.phases[i] , axis=1 ) * data.exposure_time for i in range(num_components)] )
     Expected_Spectrum = signal.expected_counts.sum(axis = 1) 
     print( f"Maximum counts in an energy bin : {np.max( HotRegion_spectra.sum(axis=0) )}")
     
@@ -218,11 +218,11 @@ def plotBackgroundSpectrum( XPSI_model,
         ax.fill_between(x0, np.abs(mean-3*sigma), (mean+3*sigma), color =mycolors[7],alpha = 0.3,label =lBs.replace(r'1\sigma',r'3\sigma'))
         ax.fill_between(x0, np.abs(mean-1*sigma), (mean+1*sigma), color =mycolors[7],alpha = 0.5,label =lBs)
         ax.fill_between(x0, np.abs(mean-2*sigma), (mean+2*sigma), color =mycolors[7],alpha = 0.4,label =lBs.replace(r'1\sigma',r'2\sigma'))
-    ax.plot(x0,BKG,color =mycolors[6],label = lBp,lw = 2)
+    ax.plot(x0,BKG,color =mycolors[6],label = lBp,lw = 1)
 
     # Plotting data and expected values
-    ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=3, label='Expected signal')
-    ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=2, label='Data light curve')
+    ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=2, label='Expected signal')  # lw=3
+    ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=1, label='Data light curve') # lw=2
     
     # Plotting background support
     if plot_support and signal._support is not None and signal._support[signal._support>0].any():

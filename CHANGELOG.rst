@@ -1,3 +1,24 @@
+[v3.2] - 2026-03-03
+~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+- Fixing a small issue in the background plots of the post-processing (`#651 <https://github.com/xpsi-group/xpsi/pull/651>`__)
+
+
+Added
+^^^^^
+
+- Added how to recompute the evidence after importance sampling in the Importance Sampling notebook. To do so, the weights normalization value (needed to rescale the evidence) is printed when running the sampling in `Sample.py'. (`#639 <https://github.com/xpsi-group/xpsi/pull/639>`__)
+
+
+Attribution
+^^^^^^^^^^^
+
+- Sebastien Guillot (`#648 <https://github.com/xpsi-group/xpsi/pull/648>`__, `#651 <https://github.com/xpsi-group/xpsi/pull/651>`__)
+
+
 [v3.2] - 2026-03-02
 ~~~~~~~~~~~~~~~~~~~
 
