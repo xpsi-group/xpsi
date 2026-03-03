@@ -89,7 +89,7 @@ an environment manually via
 
      conda create -n xpsi
 
-and then install the core dependencies listed in ``basic_environment.yml`` via
+and then install the core dependencies listed in ``environment.yml`` via
 conda.
 
 Activate the environment as:
@@ -478,8 +478,8 @@ Update the MultiNest library in the ``LD_LIBRARY_PATH`` and ``DYLD_LIBRARY_PATH`
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=/Users/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$LD_LIBRARY_PATH
-    export DYLD_LIBRARY_PATH=/Users/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$DYLD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$LD_LIBRARY_PATH
+    export DYLD_LIBRARY_PATH=/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$DYLD_LIBRARY_PATH
 
 Install ``pymultinest`` (see above)
 
