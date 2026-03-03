@@ -39,18 +39,10 @@ For example: ``123.added.rst`` would have the content::
 Note the use of double-backticks for code.
 
 .. note::
-  * For any PR, GitHub actions will immediately initiate checks for the presence of 
-  towncrier news fragments in this dir (for very small changes you may not even want
-  to add these). In order to stop this action, 
-  select the ``no-changelog-needed`` label in GitHub.
-  * To actually generate the changelog using the news fragments, select the 
-  ``ready-for-changelog`` label in GitHub. Note that this is only to be run during a 
-  minor feature update and not for every PR merge into main. Once this is executed by 
-  ``github-actions[bot]`` this will create another commit deleting all the towncrier news 
-  fragment files and updating the ``CHANGELOG.rst`` file. Note that changes made on 
-  the branch locally following this commit will incur a merge conflict between local and
-  remote versions of the branch. This can be typically be resolved by running 
-  ``git pull --rebase origin <branch-name>`` locally and then pushing local changes.
+For any PR, GitHub actions will immediately initiate checks for the presence of towncrier news fragments in this dir (for very small changes you may not even want to add these). In order to stop this action, select the ``no-changelog-needed`` label in GitHub.
+
+.. note::
+To actually generate the changelog using the news fragments, select the ``ready-for-changelog`` label in GitHub. Note that this is only to be run during a minor feature update and not for every PR merge into main. Once this is executed by ``github-actions[bot]`` this will create another commit deleting all the towncrier news fragment files and updating the ``CHANGELOG.rst`` file. Note that changes made on the branch locally following this commit will incur a merge conflict between local and remote versions of the branch. This can be typically be resolved by running ``git pull --rebase origin <branch-name>`` locally and then pushing local changes.
 
 If you are unsure what pull request type to use, don't hesitate to ask in your
 PR.
