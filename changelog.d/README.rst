@@ -40,7 +40,8 @@ Note the use of double-backticks for code.
 
 .. note::
   * For any PR, GitHub actions will immediately initiate checks for the presence of 
-  towncrier news fragments in this dir. In order to stop this action, 
+  towncrier news fragments in this dir (for very small changes you may not even want
+  to add these). In order to stop this action, 
   select the ``no-changelog-needed`` label in GitHub.
   * To actually generate the changelog using the news fragments, select the 
   ``ready-for-changelog`` label in GitHub. Note that this is only to be run during a 
