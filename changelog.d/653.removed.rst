@@ -1,2 +1,0 @@
-Removed ``towncrier.toml`` file.
-Migrated changelog generation to ``pyproject.toml``.
