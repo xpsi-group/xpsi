@@ -3,4 +3,5 @@ They are provided with a ``PowerLaw`` model. A notebook explaining the code and 
 
 Added interface of the emission models to the ``Likelihood`` and ``Signal``.
 
-Added a ``reset`` option to the Signal registration, which is by default ``True`` and execute the same as before. The option ``reset=False`` is useful for emission models.
+Added a ``reset`` option to the Signal registration, which is by default ``True`` to remove the cached signal and execute the same as before. 
+The Signal registration was only called once for each likelihood call before. The option ``reset=False`` is needed for emission models, as the Signal registration can be called more than once now.

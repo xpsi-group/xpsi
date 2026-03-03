@@ -198,7 +198,7 @@ class PowerLaw( EmissionModel ):
 
             # Define oscillation amplitude parameter
             oscillation_amplitude = Parameter('oscillation_amplitude',
-                    strict_bounds = (0. , _np.infty),
+                    strict_bounds = (0. , 1),
                     bounds = bounds.get('oscillation_amplitude', None),
                     doc = "Amplitude of oscillation of the PowerLaw",
                     symbol = 'A',
