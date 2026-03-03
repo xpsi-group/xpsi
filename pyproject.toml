@@ -1,0 +1,94 @@
+[build-system]
+requires = [
+    "setuptools>=61",
+    "wheel",
+    "cython~=3.0.11",
+    "numpy<2.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+# ---------------------------------------------------------
+# Project metadata (replaces the setup() keyword arguments)
+# ---------------------------------------------------------
+[project]
+name = "xpsi"
+version = "3.2.1"
+authors = [
+    { name = "The X-PSI Core Team", email = "A.L.Watts@uva.nl" },
+]
+description = "X-PSI: An open-source package for neutron star X-ray Pulse Simulation and Inference."
+readme = "README.rst"
+license = { text = "GPLv3" }
+requires-python = ">=3.9"
+dependencies = ["numpy"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Cython",
+]
+
+[project.urls]
+Homepage = "https://github.com/xpsi-group/xpsi"
+Documentation = "https://xpsi-group.github.io/xpsi"
+
+# -------------------------------------------------------------------------
+# Setuptools-specific config: package discovery, data files, and zip safety
+# -------------------------------------------------------------------------
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["xpsi*"]
+
+[tool.setuptools.package-data]
+"*" = ["README.rst", "LICENSE", "*.h"]   # pick up C headers in xpsi/include
+
+# ---------
+# Towncrier
+# ---------
+[tool.towncrier]
+filename = "CHANGELOG.rst"
+directory = "changelog.d/"
+issue_format = "`#{issue} <https://github.com/xpsi-group/xpsi/pull/{issue}>`__"
+title_format = "[v{version}] - {project_date}"
+underlines = ["~", "^"]
+
+[[tool.towncrier.type]]
+directory = "summary"
+name = "Summary"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "deprecated"
+name = "Deprecated"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removed"
+name = "Removed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "attribution"
+name = "Attribution"
+showcontent = true

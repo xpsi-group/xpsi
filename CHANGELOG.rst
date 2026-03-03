@@ -1,6 +1,10 @@
 [v3.2] - 2026-03-03
 ~~~~~~~~~~~~~~~~~~~
 
+Summary
+^^^^^^^
+
+- Updated installation method to work with latest ``setuptools``, and corresponding docs and CI actions. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
 Fixed
 ^^^^^
 
@@ -10,6 +14,21 @@ Fixed
 Added
 ^^^^^
 
+- Added ``pyproject.toml`` file. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+
+
+Changed
+^^^^^^^
+
+- Changed ``setup.py`` to use ``pip install .`` instead of ``python setup.py install``.
+  Migrated functionality from ``setup.py`` to ``pyproject.toml``. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+
+
+Removed
+^^^^^^^
+
+- Removed ``towncrier.toml`` file.
+  Migrated changelog generation to ``pyproject.toml``. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
 - Added how to recompute the evidence after importance sampling in the Importance Sampling notebook. To do so, the weights normalization value (needed to rescale the evidence) is printed when running the sampling in `Sample.py'. (`#639 <https://github.com/xpsi-group/xpsi/pull/639>`__)
 
 
