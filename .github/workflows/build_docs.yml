@@ -32,11 +32,11 @@ jobs:
     - name: Install Python3 Conda environment with Micromamba
       uses: mamba-org/setup-micromamba@v1
       with:
-        cache-env: true
-        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        cache-environment: true
+        cache-environment-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
         environment-file: environment.yml
         environment-name: xpsipy3
-        extra-specs: |
+        create-args: |
           python=3.10
     - name : install docs dependencies
       run: |
@@ -49,7 +49,7 @@ jobs:
         micromamba install -c conda-forge getdist nestcheck
     - name: install X-PSI package
       run: |
-        python setup.py install
+        pip install .
       shell: bash -l {0}
       env:
         CC:   gcc-12
