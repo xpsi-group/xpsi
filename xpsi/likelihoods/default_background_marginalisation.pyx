@@ -6,7 +6,9 @@
 
 import numpy as np
 cimport numpy as np
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport malloc, free, rand, RAND_MAX
+from libc.stdio cimport printf
+
 from libc.math cimport exp, pow, log, sqrt, fabs, floor
 
 from ..tools.core cimport are_equal
@@ -35,6 +37,7 @@ cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
 
+from .compute_expected_counts cimport compute_expected_star_count_rate_single_channel, build_allow_negative_array
 from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
@@ -589,6 +592,368 @@ def eval_marginal_likelihood(double exposure_time,
 
         MCL_BACKGROUND_GIVEN_SUPPORT[i] = B * exposure_time
 
+    for p in range(num_components):
+        if components[p].shape[1] > 1:
+            gsl_interp_accel_free(acc[p])
+            gsl_interp_free(interp[p])
+    free(acc)
+    free(interp)
+
+    gsl_integration_cquad_workspace_free(w)
+
+    return (LOGLIKE,
+            np.asarray(STAR, dtype=np.double, order='C'),
+            np.asarray(MCL_BACKGROUND, dtype=np.double, order='C'),
+            np.asarray(MCL_BACKGROUND_GIVEN_SUPPORT, dtype=np.double, order='C'))
+
+
+cdef int channelwise_background_marginalization(args a,
+                                                double *LOGLIKE,
+                                                double av_DATA,
+                                                double av_STAR,
+                                                double epsabs,
+                                                double epsrel,
+                                                double epsilon,
+                                                double sigmas,
+                                                double llzero,
+                                                double *support,
+                                                double *MCL_BACKGROUND,
+                                                double *MCL_BACKGROUND_GIVEN_SUPPORT,
+                                                gsl_integration_cquad_workspace *w) noexcept nogil:
+
+    # Define the variables
+    cdef double result, abserr, upper, lower, std_est
+    cdef size_t nevals
+    cdef double B, B_for_integrand, dB, B_min, min_counts, limit
+    cdef int counter
+    cdef double exposure_time = a.T_exp
+    cdef int i = a.i
+
+    # Define the integrand from B.19
+    cdef gsl_function f
+    f.function = &marginal_integrand
+
+    # In the case of null count rate for both model and data
+    if are_equal(av_DATA, 0.0) and are_equal(av_STAR, 0.0):
+
+        # Clip to the support
+        lower = 0.0
+        if lower < support[0]:
+            lower = support[0]
+        upper = 10.0 / exposure_time
+        if upper > support[1] and support[1] > 0.0:
+            upper = support[1]
+
+        # Set a null background
+        B = 0.0
+
+        # Compute likelihood contribution
+        LOGLIKE[0] += log( ( exp(-1.0 * lower * exposure_time) - exp(-1.0 * upper * exposure_time)) / exposure_time )
+    
+    # Otherwise, do the actual background marginalization procedure
+    else:
+
+        # Set the initial guess of background count rate B and the
+        # minimum value reachable by the background count rate this B_min
+        # This is needed to run Newton scheme
+        B_min = 0.0
+        B = av_DATA - av_STAR
+
+        # If model has already high count rate than data, change
+        # initial guess and B_min (see discussion p243)
+        if B <= B_min:
+            min_counts = -1.0
+            for j in range(0, a.n):
+                if are_equal(a.star[j], 0.0):
+                    min_counts = -2.0
+                    break
+            if are_equal(min_counts, -2.0):
+                for j in range(0, a.n):
+                    if (are_equal(min_counts, -2.0) and a.data[j] > 0.0) or (0.0 < a.data[j] < min_counts):
+                        min_counts = a.data[j]
+            if not are_equal(min_counts, -1.0):
+                if are_equal(min_counts, -2.0):
+                    B = 0.0
+                    B_min = 0.0
+                else:
+                    B = 0.01 * min_counts / a.SCALE
+                    B_min = 0.1 * B
+            else:
+                B = B_min
+
+        # Newton scheme to approximate the best fit background count rate
+        # See page 242 of Riley's PhD thesis, Equations B.22 to B.26
+        dB = delta(B, &a)
+        counter = 0
+        while fabs(dB) > epsilon*a.std and counter < 2:
+
+            # Apply correction
+            B += dB
+
+            # Clip to Bmin, stop the iterations if this happens 2 times or if B_min<0
+            if B < B_min:
+                if B_min > 0.0:
+                    counter += 1
+                else:
+                    counter = 2
+                B = B_min
+
+            # Compute the step for Newton scheme
+            dB = delta(B, &a)
+
+        # Compute the standard deviation assuming the likelihood is Gaussian
+        # with respect to the background (see equation B.24 and B.13)
+        std_est = 0.0
+        for j in range(a.n):
+            std_est += a.data[j] / pow(a.star[j] + B, 2.0)
+        if std_est > 0.0:
+            std_est = sqrt(1.0 / std_est)
+        else:
+            std_est = 1e90
+
+        # Compute the lower and upper boundaries for the integral
+        # using clipping and discussion p243
+        a.B = B
+        lower = B - sigmas * std_est
+        upper = B + sigmas * std_est
+        if lower < B_min:
+            lower = B_min
+
+        # Clip boundaries and background count rate with respect to support
+        B_for_integrand = B
+        if lower < support[0]:
+            lower = support[0]
+            if upper < support[0] and support[1] > 0.0:
+                upper = support[1]
+                B_for_integrand = support[0]
+            elif upper < support[0]:
+                upper = support[0] + sigmas * std_est
+                B_for_integrand = support[0]
+
+        if upper > support[1] and support[1] > 0.0:
+            upper = support[1]
+            if lower > support[1]:
+                lower = support[0]
+                B_for_integrand = support[1]
+
+        #Ensuring that the maximum log-likelihood background for the integrand is within the integration limits
+        if B_for_integrand < lower:
+            B_for_integrand = lower
+        elif B_for_integrand > upper:
+            B_for_integrand = upper
+
+        # Compute the expected counts from the source using the
+        # clipped max likelihood background
+        # Also compute A, which is the non-constant term outside the 
+        # integral in equation B.19
+        a.A = 0.0
+        for j in range(a.n):
+            c = a.SCALE * (a.star[j] + B_for_integrand)
+            if c > 0.0:
+                a.A += a.data[j] * log(c) - c
+            # Skip if both are 0 because A is 0
+            elif are_equal(c, 0.0) and are_equal(a.data[j], 0.0):
+                pass
+            # Otherwise c<0 or c=0 and data!=0 so something went wrong, 
+            # assing low likelihood
+            else:
+                a.A += llzero
+
+        # Put the parameters for the function f to the structure a
+        f.params = &a
+
+        # Compute the integral in equation B.19 where the integrand is f
+        # and the boundary are +/- sigmas standard deviations from previously
+        # computed maximum likelihood background count rate.
+        gsl_integration_cquad(&f, lower, upper,
+                                epsabs, epsrel,
+                                w, &result,
+                                &abserr, &nevals)
+
+        # If the integration worked, compute the likelihoods by summing the
+        # 3 terms from equation B.19 (constant, non-constant, integral)
+        if result > 0.0:
+            LOGLIKE[0] += log(result) + a.A + a.precomp[a.i]
+        # If the integration failed, return failure code 0 with inifinte likelihood
+        else:
+            # To use gil and be faster, I use C random number generator
+            LOGLIKE[0] = llzero * (0.1 + 0.9 * rand() / <double>RAND_MAX)
+            return 0
+
+    # Save the maximum likelihood background count rate
+    MCL_BACKGROUND[0] = B * exposure_time
+
+    # Clip maximum likelihood background count rate to support and save it
+    if B < support[0]:
+        B = support[0]
+    elif B > support[1] and support[1] > 0.0:
+        B = support[1]
+    MCL_BACKGROUND_GIVEN_SUPPORT[0] = B * exposure_time
+
+    # Save the expected counts from the star using the maximum likelihood
+    # background count rate clipped to the support 
+    for j in range(a.n):
+        a.star[j] = a.SCALE * (a.star[j] + B)
+
+    # Retrurn confimation that the process worked
+    return 1
+
+def eval_marginal_likelihood_new(double exposure_time,
+                             double[::1] phases,
+                             double[:,::1] counts,
+                             components,
+                             component_phases,
+                             double[::1] phase_shifts,
+                             double[::1] neg_sum_ln_data_factorial,
+                             double[:,::1] support,
+                             size_t workspace_intervals,
+                             double epsabs,
+                             double epsrel,
+                             double epsilon,
+                             double sigmas,
+                             double llzero,
+                             allow_negative = False,
+                             slim = 20.0,
+                             background = None):
+    """ Evaluate the marginalized Poisson likelihood.
+
+    The count rate is integrated over phase intervals."""
+
+    # Prepare the various variables
+    cdef:
+        size_t i, j, p
+        double LOGLIKE = 0.0, av_STAR, av_DATA
+
+        double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0] - 1),
+                                      dtype = np.double)
+        double[::1] MCL_BACKGROUND = np.zeros(components[0].shape[0], dtype = np.double)
+        double[::1] MCL_BACKGROUND_GIVEN_SUPPORT = np.zeros(components[0].shape[0], dtype = np.double)
+
+        double[:,::1] _background
+
+        double n = <double>(phases.shape[0] - 1)
+        double SCALE = exposure_time / n
+
+    # Check that support is the right size and values
+    if(support.shape[0]!=counts.shape[0]):
+        raise TypeError('The number of energy channels in the background support does not match to that of the data.')
+
+    for i in range(<size_t>support.shape[0]):
+        if(support[i,1] == 0):
+            raise TypeError('Background upper limit cannot be set to 0.')
+        if(support[i,1] > 0 and support[i,1] - support[i,0] < 0):
+            raise TypeError('Background upper limit must be higher than the lower limit.')
+
+    # Prepare background
+    if background is not None:
+        _background = background
+
+    cdef args a
+    a.n = <size_t>n
+    a.precomp = &(neg_sum_ln_data_factorial[0])
+    a.SCALE = SCALE
+    a.T_exp = exposure_time
+
+    cdef const gsl_interp_type *_interpolant
+    _interpolant = _get_phase_interpolant()
+
+    cdef size_t num_components = len(components)
+    cdef double[::1] pulse_phase_set
+
+    # Prepare array to allow negative
+    cdef uint8[::1] _allow_negative = build_allow_negative_array( allow_negative , num_components )
+
+    # Allocate space for interpolators and integrators
+    cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
+    cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
+    cdef gsl_integration_cquad_workspace *w = gsl_integration_cquad_workspace_alloc(workspace_intervals)
+
+    for p in range(num_components):
+        pulse_phase_set = component_phases[p]
+        if components[p].shape[1] > 1:
+            interp[p] = gsl_interp_alloc(_interpolant,
+                                        pulse_phase_set.shape[0])
+            acc[p] = gsl_interp_accel_alloc()
+            gsl_interp_accel_reset(acc[p])
+
+    cdef gsl_interp *inter_ptr = NULL
+    cdef accel *acc_ptr = NULL
+
+    # Do the integration channel-wise and compute likelihood on the fly
+    # Loop over the channels
+    for i in range(<size_t> STAR.shape[0]):
+
+        # Compute the expected count rate
+        compute_expected_star_count_rate_single_channel(phases,
+                                         num_components,
+                                         components,
+                                         component_phases,
+                                         phase_shifts,
+                                         interp,
+                                         acc,
+                                         &(STAR[i,0]),
+                                         i,
+                                         _allow_negative)
+
+
+        # Compute the average data and signal counts
+        av_DATA = 0.0 ; av_STAR = 0.0
+        
+        # Loop over the phases to sum and add background
+        for j in range(<size_t> (phases.shape[0] - 1)):
+            STAR[i,j] *= n
+            if background is not None:
+                STAR[i,j] += _background[i,j]
+            av_STAR += STAR[i,j]
+
+            # Summing, which is faster than computing it once outside
+            av_DATA += counts[i,j]
+
+        # Before doing the whole background marginalization, check that the flux
+        # from the model in this channel is not too far (more than slim sigmas)
+        # from the signal.
+        # Otherwise, stop computation to save time. 
+        # This is useful to make the first round of sampling faster
+
+        # Skip this part if slim < 0
+        if slim < 0.0:
+            pass
+        # Otherwise, compute the slim sigmas limit in the Poisson case
+        else:
+            limit = av_STAR * SCALE - slim * sqrt(av_STAR * SCALE) - av_DATA
+            if limit > 0.0:
+                LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand(1))
+                break
+
+        # Now get the average count rates
+        av_STAR /= n
+        av_DATA /= exposure_time
+
+        # Prepare the structure a to hold everything needed
+        a.i = i
+        a.data = &(counts[i,0])
+        a.star = &(STAR[i,0])
+
+        # Apply the marginalization !
+        out = channelwise_background_marginalization(a,
+                                    &LOGLIKE,
+                                    av_DATA,
+                                    av_STAR,
+                                    epsabs,
+                                    epsrel,
+                                    epsilon,
+                                    sigmas,
+                                    llzero,
+                                    &(support[i,0]),
+                                    &MCL_BACKGROUND[i],
+                                    &MCL_BACKGROUND_GIVEN_SUPPORT[i],
+                                    w)
+        
+        # Exit if the likelihood went wrong for a given channel
+        if out == 0:
+            break
+
+    # Clean to avoid memory leaks
     for p in range(num_components):
         if components[p].shape[1] > 1:
             gsl_interp_accel_free(acc[p])
