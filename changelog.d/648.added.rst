@@ -1,0 +1,1 @@
+Added instructions for installation on MacOS with proper MultiNest (using open-mpi).
