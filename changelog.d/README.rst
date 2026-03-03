@@ -38,6 +38,14 @@ For example: ``123.added.rst`` would have the content::
 
 Note the use of double-backticks for code.
 
+.. note::
+  * For any PR, GitHub actions will immediately initiate checks for the presence of 
+  towncrier news fragments in this dir. In order to stop this action, 
+  select the ``no-changelog-needed`` label in GitHub.
+  * To actually generate the changelog using the news fragments, select the 
+  ``ready-for-changelog`` label in GitHub. Note that this is only to be run during a 
+  minor feature update and not for every PR merge into main.
+
 If you are unsure what pull request type to use, don't hesitate to ask in your
 PR.
 
