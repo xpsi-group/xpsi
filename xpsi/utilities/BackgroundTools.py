@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import integrate
+from matplotlib.colors import LinearSegmentedColormap
+from cmap import Colormap
+
 
 def readModeSummary(samples_path,
              mode_number=0,
@@ -132,7 +135,9 @@ def plotBackgroundSpectrum( XPSI_model,
                             InstrumentName,
                             plot_params=None,
                             Nsamples=200,
-                            plot_range=True, 
+                            plot_range=True,
+                            clrmap='petroff10',
+                            custcols=None, 
                             yscale='linear',
                             plot_support=False):
     """ Plot the spectrum generated along data for given parameters.
@@ -155,11 +160,20 @@ def plotBackgroundSpectrum( XPSI_model,
     :param bool plot_range:
         Should the background uncertainty ranges be plotted.
     
+    :param str clrmap:
+        Determine the colormap for the plot. Can be customised by setting 'CustomCmap'.
+        Otherwise, the available colormaps are 'Accent', 'Dark2', 'tab10_r', the default
+        colorblind friendly 'petroff10' or 'petroff10_r'.
+    
+    :par list | None custcols:
+        A list of colors for a customised colormap if required.
+        Must be large enough for all elements to plot.
+    
     :param str yscale:
         Scale of the y-axis.
 
     :param bool plot_support:
-        Should the support of the background be plotted ? 
+        Should the support of the background be plotted ?  
     """
                     
     # Get signal and data
@@ -194,24 +208,39 @@ def plotBackgroundSpectrum( XPSI_model,
         sigma = np.std(BKG_A,axis = 0)
         mean = np.mean(BKG_A,axis = 0)
         print( f"Max deviation : {np.max(sigma)} counts")
-
+    
+    # Prepare labels
+    number_labels = ['Primary@MaxL','Secondary@MaxL','Tertiary@MaxL']
+    lBs = r'$\mathrm{BKG\, MEAN\pm 1\sigma}$'
+    lBp = 'BKG@MaxL'
+    
     # Do the plotting
-    fig, ax = plt.subplots(1,1,figsize=(13,8))
-    cm = plt.get_cmap( ['RdPu','BuPu','YlGnBu'][0] ) 
-    mycolors = [cm(xcol) for xcol in np.linspace(0,1 , 8)]
+    fig, ax = plt.subplots(1,1,figsize=(13,8)) 
+    if clrmap == 'CustomCmap':
+        try:
+            assert type(custcols) == list
+            assert len(custcols) >= len(number_labels)+5
+            clrmap = LinearSegmentedColormap.from_list("CustomCmap", custcols)
+            cm=plt.get_cmap(clrmap)
+            cm.colors = custcols
+        except AssertionError:
+            raise AssertionError("For a customised colormap, we need a list of colors large enough for all potential elements to plot: the signal components, the background, the data and the expected signal.")
+    elif clrmap in ['petroff10', 'petroff10_r']:
+        CMtoplot=Colormap('petroff:'+clrmap)
+        cm=CMtoplot.to_matplotlib()
+    elif clrmap in ['Accent', 'Dark2', 'tab10_r']:
+        cm=plt.get_cmap(clrmap)
+    else:
+        raise TypeError("If it exists, this colormap doesn't help to distinguish the different components clearly. Please select one of the listed colormaps for the parameter 'clrmap' ('Accent', 'Dark2', 'tab10_r', the default colorblind friendly 'petroff10' or 'petroff10_r') or build your own, setting clrmap='CustomCmap'.")         
+    mycolors = [cm(xcol) for xcol in np.linspace(0,1 , len(cm.colors))]
     ax.grid(linestyle="-.", color='grey',linewidth=0.7)
     ax.set_ylabel(r"Spectrum [counts]",fontsize=15 )
     ax.set_xlabel("Energy Channel [keV]",fontsize=15 )
     
-    # Prepare labels
-    lBs = r'$\mathrm{BKG\, MEAN\pm 1\sigma}$'
-    lBp = 'BKG@MaxL'
-    
     # Plotting outputs
-    number_labels = ['Primary@MaxL','Secondary@MaxL','Tertiary@MaxL']
     for i in range(num_components):
-        ax.fill_between(x0, HotRegion_spectra[:i].sum(axis=0), HotRegion_spectra[:i+1].sum(axis=0), color=mycolors[i+1], alpha = 0.5, label=number_labels[i] )
-    ax.fill_between(x0, HotRegion_spectra.sum(axis=0), HotRegion_spectra.sum(axis=0)+BKG, color=mycolors[num_components+1], alpha = 0.5, label ='BKG@MaxL')
+        ax.fill_between(x0, HotRegion_spectra[:i].sum(axis=0), HotRegion_spectra[:i+1].sum(axis=0), color=mycolors[i], alpha = 0.5, label=number_labels[i] )
+    ax.fill_between(x0, HotRegion_spectra.sum(axis=0), HotRegion_spectra.sum(axis=0)+BKG, color=mycolors[num_components], alpha = 0.5, label ='BKG@MaxL')
     
     # Plotting actual background
     if plot_range:
@@ -219,6 +248,7 @@ def plotBackgroundSpectrum( XPSI_model,
         ax.fill_between(x0, np.abs(mean-1*sigma), (mean+1*sigma), color =mycolors[7],alpha = 0.5,label =lBs)
         ax.fill_between(x0, np.abs(mean-2*sigma), (mean+2*sigma), color =mycolors[7],alpha = 0.4,label =lBs.replace(r'1\sigma',r'2\sigma'))
     ax.plot(x0,BKG,color =mycolors[6],label = lBp,lw = 1)
+    
 
     # Plotting data and expected values
     ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=2, label='Expected signal')  # lw=3
