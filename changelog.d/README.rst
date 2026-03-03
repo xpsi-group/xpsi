@@ -46,7 +46,7 @@ Note the use of double-backticks for code.
   * To actually generate the changelog using the news fragments, select the 
   ``ready-for-changelog`` label in GitHub. Note that this is only to be run during a 
   minor feature update and not for every PR merge into main. Once this is executed by 
-  ``github-actions[bot]`` will create another commit deleting all the towncrier news 
+  ``github-actions[bot]`` this will create another commit deleting all the towncrier news 
   fragment files and updating the ``CHANGELOG.rst`` file. Note that changes made on 
   the branch locally following this commit will incur a merge conflict between local and
   remote versions of the branch. This can be typically be resolved by running 
