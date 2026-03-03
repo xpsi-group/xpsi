@@ -18,7 +18,7 @@ The following job script ``job.sh`` is an example job script for analysis on the
     #SBATCH -N 5
     #SBATCH --tasks-per-node=128
     #SBATCH -t 1-00:00:00
-    #SBATCH -p thin
+    #SBATCH -p rome
     #SBATCH --job-name=run1
     #SBATCH --mail-user=my_email@gmail.com
     #SBATCH --mail-type=END    

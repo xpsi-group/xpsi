@@ -3719,6 +3719,7 @@ class CustomInterstellar(xpsi.Interstellar):
         """ Helper. """
         _att = self._interpolator(energies)
         _att[_att < 0.0] = 0.0
+        _att[_att > 1.0] = 1.0
         return _att
 
     @classmethod

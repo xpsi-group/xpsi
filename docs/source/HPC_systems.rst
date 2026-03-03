@@ -67,11 +67,13 @@ Now the environment can be activated with
 
     source ./venvs/xpsi_py3/bin/activate
 
-Next, install mpi4py:
+Next, install mpi4py, h5py, and astropy:
 
 .. code-block:: bash
 
     pip install mpi4py
+    pip install h5py
+    pip install "astropy>=5.2,<7.0.0"
 
 To prepare `MultiNest <https://github.com/farhanferoz/MultiNest>`_ from
 ``$HOME``:
