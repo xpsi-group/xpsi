@@ -1115,9 +1115,11 @@ def eval_marginal_likelihood_new(double exposure_time,
         
         # Loop over the phases to sum and add background
         for j in range(<size_t> (phases.shape[0] - 1)):
-            STAR[i,j] *= n
             if background is not None:
                 STAR[i,j] += _background[i,j]
+
+            # Multiply by n to apply formulas in Riley PhD thesis
+            STAR[i,j] *= n
             av_STAR += STAR[i,j]
 
             # Summing, which is faster than computing it once and retrieving the full python array at every call
@@ -1139,7 +1141,8 @@ def eval_marginal_likelihood_new(double exposure_time,
                 LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand(1))
                 break
 
-        # Now get the average count rates
+        # Now get the average count rates, divided by n for the model 
+        # (needed to apply formulas in Riely PhD thesis)
         av_STAR /= n
         av_DATA /= exposure_time
 
@@ -1164,7 +1167,11 @@ def eval_marginal_likelihood_new(double exposure_time,
                                     &MCL_BACKGROUND[i],
                                     &MCL_BACKGROUND_GIVEN_SUPPORT[i],
                                     w)
-        
+
+        # The expected counts from the star using the maximum likelihood
+        # background count rate clipped to the support have been saved in the 
+        # channelwise_background_marginalization
+
         # Exit if the likelihood went wrong for a given channel
         if out == 0:
             break
