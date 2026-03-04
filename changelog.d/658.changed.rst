@@ -1,0 +1,1 @@
+Added the "clrmap" and "custcols" parameters for the "plotBackgroundSpectrum" function in the "BackgroundTools" script, with new colormaps to use or the ability to create our own.

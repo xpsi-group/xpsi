@@ -1,0 +1,1 @@
+Corrected error when loading `Signal` that would crash if column_density parameter was fixed and its bounds not defined. Added a check to get the correct value when `p.value` exists

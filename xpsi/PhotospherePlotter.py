@@ -21,6 +21,7 @@ if _mpl is not None:
     from matplotlib import cm
     from matplotlib import animation
     import matplotlib.image as mgimg
+    from matplotlib.colors import LinearSegmentedColormap
 else:
     pass
 
@@ -290,7 +291,7 @@ class PhotospherePlotter( Photosphere ):
               cache_energy_indices = None,
               cache_phase_indices = None,
               single_precision_intensities = True,
-              plot_sky_maps = False,
+              generate_sky_maps = False,
               sky_map_kwargs = None,
               animate_sky_maps = False,
               free_memory = True,
@@ -445,15 +446,15 @@ class PhotospherePlotter( Photosphere ):
             is single precision caching. Option ignored if intensities are not
             cached.
 
-        :param bool plot_sky_maps:
-            Plot (specific) intensity sky maps at a sequence of phases, or
+        :param bool generate_sky_maps:
+            Generate (specific) intensity sky maps at a sequence of phases, or
             by averaging over phase. Maps can be made at one more energies
             or energy intervals. The images will be written to disk and
             can be used as frames in an animated sequence.
 
         :param dict sky_map_kwargs:
             Dictionary of keyword arguments passed to
-            :meth:`~Photosphere._plot_sky_maps`. Refer to the associated
+            :meth:`~Photosphere._generate_sky_maps`. Refer to the associated
             method docstring for available options.
 
         :param bool animate_sky_maps:
@@ -518,13 +519,13 @@ class PhotospherePlotter( Photosphere ):
             self.images
         except AttributeError:
             if not reimage:
-                if plot_sky_maps:
+                if generate_sky_maps:
                     raise _exc
                 else:
                     yield ('Warning: star will not be reimaged... assuming '
                            'images exist on disk.')
         else:
-            if not reimage and plot_sky_maps and self.images[-1] is None:
+            if not reimage and generate_sky_maps and self.images[-1] is None:
                 raise _exc
 
         if phases is not None and not isinstance(phases, _np.ndarray):
@@ -546,7 +547,7 @@ class PhotospherePlotter( Photosphere ):
             time_is_space = sky_map_kwargs.get('time_is_space', False)
 
         if reimage:
-            if plot_sky_maps and not cache_intensities:
+            if generate_sky_maps and not cache_intensities:
                 raise _exc
 
             if cache_intensities:
@@ -702,7 +703,7 @@ class PhotospherePlotter( Photosphere ):
         if sky_map_kwargs is None: sky_map_kwargs = {}
         if animate_kwargs is None: animate_kwargs = {}
 
-        if plot_sky_maps or animate_sky_maps:
+        if generate_sky_maps or animate_sky_maps:
             if cache_phase_indices is None:
                 cache_phase_indices = _np.arange(len(phases),
                                                   dtype=_np.int32)
@@ -728,7 +729,7 @@ class PhotospherePlotter( Photosphere ):
             if bolometric and animate_sky_maps:
                 raise ValueError('Bolometric sky maps cannot be animated.')
 
-        if plot_sky_maps:
+        if generate_sky_maps:
             if not _os.path.isdir(root_dir):
                 _os.mkdir(root_dir)
             elif _os.path.isfile(file_root + '_0.png'):
@@ -760,7 +761,7 @@ class PhotospherePlotter( Photosphere ):
                 else:
                     yield 'Image files archived in subdirectory ``%s``.' % temp
 
-            figsize, dpi, num_frames = self._plot_sky_maps(file_root,
+            figsize, dpi, num_frames = self._generate_sky_maps(file_root,
                                                _phases = phases,
                                                _energies = energies,
                                                _c_idxs = cache_energy_indices,
@@ -773,7 +774,7 @@ class PhotospherePlotter( Photosphere ):
                 raise ValueError('Star was reimaged but sky maps were not '
                                  'plotted... aborting animation.')
 
-            figsize, dpi, num_frames = self._plot_sky_maps(file_root,
+            figsize, dpi, num_frames = self._generate_sky_maps(file_root,
                                                _phases = phases,
                                                _energies = energies,
                                                _c_idxs = cache_energy_indices,
@@ -818,7 +819,7 @@ class PhotospherePlotter( Photosphere ):
         yield None
 
     @make_verbose('Plotting intensity sky maps', 'Intensity sky maps plotted')
-    def _plot_sky_maps(self,
+    def _generate_sky_maps(self,
                        _file_root,
                        _phases,
                        _energies,
@@ -1698,6 +1699,92 @@ class PhotospherePlotter( Photosphere ):
         plt.close(fig)
 
         yield None
+
+    def _prepare_sky_map_data(self): 
+        """Extracting and preparing azimuth, photon intensities, and contour 
+        levels plotting sky maps. 
+        """
+        # information for vertical lines mesh grid 
+        phi = _np.copy(self.images[4][...]) #  azimuth mapped to point (x,y) on image plane (1D array)
+
+        for i in range(len(phi)):
+        # rays that scatter have negative constant values <-100
+        # for quantities such as the azimuth
+            if phi[i] > -100.0:
+                if phi[i] > _m.pi:
+                    while phi[i] > _m.pi:
+                        phi[i] -= 2.0 * _m.pi
+                elif phi[i] < -_m.pi:
+                    while phi[i] < -_m.pi:
+                        phi[i] += 2.0 * _m.pi
+
+        phi_lvls = _np.linspace(_np.min(phi[phi > -100.0]),
+                        _np.max(phi[phi > -100.0]), 25)
+        
+        # photon intensities for hotspots 
+        if self.images[-1] is None:
+            raise ValueError('You need to cache intensity sky maps in the image '
+                        'function if you want to plot them.')
+        intensity = self.images[-1][0,0,:]
+        min_intensity = _np.min(intensity[intensity > 0.0])
+        max_intensity = _np.max(intensity)
+        intensity_lvls = _np.linspace(min_intensity,
+                        max_intensity, 200)
+        
+        return phi, phi_lvls, intensity, intensity_lvls
+
+    def plot_sky_map(self): 
+        """Plot the photon specific intensity sky map with a normalized 
+         temperature colorbar.
+        """
+
+        phi, phi_lvls, intensity, intensity_lvls = self._prepare_sky_map_data()
+
+        fig = plt.figure(figsize=(12,10))
+        ax = plt.gca()
+
+        # plot vertical lines of the mesh grid 
+        ax.tricontour(self.images[1], # x-coordinate on image plane (1D array)
+                    self.images[2], # y-coordinate on image plane (1D array) 
+                    phi,
+                    levels=phi_lvls,
+                    linestyles='solid',
+                    linewidths=0.5,
+                    colors='#0a0f2c')
+
+        # plot horizontal lines of the mesh grid 
+        ax.tricontour(self.images[1],   
+                    self.images[2],     
+                    self.images[3], # colatitude mapped to point (x,y) on image plane (1D array)
+                    levels=_np.linspace(0.1, _m.pi-0.1, 25),
+                    colors='#0a0f2c',
+                    linestyles='solid',
+                    linewidths=0.5)
+
+        # plot hotspots 
+        orange_to_red = LinearSegmentedColormap.from_list(
+                "orange_red", ["darkorange", "#990000"]
+        )
+
+        hotspots = ax.tricontourf(self.images[1], 
+                    self.images[2], 
+                    intensity,
+                    levels=intensity_lvls,
+                    cmap=orange_to_red)
+
+        # set background and axis appearance
+        for spine in ax.spines.values():
+            spine.set_edgecolor('white')
+        ax.set_xlim([-1.025, 1.025])
+        ax.set_ylim([-1.025, 1.025])
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+
+        # make shared normalized colorbar
+        fractions = _np.linspace(0, 1, 6)
+        ticks = intensity_lvls[0] + fractions * (intensity_lvls[-1] - intensity_lvls[0])
+        cbar = fig.colorbar(hotspots, ticks=ticks)
+        cbar.ax.set_yticklabels(['0','0.2', '0.4', '0.6', '0.8', '1'])
 
 def _veneer(x, y, axes, lw=1.0, length=8, log=(False, False)):
     """ Make the plots a little more aesthetically pleasing. """
