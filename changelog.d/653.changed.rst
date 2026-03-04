@@ -1,0 +1,3 @@
+Changed ``setup.py`` to use ``pip install .`` instead of ``python setup.py install``.
+Migrated functionality from ``setup.py`` to ``pyproject.toml``.
+Updated ``install.rst``.

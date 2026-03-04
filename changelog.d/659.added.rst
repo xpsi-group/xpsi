@@ -1,0 +1,1 @@
+Added plotting functionality for the photon intensity sky map that includes deformation due to compactness. 
