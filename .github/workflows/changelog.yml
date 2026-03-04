@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Check for changelog fragments
         env:
@@ -38,7 +38,7 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Install changelog dependencies
         run: pip install towncrier
