@@ -13,8 +13,6 @@ from libc.math cimport exp, pow, log, sqrt, fabs, floor
 
 from ..tools.core cimport are_equal
 
-ctypedef np.uint8_t uint8
-
 from GSL cimport (gsl_interp,
                    gsl_interp_alloc,
                    gsl_interp_init,
@@ -37,11 +35,12 @@ cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
 
-from .compute_expected_counts cimport compute_expected_star_count_rate_single_channel, build_allow_negative_array
+from .compute_expected_counts cimport compute_expected_star_count_rate_single_channel, build_allow_negative_array, uint8
 from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
-    """ Compute negative of sum of log-factorials of data count numbers.
+    """ Compute negative of sum of log-factorials of data count numbers. 
+    This is the constant term in Riley's PhD thesis equation B.19
 
     Use this function to perform precomputation before repeatedly calling
     :func:`~.eval_marginal_likelihood`.
@@ -54,21 +53,24 @@ def precomputation(int[:,::1] data):
         A 1D :class:`numpy.ndarray` information, one element per channel. Each
         element is the negative of the sum (over phase intervals) of
         log-factorials of data count numbers.
-
     """
 
+    # Define the variables
     cdef:
         size_t i, j
         double[::1] precomp = np.zeros(data.shape[0], dtype = np.double)
 
+    # Loop over channels
     for i in range(<size_t>data.shape[0]):
+
+        # Sum over phases
         for j in range(<size_t>data.shape[1]):
             precomp[i] += gsl_sf_lnfact(<unsigned int>(data[i,j]))
-
         precomp[i] *= -1.0
 
     return np.asarray(precomp, dtype = np.double, order = 'C')
 
+# Define the argument structure, useful to store various information on the computation
 ctypedef struct args:
     size_t n
     size_t i
@@ -111,34 +113,55 @@ cdef double marginal_integrand(double B, void *params) noexcept nogil:
 
     """
 
+    # Define variables
     cdef size_t j
     cdef double c, x = 0.0
     cdef args *a  = <args*> params
 
+    # Loop over phases
     for j in range(a.n):
+
+        # Compute the number of expected counts for a given B
         c = a.SCALE * (a.star[j] + B)
+
+        # If positive, add to the integrand
         if c > 0.0:
             x += a.data[j] * log(c) - c
+
+        # If both are 0, pass
         elif are_equal(c, 0.0) and are_equal(a.data[j], 0.0):
-            #x += log(1) = 0
             pass
+        
+        # Else, something went wrong, return 0
         else:
-            #x += log(0) -> return exp(-inf) = 0
             return 0.0
 
-    #with gil:
-    #    if x - a.A > 0.0:
-    #        print("a.i, x-a.A, a.B, off, B = %i, %.8f, %.8f, %.8f, %.8f" %
-    #              (a.i, x - a.A, a.B, (a.B - B)/a.interval, B))
-
+    # We have now computed the first part of the integrand
+    # -a.A is the second term of the equation (with the maximum)
     return exp(x - a.A)
 
 cdef double delta(double B, void *params) noexcept nogil:
+    """ Compute the step of background value for the Newton scheme 
+    (https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a, equation B.25)
+    
+    :param double B:
+        Current background count rate to compute the delta for.
 
+    :param void *params:
+        Additional parameters, which include:
+        "n":      Number of phase bins.
+        "star":   Modelled count rate binned in phases.
+        "data":   Observed number of counts binned in phases.
+    """
+
+    # Define variables
     cdef size_t j
     cdef double x = 0.0, y = 0.0
     cdef args *a  = <args*> params
 
+    # Loop over the phases to compute the first and second order derivative of likelihood with respect to background count rate
+    # x is the second order derivative of likelihood with respect to background count rate (equation B.13)
+    # y is the first order derivative of likelihood with respect to background count rate (equation B.12)
     for j in range(a.n):
         y += a.data[j] / (a.star[j] + B)
         x += a.data[j] / pow(a.star[j] + B, 2.0)
@@ -146,8 +169,10 @@ cdef double delta(double B, void *params) noexcept nogil:
     y = 2.0 * a.T_exp - 2.0 * y
     x *= 2.0
 
+    # Compute the standard deviation using equation B.24
     a.std = sqrt(2.0 / x)
 
+    # Compute delta using B.25
     return -1.0 * y / x
 
 def eval_marginal_likelihood(double exposure_time,
@@ -620,12 +645,96 @@ cdef int channelwise_background_marginalization(args a,
                                                 double *MCL_BACKGROUND,
                                                 double *MCL_BACKGROUND_GIVEN_SUPPORT,
                                                 gsl_integration_cquad_workspace *w) noexcept nogil:
+    """ Compute the likelihood and background count rate for a given energy channel
+    using the background maginalization procedure provided in equation B.19 (term inside the sum with constant). 
+    
+    The references across the code are to Riley 2019 PhD thesis:
+    https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a
+
+    A Newton iteration procedure is implemented to approximate the maximum likelihood (ML) background count-rate. 
+    Marginalisation is then executed numerically between bounds centred on the ML background estimate. The bounds 
+    for marginalisation are based on a Gaussian expansion of the conditional likelihood function, and are 
+    :obj:`sigmas` standard deviations above and below the ML estimate. The marginalisation is performed with 
+    respect to a flat bounded or unbounded prior density function of each background variable.
+
+    :param args a:
+        Parameters, which include:
+        "T_exp":    Exposure time.
+        "i":        The current channel number being evaluated.
+        "n":        Number of phase bins.
+        "SCALE":    Scaling from modelled count rate to number of counts.
+        "star":     Modelled count rate binned in phases.
+        "data":     Observed number of counts binned in phases.
+        "std":      Standard deviation of the likelihood with respect to background assuming Gaussian distribution
+        "A":        Estimated maximum log-likelihood within the integration limits.
+
+    :param double* LOGLIKE:
+        Pointer to the computed loglikelihood so it can be updated inside this function.
+
+    "param double av_DATA:
+        Average data count rate in the current channel.
+
+    "param double av_STAR:
+        Average modeled count rate (star+background) in the current channel.
+
+    :param double epsabs:
+        The absolute tolerance for marginalisation via numerical quadrature
+        using the GSL ``cquad`` integration routine.
+
+    :param double epsrel:
+        The relative tolerance for marginalisation via numerical quadrature
+        using the GSL ``cquad`` integration routine.
+
+    :param double epsilon:
+        The fraction of the standard deviation of the approximating Gaussian
+        function to tolerate when a new step of the quadratic maximisation
+        scheme is proposed. This fraction should be some adequately small
+        number. The standard deviation is recalculated with each iteration
+        as the position (in each background variable) evolves.
+
+    :param double sigmas:
+        The number of approximating Gaussian standard deviations to expand
+        the integration domain about the point estimated to maximise the
+        conditional likelihood function in each channel. This number should
+        probably be at least five but no more than ten.
+
+    :param double llzero:
+        The log-likelihood that a MultiNest process treats as zero and thus
+        ignores points with smaller log-likelihood. This number will be *very*
+        negative. This is useful because if the likelihood is predicted, in
+        advance of full executation of this function, to be incredibly small,
+        computation can be avoided, returning a number slightly above this
+        zero-threshold.
+
+    :param double* support:
+        Pointer to the prior support array of the background *count-rate* variables 
+        in the current energy channel. The array has 2 values: the first value contains 
+        lower-bounds and must be greater than or equal to zero, the second value contains
+        the upper-bounds which must be greater than zero and greater than the
+        corresponding lower-bound but finite. If the upper-bound is less than
+        zero the prior is semi-unbounded and thus improper.
+
+    :param double *MCL_BACKGROUND:
+        Pointer to the maximum likelihood background count rate for the 
+        current channel to update.
+                                  
+    :param double *MCL_BACKGROUND_GIVEN_SUPPORT:
+        Pointer to the maximum likelihood background count rate, clipped to 
+        the support, for the current channel to update.
+                                        
+    :param gsl_integration_cquad_workspace *w:
+        Pointer to an integration workspace to use.
+
+    :returns:
+        An `int` reporting the success of the code.
+
+    """
 
     # Define the variables
     cdef double result, abserr, upper, lower, std_est
     cdef size_t nevals
     cdef double B, B_for_integrand, dB, B_min, min_counts, limit
-    cdef int counter
+    cdef int counter    
     cdef double exposure_time = a.T_exp
     cdef int i = a.i
 
@@ -682,7 +791,7 @@ cdef int channelwise_background_marginalization(args a,
                 B = B_min
 
         # Newton scheme to approximate the best fit background count rate
-        # See page 242 of Riley's PhD thesis, Equations B.22 to B.26
+        # See page 242 equations B.22 to B.26
         dB = delta(B, &a)
         counter = 0
         while fabs(dB) > epsilon*a.std and counter < 2:
@@ -742,10 +851,8 @@ cdef int channelwise_background_marginalization(args a,
         elif B_for_integrand > upper:
             B_for_integrand = upper
 
-        # Compute the expected counts from the source using the
-        # clipped max likelihood background
-        # Also compute A, which is the non-constant term outside the 
-        # integral in equation B.19
+        # Compute A, which is the non-constant term outside the 
+        # integral in equation B.19 and a part of the integrand
         a.A = 0.0
         for j in range(a.n):
             c = a.SCALE * (a.star[j] + B_for_integrand)
@@ -815,9 +922,116 @@ def eval_marginal_likelihood_new(double exposure_time,
                              allow_negative = False,
                              slim = 20.0,
                              background = None):
-    """ Evaluate the marginalized Poisson likelihood.
+    """ Compute the expected count rate and evaluate the background-maginalized Poisson likelihood.
 
-    The count rate is integrated over phase intervals."""
+    The references across the code are to Riley 2019 PhD thesis:
+    https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a
+
+    :param double exposure_time:
+        Exposure time in seconds by which to scale the expected count rate
+        in each phase interval.
+
+    :param double[::1] phases:
+        A :class:`numpy.ndarray` of phase interval edges in cycles.
+
+    :param double[:,::1] counts:
+        A :class:`numpy.ndarray` of observed number of counts in energy and phase bins.
+
+    :param tuple components:
+        Component signals, each a C-contiguous :class:`numpy.ndarray` of
+        signal count rates where phase increases with column number.
+
+    :param tuple component_phases:
+        For each component, a C-contiguous :class:`numpy.ndarray` of phases
+        in cycles at which the model :obj:`signal` is evaluated on
+        the interval ``[0,1]``.
+
+    :param array-like phase_shifts:
+        Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
+        the component signals.
+
+    :param double[::1] neg_sum_ln_data_factorial:
+        The precomputed output of :func:`~.precomputation` given the data count
+        numbers.
+
+    :param double[:,::1] support:
+        The prior support of the background *count-rate* variables. The first
+        column contains lower-bounds as a function of channel number. Lower-
+        bounds must be greater than or equal to zero. The second column contains
+        the upper-bounds as a function of channel number. Upper-bounds for a
+        proper prior must be greater than zero and greater than the
+        corresponding lower-bound but finite. If the upper-bound is less than
+        zero the prior is semi-unbounded and thus improper. Must be a
+        C-contiguous :class:`numpy.ndarray`.
+
+    :param size_t workspace_intervals:
+        The size of the workspace to allocate for marginalisation via numerical
+        quadrature using the GSL ``cquad`` integration routine.
+
+    :param double epsabs:
+        The absolute tolerance for marginalisation via numerical quadrature
+        using the GSL ``cquad`` integration routine.
+
+    :param double epsrel:
+        The relative tolerance for marginalisation via numerical quadrature
+        using the GSL ``cquad`` integration routine.
+
+    :param double epsilon:
+        The fraction of the standard deviation of the approximating Gaussian
+        function to tolerate when a new step of the quadratic maximisation
+        scheme is proposed. This fraction should be some adequately small
+        number. The standard deviation is recalculated with each iteration
+        as the position (in each background variable) evolves.
+
+    :param double sigmas:
+        The number of approximating Gaussian standard deviations to expand
+        the integration domain about the point estimated to maximise the
+        conditional likelihood function in each channel. This number should
+        probably be at least five but no more than ten.
+
+    :param double llzero:
+        The log-likelihood that a MultiNest process treats as zero and thus
+        ignores points with smaller log-likelihood. This number will be *very*
+        negative. This is useful because if the likelihood is predicted, in
+        advance of full executation of this function, to be incredibly small,
+        computation can be avoided, returning a number slightly above this
+        zero-threshold.
+
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
+    :param double slim:
+        The number that determines how many sigmas below the signal from the star
+        can the data be at most (at any channel) before skipping the exact
+        likelihood calculation and returning a random likelihood only slightly
+        above the logZero level of MultiNest (no expected counts or background
+        are returned in that case). By default a value of 20.0 is used.
+        If a negative value is provided, no limit is applied.
+
+    :param obj background:
+        If not ``None``, then a C-contiguous :class:`numpy.ndarray` of
+        background count rates where phase interval increases with column
+        number. Useful for phase-dependent backgrounds, or a phase-independent
+        background if the channel-by-channel background variable prior support
+        is restricted.
+
+    :returns:
+        A tuple ``(double, 2D ndarray, 1D ndarray, 1D ndarray)``. The first element is
+        the logarithm of the marginal likelihood. The second element is the
+        expected count numbers in joint phase-channel intervals from the star
+        (the target source). The third element is the vector of background
+        count numbers that are estimated to maximise the conditional
+        likelihood function, one per channel. The last element is the vector of background
+        count numbers, within the given support, that are estimated to maximise the conditional
+        likelihood function, one per channel.
+
+    """
 
     # Prepare the various variables
     cdef:
@@ -828,11 +1042,13 @@ def eval_marginal_likelihood_new(double exposure_time,
                                       dtype = np.double)
         double[::1] MCL_BACKGROUND = np.zeros(components[0].shape[0], dtype = np.double)
         double[::1] MCL_BACKGROUND_GIVEN_SUPPORT = np.zeros(components[0].shape[0], dtype = np.double)
-
         double[:,::1] _background
 
         double n = <double>(phases.shape[0] - 1)
         double SCALE = exposure_time / n
+
+        size_t num_components = len(components)
+        double[::1] pulse_phase_set
 
     # Check that support is the right size and values
     if(support.shape[0]!=counts.shape[0]):
@@ -848,25 +1064,20 @@ def eval_marginal_likelihood_new(double exposure_time,
     if background is not None:
         _background = background
 
+    # Prepare the structure to hold
     cdef args a
     a.n = <size_t>n
     a.precomp = &(neg_sum_ln_data_factorial[0])
     a.SCALE = SCALE
     a.T_exp = exposure_time
 
-    cdef const gsl_interp_type *_interpolant
-    _interpolant = _get_phase_interpolant()
-
-    cdef size_t num_components = len(components)
-    cdef double[::1] pulse_phase_set
-
-    # Prepare array to allow negative
-    cdef uint8[::1] _allow_negative = build_allow_negative_array( allow_negative , num_components )
-
     # Allocate space for interpolators and integrators
     cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
     cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
     cdef gsl_integration_cquad_workspace *w = gsl_integration_cquad_workspace_alloc(workspace_intervals)
+
+    cdef const gsl_interp_type *_interpolant
+    _interpolant = _get_phase_interpolant()
 
     for p in range(num_components):
         pulse_phase_set = component_phases[p]
@@ -878,6 +1089,9 @@ def eval_marginal_likelihood_new(double exposure_time,
 
     cdef gsl_interp *inter_ptr = NULL
     cdef accel *acc_ptr = NULL
+
+    # Prepare array to allow negative
+    cdef uint8[::1] _allow_negative = build_allow_negative_array( allow_negative , num_components )
 
     # Do the integration channel-wise and compute likelihood on the fly
     # Loop over the channels
@@ -906,7 +1120,7 @@ def eval_marginal_likelihood_new(double exposure_time,
                 STAR[i,j] += _background[i,j]
             av_STAR += STAR[i,j]
 
-            # Summing, which is faster than computing it once outside
+            # Summing, which is faster than computing it once and retrieving the full python array at every call
             av_DATA += counts[i,j]
 
         # Before doing the whole background marginalization, check that the flux
@@ -935,6 +1149,8 @@ def eval_marginal_likelihood_new(double exposure_time,
         a.star = &(STAR[i,0])
 
         # Apply the marginalization !
+        # Passing as much complex variables as possible as pointer
+        # Only doubles are not passed as pointers
         out = channelwise_background_marginalization(a,
                                     &LOGLIKE,
                                     av_DATA,

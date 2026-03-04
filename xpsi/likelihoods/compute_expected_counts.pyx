@@ -25,7 +25,21 @@ from ..tools.core cimport _get_phase_interpolant, gsl_interp_type, are_equal
 
 cdef uint8[::1] build_allow_negative_array( object allow_negative , 
                                             size_t num_components):
-
+    """ Build the array of allowed negative array to be compliant with different input types
+    
+    :param object allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+    
+    :param size_t num_components:
+        Integer of the number of different components being included in the star model.
+    """
+    
     cdef uint8[::1] _allow_negative = np.zeros(num_components, dtype=np.uint8)
     cdef size_t i
 
@@ -44,7 +58,7 @@ cdef uint8[::1] build_allow_negative_array( object allow_negative ,
                                  'not match the number of components..')
 
             for i in range(num_components):
-                _allow_negative[i] = allow_negative[i]
+                _allow_negative[i] = <uint8>allow_negative[i]
 
     return _allow_negative
 
@@ -60,7 +74,44 @@ cdef void compute_expected_star_count_rate_single_channel(double[::1] phases,
                                          int channel,
                                          uint8[::1] allow_negative):
 
-    """ Compute the expected signal from the star in cts/s for a single channel. """
+    """ Compute the expected signal from the star in cts/s for a single channel.
+    
+    :param double[::1] phases:
+        A :class:`numpy.ndarray` of phase interval edges in cycles.
+
+    :param size_t num_components:
+        Number of components to loop over.
+    
+    :param tuple components:
+        Component signals, each a C-contiguous :class:`numpy.ndarray` of
+        signal count rates where phase increases with column number.
+
+    :param tuple component_phases:
+        For each component, a C-contiguous :class:`numpy.ndarray` of phases
+        in cycles at which the model :obj:`signal` is evaluated on
+        the interval ``[0,1]``.
+
+    :param double[::1] phase_shifts:
+        Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
+        the component signals.
+
+    :param gsl_interp **interp:
+        Pointer to the gsl interpolator to use.
+
+    :param gsl_interp_accel **acc:
+        Pointer to the accelerator of the gsl interpolator to use.
+ 
+    :param double *STAR:
+        Pointer to the STAR array to update with the expected star count rate.
+        Points to the right channel so only needs 1D input on phase.
+
+    :param int channel:
+        Channel number to compute the count rate for.
+
+    :param uint8[::1] allow_negative:
+        An array of unint (0 or 1), one per component, declaring whether
+        to allow negative phase interpolant integrals. 
+     """
 
     # Define variables
     cdef:
@@ -73,8 +124,6 @@ cdef void compute_expected_star_count_rate_single_channel(double[::1] phases,
         accel *acc_ptr = NULL
         double pa, pb, _val
         size_t p, j
-
-
 
     # Loop over the different components and retrieve useful information
     for p in range(num_components):
@@ -156,7 +205,49 @@ cdef double[:,::1] compute_expected_counts(double exposure_time,
                             double[:,::1] background,
                             object allow_negative):
 
-    """ Compute the expected counts """ 
+    """ Compute the expected counts given various components and a background count rate.
+    
+    :param double exposure_time:
+        Exposure time in seconds by which to scale the expected count rate
+        in each phase interval.
+    
+    :param double[::1] phases:
+        A :class:`numpy.ndarray` of phase interval edges in cycles.
+
+    :param tuple components:
+        Component signals, each a C-contiguous :class:`numpy.ndarray` of
+        signal count rates where phase increases with column number.
+
+    :param tuple component_phases:
+        For each component, a C-contiguous :class:`numpy.ndarray` of phases
+        in cycles at which the model :obj:`signal` is evaluated on
+        the interval ``[0,1]``.
+
+    :param array-like phase_shifts:
+        Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
+        the component signals.
+
+    :param obj background:
+        If not ``None``, then a C-contiguous :class:`numpy.ndarray` of
+        background count rates where phase interval increases with column
+        number. Useful for phase-dependent backgrounds, or a phase-independent
+        background if the channel-by-channel background variable prior support
+        is restricted.
+
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
+    :return double 2Dndarray:
+        The expected count numbers in joint phase-channel intervals from the star
+        (the target source) added with background.
+
+    """ 
 
     # Define the expected count array and number of component and phases
     cdef:

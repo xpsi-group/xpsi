@@ -223,7 +223,7 @@ def gaussian_likelihood_given_background_new(double exposure_time,
                                         double[::1] phase_shifts,
                                         double[:,::1] background,
                                         allow_negative = False):
-    """ Evaluate the Gaussian likelihood.
+    """ Evaluate the Gaussian likelihood and compute the expected star + background counts.
 
     The count rate is integrated over phase intervals.
 
@@ -270,11 +270,13 @@ def gaussian_likelihood_given_background_new(double exposure_time,
 
     """
 
+    # Prepare variables
     cdef:
         double LOGLIKE = 0.0, sigma_tot2 = 1.0, norm
         double[:,::1] EXPEC
         size_t i,j
 
+    # Compute the expected counts from star + background
     EXPEC = compute_expected_counts(exposure_time,
                                     phases,
                                     components,
@@ -283,6 +285,7 @@ def gaussian_likelihood_given_background_new(double exposure_time,
                                     background,
                                     allow_negative)
 
+    # Compute the gaussian likelihood
     for i in range(<size_t> EXPEC.shape[0]):
         for j in range(<size_t> EXPEC.shape[1]):
             sigma_tot2 = pow(errors[i,j],2.0)

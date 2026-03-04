@@ -51,9 +51,7 @@ def gaussian_likelihood_QnUn(double[::1] phases,
 
     """
     cdef:
-        double LOGLIKE = 0.0, EXPEC = 0.0, sigma_tot2 = 1.0
-        double n = <double>(phases.shape[0] - 1)
-
+        double LOGLIKE = 0.0, sigma_tot2 = 1.0
 
     for i in range(counts.shape[0]):
         for j in range(counts.shape[1]):
@@ -61,6 +59,5 @@ def gaussian_likelihood_QnUn(double[::1] phases,
             norm = 0.5 * log(2.0*pi*sigma_tot2)
             LOGLIKE -= ((star[j])-counts[i,j])**2/(2.0*sigma_tot2)+norm
             #printf("\nLOGLIKE, star, counts, err: %f, %f, %f, %f\n", ((star[j])-counts[i,j])**2/(2.0*sigma_tot2)-norm, star[j],counts[i,j],errors[i,j])            
-
 
     return (LOGLIKE, np.asarray(star, order='C', dtype=np.double))
