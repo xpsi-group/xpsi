@@ -299,7 +299,7 @@ cdef double[:,::1] compute_expected_counts(double exposure_time,
         for j in range(<size_t> STAR.shape[1]):
             
             # Add background
-            STAR[i,j] += background[i,j]/n
+            STAR[i,j] += background[i,j]
 
             # From count rate to counts
             STAR[i,j] *= exposure_time
