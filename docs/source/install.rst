@@ -340,7 +340,7 @@ Alternatively, to build X-PSI in-place:
     CC=<path/to/compiler/executable> pip install --no-build-isolation -e .
 
 This installs a pointer to your source directory. Python imports directly from there, so 
-`.py changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require 
+`.py` changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require 
 re-running the command to recompile the extensions.
 
 If you want to reinstall from scratch, run the `rm` command above to clean the C files and run:
