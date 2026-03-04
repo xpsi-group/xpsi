@@ -12,7 +12,7 @@ from libc.math cimport pow, log, floor, fabs, pi
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
-from .compute_expected_counts cimport compute_expected_counts
+from ..tools.compute_expected_counts cimport compute_expected_counts
 from ..tools.core cimport are_equal
 
 from GSL cimport (gsl_interp,

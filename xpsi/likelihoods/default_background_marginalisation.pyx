@@ -35,7 +35,7 @@ cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
 
-from .compute_expected_counts cimport compute_expected_star_count_rate_single_channel, build_allow_negative_array, uint8
+from ..tools.compute_expected_counts cimport compute_expected_star_count_rate_single_channel, build_allow_negative_array, uint8
 from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
