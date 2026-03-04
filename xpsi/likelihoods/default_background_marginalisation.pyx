@@ -734,7 +734,7 @@ cdef int channelwise_background_marginalization(args a,
     cdef double result, abserr, upper, lower, std_est
     cdef size_t nevals
     cdef double B, B_for_integrand, dB, B_min, min_counts, limit
-    cdef int counter    
+    cdef int counter
     cdef double exposure_time = a.T_exp
     cdef int i = a.i
 

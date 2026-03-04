@@ -58,7 +58,7 @@ cdef uint8[::1] build_allow_negative_array( object allow_negative ,
                                  'not match the number of components..')
 
             for i in range(num_components):
-                _allow_negative[i] = <uint8>allow_negative[i]
+                _allow_negative[i] = allow_negative[i]
 
     return _allow_negative
 
