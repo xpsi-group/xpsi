@@ -46,10 +46,6 @@ class Star(ParameterSubspace):
         for photosphere in self._photospheres:
             photosphere.spacetime = self._spacetime
 
-        # by default turn off fast_mode in HotRegion objects
-        # the likelihood object will activate this if it is needed
-        self.activate_fast_mode(False)
-
         super(Star, self).__init__(spacetime, photospheres)
 
     @property
@@ -65,13 +61,6 @@ class Star(ParameterSubspace):
     @photospheres.setter
     def photospheres(self, obj):
         self._photospheres = [obj]
-
-    def activate_fast_mode(self, activate):
-        try:
-            for photosphere in self._photospheres:
-                photosphere.hot.fast_mode = activate
-        except AttributeError:
-            pass # no hot regions to worry about
 
     def update(self, fast_counts=None, threads=1, force_update=False):
         """ Update the star.

@@ -789,12 +789,9 @@ class HotRegion(ParameterSubspace):
         :param int threads: Number of ``OpenMP`` threads for mesh construction.
 
         """
-        num_cells = self._fast_num_cells if self.fast_mode \
-                                                    else self._num_cells
-        min_sqrt_num_cells = self._fast_min_sqrt_num_cells if self.fast_mode \
-                                                else self._min_sqrt_num_cells
-        max_sqrt_num_cells = self._fast_max_sqrt_num_cells if self.fast_mode \
-                                                else self._max_sqrt_num_cells
+        num_cells = self._num_cells
+        min_sqrt_num_cells = self._min_sqrt_num_cells
+        max_sqrt_num_cells = self._max_sqrt_num_cells
 
         (self._super_sqrt_num_cells,
          self._super_num_cells,
@@ -928,7 +925,7 @@ class HotRegion(ParameterSubspace):
         """
         self._super_r_s_over_r = _contig(st.r_s / self._super_r, dtype = _np.double)
 
-        num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
+        num_rays = self._num_rays
 
         (terminate_calculation,
          self._super_deflection,
@@ -1025,9 +1022,7 @@ class HotRegion(ParameterSubspace):
             presence of the hot region.
 
         """
-        if self.fast_mode and not self.do_fast:
-            return None
-        elif not self.needs_update: # dynamically evaluate if stuff to do
+        if not self.needs_update: # dynamically evaluate if stuff to do
             try:
                 self._super_theta
             except AttributeError:
@@ -1065,14 +1060,6 @@ class HotRegion(ParameterSubspace):
     @do_fast.setter
     def do_fast(self, activate):
         self._do_fast = activate
-
-    @property
-    def fast_mode(self):
-        return self._fast_mode
-
-    @fast_mode.setter
-    def fast_mode(self, activate):
-        self._fast_mode = activate
 
     @property
     def cede(self):
@@ -1139,16 +1126,9 @@ class HotRegion(ParameterSubspace):
                             integration.
 
         """
-        if self.fast_mode and not self.do_fast:
-            try:
-                if self.cede:
-                    return (None, None)
-            except AttributeError:
-                return (None,)
-
-        leaves = self._fast_leaves if self.fast_mode else self._leaves
-        phases = self._fast_phases if self.fast_mode else self._phases
-        num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
+        leaves = self._leaves
+        phases = self._phases
+        num_rays = self._num_rays
 
         if isinstance(energies, tuple):
             try:
@@ -1272,16 +1252,9 @@ class HotRegion(ParameterSubspace):
                             integration.
 
         """
-        if self.fast_mode and not self.do_fast:
-            try:
-                if self.cede:
-                    return (None, None)
-            except AttributeError:
-                return (None,)
-
-        leaves = self._fast_leaves if self.fast_mode else self._leaves
-        phases = self._fast_phases if self.fast_mode else self._phases
-        num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
+        leaves = self._leaves
+        phases = self._phases
+        num_rays = self._num_rays
 
         if isinstance(energies, tuple):
             try:

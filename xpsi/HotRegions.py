@@ -56,20 +56,6 @@ class HotRegions(ParameterSubspace):
                 return True
         return False
 
-    @property
-    def fast_mode(self):
-        """ Is fast-mode currently activated? """
-        for obj in self._objects:
-            if obj.fast_mode:
-                return True
-        return False
-
-    @fast_mode.setter
-    def fast_mode(self, activate):
-        """ Activate or deactivate fast-mode. """
-        for obj in self._objects:
-            obj.fast_mode = activate
-
     def print_settings(self):
         """ Print numerical settings. """
         for obj in self._objects:

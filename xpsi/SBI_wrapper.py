@@ -16,19 +16,13 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
     to return `model_flux` that is the synthesised signal.
     """
 
-    def _driver(self, fast_mode=False, synthesise=False, force_update=False, **kwargs):
+    def _driver(self, synthesise=False, force_update=False, **kwargs):
         """ Main likelihood evaluation driver routine. """
-
-        self._star.activate_fast_mode(fast_mode)
 
         star_updated = False
         if self._star.needs_update or force_update: # ignore fast parameters in this version
             try:
-                if fast_mode or not self._do_fast:
-                    fast_total_counts = None
-                else:
-                    fast_total_counts = tuple(signal.fast_total_counts for\
-                                                        signal in self._signals)
+                fast_total_counts = None
 
                 self._star.update(fast_total_counts, self.threads,force_update=force_update)
             except xpsiError as e:
@@ -42,10 +36,7 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
 
             for photosphere, signals in zip(self._star.photospheres, self._signals):
                 try:
-                    if fast_mode:
-                        energies = signals[0].fast_energies
-                    else:
-                        energies = signals[0].energies
+                    energies = signals[0].energies
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
@@ -79,35 +70,35 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signal),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                     elif signal.isQ:
                         signal.register(tuple(
                                          tuple(self._divide(component,
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signalQ),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                     elif signal.isU:
                         signal.register(tuple(
                                          tuple(self._divide(component,
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signalU),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                     elif signal.isQn:
                         signal.register(tuple(
                                          tuple(self._divide(component,
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signalQ),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                         Qsignal = signal.signals
                         signal.register(tuple(
                                          tuple(self._divide(component,
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signal),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                         Isignal = signal.signals
                         for ihot in range(len(photosphere.signalQ)):
                             signal._signals[ihot]=np.where(Isignal[ihot]==0.0, 0.0, Qsignal[ihot]/Isignal[ihot])
@@ -117,14 +108,14 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signalU),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                         Usignal = signal.signals
                         signal.register(tuple(
                                          tuple(self._divide(component,
                                                       self._star.spacetime.d_sq)
                                                for component in hot_region)
                                          for hot_region in photosphere.signal),
-                                    fast_mode=fast_mode, threads=self.threads)
+                                    threads=self.threads)
                         Isignal = signal.signals
                         for ihot in range(len(photosphere.signalU)):
                             signal._signals[ihot]=np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
@@ -134,7 +125,7 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
                 else:
                     reregistered = False
 
-                if not fast_mode and reregistered:
+                if reregistered:
                     if synthesise:
                         hot = photosphere.hot
                         try:
@@ -214,26 +205,13 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
                 super(Likelihood, self).__call__(self.cached)
                 return None
 
-        if self._do_fast:
-            # perform a low-resolution precomputation to direct cell
-            # allocation
-            x, model_flux = self._driver(fast_mode=True)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return model_flux
-            elif x:
-                x, model_flux = self._driver(synthesise=True, **kwargs)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return model_flux
+        x, model_flux = self._driver(synthesise=True, **kwargs)
+        if not isinstance(x, bool):
+            super(Likelihood, self).__call__(self.cached) # restore
+            return model_flux
+
         else:
-            x, model_flux = self._driver(synthesise=True, **kwargs)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return model_flux
-            
-            else:
-                return model_flux
+            return model_flux
 
 class SynthesiseData(xpsi.Data):
     """ Custom data container to enable synthesis.
