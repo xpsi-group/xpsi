@@ -1,0 +1,1 @@
+Moved the `Synthetic_data.ipynb` from examples_fast to the documentation.
