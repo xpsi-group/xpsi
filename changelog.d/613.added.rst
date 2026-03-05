@@ -1,1 +1,6 @@
-Added a method to synthesize mock data in FITS format in Signal.py
+Added a method to synthesize mock data in both TXT and FITS format in Signal.py.
+The method allows to save background values as well.
+
+This previously needed custom implementation of the code to do and has been simplified.
+
+The `Synthetic_data.ipynb` now gives information on synthesizing FITS and with background data.

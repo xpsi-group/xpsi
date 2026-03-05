@@ -41,6 +41,7 @@
    Accretion_disk
    Multiple_imaging
    Importance_sampling
+   Synthetic_data
    Module_generator_tutorial
    Example_script_and_modules
    Example_job
