@@ -342,6 +342,14 @@ def synthesise_exposure_new(double exposure_time,
         gsl_rng_set(r, gsl_seed)
     else:
         gsl_rng_set(r, time.time())
+
+    # Do a Poisson realization     
+    SYNTHETIC = np.zeros((components[0].shape[0], phases.shape[0]-1), dtype = np.double)
+    for i in range(<size_t>EXPEC.shape[0]):
+        for j in range(<size_t>EXPEC.shape[1]):
+            SYNTHETIC[i,j] = gsl_ran_poisson(r, EXPEC[i,j])
+
+    # Free memory
     gsl_rng_free(r)
 
     # Return result  
@@ -689,6 +697,13 @@ def synthesise_given_total_count_number_new(double[::1] phases,
         gsl_rng_set(r, gsl_seed)
     else:
         gsl_rng_set(r, time.time())
+
+    # Do a Poisson realization     
+    SYNTHETIC = np.zeros((components[0].shape[0], phases.shape[0]-1), dtype = np.double)
+    for i in range(<size_t>EXPEC.shape[0]):
+        for j in range(<size_t>EXPEC.shape[1]):
+            SYNTHETIC[i,j] = gsl_ran_poisson(r, EXPEC[i,j])
+
     gsl_rng_free(r)
 
     return (np.asarray(EXPEC, order='C', dtype=np.double),
