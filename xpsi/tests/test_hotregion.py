@@ -161,7 +161,7 @@ class TestHotRegion(object):
 
             # Invalid cases
             (3, 10, 80, ValueError),     # sqrt_num_cells < 4
-            ("invalid", 10, 80, 16, ValueError), # Non-integer sqrt_num_cells
+            ("invalid", 10, 80, ValueError), # Non-integer sqrt_num_cells
         ],
     )
     def test_set_num_cells(self, sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
@@ -361,8 +361,8 @@ class TestHotRegion(object):
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
 
-        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+        test_hotregion.set_num_cells(32, 10, 80)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         # Not yet testing invalid cases and failing cases yet. Also: not testing yet underlying functions individually.
         
 
@@ -398,8 +398,8 @@ class TestHotRegion(object):
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
 
-        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+        test_hotregion.set_num_cells(32, 10, 80)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         
         test_hotregion._HotRegion__compute_rays(test_spacetime, 
                                                 test_photosphere, 1)
@@ -412,8 +412,8 @@ class TestHotRegion(object):
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
 
-        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+        test_hotregion.set_num_cells(32, 10, 80)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         test_hotregion._HotRegion__compute_rays(test_spacetime, 
                                                 test_photosphere, 1)
         test_hotregion._HotRegion__calibrate_lag(test_spacetime, 
@@ -427,9 +427,7 @@ class TestHotRegion(object):
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
 
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime,
-                                  None,
-                                  1)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         test_hotregion._HotRegion__compute_rays(test_spacetime, 
                                                 test_photosphere, 1)
         test_hotregion._HotRegion__compute_cellParamVecs()
@@ -460,13 +458,13 @@ class TestHotRegion(object):
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
 
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+        test_hotregion.embed(test_spacetime, test_photosphere, 1)
         # Also testing the optional args that produce a correction.           
         # Mock function to be passed as *args
         def mock_correction_function(vector):
             return np.ones((len(vector), len(vector), 1))
 
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1, mock_correction_function)
+        test_hotregion.embed(test_spacetime, test_photosphere, 1, mock_correction_function)
         
         
 
@@ -532,7 +530,7 @@ class TestHotRegion(object):
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
 
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+        test_hotregion.embed(test_spacetime, test_photosphere, 1)
         
         atm_ext_else = None
         energies = np.linspace(1,2,10) # keV
@@ -545,7 +543,7 @@ class TestHotRegion(object):
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
 
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+        test_hotregion.embed(test_spacetime, test_photosphere, 1)
         
         atm_ext_else = None
         energies = np.linspace(1,2,10) # keV
