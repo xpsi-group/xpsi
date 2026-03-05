@@ -8,26 +8,7 @@ from __future__ import division
 
 import numpy as np
 cimport numpy as np
-from libc.math cimport pow, log, floor, fabs, pi
-from libc.stdlib cimport malloc, free
-from libc.stdio cimport printf
-
-from GSL cimport (gsl_interp,
-                   gsl_interp_alloc,
-                   gsl_interp_init,
-                   gsl_interp_free,
-                   gsl_interp_eval,
-                   gsl_interp_eval_integ,
-                   gsl_interp_accel,
-                   gsl_interp_accel_alloc,
-                   gsl_interp_accel_free,
-                   gsl_interp_accel_reset)
-
-ctypedef gsl_interp_accel accel
-
-ctypedef np.uint8_t uint8
-
-from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
+from libc.math cimport pow, log, pi
 
 def gaussian_likelihood_QnUn(double[::1] phases,
                                         double[:,::1] counts,
