@@ -331,7 +331,7 @@ If you ever need to reinstall, first clean to recompile the C files:
 
 .. code-block:: bash
 
-    rm -r build dist *egg* xpsi/*/*.c
+    rm -r build dist xpsi/*/*.c
 
 Alternatively, to build X-PSI in-place:
 
@@ -339,9 +339,15 @@ Alternatively, to build X-PSI in-place:
 
     CC=<path/to/compiler/executable> pip install --no-build-isolation -e .
 
-This will build extension modules in the source code directory. You must in
-this case ensure that the source code directory is on your ``PYTHONPATH``
-environment variable, or inserted into ``sys.path`` within a calling module.
+This installs a pointer to your source directory. Python imports directly from there, so 
+`.py` changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require 
+re-running the command to recompile the extensions.
+
+If you want to reinstall from scratch, run the `rm` command above to clean the C files and run:
+
+.. code-block:: bash
+
+    pip uninstall xpsi
 
 Documentation
 -------------
