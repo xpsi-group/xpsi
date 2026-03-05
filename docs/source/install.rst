@@ -181,7 +181,8 @@ capabilities of sample post-processing software you
 `require MultiNest <https://github.com/farhanferoz/MultiNest>`_ ``v3.12``.
 To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
-from Open MPI).
+from Open MPI). See below for using MultiNest of MacOS ("Tips for installing
+on MacOS").
 
 Prerequisites for MultiNest are c and fortran
 compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
@@ -253,7 +254,7 @@ Finally, to build and install from the X-PSI clone root, execute:
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python setup.py install [--user]
+    CC=<path/to/compiler/executable> pip install . [--user]
 
 The ``--user`` flag is optional and specifies where the package is installed;
 if you want to install the package in a virtual environment (as recommended), omit this flag.
@@ -336,7 +337,7 @@ Alternatively, to build X-PSI in-place:
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python setup.py build_ext -i
+    CC=<path/to/compiler/executable> pip install --no-build-isolation -e .
 
 This will build extension modules in the source code directory. You must in
 this case ensure that the source code directory is on your ``PYTHONPATH``
@@ -368,7 +369,7 @@ To rebuild the documentation after a change to source code docstrings:
 
 .. code-block:: bash
 
-    [CC=<path/to/compiler/executable>] python setup.py install [--user]; cd
+    [CC=<path/to/compiler/executable>] pip install . [--user]; cd
     docs; make clean; make html; cd ..
 
 The ``.html`` files can then be found in ``xpsi/docs/build/html``, along with the
@@ -397,11 +398,15 @@ OS. Here we note some of the changes required.
 After creating the environment using the ``environment.yml`` file, 
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
-and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython ~= 3.0.11``
+and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy``, ``astropy >= 5.2, < 7.0.0`` and ``cython ~= 3.0.11``
 if not using the ``environment.yml``. You may use the file as a reference of the
 packages required).
 
-On Mac OS, it's preferable to use ``llvm clang`` rather than ``gcc``.  The
+
+Installing compilers on MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On Mac OS, it is preferable to use ``llvm clang`` rather than ``gcc``.  The
 ``homebrew`` version of ``clang`` works, but some users may face potential
 issues (see below for the MacOS native ``clang``).  To use ``homebrew`` version
 of ``clang``, first install  ``homebrew``:
@@ -415,33 +420,99 @@ already present in the Mac OS:
 
 .. code-block:: bash
 
-    brew install llvm 
-   
-Install ``GSL`` (see above).
+    brew install llvm
 
-Install ``fortran`` before ``MPI``. If faced with issues when specifying or
-using gfortran (and it "does not pass simple tests") specify the compiler as
-being gfortran in the ``mpif90`` wrapper files and delete the files that were
-already in the build directory. Once ``MPI`` is installed, export the following
-environment variables:
+Also use homebrew to install ``cmake``, ``gfortran`` (with ``gcc``) and ``open-mpi`.
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH"
-    export PATH=$PATH:/Users/<your_path>/mpi/bin/
-    export LDFLAGS="-L/usr/local/opt/llvm/lib"
-    export CPPFLAGS="-I/usr/local/opt/llvm/include"
+    brew install cmake
+    brew install gcc
+    brew install open-mpi
+
+.. note::
+
+    If a version of these packages was already installed with homebrew, consider running ``brew upgrade <package>``.
+    Also, ``open-mpi`` seems to be imcompatible on MacOS with ``mpich``. Let's try without installing ``mpich``.
+
+
+Installing MultiNest on MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To compile MultiNest, the path to the compiler might differ whether you are on an Intel chip or ARM chip.
+
+.. note::
+    For Intel chips, the path might be ``/usr/local/bin/``, while for brew on ARM chips, they will instead
+    likely be in ``/opt/homebrew/bin/``.
+
+
+Other than that, follow the MacOS (with homebrew) instructions below (written for ARM chip).
+
+
+.. code-block:: bash
+
+    git clone https://github.com/farhanferoz/MultiNest.git <path/to/clone>/multinest
+    cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
+    mkdir build
+    cd build
+    CC=/opt/homebrew/opt/llvm/bin/clang FC=/opt/homebrew/bin/mpif90 CXX=/opt/homebrew/opt/llvm/bin/clang++ cmake -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    make
+    ls ../lib/
+
+.. note::
+
+    In the compilation command of MultiNest above, note that the full path to ``clang`` and ``clang++`` are
+    provided with the environment flags ``CC=`` and ``CXX=``, but **also** with the ``cmake`` flags
+    ``-DCMAKE_C_COMPILER=`` and ``-DCMAKE_CXX_COMPILER=``.   The compilation of MultiNest on MacOS also works with
+    with the homebrew-install version of ``gcc``.  As mentioned above, it is important to use ``mpif90`` installed
+    with homebrew and not the one possibly present with ``anaconda`` (when doing ``which mpif90``).
+
+
+Installing other dependencies on MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Install ``GSL`` (see above).
+
+Update the MultiNest library in the ``LD_LIBRARY_PATH`` and ``DYLD_LIBRARY_PATH`` before installing ``pymultinest``
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=/Users/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$LD_LIBRARY_PATH
+    export DYLD_LIBRARY_PATH=/Users/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$DYLD_LIBRARY_PATH
+
+Install ``pymultinest`` (see above)
+
+
+Update all libraries and paths needed for MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note::
+    Note that the paths below are for ARM chips.  For Intel chips, the path might be ``/usr/local/opt/llvm``, etc.
+
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$LD_LIBRARY_PATH
+    export DYLD_LIBRARY_PATH=/<your_path>/MultiNest_v3.12_CMake/multinest/lib:$DYLD_LIBRARY_PATH
+    export LD_LIBRARY_PATH="/opt/homebrew/opt/openmpi/lib:$LD_LIBRARY_PATH"
+    export PATH=$PATH:/opt/homebrew/opt/openmpi/bin
+    export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
     export KMP_DUPLICATE_LIB_OK=TRUE
 
 
 Consider adding these lines directly in your bashrc (or equivalent file for a
 different shell e.g. zshrc).
 
+
+Compiling X-PSI on MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^
+
 Install ``X-PSI`` using:
 
 .. code-block:: bash
 
-    CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user] 
+    CC=/opt/homebrew/opt/llvm/bin/clang pip install . [--user]
 
 
 If you are facing problems with this installation (e.g., linker problems, or
@@ -449,14 +520,14 @@ If you are facing problems with this installation (e.g., linker problems, or
 
 .. code-block:: bash
 
-    CC=/usr/local/opt/llvm/bin/clang python setup.py install --noopenmp [--user] 
+    XPSI_NO_OPENMP=1 CC=/opt/homebrew/opt/llvm/bin/clang pip install . [--user]
 
 
 You may also try to use the MacOS native version of ``clang``:
 
 .. code-block:: bash
 
-    CC=/usr/bin/clang python setup.py install --noopenmp [--user] 
+    XPSI_NO_OPENMP=1 CC=/usr/bin/clang CC=gcc pip install . [--user] 
 
 
 
@@ -464,14 +535,12 @@ If you encounter any problems with permissions when installing X-PSI, use the
 ``--user`` option (This will install X-PSI globally, and not just within your
 virtual environment).
 
-.. note::
-
-    We are encountering issues with installing MultiNest on Mac and we are working on proposing a solution.
-
 
 .. note::
 
-   See the :ref:`faq` page for issues that might arise if you are trying to install on Mac using a non-native ``gcc`` compiler.  
+   See the :ref:`faq` page for issues that might arise if you are trying to
+   install on Mac using a non-native ``gcc`` compiler.
+
 
 Tips for installing on Windows
 ------------------------------

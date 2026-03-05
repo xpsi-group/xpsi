@@ -12,7 +12,8 @@ import numpy as np
 
 class CustomHotRegion_Accreting(xpsi.HotRegion):
     """Custom implementation of HotRegion. Accreting Atmosphere model by 
-    Anna Bobrikova. The parameters are ordered I(E < mu < tau < tbb < te).
+    Anna Bobrikova if atm_ext = 'Num5D'. The parameters are ordered 
+    I(E < mu < tau < tbb < te).
     
     E is energy.
     mu is cos of zenith angle.
@@ -23,10 +24,7 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
 
     required_names = ['super_colatitude',
                       'super_radius',
-                      'phase_shift',
-                      'super_tbb',
-                      'super_te',
-                      'super_tau']
+                      'phase_shift']
     optional_names = ['omit_colatitude',
                       'omit_radius',
                       'omit_azimuth',
@@ -35,12 +33,16 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
                       'cede_azimuth',
                       'cede_tbb',
                       'cede_te',
-                      'cede_tau']
+                      'cede_tau',
+                      'super_tbb',
+                      'super_te',
+                      'super_tau',
+                      'super_h']
     
     def __init__(self,
             bounds,
             values,
-            symmetry = 'azimuthal_invariance',
+            symmetry = True,
             interpolator = 'split',
             omit = False,
             cede = False,
@@ -63,40 +65,57 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
             is_antiphased = False,
             custom = None,
             image_order_limit = None,
+            atm_ext='Num5D',
             **kwargs
             ):
+ 
 
-        doc = """
-        tbb
-        """
-        super_tbb = Parameter('super_tbb',
-                    strict_bounds = (0.001, 0.003), #tbb = Tbb(keV)/511keV
-                    bounds = bounds.get('super_tbb', None),
-                    doc = doc,
-                    symbol = r'tbb',
-                    value = values.get('super_tbb', None))
-        doc = """
-        te
-        """
-        super_te = Parameter('super_te',
-                    strict_bounds = (40., 200.), #te = Te(keV)*1000/511keV
-                    bounds = bounds.get('super_te', None),
-                    doc = doc,
-                    symbol = r'te',
-                    value = values.get('super_te', None))
-        
-        doc = """
-        tau
-        """
-        super_tau = Parameter('super_tau',
-                    strict_bounds = (0.5, 3.5),
-                    bounds = bounds.get('super_tau', None),
-                    doc = doc,
-                    symbol = r'tau',
-                    value = values.get('super_tau', None))
         
 
-        custom = [super_tbb, super_te, super_tau]
+        if atm_ext == 'Num5D':
+            doc = """
+            tbb
+            """
+            super_tbb = Parameter('super_tbb',
+                        strict_bounds = (0.001, 0.003), #tbb = Tbb(keV)/511keV
+                        bounds = bounds.get('super_tbb', None),
+                        doc = doc,
+                        symbol = r'tbb',
+                        value = values.get('super_tbb', None))
+            doc = """
+            te
+            """
+            super_te = Parameter('super_te',
+                        strict_bounds = (40., 200.), #te = Te(keV)*1000/511keV
+                        bounds = bounds.get('super_te', None),
+                        doc = doc,
+                        symbol = r'te',
+                        value = values.get('super_te', None))
+            
+            doc = """
+            tau
+            """
+            super_tau = Parameter('super_tau',
+                        strict_bounds = (0.5, 3.5),
+                        bounds = bounds.get('super_tau', None),
+                        doc = doc,
+                        symbol = r'tau',
+                        value = values.get('super_tau', None))
+            
+
+            custom = [super_tbb, super_te, super_tau]
+        elif atm_ext == 'user':
+            doc = """
+            h
+            """
+            super_h = Parameter('super_h',
+                        strict_bounds = (-1, 1),  
+                        bounds = bounds.get('super_h', None),
+                        doc = doc,
+                        symbol = r'h',
+                        value = values.get('super_h', None))
+
+            custom = [super_h]
 
         if cede:
             doc = """
@@ -157,29 +176,27 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
                 is_antiphased = is_antiphased,
                 custom = custom,
                 image_order_limit = image_order_limit,
+                atm_ext=atm_ext,
                 **kwargs
                 )
 
     def _HotRegion__compute_cellParamVecs(self):
+
+
         self._super_radiates = np.greater(self._super_cellArea, 0.0).astype(np.int32)
         self._super_cellParamVecs = np.ones((self._super_radiates.shape[0],
-                                      self._super_radiates.shape[1],
-                                      3),
-                                     dtype=np.double)
+                                              self._super_radiates.shape[1],
+                                              3),
+                                             dtype=np.double)
+        if self.atm_ext == 5: # user
+            self._super_cellParamVecs[...,:-1] *= self['super_h']
 
-        self._super_cellParamVecs[...,0] *= self['super_te']
-        self._super_cellParamVecs[...,1] *= self['super_tbb']
-        self._super_cellParamVecs[...,2] *= self['super_tau']
+ 
+      
+        elif self.atm_ext == 6: # Bobrikova atmosphere
+            self._super_cellParamVecs[...,0] *= self['super_te']
+            self._super_cellParamVecs[...,1] *= self['super_tbb']
+            self._super_cellParamVecs[...,2] *= self['super_tau']
 
-        try:
-            self._cede_radiates = np.greater(self._cede_cellArea, 0.0).astype(np.int32)
-        except AttributeError:
-            pass
         else:
-            self._cede_cellParamVecs = np.ones((self._cede_radiates.shape[0],
-                                                 self._cede_radiates.shape[1],
-                                                 3), dtype=np.double)
-
-            self._cede_cellParamVecs[...,0] *= self['cede_te']
-            self._cede_cellParamVecs[...,1] *= self['cede_tbb']
-            self._cede_cellParamVecs[...,2] *= self['cede_tau']
+            print('error in cellparamvecs')

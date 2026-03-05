@@ -26,9 +26,9 @@ NICER rotation-powered millisecond pulsar papers
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
-**Mauviard et al. 2025** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2025arXiv250614883M/abstract>`_ *A NICER view of the 1.4 solar-mass edge-on pulsar PSR J0614--3329*. See also the associated `Zenodo repository`__.
+**Mauviard et al. 2025** `(ApJ, 995, 60) <https://ui.adsabs.harvard.edu/abs/2025ApJ...995...60M/abstract>`_ *A NICER view of the 1.4 solar-mass edge-on pulsar PSR J0614--3329*. See also the associated `Zenodo repository`__.
 
-.. _Zenodo25mauviard: https://doi.org/10.5281/zenodo.15603406
+.. _Zenodo25mauviard: https://doi.org/10.5281/zenodo.15603405
 __ Zenodo25mauviard_
 
 **Hoogkamer et al. 2025** `(PRD, 112, 023008) <https://ui.adsabs.harvard.edu/abs/2025PhRvD.112b3008H/abstract>`_ *Cross-comparison of sampling algorithms for pulse profile modeling of PSR J0740+6620*. See also the associated `Zenodo repository`__.
@@ -99,7 +99,12 @@ __ Zenodo_
 
 
 PPM for accreting/bursting neutron stars
-****************************************
+****************************************  
+
+**Dorsman et al. 2026** `(MNRAS, 545, staf1983) <https://ui.adsabs.harvard.edu/abs/2026MNRAS.545f1983D/abstract>`_ *Pulse profile modelling of the accretion-powered millisecond pulsar SAX J1808.4-3658 using NICER data from its 2019 and 2022 outbursts*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo26dorsman: https://doi.org/10.5281/zenodo.17232362
+__ Zenodo26dorsman_
 
 **Das et al. 2025** `(ApJ, 987, 34) <https://ui.adsabs.harvard.edu/abs/2025ApJ...987...34D/abstract>`_ *Pulse Profiles of Accreting Neutron Stars from GRMHD Simulations*.
 
@@ -136,6 +141,8 @@ __ Zenodo23kini_
 
 General PPM studies
 *******************
+
+**Li et al. 2025** `(Science China Physics, Mechanics & Astronomy, 68, 119503) <https://ui.adsabs.harvard.edu/abs/2025SCPMA..6819503L/abstract>`_ *Dense matter in neutron stars with eXTP*. X-PSI is used for AMXP PPM simulations for eXTP.
 
 **Bootsma et al. 2025** `(MNRAS, 537, 3769) <https://ui.adsabs.harvard.edu/abs/2025MNRAS.537.3769B/abstract>`_ *Scaling relations for the uncertainty in neutron star radius inferred from pulse profile modelling: the effect of spin rate*. See also the associated `Zenodo repository`__.
 

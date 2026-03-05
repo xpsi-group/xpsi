@@ -360,7 +360,7 @@ parser.add_argument('--attenuation-path', type=str, help='Absolute or relative p
 parser.add_argument('--attenuation-energy-column', type=int, default=0,
                     help='Column (zero-indexed) containing the energies in the attenuation file.',
                     comment=True)
-parser.add_argument('--attenuation-column', type=int, default=1,
+parser.add_argument('--attenuation-column', type=int, default=2,
                     help='Column (zero-indexed) containing the attenuation factors in the attenuation file.',
                     comment=True)
 

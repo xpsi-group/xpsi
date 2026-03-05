@@ -289,7 +289,6 @@ class HotRegion(ParameterSubspace):
             raise TypeError("The 'split' argument signifies split atmosphere interpolation and must be a boolean.")
 
         self.symmetry = symmetry
-
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
@@ -521,10 +520,11 @@ class HotRegion(ParameterSubspace):
         if declaration: # can we safely assume azimuthal invariance?
             if self._split:
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
-                from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU
+                from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU   
             else:
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
+
         else: # more general purpose
             if self._split:
                 raise TypeError("Split version of the integrator has not been implemented for symmetry=False.")
@@ -1117,8 +1117,14 @@ class HotRegion(ParameterSubspace):
         else:
             self._concentric = concentric
 
-    def integrate(self, st, energies, threads,
-                  hot_atmosphere, elsewhere_atmosphere, atm_ext_else):
+    def integrate(self, 
+                  st, 
+                  energies, 
+                  threads,
+                  hot_atmosphere, 
+                  elsewhere_atmosphere, 
+                  atm_ext_else, 
+                  R_in=1e6):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -1162,7 +1168,13 @@ class HotRegion(ParameterSubspace):
             if hot_atmosphere == ():
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
-
+        
+        if st.i > _np.pi/2 and R_in != 1e6:
+            print('WARNING: disk blocking assumes that the inclination is '
+                  'smaller than 90 degrees. However, inclination > 90 degrees.'
+                  ' Formula for r_psi_d in the integrator is incorrect in this'
+                  ' case.')
+        
         super_pulse = self._integrator(threads,
                                        st.R,
                                        st.Omega,
@@ -1190,7 +1202,8 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
-                                       self._image_order_limit)
+                                       self._image_order_limit,
+                                       R_in=R_in)
 
         if super_pulse[0] == 1:
             raise PulseError('Fatal numerical error during superseding-'
@@ -1224,7 +1237,8 @@ class HotRegion(ParameterSubspace):
                                           self.atm_ext,
                                           atm_ext_else,
                                           self.beam_opt,
-                                          self._image_order_limit)
+                                          self._image_order_limit,
+                                          R_in=R_in)
         except AttributeError:
             pass
         else:
@@ -1235,8 +1249,15 @@ class HotRegion(ParameterSubspace):
                 return (super_pulse[1], cede_pulse[1])
         return (super_pulse[1],)
 
-    def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else):
+    def integrate_stokes(self, 
+                         st, 
+                         energies, 
+                         threads,
+                         hot_atmosphere_I, 
+                         hot_atmosphere_Q, 
+                         elsewhere_atmosphere, 
+                         atm_ext_else, 
+                         R_in=1e6):
         """ Integrate Stokes parameters over the photospheric radiation field.
 
         Calls the CellMesh Stokes integrators, with or without exploitation of
@@ -1309,7 +1330,8 @@ class HotRegion(ParameterSubspace):
                                    self.atm_ext,
                                    atm_ext_else,
                                    self.beam_opt,
-                                   self._image_order_limit)
+                                   self._image_order_limit,
+                                   R_in=R_in)
 
         super_pulse = all_pulses[0], all_pulses[1]
         super_pulse_Q = all_pulses[0], all_pulses[2]
@@ -1350,7 +1372,8 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
-                                       self._image_order_limit)
+                                       self._image_order_limit,
+                                       R_in=R_in)
             cede_pulse = all_pulses[0], all_pulses[1] #success and flux
             cede_pulse_Q = all_pulses[0], all_pulses[2]
             cede_pulse_U = all_pulses[0], all_pulses[3]
