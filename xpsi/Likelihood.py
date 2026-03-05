@@ -86,8 +86,6 @@ class Likelihood(ParameterSubspace):
         self.star = star
         self.signals = signals
 
-        self._do_fast = False
-
         self._num_energies = num_energies
         self._fast_rel_num_energies = fast_rel_num_energies
 
@@ -115,11 +113,6 @@ class Likelihood(ParameterSubspace):
                 signal.energies = energies
                 signal.phases = photosphere.surface.phases_in_cycles
 
-                if photosphere.surface.do_fast:
-                    signal.fast_energies = fast_energies
-                    signal.fast_phases = photosphere.surface.fast_phases_in_cycles
-                    self._do_fast = True
-
         self.threads = threads
 
         self.llzero = llzero
@@ -145,10 +138,6 @@ class Likelihood(ParameterSubspace):
         except TypeError:
             raise TypeError('Thread number must be an integer.')
 
-    @property
-    def do_fast(self):
-        """ Does fast mode need to be activated? """
-        return self._do_fast
 
     @property
     def star(self):
@@ -476,23 +465,10 @@ class Likelihood(ParameterSubspace):
                     super(Likelihood, self).__call__(self.cached)
                     return self.random_near_llzero
 
-            if self._do_fast:
-                # perform a low-resolution precomputation to direct cell
-                # allocation
-                x = self._driver(fast_mode=True,force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return x
-                elif x:
-                    x = self._driver(force_update=force)
-                    if not isinstance(x, bool):
-                        super(Likelihood, self).__call__(self.cached) # restore
-                        return x
-            else:
-                x = self._driver(force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return x
+            x = self._driver(force_update=force)
+            if not isinstance(x, bool):
+                super(Likelihood, self).__call__(self.cached) # restore
+                return x
 
             # memoization: update parameter value caches
             super(Likelihood, self).__call__(self.vector)
@@ -705,20 +681,7 @@ class Likelihood(ParameterSubspace):
                 super(Likelihood, self).__call__(self.cached)
                 return None
 
-        if self._do_fast:
-            # perform a low-resolution precomputation to direct cell
-            # allocation
-            x = self._driver(fast_mode=True,force_update=force)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return None
-            elif x:
-                x = self._driver(synthesise=True,force_update=force, **kwargs)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return None
-        else:
-            x = self._driver(synthesise=True,force_update=force, **kwargs)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return None
+        x = self._driver(synthesise=True,force_update=force, **kwargs)
+        if not isinstance(x, bool):
+            super(Likelihood, self).__call__(self.cached) # restore
+            return None

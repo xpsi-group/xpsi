@@ -125,13 +125,9 @@ class HotRegion(ParameterSubspace):
         pulses on the interval :math:`[0,1]`. If ``None``
         (default), the :obj:`num_phases` argument is utilised.
 
-    :param bool do_fast:
-        Activate fast precomputation to guide cell distribution between
-        two radiating regions at distinct temperatures.
 
-    .. note:: For each of the resolution parameters listed above, there is
-              a corresponding parameter whose value is respected if the
-              fast precomputation mode is activated.
+
+
 
     :param bool is_antiphased:
         If ``True``, shifts the cell mesh by :math:`\pi` radians about

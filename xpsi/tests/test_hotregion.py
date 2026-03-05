@@ -207,42 +207,42 @@ class TestHotRegion(object):
         )
         
     @pytest.mark.parametrize(
-        "num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, do_fast, expect_error",
+        "num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, expect_error",
         [
-            # Valid cases not fast
-            (5, None, None, None, None, None, False, None),
-            (5, None, np.linspace(0, 1, 5), None, None, None, False, None),
-            (5, 6, None, None, None, None, False, None),
-            (5, None, np.linspace(0, 1, 5), None, None, None, False, None),
-            
-            
-            # Invalid cases
-            (None, None, None, None, None, None, False, TypeError), # not allowed no leaves
-            (5, "not_a_number", None, None, None, None, False, ValueError), # not allowed invalid num_phases
-            (5, None, "not_an_array", None, None, None, False, TypeError), # not allowed invalid phases
-            (5, None, np.array([0, 2, 1]), None, None, None, False, TypeError), # non monotonical
-            (5, None, np.array([-0.1, 0.5, 1]), None, None, None, False, TypeError), # negative
-            (5, None, np.array([0, 0.5, 1.1]), None, None, None, False, TypeError), # more than 1
+            # Valid cases
+            (5, None, None, None, None, None, None),
+            (5, None, np.linspace(0, 1, 5), None, None, None, None),
+            (5, 6, None, None, None, None, None),
+            (5, None, np.linspace(0, 1, 5), None, None, None, None),
 
-            
+
+
+
+            # Invalid cases
+            (None, None, None, None, None, None, TypeError),
+            (5, "not_a_number", None, None, None, None, ValueError),
+            (5, None, "not_an_array", None, None, None, TypeError),
+            (5, None, np.array([0, 2, 1]), None, None, None, TypeError),
+            (5, None, np.array([-0.1, 0.5, 1]), None, None, None, TypeError),
+            (5, None, np.array([0, 0.5, 1.1]), None, None, None, TypeError),
+
             # Fast valid cases
-            (5, None, None, 5, None, None, True, None),
-            (5, None, np.linspace(0, 1, 5), 5, None, np.linspace(0, 1, 5), True, None),
-            (5, 6, None, 5, 6, None, True, None),
-            (5, None, np.linspace(0, 1, 5), 5, 6, np.linspace(0, 1, 5), True, None),
-            
+            (5, None, None, 5, None, None, None),
+            (5, None, np.linspace(0, 1, 5), 5, None, np.linspace(0, 1, 5), None),
+            (5, 6, None, 5, 6, None, None),
+            (5, None, np.linspace(0, 1, 5), 5, 6, np.linspace(0, 1, 5), None),
+
             # Fast invalid cases
-            (5, None, None, None, None, None, True, TypeError), # not allowed no leaves
-            (5, None, None, 5, "not_a_number", None, True, ValueError), # not allowed invalid num_phases
-            (5, None, None, 5, None, "not_an_array", True, TypeError), # not allowed invalid phases
-            (5, None, None, 5, None, np.array([0, 2, 1]), True, TypeError), # non monotonical
-            (5, None, None, 5, None, np.array([-0.1, 0.5, 1]), True, TypeError), # negative
-            (5, None, None, 5, None, np.array([0, 0.5, 1.1]), True, TypeError), # more than 1
+            (5, None, None, None, None, None, TypeError),
+            (5, None, None, 5, "not_a_number", None, TypeError),
+            (5, None, None, 5, None, "not_an_array", TypeError),
+            (5, None, None, 5, None, np.array([0, 2, 1]), TypeError),
+            (5, None, None, 5, None, np.array([-0.1, 0.5, 1]), TypeError),
+            (5, None, None, 5, None, np.array([0, 0.5, 1.1]), TypeError),
         ]
     )
-    def test_set_phases(self,num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, do_fast, expect_error):    
+    def test_set_phases(self,num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, expect_error):    
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
-        test_hotregion.do_fast = do_fast
         # Expect error for invalid cases
         if expect_error:
             with pytest.raises(expect_error):
@@ -262,7 +262,6 @@ class TestHotRegion(object):
             assert np.allclose(test_hotregion._phases_cycles, linspace_temp), f"Expected phases {linspace_temp}, but got {test_hotregion._phases_cycles}"
             assert np.allclose(test_hotregion._leaves, np.linspace(0.0, 2*np.pi, 5)), f"Expected leaves to be np.linspace(0.0, 2*np.pi, 5), but got {test_hotregion._leaves}"
             
-        #HotRegion.do_fast = False # restore
         
         
     def test_phases_in_cycles_property(self):
@@ -503,19 +502,6 @@ class TestHotRegion(object):
         test_hotregion.embed(test_spacetime, test_photosphere, None, 1, mock_correction_function)
         
         
-    def test_do_fast_getter_setter(self):
-        # Initial state of _do_fast
-        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
-        initial_value = False
-        test_hotregion.do_fast = initial_value
-        
-        # Test the getter
-        assert test_hotregion.do_fast == initial_value, f"Expected {initial_value}, but got {test_hotregion.do_fast}"
-    
-        # Test the setter
-        new_value = True
-        test_hotregion.do_fast = new_value
-        assert test_hotregion.do_fast == new_value, f"Expected {new_value}, but got {test_hotregion.do_fast}"
 
     def test_cede_getter_setter(self):
         # Test with initial value of _cede

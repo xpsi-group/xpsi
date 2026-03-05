@@ -42,19 +42,6 @@ class HotRegions(ParameterSubspace):
     def phases_in_cycles(self):
         return [obj.phases_in_cycles for obj in self.objects]
 
-    @property
-    def fast_phases_in_cycles(self):
-        """  """
-        if self.do_fast:
-            return [obj.fast_phases_in_cycles for obj in self.objects]
-
-    @property
-    def do_fast(self):
-        """ Should fast-mode be invoked for some subset of hot regions. """
-        for obj in self._objects:
-            if obj.do_fast:
-                return True
-        return False
 
     def print_settings(self):
         """ Print numerical settings. """
