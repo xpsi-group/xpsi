@@ -20,11 +20,9 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
         """ Main likelihood evaluation driver routine. """
 
         star_updated = False
-        if self._star.needs_update or force_update: # ignore fast parameters in this version
+        if self._star.needs_update or force_update:
             try:
-                fast_total_counts = None
-
-                self._star.update(fast_total_counts, self.threads,force_update=force_update)
+                self._star.update(self.threads, force_update=force_update)
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
                     print('Warning: HotRegion.RayError raised.')

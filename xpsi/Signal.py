@@ -461,16 +461,6 @@ class Signal(ParameterSubspace):
         self._phases = obj
 
     @property
-    def fast_phases(self):
-        return [phases.copy() for phases in self._fast_phases]
-
-    @fast_phases.setter
-    def fast_phases(self, obj):
-        if not isinstance(obj, list):
-            obj = [obj]
-        self._fast_phases = obj
-
-    @property
     def energies(self):
         return self._energies
 
@@ -481,21 +471,6 @@ class Signal(ParameterSubspace):
     @energies.deleter
     def energies(self):
         del self._energies
-
-    @property
-    def fast_total_counts(self):
-        return tuple(self._fast_total_counts)
-
-    @fast_total_counts.setter
-    def fast_total_counts(self, obj):
-        try:
-            self._fast_total_counts.append(obj)
-        except AttributeError:
-            self._fast_total_counts = [obj]
-
-    @fast_total_counts.deleter
-    def fast_total_counts(self):
-        del self._fast_total_counts
 
     @property
     def store(self):

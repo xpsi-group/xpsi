@@ -133,7 +133,7 @@ class HotRegion(ParameterSubspace):
         If ``True``, shifts the cell mesh by :math:`\pi` radians about
         the stellar rotation axis for pulse integration. This is merely
         a choice that can be made, and is not crucial. Note that the
-        (fast) phase-shifting applied near the end of the likelihood
+        phase-shifting applied near the end of the likelihood
         evaluation is related to this choice and thus phase-shift parameter
         prior support can be chosen accordingly. If ``False``, the hot region
         at phase zero is aligned with the observer meridian. If ``True``, the
@@ -248,14 +248,6 @@ class HotRegion(ParameterSubspace):
                  num_leaves = 64,
                  num_phases = None,
                  phases = None,
-                 do_fast = False,
-                 fast_sqrt_num_cells = 16,
-                 fast_min_sqrt_num_cells = 4,
-                 fast_max_sqrt_num_cells = 16,
-                 fast_num_rays = 100,
-                 fast_num_leaves = 32,
-                 fast_num_phases = None,
-                 fast_phases = None,
                  is_antiphased = False,
                  atm_ext="BB",
                  beam_opt=0,
@@ -266,17 +258,12 @@ class HotRegion(ParameterSubspace):
 
         self.is_antiphased = is_antiphased
 
-        self.do_fast = do_fast
-
-        self.set_num_rays(num_rays, fast_num_rays)
+        self.set_num_rays(num_rays)
 
         self.set_num_cells(sqrt_num_cells,
-                           min_sqrt_num_cells, max_sqrt_num_cells,
-                           fast_sqrt_num_cells,
-                           fast_min_sqrt_num_cells, fast_max_sqrt_num_cells)
+                           min_sqrt_num_cells, max_sqrt_num_cells)
 
-        self.set_phases(num_leaves, num_phases, phases,
-                        fast_num_leaves, fast_num_phases, fast_phases)
+        self.set_phases(num_leaves, num_phases, phases)
 
         self.image_order_limit = image_order_limit
 
@@ -539,9 +526,8 @@ class HotRegion(ParameterSubspace):
         """ Get the integrator to be invoked. """
         return self._integratorIQU
 
-    def set_num_rays(self, num_rays, fast_num_rays):
+    def set_num_rays(self, num_rays):
         self.num_rays = num_rays
-        self._fast_num_rays = fast_num_rays
 
     @property
     def num_rays(self):
@@ -573,10 +559,7 @@ class HotRegion(ParameterSubspace):
     def set_num_cells(self,
                       sqrt_num_cells = 32,
                       min_sqrt_num_cells = 10,
-                      max_sqrt_num_cells = 80,
-                      fast_sqrt_num_cells = 16,
-                      fast_min_sqrt_num_cells = 4,
-                      fast_max_sqrt_num_cells = 16):
+                      max_sqrt_num_cells = 80):
 
         self.sqrt_num_cells = sqrt_num_cells
         self._num_cells = int(self.sqrt_num_cells**2)
@@ -584,14 +567,6 @@ class HotRegion(ParameterSubspace):
         self._max_sqrt_num_cells = int(max_sqrt_num_cells)
 
         assert self._min_sqrt_num_cells <= self._max_sqrt_num_cells,\
-               ('Minimum number of cells must be less than or equal to '
-                'maximum number of cells.')
-
-        self._fast_num_cells = int(fast_sqrt_num_cells**2)
-        self._fast_min_sqrt_num_cells = int(fast_min_sqrt_num_cells)
-        self._fast_max_sqrt_num_cells = int(fast_max_sqrt_num_cells)
-
-        assert self._fast_min_sqrt_num_cells <= self._fast_max_sqrt_num_cells,\
                ('Minimum number of cells must be less than or equal to '
                 'maximum number of cells.')
 
@@ -626,10 +601,7 @@ class HotRegion(ParameterSubspace):
 
     def set_phases(self, num_leaves,
                    num_phases = None,
-                   phases = None,
-                   fast_num_leaves = None,
-                   fast_num_phases = None,
-                   fast_phases = None):
+                   phases = None):
         """ Construct the set of interpolation phases and foliation leaves.
 
         :param int num_leaves: Number of leaves mesh motion is discretised into.
@@ -674,44 +646,10 @@ class HotRegion(ParameterSubspace):
         except TypeError:
             raise TypeError('Number of leaves must be an integer.')
 
-        if self.do_fast:
-            if fast_num_phases is None:
-                fast_num_phases = fast_num_leaves
-
-            if fast_phases is None:
-                try:
-                    self._fast_phases_cycles = _np.linspace(0.0, 1.0, int(fast_num_phases))
-                except TypeError:
-                    raise TypeError('Number of phases must be an integer.')
-            else:
-                try:
-                    assert isinstance(fast_phases, _np.ndarray)
-                    assert fast_phases.ndim == 1
-                    assert (fast_phases >= 0.0).all() & (fast_phases <= 1.0).all()
-                    for i in range(fast_phases.shape[0] - 1):
-                        assert fast_phases[i] < fast_phases[i+1]
-                except AssertionError:
-                    raise TypeError('Phases must be a one-dimensional '
-                                    '``numpy.ndarray`` with monotonically '
-                                    'increasing elements on the interval [0,1].')
-                else:
-                    self._fast_phases_cycles = fast_phases
-
-            self._fast_phases = _2pi * self._fast_phases_cycles
-
-            try:
-                self._fast_leaves =  _np.linspace(0.0, _2pi, int(fast_num_leaves))
-            except TypeError:
-                raise TypeError('Number of leaves must be an integer.')
-
     @property
     def phases_in_cycles(self):
         """ Get the phases (in cycles) the pulse is interpolated at. """
         return self._phases_cycles
-
-    @property
-    def fast_phases_in_cycles(self):
-        return self._fast_phases_cycles
 
     @property
     def num_cells(self):
@@ -778,7 +716,7 @@ class HotRegion(ParameterSubspace):
         print('Number of photospheric leaves: ', len(self.leaves))
         print('Number of interpolation phases: ', len(self.phases))
 
-    def __construct_cellMesh(self, st, fast_total_counts, threads):
+    def __construct_cellMesh(self, st, threads):
         """ Call a low-level routine to construct a mesh representation.
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
@@ -809,8 +747,7 @@ class HotRegion(ParameterSubspace):
                                                  -self['cede_azimuth'],
                                                  self['omit_colatitude'],
                                                  self['omit_radius'],
-                                                 self['omit_azimuth'],
-                                                 fast_total_counts)
+                                                 self['omit_azimuth'])
 
         if (self['super_colatitude'] - self['super_radius'] < 0.0
             or self['super_colatitude'] + self['super_radius'] > _pi):
@@ -1009,7 +946,7 @@ class HotRegion(ParameterSubspace):
                        * _sin(theta)
                        * _cos(phi))
 
-    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
+    def embed(self, spacetime, photosphere, threads, *args):
         """ Embed the hot region of the photosphere into the ambient spacetime.
 
         :param tuple args:
@@ -1027,7 +964,6 @@ class HotRegion(ParameterSubspace):
                 return None # what about change in mesh and ray resolution?
 
         self.__construct_cellMesh(spacetime,
-                                  fast_total_counts,
                                   threads)
 
         self.__compute_rays(spacetime, photosphere, threads)
@@ -1048,14 +984,6 @@ class HotRegion(ParameterSubspace):
         else:
             self._super_correctionVecs = None
             self._cede_correctionVecs = None
-
-    @property
-    def do_fast(self):
-        return self._do_fast
-
-    @do_fast.setter
-    def do_fast(self, activate):
-        self._do_fast = activate
 
     @property
     def cede(self):

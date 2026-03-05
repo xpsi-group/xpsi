@@ -56,16 +56,12 @@ class HotRegions(ParameterSubspace):
         """
         return len(self._objects)
 
-    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
+    def embed(self, spacetime, photosphere, threads, *args):
         """ Embed the hot regions. """
 
-        if fast_total_counts is None:
-            fast_total_counts = [None] * len(self)
-
-        for obj, fast in zip(self._objects, fast_total_counts):
+        for obj in self._objects:
             obj.embed(spacetime,
                       photosphere,
-                      fast,
                       threads, *args)
 
     def integrate(self, 

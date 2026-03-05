@@ -62,16 +62,8 @@ class Star(ParameterSubspace):
     def photospheres(self, obj):
         self._photospheres = [obj]
 
-    def update(self, fast_counts=None, threads=1, force_update=False):
+    def update(self, threads=1, force_update=False):
         """ Update the star.
-
-        :param tuple fast_counts:
-            Total count numbers from two or more temperature components of
-            a hot region. Each *tuple* element is itself a *tuple* over hot
-            regions, and if a hot region has two temperature components
-            that were integrated over during the fast mode, the total counts
-            per component are elements of another *tuple*. This nested
-            containerisation is handled automatically.
 
         :param int threads:
             Number of ``OpenMP`` threads to spawn for embedding
@@ -82,11 +74,8 @@ class Star(ParameterSubspace):
 
         """
 
-        if fast_counts is None:
-            fast_counts = tuple([None]*len(self._photospheres))
-
         # Iteratively embed each photosphere (that needs to be updated)
         # in the ambient spacetime
-        for photosphere, fast_count in zip(self._photospheres, fast_counts):
+        for photosphere in self._photospheres:
             if photosphere.needs_update or self._spacetime.needs_update or force_update:
-                photosphere.embed(fast_count, threads)
+                photosphere.embed(threads)

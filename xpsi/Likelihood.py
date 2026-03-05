@@ -40,9 +40,6 @@ class Likelihood(ParameterSubspace):
         achieved by some set of instruments. Gaps in waveband coverage will
         be skipped.
 
-    :param float fast_rel_num_energies:
-        Fraction of the normal number of energies to use in *fast* mode.
-
     :param int threads:
         The number of ``OpenMP`` threads to spawn for integration. The default
         number of threads used by low-level integration routines is ``1``. The
@@ -77,7 +74,6 @@ class Likelihood(ParameterSubspace):
     """
     def __init__(self, star, signals,
                  num_energies = 128,
-                 fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
                  prior = None,
@@ -87,7 +83,6 @@ class Likelihood(ParameterSubspace):
         self.signals = signals
 
         self._num_energies = num_energies
-        self._fast_rel_num_energies = fast_rel_num_energies
 
         for photosphere, signals in zip(star.photospheres, self._signals):
             try:
@@ -104,10 +99,6 @@ class Likelihood(ParameterSubspace):
             energies = construct_energy_array(num_energies,
                                               list(signals),
                                               max_energy)
-            num = int( fast_rel_num_energies * num_energies )
-            fast_energies = construct_energy_array(num,
-                                                   list(signals),
-                                                   max_energy)
 
             for signal in signals:
                 signal.energies = energies
@@ -276,11 +267,9 @@ class Likelihood(ParameterSubspace):
         """ Main likelihood evaluation driver routine. """
 
         star_updated = False
-        if self._star.needs_update or force_update: # ignore fast parameters in this version
+        if self._star.needs_update or force_update:
             try:
-                fast_total_counts = None
-
-                self._star.update(fast_total_counts, self.threads,force_update=force_update)
+                self._star.update(self.threads, force_update=force_update)
 
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
@@ -423,7 +412,6 @@ class Likelihood(ParameterSubspace):
         self.__init__(self._star,
                       self._signals,
                       self._num_energies,
-                      self._fast_rel_num_energies,
                       self._threads,
                       self._llzero)
 
