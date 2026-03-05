@@ -194,7 +194,8 @@ class Signal(ParameterSubspace):
                 # Check that interstellar extinction has values lower than 1
                 fake_signal =_np.ones_like( self._instrument.energy_edges )
                 for p in interstellar.params:
-                    p.value = (p.bounds[0] +  p.bounds[1]) / 2
+                    if p.value is None:
+                        p.value = (p.bounds[0] +  p.bounds[1]) / 2
                 interstellar( self._instrument.energy_edges , fake_signal )
                 if not _np.all( fake_signal <= 1.0 ):
                     raise ValueError('Interstellar attenuation must be lower than 1. ' \
