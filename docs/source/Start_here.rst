@@ -20,7 +20,7 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Surface radiation field tools<Surface_radiation_field_tools>` demonstrates the usage of the default (blackbody) and an alternative (atmosphere interpolated from precomputed data) surface radiation field module to compute photon specific intensities. It also shows how to do beaming pattern and spectrum plots for the radiation fields.
 
-* :doc:`Modeling (without statistics)<Modeling_without_statistics>` is similar to :doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to create synthetic data.
+* :doc:`Modeling (without statistics)<Modeling_without_statistics>` is similar to :doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to generate models (and potentially synthetic data, see below).
 
 * :doc:`Polarization<Polarization>` is a tutorial that shows how to model polarized X-rays in X-PSI.
 
@@ -33,6 +33,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 * :doc:`Multiple imaging<Multiple_imaging>` is a tutorial studying the effects of multiple imaging.
 
 * :doc:`Importance sampling<Importance_sampling>` is a tutorial for importance sampling.
+
+* :doc:`Synthetic data<Synthetic_data>` is a tutorial to generate synthetic data file from a given model, to save to text or event file.
 
 * :doc:`Module generator tutorial<Module_generator_tutorial>` provides instructions on how to generate Python modules in an automated way to run X-PSI.
 
