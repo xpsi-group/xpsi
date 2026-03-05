@@ -9,6 +9,7 @@ dependencies:
         - matplotlib == 3.9.2  # STRICT REQUIREMENT FROM FGIVENX
         - scipy
         - wrapt
+        - setuptools>=61
         - gsl # GNU Science library
         - pytest  # running functionality self-tests
         - getdist  # posterior KDE corner plotting
