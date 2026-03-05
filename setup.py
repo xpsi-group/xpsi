@@ -234,6 +234,7 @@ modnames = [
     "xpsi.surface_radiation_field.elsewhere_user",
     "xpsi.surface_radiation_field.elsewhere_wrapper",
     "xpsi.cellmesh.integrator",
+    "xpsi.cellmesh.common_functions",
     "xpsi.cellmesh.integratorIQU",
     "xpsi.cellmesh.integrator_for_azimuthal_invariance",
     "xpsi.cellmesh.integrator_for_azimuthal_invariance_split",

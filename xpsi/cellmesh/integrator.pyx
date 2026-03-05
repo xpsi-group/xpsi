@@ -72,7 +72,8 @@ def integrate(size_t numThreads,
               hot_atm_ext,
               else_atm_ext,
               beam_opt,
-              image_order_limit = None):
+              image_order_limit,
+              double R_in = 1e6):
 
     cdef const gsl_interp_type *_interpolant
 

@@ -1174,6 +1174,9 @@ class HotRegion(ParameterSubspace):
                   'smaller than 90 degrees. However, inclination > 90 degrees.'
                   ' Formula for r_psi_d in the integrator is incorrect in this'
                   ' case.')
+
+        if (not self.symmetry) and (R_in != 1e6):
+            print("WARNING: Inner disc radius was given, although the disk blocking model has not been implemented for the chosen integrator (symmetry=False).")
         
         super_pulse = self._integrator(threads,
                                        st.R,
@@ -1301,6 +1304,15 @@ class HotRegion(ParameterSubspace):
             if hot_atmosphere_I == () or hot_atmosphere_Q == ():
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
+
+        if st.i > _np.pi/2 and R_in != 1e6:
+            print('WARNING: disk blocking assumes that the inclination is '
+                  'smaller than 90 degrees. However, inclination > 90 degrees.'
+                  ' Formula for r_psi_d in the integrator is incorrect in this'
+                  ' case.')
+
+        if (not self.symmetry) and (R_in != 1e6):
+            print("WARNING: Inner disc radius was given, although the disk blocking model has not been implemented for the chosen integrator (symmetry=False).")
 
         all_pulses = self._integratorIQU(threads,
                                    st.R,

@@ -14,6 +14,7 @@ from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
+from xpsi.cellmesh.common_functions cimport compute_pol_ang, disk_block
 
 cdef double _pi = M_PI
 cdef double _hlfpi = M_PI / 2.0
@@ -123,7 +124,6 @@ def integrate(size_t numThreads,
         double beta # Surface velocity in the local NRF; TP
         double _cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
         double sin_alpha
-        double sin_alpha_over_sin_psi
         double cos_delta # Unit sphere trigonometric identity; TP
         double cos_gamma # Surface normal tilt w.r.t outward radial direction; TP
         double cos_xi # Emission angle relative to the NRF surface velocity; TP
@@ -135,9 +135,7 @@ def integrate(size_t numThreads,
         double Q_E # Stokes Q in the CRF; TP
         double Q_obs # Stokes Q in the observer frame; TP
         double U_obs # Stokes Q in the observer frame; TP
-        double sin_chi_0, cos_chi_0, chi_0, chi_1, chi_prime, chi
-        double sin_chi_1, cos_chi_1, sin_chi_prime, cos_chi_prime
-        double sin_lambda, cos_lambda, cos_eps
+        double chi
         double sin_2chi # sine of 2*PA; TP
         double cos_2chi # cosine of 2*PA; TP
         double _PHASE, _PHASE_plusShift, _GEOM, _Z, _ABB # TP
@@ -156,10 +154,6 @@ def integrate(size_t numThreads,
         double _specific_flux_U
         size_t _InvisPhase
         size_t _beam_opt = beam_opt
-
-        double cos_psi_d, sin_psi_d      # geometric quantities
-        double impact_b, r_psi_d         # impact parameter and radial coordinate
-        double r_s_i                     # schwarzschild radius at the cell location
 
         double[:,:,::1] privateFlux_I = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,:,::1] privateFlux_Q = np.zeros((N_T, N_E, N_P), dtype = np.double)
@@ -415,15 +409,7 @@ def integrate(size_t numThreads,
 
                     if mu > 0.0: 
                         if R_in < 1e6: # there is a disk, so block certain rays.
-                            cos_psi_d = (cos_i * cos_psi - cos_theta_i) / sqrt(cos_i * cos_i + cos_theta_i * cos_theta_i - 2 * cos_i * cos_theta_i * cos_psi) #Ibragimov & Poutanen (2009), Equation (C2)
-                            sin_psi_d = sqrt(1 - cos_psi_d * cos_psi_d)
-                            r_s_i = r_s_over_r[i]*radius
-                            impact_b = radius * sin_alpha / sqrt(1 - r_s_over_r[i]) # impact parameter
-                            r_psi_d = sqrt((r_s_i * r_s_i * (1 - cos_psi_d) * (1 - cos_psi_d)) / (4 * (1 + cos_psi_d) * (1 + cos_psi_d)) +  ((impact_b * impact_b) / (sin_psi_d * sin_psi_d))) - (r_s_i * (1 - cos_psi_d)) / (2 * (1 + cos_psi_d)) ##Ibragimov & Poutanen (2009), Equation (B9)
-                            if theta_i_over_pi < 0.5 or (theta_i_over_pi > 0.5 and r_psi_d < R_in):
-                                CalcRaysFlag[T]=1
-                            else: #theta > pi/2 and (theta < pi/2 or r_psi_d > R_in), don't calculate.
-                                CalcRaysFlag[T]=0
+                            CalcRaysFlag[T]=disk_block(R_in,cos_i,cos_psi,cos_theta_i,r_s_over_r[i],radius,sin_alpha,theta_i_over_pi)
                         else: # R_in >= 1e6, so that means calculate as normal.
                             CalcRaysFlag[T]=1
                     else: # mu < 0.0, don't calculate
@@ -474,43 +460,8 @@ def integrate(size_t numThreads,
 
                             PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
-                            sin_chi_0 = - sin_theta_i*sin(leaves[_kdx]) 
-                            cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
-                            chi_0 = atan2(sin_chi_0,cos_chi_0)
-
-                            if not are_equal(sin_psi, 0.0):
-                                sin_alpha_over_sin_psi = sin_alpha/sin_psi
-                            else: #using small-angle limit of the Beloborodov (2002) approximation
-                                sin_alpha_over_sin_psi = Grav_z
-
-                            #Notes: mu = cos_sigma , Lorentz = 1/Gamma, mu0=eta*mu, cos_xi defined with no minus sign
-                            sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha_over_sin_psi #times sin alpha sin sigma
-                            cos_chi_1 = cos_gamma - _cos_alpha*mu  #times sin alpha sin sigma 
-                            chi_1 = atan2(sin_chi_1,cos_chi_1)
-
-                            sin_lambda = sin_theta_i*cos_gamma - sin_gamma*cos_theta_i
-                            cos_lambda = cos_theta_i*cos_gamma + sin_theta_i*sin_gamma
-                            cos_eps = sin_alpha_over_sin_psi*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
-
-                            sin_chi_prime = cos_eps*eta*mu*beta/Lorentz
-                            cos_chi_prime = (1. - mu**2 /(1. + beta*cos_xi))
-                            chi_prime = atan2(sin_chi_prime,cos_chi_prime)
-
-                            chi = chi_0+chi_1+chi_prime
-
-                            #printf("leaves[_kdx] = %.6e ",leaves[_kdx]/_2pi)
-                            #printf("sin_psi = %.6e ",sin_psi)
-                            #printf("sin_alpha = %.6e ",sin_alpha)
-                            #printf("sinalpha/sinpsi = %.6e ",sin_alpha/sin_psi)
-                            #printf("Grav_z = %.6e \n",Grav_z)
-                            #printf("chi_0 = %.6e ",chi_0)
-                            #printf("chi_1 = %.6e ",chi_1)
-                            #printf("chi_prime = %.6e ",chi_prime)
-                            #printf("PA_tot = %.6e\n",chi)
-                            #printf("sin_alpha = %.6e ",sin_alpha)
-                            #printf("sin_psi = %.6e\n ",sin_psi)
-                            #printf("redshift = %.6e\n",1.0/Grav_z)
-                            #printf("%d\n ",esec)
+                            chi = compute_pol_ang(leaves[_kdx], sin_psi, cos_psi, sin_alpha, _cos_alpha, sin_theta_i, cos_theta_i, sin_i, cos_i,
+                                                 sin_gamma, cos_gamma, Grav_z, mu, eta, beta, Lorentz, cos_xi)
                             cos_2chi = cos(2*chi)
                             sin_2chi = sin(2*chi)
 

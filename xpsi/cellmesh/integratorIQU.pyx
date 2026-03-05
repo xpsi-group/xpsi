@@ -14,6 +14,7 @@ from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
+from xpsi.cellmesh.common_functions cimport compute_pol_ang
 
 cdef double _pi = M_PI
 cdef double _hlfpi = M_PI / 2.0
@@ -75,7 +76,8 @@ def integrate(size_t numThreads,
               hot_atm_ext,
               else_atm_ext,
               beam_opt,
-              image_order_limit = None):
+              image_order_limit = None,
+              double R_in = 1e6):
 
     cdef const gsl_interp_type *_interpolant
 
@@ -105,7 +107,6 @@ def integrate(size_t numThreads,
         double beta # Surface velocity in the local NRF; TP
         double _cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
         double sin_alpha
-        double sin_alpha_over_sin_psi
         double cos_delta # Unit sphere trigonometric identity; TP
         double cos_gamma # Surface normal tilt w.r.t outward radial direction; TP
         double cos_xi # Emission angle relative to the NRF surface velocity; TP
@@ -116,9 +117,7 @@ def integrate(size_t numThreads,
         double Q_E # Stokes Q in the CRF; TP
         double Q_obs # Stokes Q in the observer frame; TP
         double U_obs # Stokes Q in the observer frame; TP
-        double sin_chi_0, cos_chi_0, chi_0, chi_1, chi_prime, chi
-        double sin_chi_1, cos_chi_1, sin_chi_prime, cos_chi_prime
-        double sin_lambda, cos_lambda, cos_eps
+        double chi
         double sin_2chi # sine of 2*PA; TP
         double cos_2chi # cosine of 2*PA; TP
         double __PHASE, __PHASE_plusShift, __GEOM, __Z, __ABB # TP
@@ -591,34 +590,8 @@ def integrate(size_t numThreads,
                                     __Z = gsl_interp_eval(interp_Z[T], phase_ptr, Z_ptr, __PHASE_plusShift, accel_Z[T])
                                     __ABB = gsl_interp_eval(interp_ABB[T], phase_ptr, ABB_ptr, __PHASE_plusShift, accel_ABB[T])
 
-                                    sin_chi_0 = - sin_theta_i*sin(leaves[_kdx]) 
-                                    cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
-                                    chi_0 = atan2(sin_chi_0,cos_chi_0)
-
-                                    if not are_equal(sin_psi, 0.0):
-                                        sin_alpha_over_sin_psi = sin_alpha/sin_psi
-                                    else: #using small-angle limit of the Beloborodov (2002) approximation
-                                        sin_alpha_over_sin_psi = Grav_z
-
-                                    #Notes: mu = cos_sigma , Lorentz = 1/Gamma, mu0=eta*mu, cos_xi defined with no minus sign
-                                    sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha_over_sin_psi #times sin alpha sin sigma
-                                    cos_chi_1 = cos_gamma - _cos_alpha*mu  #times sin alpha sin sigma 
-                                    chi_1 = atan2(sin_chi_1,cos_chi_1)
-
-                                    sin_lambda = sin_theta_i*cos_gamma - sin_gamma*cos_theta_i
-                                    cos_lambda = cos_theta_i*cos_gamma + sin_theta_i*sin_gamma
-                                    cos_eps = sin_alpha_over_sin_psi*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
-
-                                    sin_chi_prime = cos_eps*eta*mu*beta/Lorentz
-                                    cos_chi_prime = (1. - mu**2 /(1. + beta*cos_xi))
-                                    chi_prime = atan2(sin_chi_prime,cos_chi_prime)
-
-                                    chi = chi_0+chi_1+chi_prime
-
-                                    #printf("chi_0 = %.6e\n",chi_0)
-                                    #printf("chi_1 = %.6e\n",chi_1)
-                                    #printf("chi_prime = %.6e\n",chi_prime)
-                                    #printf("PA_tot = %.6e\n",chi)
+                                    chi = compute_pol_ang(leaves[_kdx], sin_psi, cos_psi, sin_alpha, _cos_alpha, sin_theta_i, cos_theta_i, sin_i, cos_i, 
+                                                         sin_gamma, cos_gamma, Grav_z, mu, eta, beta, Lorentz, cos_xi)
                                     cos_2chi = cos(2*chi)
                                     sin_2chi = sin(2*chi)
 

@@ -15,7 +15,7 @@ from libc.stdio cimport printf
 import xpsi
 from libc.stdio cimport fflush, stdout
 from libc.stdio cimport fprintf, stderr
-
+from xpsi.cellmesh.common_functions cimport disk_block
 
 cdef double _pi = M_PI
 cdef double _hlfpi = M_PI / 2.0
@@ -150,10 +150,6 @@ def integrate(size_t numThreads,
         size_t _InvisPhase
         double E_electronrest
         size_t _beam_opt = beam_opt
-
-        double cos_psi_d, sin_psi_d      # geometric quantities
-        double impact_b, r_psi_d         # impact parameter and radial coordinate
-        double r_s_i                     # schwarzschild radius at the cell location
   
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -393,15 +389,7 @@ def integrate(size_t numThreads,
                         
                     if mu > 0.0: 
                         if R_in < 1e6: # there is a disk, so block certain rays.
-                            cos_psi_d = (cos_i * cos_psi - cos_theta_i) / sqrt(cos_i * cos_i + cos_theta_i * cos_theta_i - 2 * cos_i * cos_theta_i * cos_psi) #Ibragimov & Poutanen (2009), Equation (C2)
-                            sin_psi_d = sqrt(1 - cos_psi_d * cos_psi_d)
-                            r_s_i = r_s_over_r[i]*radius
-                            impact_b = radius * sin_alpha / sqrt(1 - r_s_over_r[i]) # impact parameter
-                            r_psi_d = sqrt((r_s_i * r_s_i * (1 - cos_psi_d) * (1 - cos_psi_d)) / (4 * (1 + cos_psi_d) * (1 + cos_psi_d)) +  ((impact_b * impact_b) / (sin_psi_d * sin_psi_d))) - (r_s_i * (1 - cos_psi_d)) / (2 * (1 + cos_psi_d)) ##Ibragimov & Poutanen (2009), Equation (B9)
-                            if theta_i_over_pi < 0.5 or (theta_i_over_pi > 0.5 and r_psi_d < R_in):
-                                CalcRaysFlag[T]=1
-                            else: #theta > pi/2 and (theta < pi/2 or r_psi_d > R_in), don't calculate.
-                                CalcRaysFlag[T]=0
+                            CalcRaysFlag[T]=disk_block(R_in,cos_i,cos_psi,cos_theta_i,r_s_over_r[i],radius,sin_alpha,theta_i_over_pi)
                         else: # R_in >= 1e6, so that means calculate as normal.
                             CalcRaysFlag[T]=1
                     else: # mu < 0.0, don't calculate
