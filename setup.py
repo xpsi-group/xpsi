@@ -216,6 +216,7 @@ modnames = [
     "xpsi.tools.phase_integrator",
     "xpsi.tools.phase_interpolator",
     "xpsi.tools.synthesise",
+    "xpsi.tools.compute_expected_counts",
     "xpsi.tools.core",
     "xpsi.likelihoods.default_background_marginalisation",
     "xpsi.likelihoods._poisson_likelihood_given_background",

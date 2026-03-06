@@ -41,9 +41,6 @@ class Likelihood(ParameterSubspace):
         achieved by some set of instruments. Gaps in waveband coverage will
         be skipped.
 
-    :param float fast_rel_num_energies:
-        Fraction of the normal number of energies to use in *fast* mode.
-
     :param int threads:
         The number of ``OpenMP`` threads to spawn for integration. The default
         number of threads used by low-level integration routines is ``1``. The
@@ -79,7 +76,6 @@ class Likelihood(ParameterSubspace):
     def __init__(self, star, signals,
                  emission_models = None,
                  num_energies = 128,
-                 fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
                  prior = None,
@@ -89,10 +85,7 @@ class Likelihood(ParameterSubspace):
         self.signals = signals
         self.emission_models = emission_models
 
-        self._do_fast = False
-
         self._num_energies = num_energies
-        self._fast_rel_num_energies = fast_rel_num_energies
 
         for photosphere, signals in zip(star.photospheres, self._signals):
             try:
@@ -109,19 +102,10 @@ class Likelihood(ParameterSubspace):
             energies = construct_energy_array(num_energies,
                                               list(signals),
                                               max_energy)
-            num = int( fast_rel_num_energies * num_energies )
-            fast_energies = construct_energy_array(num,
-                                                   list(signals),
-                                                   max_energy)
 
             for signal in signals:
                 signal.energies = energies
                 signal.phases = photosphere.surface.phases_in_cycles
-
-                if photosphere.surface.do_fast:
-                    signal.fast_energies = fast_energies
-                    signal.fast_phases = photosphere.surface.fast_phases_in_cycles
-                    self._do_fast = True
 
                 # Add emission phase arrays
                 if self._emission_models is not None:
@@ -155,10 +139,6 @@ class Likelihood(ParameterSubspace):
         except TypeError:
             raise TypeError('Thread number must be an integer.')
 
-    @property
-    def do_fast(self):
-        """ Does fast mode need to be activated? """
-        return self._do_fast
 
     @property
     def star(self):
@@ -304,8 +284,8 @@ class Likelihood(ParameterSubspace):
     @staticmethod
     def _divide(obj, x):
         """ Helper operator to check for compatibility first.
-
-        As an example, if fast mode is activated for some hot region but not
+########### Devarshi: Might need a better example here. Placeholder dosctring having removed fast mode.
+        As an example, if a hot region is inactive for some component but not
         another, :obj:`obj` would be ``None`` and thus a safeguard is needed.
 
         """
@@ -314,21 +294,13 @@ class Likelihood(ParameterSubspace):
         else:
             return None
 
-    def _driver(self, fast_mode=False, synthesise=False, force_update=False, **kwargs):
+    def _driver(self, synthesise=False, force_update=False, **kwargs):
         """ Main likelihood evaluation driver routine. """
 
-        self._star.activate_fast_mode(fast_mode)
-
         star_updated = False
-        if self._star.needs_update or force_update: # ignore fast parameters in this version
+        if self._star.needs_update or force_update:
             try:
-                if fast_mode or not self._do_fast:
-                    fast_total_counts = None
-                else:
-                    fast_total_counts = tuple(signal.fast_total_counts for\
-                                                        signal in self._signals)
-
-                self._star.update(fast_total_counts, self.threads,force_update=force_update)
+                self._star.update(self.threads, force_update=force_update)
 
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
@@ -341,10 +313,7 @@ class Likelihood(ParameterSubspace):
 
             for photosphere, signals in zip(self._star.photospheres, self._signals):
                 try:
-                    if fast_mode:
-                        energies = signals[0].fast_energies
-                    else:
-                        energies = signals[0].energies
+                    energies = signals[0].energies
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
@@ -393,7 +362,7 @@ class Likelihood(ParameterSubspace):
                                                                 self._star.spacetime.d_sq)
                                                             for component in hot_region)
                                                     for hot_region in photosphere_signal)
-                    signal.register(signal_to_register, fast_mode=fast_mode, threads=self.threads)
+                    signal.register(signal_to_register, threads=self.threads)
 
                     # Normalize if required
                     if signal.isQn or signal.isUn:
@@ -406,7 +375,7 @@ class Likelihood(ParameterSubspace):
                                                                 self._star.spacetime.d_sq)
                                                             for component in hot_region)
                                                     for hot_region in photosphere.signal)
-                        signal.register(signal_to_nomalize, fast_mode=fast_mode, threads=self.threads)
+                        signal.register(signal_to_nomalize, threads=self.threads)
                         Isignal = signal.signals
 
                         # Normalize
@@ -417,13 +386,13 @@ class Likelihood(ParameterSubspace):
                     if self._emission_models is not None:
                         signal.register(tuple( tuple( component for component in model)
                                                     for model in self._emission_models.signal),
-                                        fast_mode=fast_mode, threads=self.threads, reset=False)
+                                        threads=self.threads, reset=False)
 
                     reregistered = True
                 else:
                     reregistered = False
 
-                if not fast_mode and reregistered:
+                if reregistered:
                     if synthesise:
                         hot = photosphere.surface
                         try:
@@ -475,7 +444,6 @@ class Likelihood(ParameterSubspace):
                       self._signals,
                       self._emission_models,
                       self._num_energies,
-                      self._fast_rel_num_energies,
                       self._threads,
                       self._llzero)
 
@@ -517,23 +485,10 @@ class Likelihood(ParameterSubspace):
                     super(Likelihood, self).__call__(self.cached)
                     return self.random_near_llzero
 
-            if self._do_fast:
-                # perform a low-resolution precomputation to direct cell
-                # allocation
-                x = self._driver(fast_mode=True,force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return x
-                elif x:
-                    x = self._driver(force_update=force)
-                    if not isinstance(x, bool):
-                        super(Likelihood, self).__call__(self.cached) # restore
-                        return x
-            else:
-                x = self._driver(force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return x
+            x = self._driver(force_update=force)
+            if not isinstance(x, bool):
+                super(Likelihood, self).__call__(self.cached) # restore
+                return x
 
             # memoization: update parameter value caches
             super(Likelihood, self).__call__(self.vector)
@@ -746,20 +701,7 @@ class Likelihood(ParameterSubspace):
                 super(Likelihood, self).__call__(self.cached)
                 return None
 
-        if self._do_fast:
-            # perform a low-resolution precomputation to direct cell
-            # allocation
-            x = self._driver(fast_mode=True,force_update=force)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return None
-            elif x:
-                x = self._driver(synthesise=True,force_update=force, **kwargs)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return None
-        else:
-            x = self._driver(synthesise=True,force_update=force, **kwargs)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return None
+        x = self._driver(synthesise=True,force_update=force, **kwargs)
+        if not isinstance(x, bool):
+            super(Likelihood, self).__call__(self.cached) # restore
+            return None

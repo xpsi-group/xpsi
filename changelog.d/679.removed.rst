@@ -1,0 +1,1 @@
+Removed all code related to `fast_mode` and `do_fast`, and associated attributes, methods, arguments.
