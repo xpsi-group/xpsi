@@ -47,8 +47,8 @@ class Temp_Interpolator_shells(ParameterSubspace):
 					'bhac_shell_avg']
 
 	def __init__(self,
-				filename ='data',
-				coderes = 512, 
+					filename ='data',
+					coderes = 512, 
 				xpsi_theta = None,
 				xpsi_phi = None,
 				first_spot = False,
@@ -56,12 +56,10 @@ class Temp_Interpolator_shells(ParameterSubspace):
 				elsewhere_xpsi = False,
 				everywhere_xpsi = False,
 				bhac_shell_avg = True,
-				**kwargs):
+					**kwargs):
 
 		self.filename=filename
-		self.num_cells_theta = num_cells_theta
 		self.coderes = int(coderes)
-		self.num_cells_phi = num_cells_phi
 		self.xpsi_theta = xpsi_theta
 		self.xpsi_phi = xpsi_phi
 		self.first_spot = first_spot
@@ -70,7 +68,7 @@ class Temp_Interpolator_shells(ParameterSubspace):
 		self.everywhere_xpsi = everywhere_xpsi
 		self.bhac_shell_avg = bhac_shell_avg
 
-	def read_regrid(self,filename,coderes):
+	def read_regrid(self):
 		"""
 		Read shell snapshots data at a fixed radius and reorganize it into angular grids 
 		(theta, phi) along with flux and tracer values, depending on the selected surface region.
@@ -81,10 +79,6 @@ class Temp_Interpolator_shells(ParameterSubspace):
 		Cartesian data and rearranges the data into symmetric grids for use in 
 		X-PSI surface emission modeling.
 
-		Args:
-			filename (str): Path to the BHAC .csv file containing shell slice data (columns: X, Y, Z, T_MArt, tr1).
-			coderes (int): Resolution of the input data grid. The input file is assumed to represent 
-						a square grid of size (coderes x coderes).
 
 		Raises:
 			ValueError: If none of the region flags (first_spot, second_spot, elsewhere_xpsi, everywhere_xpsi) are set.
@@ -98,7 +92,7 @@ class Temp_Interpolator_shells(ParameterSubspace):
 			All arrays are of shape (N, coderes), where N depends on the region type.
 		"""
 
-		data = pd.read_csv(filename)
+		data = pd.read_csv(self.filename)
 		solarmass = 1.989e33
 		c = 2.99792458e10
 		G = 6.674e-8
@@ -117,7 +111,7 @@ class Temp_Interpolator_shells(ParameterSubspace):
 		thetabhac = _np.arccos(z/_np.sqrt(x**2 + y**2 + z**2))
 		phibhac = _np.arctan2(y,x) 
 		Flux = data['T_MArt']
-		k = int(coderes/2)
+		k = int(self.coderes/2)
 		tracer = data['tr1']
 		num_cells_lt = 0
 		
@@ -129,53 +123,53 @@ class Temp_Interpolator_shells(ParameterSubspace):
 			index_i = 0
 			index_j = int(k - num_cells_lt)
 
-			phicode = _np.zeros((index_j-index_i,coderes))
-			thetacode = _np.zeros((index_j-index_i,coderes))
-			Fluxcode = _np.zeros((index_j-index_i,coderes))
-			tracercode = _np.zeros((index_j-index_i,coderes))
+			phicode = _np.zeros((index_j-index_i,self.coderes))
+			thetacode = _np.zeros((index_j-index_i,self.coderes))
+			Fluxcode = _np.zeros((index_j-index_i,self.coderes))
+			tracercode = _np.zeros((index_j-index_i,self.coderes))
 
 			for i in range(index_i,index_j):
 				for j in range(0,k):
 
-					phicode[i,j+k] = phibhac[j+i*coderes]
-					thetacode[i,j+k] = thetabhac[j+i*coderes]
+					phicode[i,j+k] = phibhac[j+i*self.coderes]
+					thetacode[i,j+k] = thetabhac[j+i*self.coderes]
 
-					Fluxcode[i,j+k] = Flux[j+i*coderes]
-					tracercode[i,j+k] = tracer[j+i*coderes]
-				for j in range(k,coderes):
+					Fluxcode[i,j+k] = Flux[j+i*self.coderes]
+					tracercode[i,j+k] = tracer[j+i*self.coderes]
+				for j in range(k,self.coderes):
 
-					phicode[i,j-k] = phibhac[j+i*coderes]
-					thetacode[i,j-k] = thetabhac[j+i*coderes]
+					phicode[i,j-k] = phibhac[j+i*self.coderes]
+					thetacode[i,j-k] = thetabhac[j+i*self.coderes]
 
-					Fluxcode[i,j-k] = Flux[j+i*coderes]
-					tracercode[i,j-k] = tracer[j+i*coderes]
+					Fluxcode[i,j-k] = Flux[j+i*self.coderes]
+					tracercode[i,j-k] = tracer[j+i*self.coderes]
 			
 		if self.second_spot:	
 
 			index_i = int(k + num_cells_lt)
-			index_j = coderes
+			index_j = self.coderes
 
-			phicode = _np.zeros((index_j-index_i,coderes))
-			thetacode = _np.zeros((index_j-index_i,coderes))
-			Fluxcode = _np.zeros((index_j-index_i,coderes))
-			tracercode = _np.zeros((index_j-index_i,coderes))
+			phicode = _np.zeros((index_j-index_i,self.coderes))
+			thetacode = _np.zeros((index_j-index_i,self.coderes))
+			Fluxcode = _np.zeros((index_j-index_i,self.coderes))
+			tracercode = _np.zeros((index_j-index_i,self.coderes))
 
 			for i in range(index_i,index_j):
 				for j in range(0,k):
 
-					phicode[i-index_i,j+k] = phibhac[j+i*coderes] 
-					thetacode[i-index_i,j+k] = thetabhac[j+i*coderes]
+					phicode[i-index_i,j+k] = phibhac[j+i*self.coderes] 
+					thetacode[i-index_i,j+k] = thetabhac[j+i*self.coderes]
 
-					Fluxcode[i-index_i,j+k] = Flux[j+i*coderes]
-					tracercode[i-index_i,j+k] = tracer[j+i*coderes]
+					Fluxcode[i-index_i,j+k] = Flux[j+i*self.coderes]
+					tracercode[i-index_i,j+k] = tracer[j+i*self.coderes]
 
-				for j in range(k,coderes):
+				for j in range(k,self.coderes):
 
-					phicode[i-index_i,j-k] = phibhac[j+i*coderes]
-					thetacode[i-index_i,j-k] = thetabhac[j+i*coderes]
+					phicode[i-index_i,j-k] = phibhac[j+i*self.coderes]
+					thetacode[i-index_i,j-k] = thetabhac[j+i*self.coderes]
 
-					Fluxcode[i-index_i,j-k] = Flux[j+i*coderes]
-					tracercode[i-index_i,j-k] = tracer[j+i*coderes]
+					Fluxcode[i-index_i,j-k] = Flux[j+i*self.coderes]
+					tracercode[i-index_i,j-k] = tracer[j+i*self.coderes]
 
 		if self.elsewhere_xpsi:
 
@@ -183,68 +177,67 @@ class Temp_Interpolator_shells(ParameterSubspace):
 			index_i = int(k - num_cells_lt)+1
 			index_j = int(k + num_cells_lt)-1
 
-			phicode = _np.zeros((index_j-index_i,coderes))
-			thetacode = _np.zeros((index_j-index_i,coderes))
-			Fluxcode = _np.zeros((index_j-index_i,coderes))
-			tracercode = _np.zeros((index_j-index_i,coderes))
+			phicode = _np.zeros((index_j-index_i,self.coderes))
+			thetacode = _np.zeros((index_j-index_i,self.coderes))
+			Fluxcode = _np.zeros((index_j-index_i,self.coderes))
+			tracercode = _np.zeros((index_j-index_i,self.coderes))
 
 			for i in range(index_i,index_j):
 				for j in range(0,k):
 
-					phicode[i-index_i,j+k] = _np.arctan2(y[j+i*coderes],x[j+i*coderes]) 
-					thetacode[i-index_i,j+k] = _np.arccos(z[j+i*coderes]/_np.sqrt(x[j+i*coderes]**2 \
-						+ y[j+i*coderes]**2 + z[j+i*coderes]**2))
+					phicode[i-index_i,j+k] = _np.arctan2(y[j+i*self.coderes],x[j+i*self.coderes]) 
+					thetacode[i-index_i,j+k] = _np.arccos(z[j+i*self.coderes]/_np.sqrt(x[j+i*self.coderes]**2 \
+						+ y[j+i*self.coderes]**2 + z[j+i*self.coderes]**2))
 
-					Fluxcode[i-index_i,j+k] = Flux[j+i*coderes]
-					tracercode[i-index_i,j+k] = tracer[j+i*coderes]
+					Fluxcode[i-index_i,j+k] = Flux[j+i*self.coderes]
+					tracercode[i-index_i,j+k] = tracer[j+i*self.coderes]
 
-				for j in range(k,coderes):
+				for j in range(k,self.coderes):
 
-					phicode[i-index_i,j-k] = _np.arctan2(y[j+i*coderes],x[j+i*coderes]) 
-					thetacode[i-index_i,j-k] = _np.arccos(z[j+i*coderes]/_np.sqrt(x[j+i*coderes]**2 \
-						+ y[j+i*coderes]**2 + z[j+i*coderes]**2))
+					phicode[i-index_i,j-k] = _np.arctan2(y[j+i*self.coderes],x[j+i*self.coderes]) 
+					thetacode[i-index_i,j-k] = _np.arccos(z[j+i*self.coderes]/_np.sqrt(x[j+i*self.coderes]**2 \
+						+ y[j+i*self.coderes]**2 + z[j+i*self.coderes]**2))
 
-					Fluxcode[i-index_i,j-k] = Flux[j+i*coderes]
-					tracercode[i-index_i,j-k] = tracer[j+i*coderes]
+					Fluxcode[i-index_i,j-k] = Flux[j+i*self.coderes]
+					tracercode[i-index_i,j-k] = tracer[j+i*self.coderes]
 
 		if self.everywhere_xpsi:
 
 			index_i = 0
-			index_j = coderes
+			index_j = self.coderes
 
-			phicode = _np.zeros((index_j-index_i,coderes))
-			thetacode = _np.zeros((index_j-index_i,coderes))
-			Fluxcode = _np.zeros((index_j-index_i,coderes))
-			tracercode = _np.zeros((index_j-index_i,coderes))
+			phicode = _np.zeros((index_j-index_i,self.coderes))
+			thetacode = _np.zeros((index_j-index_i,self.coderes))
+			Fluxcode = _np.zeros((index_j-index_i,self.coderes))
+			tracercode = _np.zeros((index_j-index_i,self.coderes))
 			Flux_min = 5.e-9
 
 			for i in range(index_i,index_j):
 				for j in range(0,k):
 
-					phicode[i,j+k] = phibhac[j+i*coderes]
-					thetacode[i,j+k] = thetabhac[j+i*coderes]
+					phicode[i,j+k] = phibhac[j+i*self.coderes]
+					thetacode[i,j+k] = thetabhac[j+i*self.coderes]
 
-					if (tracer[j+i*coderes] > 0.8):
-						Fluxcode[i,j+k] = _np.log10(((_np.abs(Flux[j+i*coderes])*tracer[j+i*coderes] + (1.0 - tracer[j+i*coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
+					if (tracer[j+i*self.coderes] > 0.8):
+						Fluxcode[i,j+k] = _np.log10(((_np.abs(Flux[j+i*self.coderes])*tracer[j+i*self.coderes] + (1.0 - tracer[j+i*self.coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
 					else:
-						Fluxcode[i,j+k] = _np.log10((((1.0 - tracer[j+i*coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
-					tracercode[i,j+k] = tracer[j+i*coderes]
-				for j in range(k,coderes):
+						Fluxcode[i,j+k] = _np.log10((((1.0 - tracer[j+i*self.coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
+					tracercode[i,j+k] = tracer[j+i*self.coderes]
+				for j in range(k,self.coderes):
 
-					phicode[i,j-k] = phibhac[j+i*coderes]
-					thetacode[i,j-k] = thetabhac[j+i*coderes]
+					phicode[i,j-k] = phibhac[j+i*self.coderes]
+					thetacode[i,j-k] = thetabhac[j+i*self.coderes]
 
-					if (tracer[j+i*coderes] > 0.8):
-						Fluxcode[i,j-k] = _np.log10(((_np.abs(Flux[j+i*coderes])*tracer[j+i*coderes] + (1.0 - tracer[j+i*coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
+					if (tracer[j+i*self.coderes] > 0.8):
+						Fluxcode[i,j-k] = _np.log10(((_np.abs(Flux[j+i*self.coderes])*tracer[j+i*self.coderes] + (1.0 - tracer[j+i*self.coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
 					else:
-						Fluxcode[i,j-k] = _np.log10((((1.0 - tracer[j+i*coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
-					tracercode[i,j-k] = tracer[j+i*coderes]
+						Fluxcode[i,j-k] = _np.log10((((1.0 - tracer[j+i*self.coderes])*Flux_min)*rho_units*c**3/sigma)**(1./4.))
+					tracercode[i,j-k] = tracer[j+i*self.coderes]
 
 		return phicode,thetacode,Fluxcode,tracercode
 
 
-	def read_average_shell(self,filename,
-                        coderes,
+	def read_average_shell(self,
                         bhac_shell_avg):
 		"""
 		Load angular grid data (theta, phi, temp) from a shell .npz, .csv, or .txt file.
@@ -254,8 +247,6 @@ class Temp_Interpolator_shells(ParameterSubspace):
 		with input validation for CSV/TXT formats.
 
 		Args:
-			filename (str): Path to .npz, .csv, or .txt file containing BHAC shell slice data.
-			coderes (int): Grid resolution per axis; total data points must equal coderes x coderes.
 			bhac_shell_avg (bool): If True, compute temperature from flux; otherwise use 'temp' field.
 
 		Returns:
@@ -276,8 +267,8 @@ class Temp_Interpolator_shells(ParameterSubspace):
 			temp = _np.log10(((_np.abs(flux)*rho_units*c**3/sigma)**(1./4.)))
 			return temp
 
-		if filename.endswith('.npz'):
-			data = _np.load(filename)
+		if self.filename.endswith('.npz'):
+			data = _np.load(self.filename)
 			theta = data['theta'][:,:,0]
 			phi = data['phi'][:,:,0]
 			if bhac_shell_avg:
@@ -285,21 +276,21 @@ class Temp_Interpolator_shells(ParameterSubspace):
 			else:
 				temp = _np.log10(data['temp'])
 
-		elif filename.endswith(('.csv', '.txt')):
-			df = pd.read_csv(filename, delim_whitespace=filename.endswith('.txt'))
+		elif self.filename.endswith(('.csv', '.txt')):
+			df = pd.read_csv(self.filename, delim_whitespace=self.filename.endswith('.txt'))
 			required = ['theta', 'phi', 'temp']
 			if not all(col in df.columns for col in required):
 				raise ValueError(f"Missing required columns: {required}")
 
-			expected_size = coderes * coderes
+			expected_size = self.coderes * self.coderes
 			actual_size = len(df['theta'])
 			if actual_size != expected_size:
 				raise ValueError(f"Data size mismatch: expected {expected_size} rows "
-								f"(for coderes={coderes}), but got {actual_size}")
+								f"(for coderes={self.coderes}), but got {actual_size}")
 
-			theta = df['theta'].to_numpy().reshape(coderes, coderes)
-			phi = df['phi'].to_numpy().reshape(coderes, coderes)
-			tempcode = df['temp'].to_numpy().reshape(coderes, coderes)
+			theta = df['theta'].to_numpy().reshape(self.coderes, self.coderes)
+			phi = df['phi'].to_numpy().reshape(self.coderes, self.coderes)
+			tempcode = df['temp'].to_numpy().reshape(self.coderes, self.coderes)
 			temp = _np.log10(tempcode)
 
 		else:
@@ -333,7 +324,16 @@ class Temp_Interpolator_shells(ParameterSubspace):
 		lentheta = (_np.shape(self.xpsi_phi)[0])
 		Tempxpsi = _np.zeros((lentheta,lenphi))
 
-		Tempxpsi = interpolate.griddata((phicode.ravel(), thetacode.ravel()), Tempcode.ravel(), (self.xpsi_phi, self.xpsi_theta), method='cubic')
+		Tempxpsi = interpolate.griddata((phicode.ravel(), thetacode.ravel()),
+										Tempcode.ravel(),
+										(self.xpsi_phi, self.xpsi_theta),
+										method='cubic')
+		if _np.isnan(Tempxpsi).any():
+			nearest = interpolate.griddata((phicode.ravel(), thetacode.ravel()),
+										   Tempcode.ravel(),
+										   (self.xpsi_phi, self.xpsi_theta),
+										   method='nearest')
+			Tempxpsi = _np.where(_np.isnan(Tempxpsi), nearest, Tempxpsi)
 
 		for i in range(0,lentheta):
 			for j in range(0,lenphi):
@@ -348,6 +348,8 @@ class Temp_Interpolator_shells(ParameterSubspace):
 					Tempxpsi[i,j] = T_everywhere
 				# if (self.xpsi_theta[i,j] < _np.pi/2):
 				# 	Tempxpsi[i,j] = T_everywhere 
+		Tempxpsi = _np.where(_np.isfinite(Tempxpsi), Tempxpsi, T_everywhere)
+		Tempxpsi = _np.maximum(Tempxpsi, T_everywhere)
 		return Tempxpsi
 				
 	def temp_interpolation_flux(self,
@@ -355,8 +357,8 @@ class Temp_Interpolator_shells(ParameterSubspace):
 							phicode,
 							Fluxcode,
 							tracercode,
-							tracer_threshold,
-							T_everywhere):
+							tracer_threshold=None,
+							T_everywhere=5.5):
 
 		lenphi = (_np.shape(self.xpsi_phi)[1])
 		lentheta = (_np.shape(self.xpsi_phi)[0])
@@ -365,8 +367,26 @@ class Temp_Interpolator_shells(ParameterSubspace):
 		Tracerxpsi = _np.zeros((lentheta,lenphi))
 
 		#...........................................................................
-		Fluxxpsi = interpolate.griddata((phicode.ravel(), thetacode.ravel()), Fluxcode.ravel(), (self.xpsi_phi, self.xpsi_theta), method='cubic')
-		Tracerxpsi = interpolate.griddata((phicode.ravel(), thetacode.ravel()), tracercode.ravel(), (self.xpsi_phi, self.xpsi_theta), method='cubic')	
+		Fluxxpsi = interpolate.griddata((phicode.ravel(), thetacode.ravel()),
+										Fluxcode.ravel(),
+										(self.xpsi_phi, self.xpsi_theta),
+										method='cubic')
+		Tracerxpsi = interpolate.griddata((phicode.ravel(), thetacode.ravel()),
+										  tracercode.ravel(),
+										  (self.xpsi_phi, self.xpsi_theta),
+										  method='cubic')
+		if _np.isnan(Fluxxpsi).any():
+			nearest_flux = interpolate.griddata((phicode.ravel(), thetacode.ravel()),
+												Fluxcode.ravel(),
+												(self.xpsi_phi, self.xpsi_theta),
+												method='nearest')
+			Fluxxpsi = _np.where(_np.isnan(Fluxxpsi), nearest_flux, Fluxxpsi)
+		if _np.isnan(Tracerxpsi).any():
+			nearest_tracer = interpolate.griddata((phicode.ravel(), thetacode.ravel()),
+												  tracercode.ravel(),
+												  (self.xpsi_phi, self.xpsi_theta),
+												  method='nearest')
+			Tracerxpsi = _np.where(_np.isnan(Tracerxpsi), nearest_tracer, Tracerxpsi)
 		for i in range(0,lentheta):
 			for j in range(0,lenphi):
 				#Take care of the edge cells
@@ -381,5 +401,9 @@ class Temp_Interpolator_shells(ParameterSubspace):
 					Tracerxpsi[i,j] = tracercode[_np.shape(thetacode)[0]-1,0]
 				
 				Tempxpsi[i,j] = Fluxxpsi[i,j]
+				if (Tempxpsi[i,j] < T_everywhere):
+					Tempxpsi[i,j] = T_everywhere
 				
+		Tempxpsi = _np.where(_np.isfinite(Tempxpsi), Tempxpsi, T_everywhere)
+		Tempxpsi = _np.maximum(Tempxpsi, T_everywhere)
 		return Tempxpsi

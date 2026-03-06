@@ -137,7 +137,14 @@ class Everywhere(ParameterSubspace):
 
     """
     required_names = ['temperature (if no custom specification)']
-    optional_names = ['mycoolgrid','everywhere_flag','T_everywhere','coderes', 'filename','bhac_data']
+    optional_names = ['use_interpolated_temperature',
+                      'mycoolgrid (legacy)',
+                      'myeverywhere (legacy)',
+                      'everywhere_flag (legacy)',
+                      'T_everywhere',
+                      'coderes',
+                      'filename',
+                      'bhac_data']
     def __init__(self,
                  time_invariant,
                  bounds = None,
@@ -152,8 +159,10 @@ class Everywhere(ParameterSubspace):
                  custom = None,
                  image_order_limit = None,
                  _integrator_toggle = False,
-                 mycoolgrid = False,
-                 everywhere_flag = False,
+                 use_interpolated_temperature = None,
+                 mycoolgrid = None,
+                 myeverywhere = None,
+                 everywhere_flag = None,
                  T_everywhere = 5.5,
                  coderes = 512,
                  filename=False,
@@ -204,14 +213,36 @@ class Everywhere(ParameterSubspace):
         self.time_invariant = time_invariant
         self._integrator_toggle = _integrator_toggle
 
-        self.mycoolgrid = mycoolgrid
-        self.myeverywhere = everywhere_flag
+        requested_interp = use_interpolated_temperature
+        legacy_flags = [v for v in (mycoolgrid, myeverywhere, everywhere_flag)
+                        if v is not None]
+        if legacy_flags:
+            if any(bool(v) != bool(legacy_flags[0]) for v in legacy_flags[1:]):
+                raise ValueError('Conflicting legacy interpolation flags: '
+                                 'myeverywhere, everywhere_flag, and '
+                                 'mycoolgrid.')
+
+            legacy_flag = bool(legacy_flags[0])
+            if requested_interp is not None and legacy_flag != bool(requested_interp):
+                raise ValueError('Conflicting interpolation flags: '
+                                 'use_interpolated_temperature and legacy '
+                                 'flags (myeverywhere/everywhere_flag/'
+                                 'mycoolgrid).')
+        else:
+            legacy_flag = None
+
+        if requested_interp is None:
+            requested_interp = legacy_flag if legacy_flag is not None else False
+
+        self.use_interpolated_temperature = bool(requested_interp)
+        self.mycoolgrid = self.use_interpolated_temperature
+        self.myeverywhere = self.use_interpolated_temperature
         self.T_everywhere = T_everywhere
         self.coderes = coderes
         self.filename = filename
         self.bhac_data = bhac_data
         
-        if self.mycoolgrid is True and self.filename is False:
+        if self.use_interpolated_temperature and self.filename is False:
             raise ValueError('Filename not given for interpolation')
         
     @property
@@ -492,16 +523,17 @@ class Everywhere(ParameterSubspace):
                                         2),
                                        dtype=_np.double)
 
-        if not self.mycoolgrid:
+        if not self.use_interpolated_temperature:
             self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
         else:
             shell_interp = Temp_Interpolator_shells()
             shell_interp.bhac_shell_avg = self.bhac_data
             shell_interp.coderes= self.coderes
+            shell_interp.filename = self.filename
             shell_interp.everywhere_xpsi= self.myeverywhere
             shell_interp.xpsi_theta = self._theta
             shell_interp.xpsi_phi = self._phi
-            data_avg = shell_interp.read_average_shell(self.filename,coderes=self.coderes,bhac_shell_avg=self.bhac_data)
+            data_avg = shell_interp.read_average_shell(bhac_shell_avg=self.bhac_data)
 
             Temperature_interpolated = shell_interp.temp_interpolation_avg(thetacode=data_avg[0],phicode=data_avg[1],
                                                                         Tempcode=data_avg[2], T_everywhere = self.T_everywhere)
