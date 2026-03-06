@@ -8,14 +8,18 @@ from xpsi.Background import Background
 from xpsi.Interstellar import Interstellar
 
 from xpsi.tools.energy_integrator import energy_integrator
-#from xpsi.tools.energy_interpolator import energy_interpolator
-#from xpsi.tools.phase_integrator import phase_integrator
+from xpsi.tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.tools.synthesise import synthesise_exposure as _synthesise_expo
+from xpsi.tools.synthesise import synthesise_given_total_count_number as _synthesise_given_total_count_number
 
+import numpy as np
+from astropy.io import fits
 from copy import deepcopy
+from datetime import date
 
 class LikelihoodError(xpsiError):
     """ Raised if there is a problem with the value of the log-likelihood. """
@@ -714,6 +718,363 @@ class Signal(ParameterSubspace):
         chi2 = _np.sum( (pulse_data - pulse_model)**2 / pulse_model )
 
         return chi2
+    
+    ################ Sythesize data example and useful functions ################
+
+    def synthesise(self,
+                exposure_time=None,
+                expected_source_counts=None,
+                data_BKG=None,
+                expected_background_counts=None,
+                format='TXT',
+                instrument_name=None,
+                backscal_ratio=1.0,
+                name='synthetic',
+                directory='./',
+                seed=None,
+                save_background=True,
+                **kwargs):
+        
+            """ Synthesise data set in FITS format that can be used in input of X-PSI.
+            Data can be synthesised with or without background.
+            
+            :param float exposure_time: 
+                Exposure time in seconds.
+
+            :param float expected_source_counts: 
+                Total expected number of source counts.
+
+            :param array data_BKG: 
+                One (or two) dimensional array of expected phase-averaged (phase-resolved) background counts in the 
+                background extraction region. It must be None if using the signal._background. 
+            
+            :param float expected_background_counts: 
+                Total expected number of background counts.
+
+            :param str format: 
+                Format of the output file. Can be either TXT or FITS.
+
+            :param str instrument_name: 
+                Instrument name to be written to the header. 
+                Can be None for txt format.
+                Beware that it must be the same as the one in the background and response files.
+                
+            :param float backscal_ratio: 
+                Ratio of the backscal parameters of the background to the source one. 
+                This is used to rescale the background counts to be extracted from a 
+                similar area as the source ones. 
+                If the input background is considered from the same region as the source, set it to 1.
+            
+            :param str name: 
+                Base name of synthetic data files.
+                
+            :param str directory: 
+                Directory in which to write the synthetic data files.
+                
+            :param int seed: 
+                Random seed for the pseudo-random number generator.
+                
+            :param bool save_background: 
+                If True, the synthetic background is saved in the FITS file.
+                If False, it is not saved.
+                For NICER for instance, it does not need to be saved as it is unknown.
+            """
+            
+            # Create or find directory
+            try:
+                if not _os.path.isdir(directory):
+                    _os.mkdir(directory)
+            except OSError:
+                print('Cannot create write directory.')
+                raise
+    
+            # Check the format
+            if format == 'FITS':
+                assert isinstance(instrument_name, str), 'Instrument name must be a string.'
+
+            # If has a background model, use it and not data_BKG
+            if (self._background is not None) and (data_BKG is not None):
+                raise ValueError('Cannot use both data_BKG and background.')
+            
+            # If background model
+            elif self._background is not None:
+                print('Using background from signal._background.')
+
+                # Assert that expected_background_counts is provided
+                if expected_background_counts is None:
+                    raise ValueError('Must provide expected_background_counts if using signal._background.')
+
+                # Assign values to variables
+                if len(self._data.phases) > 4:
+                    BKG = phase_integrator(1.0, self._data.phases, self._background.registered_background,
+                                           self._data.phases, 0.0)
+                elif len(self._data.phases)==2:
+                    BKG = self._background.registered_background
+                else:
+                    # TODO: write method (python) for backgrounds over 3-4 phases (just for synthesise)
+                    raise ValueError("Cannot deal with background over 3 or 4 phases...to be fixed later!")
+                bkg_cts = expected_background_counts
+
+            # If data_BKG
+            elif data_BKG is not None:
+                print('Using data_BKG.')
+
+                # If phase averaged background is provided, spread across phases
+                if len( data_BKG.shape ) == 1:
+                    Nphases = len(self._data.phases)-1
+                    BKG = _np.zeros((len(self._data.channels),len(self._data.phases)-1))
+                    for j in range(Nphases):
+                        BKG[:,j] = data_BKG / Nphases
+                else:
+                    BKG = data_BKG
+
+                # Apply backscal
+                BKG *= backscal_ratio
+                bkg_cts = BKG.sum()
+
+            # Otherwise, use null background
+            else:
+                print('Neither signal._background nor data_BKG provided. Using null background')
+                BKG = _np.zeros((len(self._data.channels),len(self._data.phases)-1))
+                bkg_cts = 0.0
+
+            # Synthesise
+            if exposure_time is not None:
+                self._expected_counts, synthetic, _  = _synthesise_expo(exposure_time,
+                                                                self._data.phases,
+                                                                self._signals,
+                                                                self._phases,
+                                                                self._shifts,
+                                                                bkg_cts,
+                                                                BKG,
+                                                                gsl_seed=seed)
+                exposure = exposure_time
+            elif expected_source_counts is not None:
+                self._expected_counts, synthetic, exposure, _ = _synthesise_given_total_count_number(self._data.phases,
+                                                                expected_source_counts,
+                                                                self._signals,
+                                                                self._phases,
+                                                                self._shifts,
+                                                                bkg_cts,
+                                                                BKG,
+                                                                gsl_seed=seed)
+            else:
+                raise ValueError('Either exposure_time or expected_source_counts must be specified.')
+            
+            # Write expected counts
+            kwargs = {'channels':self._data.channels,
+                    'counts':self._expected_counts,
+                    'filename':_os.path.join(directory, name),
+                    'instrument':instrument_name,
+                    'exposure':exposure,
+                    'backscale':1.0}
+            self._write(format,**kwargs)
+
+            # Write synthetic counts (Poisson realisation of expected counts)
+            kwargs['counts'] = synthetic
+            kwargs['filename'] += '_realisation'
+            kwargs['fmt'] = '%u'
+            self._write(format,**kwargs)
+
+            # If requested, write background
+            if save_background:
+
+                # In this case, the background was automatically computed, 
+                # with the same exposure time  and extraction region as the source
+                # So we just need to rescale it to save it
+                if (self._background is not None):
+                    BKG *= backscal_ratio
+                    if (format == 'TXT') and (backscal_ratio != 1.0):
+                        raise ValueError('TXT format not supported for backscal_ratio != 1.')
+
+                # Write expected background
+                kwargs = {'channels':self._data.channels,
+                    'counts':BKG,
+                    'filename':_os.path.join(directory, name+'_bkg'),
+                    'instrument':instrument_name,
+                    'exposure':exposure,
+                    'backscale':backscal_ratio}
+                self._write(format, **kwargs)
+
+                # Write synthetic background (Poisson realisation of expected background)
+                kwargs['counts'] = _np.random.poisson( BKG )
+                kwargs['filename'] += '_realisation'
+                kwargs['fmt'] = '%u'
+                self._write(format,**kwargs)
+
+
+    def _write(self, format, **kwargs):
+        """ Wrapper to write either PHA, EVT or TXT file.
+        This depends on whether the data is phase-resolved or not. """
+
+        if format == 'TXT':
+            self._write_TXT(**kwargs)
+        elif format == 'FITS':
+            if len(self._data.phases) > 2:
+                self._write_EVT(**kwargs)
+            else:
+                self._write_PHA(**kwargs)
+        else:
+            raise ValueError('Unknown format. It must be either TXT or FITS.')
+
+
+    def _write_EVT(self, 
+                channels,
+                counts,
+                filename,
+                instrument,
+                exposure, 
+                backscale,
+                **kwargs ):
+        """ Write an event file in the FITS format. This is used for phase resolved data.
+         
+        :param array channels: 
+            Array of channels for which data is written.
+        
+        :param array counts: 
+            2D Array of counts, matching the channels on the 1st dimension, for which data is written.
+        
+        :param str filename: 
+            Name of the FITS file.
+        
+        :param str instrument: 
+            Instrument name to be written to the header. 
+            Beware that it must be the same as the one in the background and response files. 
+        
+        :param float exposure: 
+            Exposure time in seconds to be written to the header.
+        
+        :param float backscale: 
+            Backscale parameter to be written to the header.
+        """
+
+        # Create the header
+        header = {
+            'INSTRUME': instrument, 
+            'HDUCLAS1': 'EVENTS',
+            'HDUCLAS2': 'none',
+            'DATE': date.today().strftime('%Y-%m-%d'),
+            'EXPOSURE': exposure,
+            'BACKSCAL': backscale,
+            'ANCRFILE': 'none',
+            'RESPFILE': 'none'
+        }
+
+        # Get the phase array
+        phase_borders = _np.linspace( 0., 1., counts.shape[1]+1 )
+        phase_centers = (phase_borders[1:] + phase_borders[:-1]) / 2
+        PI, PULSE_PHASE = [], []
+
+        # Fill the arrays
+        for i in range(counts.shape[0]):
+            for j in range(counts.shape[1]):
+                for k in range( int(counts[i,j]) ):
+                    PI.append( channels[i] )
+                    PULSE_PHASE.append( phase_centers[j] )
+
+        # Create the columns
+        cols = [
+            fits.Column(name='PI', array=_np.array(PI), format='1J'),
+            fits.Column(name='PULSE_PHASE', array=_np.array(PULSE_PHASE), format='D'),
+        ]
+
+        # Create a primary HDU (header/data unit) for the header info
+        primary_hdu = fits.PrimaryHDU()
+        bin_table = fits.BinTableHDU.from_columns(cols, name='EVENTS')
+
+        # Set header keywords
+        for key, value in header.items():
+            bin_table.header[key] = value
+
+        # Create the FITS file (PHA file)
+        hdul = fits.HDUList([primary_hdu, bin_table])
+
+        # Save to a PHA file
+        hdul.writeto(filename+'.evt', overwrite=True)
+
+    def _write_PHA(self, 
+                channels,
+                counts,
+                filename,
+                instrument,
+                exposure, 
+                backscale,
+                **kwargs ):
+        """ Write a spectrum file in the FITS format. This is used for data with no phase information.
+         
+        :param array channels: 
+            Array of channels for which data is written.
+        
+        :param array counts: 
+            1D Array of counts, matching the channels, for which data is written.
+        
+        :param str filename: 
+            Name of the FITS file.
+        
+        :param str instrument: 
+            Instrument name to be written to the header. 
+            Beware that it must be the same as the one in the background and response files. 
+        
+        :param float exposure: 
+            Exposure time in seconds to be written to the header.
+        
+        :param float backscale: 
+            Backscale parameter to be written to the header.
+        """
+
+        # Create the header
+        header = {
+            'INSTRUME': instrument, 
+            'HDUCLAS1': 'SPECTRUM',
+            'HDUCLAS2': 'none',
+            'DATE': date.today().strftime('%Y-%m-%d'),
+            'EXPOSURE': exposure,
+            'BACKSCAL': backscale,
+            'ANCRFILE': 'none',
+            'RESPFILE': 'none',
+        }
+
+        # Work-around to deal with phase-average synthetic background (see #TODO fix above, line 883)
+        if np.shape(counts)[-1] == 2:
+            counts = np.reshape(counts[:,0], (len(counts),1))
+
+        # Create the columns
+        cols = [
+            fits.Column(name='CHANNEL', array=channels, format='1J'),
+            fits.Column(name='COUNTS', array=counts, format='D'),
+        ]
+
+        # Create a primary HDU (header/data unit) for the header info
+        primary_hdu = fits.PrimaryHDU()
+        bin_table = fits.BinTableHDU.from_columns(cols, name='SPECTRUM')
+
+        # Set header keywords
+        for key, value in header.items():
+            bin_table.header[key] = value
+
+        # Create the FITS file (PHA file)
+        hdul = fits.HDUList([primary_hdu, bin_table])
+
+        # Save to a PHA file
+        hdul.writeto(filename+'.pha', overwrite=True)
+
+    def _write_TXT(self, counts, filename, fmt='%.18e', **kwargs):
+        """ Write to file in human readable format.
+         
+        :param array counts: 
+            Array of counts, matching the channels, for which data is written.
+        
+        :param str filename: 
+            Name of the text file.
+        
+        :param str fmt: 
+            Format of the text file.
+        """
+
+        # If 1D, add extra dimension
+        if len(counts.shape) == 1:
+            counts = counts.reshape(1,-1)
+        _np.savetxt(filename+'.dat', counts , fmt=fmt )
             
 
 
