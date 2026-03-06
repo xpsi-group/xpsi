@@ -109,4 +109,56 @@ For Helios, we can use the following type of job script:
     #Clean the scratch automatically here.
     #But remember to remove manually in each node, if the main program ends by crashing.
     rm -rf $OUTPUT_FOLDER
-    
+  
+
+Jean-Zay/IDRIS
+------
+
+For Jean-Zay, a script like the following one can be prepared. Just check your working project account.
+
+.. code block:: bash
+
+   #!/bin/bash
+
+   #SBATCH --account=nameproject@cpu
+   #SBATCH --job-name=XPSI3_BBTest
+   #SBATCH --time=20:00:00
+   #SBATCH --partition=cpu_p1
+   #SBATCH --qos=qos_cpu-t3
+   #SBATCH --nodes=5
+   #SBATCH --ntasks=200
+   #SBATCH --ntasks-per-node=40
+   #SBATCH --hint=nomultithread
+   #SBATCH --mail-user=myemail@mailservice.com
+   #SBATCH --mail-type=END
+   #SBATCH --mail-type=FAIL
+
+   module purge
+   module load miniforge/24.9.0
+   module load cmake/3.21.3
+   module load intel-all/19.0.4
+   module load gsl/2.5
+
+   export FC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/ifort
+   export CC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc
+   export CXX=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icpc
+   export LDSHARED="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc -shared"
+   export OMP_NUM_THREADS=1
+   export OPENBLAS_NUM_THREADS=1
+   export GOTO_NUM_THREADS=1
+   export MKL_NUM_THREADS=1
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
+   export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
+
+   conda activate $WORK/conda/xpsi
+
+   cd $WORK
+   mkdir TestBBXPSIrun
+   cp -r cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* ./TestBBXPSIrun
+   cd TestBBXPSIrun
+
+   cp -r config_LR_10000LP_0d1SE_0d1ET_nonMM.ini config.ini
+
+   srun python TestRun_BB.py > out1 2> err1
+
+   cp -r run out1 err1 $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
