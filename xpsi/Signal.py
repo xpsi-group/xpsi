@@ -380,10 +380,11 @@ class Signal(ParameterSubspace):
         (assuming instrument effective area units are cm^2).
 
         """
-        try:
-            del self.signals
-        except AttributeError:
-            pass
+        if reset:
+            try:
+                del self.signals
+            except AttributeError:
+                pass
 
         if self.cache:
             try:
@@ -401,12 +402,10 @@ class Signal(ParameterSubspace):
                 # cache total hot region signal
                 self.incident_specific_flux_signals = signal
 
-        else:
-            if reset:
-                try:
-                    del self.signals
-                except AttributeError:
-                    pass
+            try:
+                del self.incident_flux_signals
+            except AttributeError:
+                pass
 
             try:
                 self.execute_custom_cache_instructions()
