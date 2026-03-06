@@ -8,8 +8,7 @@ from xpsi.Background import Background
 from xpsi.Interstellar import Interstellar
 
 from xpsi.tools.energy_integrator import energy_integrator
-#from xpsi.tools.energy_interpolator import energy_interpolator
-#from xpsi.tools.phase_integrator import phase_integrator
+from xpsi.tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod
 from xpsi.Parameter import Parameter
@@ -17,6 +16,7 @@ from xpsi.ParameterSubspace import ParameterSubspace
 from xpsi.tools.synthesise import synthesise_exposure as _synthesise_expo
 from xpsi.tools.synthesise import synthesise_given_total_count_number as _synthesise_given_total_count_number
 
+import numpy as np
 from astropy.io import fits
 from copy import deepcopy
 from datetime import date
@@ -868,11 +868,18 @@ class Signal(ParameterSubspace):
                 # Assert that expected_background_counts is provided
                 if expected_background_counts is None:
                     raise ValueError('Must provide expected_background_counts if using signal._background.')
-                
+
                 # Assign values to variables
-                BKG = self._background.registered_background
+                if len(self._data.phases) > 4:
+                    BKG = phase_integrator(1.0, self._data.phases, self._background.registered_background,
+                                           self._data.phases, 0.0)
+                elif len(self._data.phases)==2:
+                    BKG = self._background.registered_background
+                else:
+                    # TODO: write method (python) for backgrounds over 3-4 phases (just for synthesise)
+                    raise ValueError("Cannot deal with background over 3 or 4 phases...to be fixed later!")
                 bkg_cts = expected_background_counts
-            
+
             # If data_BKG
             elif data_BKG is not None:
                 print('Using data_BKG.')
@@ -930,7 +937,7 @@ class Signal(ParameterSubspace):
 
             # Write synthetic counts (Poisson realisation of expected counts)
             kwargs['counts'] = synthetic
-            kwargs['filename'] += '_realization'
+            kwargs['filename'] += '_realisation'
             kwargs['fmt'] = '%u'
             self._write(format,**kwargs)
 
@@ -956,7 +963,7 @@ class Signal(ParameterSubspace):
 
                 # Write synthetic background (Poisson realisation of expected background)
                 kwargs['counts'] = _np.random.poisson( BKG )
-                kwargs['filename'] += '_realization'
+                kwargs['filename'] += '_realisation'
                 kwargs['fmt'] = '%u'
                 self._write(format,**kwargs)
 
@@ -1091,6 +1098,10 @@ class Signal(ParameterSubspace):
             'ANCRFILE': 'none',
             'RESPFILE': 'none',
         }
+
+        # Work-around to deal with phase-average synthetic background (see #TODO fix above, line 883)
+        if np.shape(counts)[-1] == 2:
+            counts = np.reshape(counts[:,0], (len(counts),1))
 
         # Create the columns
         cols = [
