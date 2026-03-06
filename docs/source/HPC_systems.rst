@@ -258,8 +258,9 @@ Now, let's prepare the conda environment for X-PSI. However, the prerequites mus
 
 .. code-block:: bash
 
-   mkdir Softwares
-   conda create -p $WORK/Softwares/xpsi python'>=3.9.0' numpy'<2.0.0' cython'~=3.0.11' matplotlib'==3.9.2' scipy wrapt gsl pytest getdist tqdm h5py nestcheck fgivenx astropy'>=5.2,<7.0.0' emcee ultranest mpi4py cmap   
+   cd $WORK
+   mkdir conda
+   conda create -p $WORK/conda/xpsi python'>=3.9.0' numpy'<2.0.0' cython'~=3.0.11' matplotlib'==3.9.2' scipy wrapt gsl pytest getdist tqdm h5py nestcheck fgivenx astropy'>=5.2,<7.0.0' emcee ultranest mpi4py cmap   
 
 
 Then point to the Intel compilers, here again by mentioning them explicitly:
@@ -274,7 +275,9 @@ Now that the environment is set, MultiNest can be installed:
 
 .. code-block:: bash
    
-   cd $WORK/Softwares
+   cd $WORK
+   mkdir Softwares
+   cd Softwares
    git clone https://github.com/farhanferoz/MultiNest.git  ./MultiNest
    cd MultiNest/MultiNest_v3.12_CMake/multinest/
    mkdir build
@@ -287,10 +290,7 @@ Now that the environment is set, MultiNest can be installed:
                -DCMAKE_Fortran_COMPILER=mpiifort  ..
    make
    ls ../lib
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$pathtosoftwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
-
-export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
-
+   
 Then its Python interface:
 
 .. code-block:: bash
