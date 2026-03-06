@@ -64,6 +64,49 @@ cdef double compute_pol_ang(
 
     return chi
 
+# Python wrapper for testing
+cpdef double compute_pol_ang_py(
+              double leaves_kdx,
+              double sin_psi,
+              double cos_psi,
+              double sin_alpha,
+              double cos_alpha,
+              double sin_theta_i,
+              double cos_theta_i,
+              double sin_i,
+              double cos_i,
+              double sin_gamma,
+              double cos_gamma,
+              double Grav_z,
+              double mu,
+              double eta,
+              double beta,
+              double Lorentz,
+              double cos_xi):
+    """
+    Python-callable wrapper for compute_pol_ang.
+    Useful for unit testing.
+    """
+    return compute_pol_ang(
+        leaves_kdx,
+        sin_psi,
+        cos_psi,
+        sin_alpha,
+        cos_alpha,
+        sin_theta_i,
+        cos_theta_i,
+        sin_i,
+        cos_i,
+        sin_gamma,
+        cos_gamma,
+        Grav_z,
+        mu,
+        eta,
+        beta,
+        Lorentz,
+        cos_xi
+    )
+
 cdef int disk_block(
               double R_in,
               double cos_i,
@@ -75,7 +118,7 @@ cdef int disk_block(
               double theta_i_over_pi
               ) noexcept nogil:
     """
-    Checking whether an accretion disk blocks certain rays based on Ibragimov & Poutanen (2009).
+    Checking whether an accretion disk blocks certain rays based on Ibragimov & Poutanen (2009). Returns 1 if the ray is not blocked.
     """
      
     cdef:         
@@ -88,8 +131,35 @@ cdef int disk_block(
     r_s_i = r_s_over_r_i*radius
     impact_b = radius * sin_alpha / sqrt(1 - r_s_over_r_i) # impact parameter
     r_psi_d = sqrt((r_s_i * r_s_i * (1 - cos_psi_d) * (1 - cos_psi_d)) / (4 * (1 + cos_psi_d) * (1 + cos_psi_d)) +  ((impact_b * impact_b) / (sin_psi_d * sin_psi_d))) - (r_s_i * (1 - cos_psi_d)) / (2 * (1 + cos_psi_d)) ##Ibragimov & Poutanen (2009), Equation (B9)
+    printf("r_psi_d = %.6e\n",r_psi_d)
     if theta_i_over_pi < 0.5 or (theta_i_over_pi > 0.5 and r_psi_d < R_in):
         return 1
     else: #theta > pi/2 and (theta < pi/2 or r_psi_d > R_in), don't calculate.
         return 0
+
+# Python wrapper for testing
+cpdef int disk_block_py(
+              double R_in,
+              double cos_i,
+              double cos_psi,
+              double cos_theta_i,
+              double r_s_over_r_i,
+              double radius,
+              double sin_alpha,
+              double theta_i_over_pi
+              ):
+    """
+    Python-callable wrapper for disk_ block.
+    Useful for unit testing.
+    """
+    return disk_block(
+            R_in,
+            cos_i,
+            cos_psi,
+            cos_theta_i,
+            r_s_over_r_i,
+            radius,
+            sin_alpha,
+            theta_i_over_pi
+    )
 

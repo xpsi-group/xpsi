@@ -16,7 +16,7 @@ cdef double compute_pol_ang(
               double beta,
               double Lorentz,
               double cos_xi) noexcept nogil
-              
+
 cdef int disk_block(
               double R_in,
               double cos_i,
@@ -26,5 +26,4 @@ cdef int disk_block(
               double radius,
               double sin_alpha,
               double theta_i_over_pi
-              ) noexcept nogil             
-              
+              ) noexcept nogil
