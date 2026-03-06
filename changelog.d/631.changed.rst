@@ -1,0 +1,5 @@
+Changed the branched `if` statements for signal registration to a simpler and cleaner structure.
+
+Changed the ``Modeling`` notebook and the associated files to remove the Steffen interpolation part.
+
+Modified the Background tools so that it works properly with the new ``EmissionModel``

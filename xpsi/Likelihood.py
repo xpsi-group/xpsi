@@ -12,6 +12,7 @@ from xpsi.Star import Star
 from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
 from xpsi.Prior import Prior
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.EmissionModels import EmissionModel, EmissionModels
 from xpsi import HotRegion
 from xpsi import Elsewhere
 
@@ -73,6 +74,7 @@ class Likelihood(ParameterSubspace):
 
     """
     def __init__(self, star, signals,
+                 emission_models = None,
                  num_energies = 128,
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
@@ -81,6 +83,7 @@ class Likelihood(ParameterSubspace):
 
         self.star = star
         self.signals = signals
+        self.emission_models = emission_models
 
         self._num_energies = num_energies
 
@@ -104,6 +107,13 @@ class Likelihood(ParameterSubspace):
                 signal.energies = energies
                 signal.phases = photosphere.surface.phases_in_cycles
 
+                # Add emission phase arrays
+                if self._emission_models is not None:
+                    phases = signal.phases
+                    for model in self._emission_models:
+                        phases.append( model._phases )
+                    signal.phases = phases
+
         self.threads = threads
 
         self.llzero = llzero
@@ -114,7 +124,7 @@ class Likelihood(ParameterSubspace):
             self.prior = prior
 
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))
+        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]), self._emission_models)
 
     @property
     def threads(self):
@@ -221,6 +231,27 @@ class Likelihood(ParameterSubspace):
             pass # nothing to be done
 
     @property
+    def emission_models(self):
+        return self._emission_models
+
+    @emission_models.setter
+    def emission_models(self, models):
+        if isinstance(models, EmissionModels):
+            self._emission_models = models
+        elif isinstance(models, EmissionModel) or isinstance( models, tuple ) or isinstance( models, list):
+            self._emission_models = EmissionModels(models)
+        elif models is None:
+            self._emission_models = None
+        else:
+            print( 'Warning: emission_models is not an EmissionModels object. No emission models will be used' )
+            self._emission_models = None
+
+        # Reference to parameter container into the emission models
+        if self._emission_models is not None:
+            for model in self._emission_models:
+                model.parameters = self # a reference to the parameter container
+
+    @property
     def llzero(self):
         """ Get the minimum log-likelihood setting passed to MultiNest. """
         return self._llzero
@@ -304,69 +335,59 @@ class Likelihood(ParameterSubspace):
                     print('Parameter vector: ', super(Likelihood,self).__call__())
                     return self.random_near_llzero
 
+            # Add emission models from outside the photosphere
+            if self._emission_models is not None:
+                self._emission_models.update(self.threads,force_update=force_update)
+                self._emission_models.integrate(signals[0].energies, self.threads)
+
             star_updated = True
 
         # register the signals by operating with the instrument response
         for signals, photosphere in zip(self._signals, self._star.photospheres):
             for signal in signals:
                 if star_updated or signal.needs_update:
+                    
+                    # Define which photosphere signal to use
                     if signal.isI:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signal),
-                                    threads=self.threads)
-                    elif signal.isQ:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalQ),
-                                    threads=self.threads)
-                    elif signal.isU:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalU),
-                                    threads=self.threads)
-                    elif signal.isQn:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalQ),
-                                    threads=self.threads)
-                        Qsignal = signal.signals
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signal),
-                                    threads=self.threads)
-                        Isignal = signal.signals
-                        for ihot in range(len(photosphere.signalQ)):
-                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Qsignal[ihot]/Isignal[ihot])
-                    elif signal.isUn:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalU),
-                                    threads=self.threads)
-                        Usignal = signal.signals
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signal),
-                                    threads=self.threads)
-                        Isignal = signal.signals
-                        for ihot in range(len(photosphere.signalU)):
-                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
+                        photosphere_signal = photosphere.signal
+                    elif signal.isQ or signal.isQn:
+                        photosphere_signal =  photosphere.signalQ
+                    elif signal.isU or signal.isUn:
+                        photosphere_signal =  photosphere.signalU
                     else:
                         raise TypeError('Signal type must be either I, Q, U, Qn, or Un.')
+                    
+                    # Apply this choice to register appropriate signal
+                    signal_to_register = tuple( tuple(self._divide(component,
+                                                                self._star.spacetime.d_sq)
+                                                            for component in hot_region)
+                                                    for hot_region in photosphere_signal)
+                    signal.register(signal_to_register, threads=self.threads)
+
+                    # Normalize if required
+                    if signal.isQn or signal.isUn:
+
+                        # Save old value
+                        polarized_signal = signal.signals
+
+                        # Compute the I component
+                        signal_to_nomalize = tuple( tuple(self._divide(component,
+                                                                self._star.spacetime.d_sq)
+                                                            for component in hot_region)
+                                                    for hot_region in photosphere.signal)
+                        signal.register(signal_to_nomalize, threads=self.threads)
+                        Isignal = signal.signals
+
+                        # Normalize
+                        for ihot in range(len(polarized_signal)):
+                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, polarized_signal[ihot]/Isignal[ihot])
+
+                    # Add emission models from outside the photosphere
+                    if self._emission_models is not None:
+                        signal.register(tuple( tuple( component for component in model)
+                                                    for model in self._emission_models.signal),
+                                        threads=self.threads, reset=False)
+
                     reregistered = True
                 else:
                     reregistered = False
@@ -378,14 +399,23 @@ class Likelihood(ParameterSubspace):
                             kws = kwargs.pop(signal.prefix)
                         except AttributeError:
                             kws = {}
-
                         shifts = [h['phase_shift'] for h in hot.objects]
+                        
+                        # For simplicity when building the emission models, the shift are applied during integration for these
+                        if self._emission_models is not None:
+                            shifts = shifts + [0.0] * len(self._emission_models)
+
                         signal.shifts = _np.array(shifts)
                         signal.synthesise(threads=self._threads, **kws)
                     else:
                         try:
                             hot = photosphere.surface
                             shifts = [h['phase_shift'] for h in hot.objects]
+
+                            # For simplicity when building the emission models, the shift are applied during integration for these
+                            if self._emission_models is not None:
+                                shifts = shifts + [0.0] * len(self._emission_models)
+
                             signal.shifts = _np.array(shifts)
                             signal(threads=self._threads, llzero=self._llzero)
                         except LikelihoodError:
@@ -397,6 +427,7 @@ class Likelihood(ParameterSubspace):
                                   'signal%s.' % prefix)
                             print('Parameter vector: ', super(Likelihood,self).__call__())
                             return self.random_near_llzero
+
 
         return star_updated
 
@@ -411,6 +442,7 @@ class Likelihood(ParameterSubspace):
 
         self.__init__(self._star,
                       self._signals,
+                      self._emission_models,
                       self._num_energies,
                       self._threads,
                       self._llzero)

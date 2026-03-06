@@ -376,7 +376,7 @@ class Signal(ParameterSubspace):
         """ Get a :class:`numpy.ndarray` of energy edges. """
         return self._energy_edges
 
-    def register(self, signals, threads=1):
+    def register(self, signals, threads=1, reset=True):
         """  Register an incident signal by operating with the response matrix.
 
         A :class:`numpy.ndarray` is stored as an instance attribute containing
@@ -384,10 +384,11 @@ class Signal(ParameterSubspace):
         (assuming instrument effective area units are cm^2).
 
         """
-        try:
-            del self.signals
-        except AttributeError:
-            pass
+        if reset:
+            try:
+                del self.signals
+            except AttributeError:
+                pass
 
         if self.cache:
             try:
