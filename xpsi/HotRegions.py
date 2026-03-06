@@ -42,33 +42,6 @@ class HotRegions(ParameterSubspace):
     def phases_in_cycles(self):
         return [obj.phases_in_cycles for obj in self.objects]
 
-    @property
-    def fast_phases_in_cycles(self):
-        """  """
-        if self.do_fast:
-            return [obj.fast_phases_in_cycles for obj in self.objects]
-
-    @property
-    def do_fast(self):
-        """ Should fast-mode be invoked for some subset of hot regions. """
-        for obj in self._objects:
-            if obj.do_fast:
-                return True
-        return False
-
-    @property
-    def fast_mode(self):
-        """ Is fast-mode currently activated? """
-        for obj in self._objects:
-            if obj.fast_mode:
-                return True
-        return False
-
-    @fast_mode.setter
-    def fast_mode(self, activate):
-        """ Activate or deactivate fast-mode. """
-        for obj in self._objects:
-            obj.fast_mode = activate
 
     def print_settings(self):
         """ Print numerical settings. """
@@ -83,16 +56,12 @@ class HotRegions(ParameterSubspace):
         """
         return len(self._objects)
 
-    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
+    def embed(self, spacetime, photosphere, threads, *args):
         """ Embed the hot regions. """
 
-        if fast_total_counts is None:
-            fast_total_counts = [None] * len(self)
-
-        for obj, fast in zip(self._objects, fast_total_counts):
+        for obj in self._objects:
             obj.embed(spacetime,
                       photosphere,
-                      fast,
                       threads, *args)
 
     def integrate(self, 

@@ -111,14 +111,12 @@ class TestHotRegion(object):
         # Test that integer, float and invalid values for num_rays have corect set and get. Raise error if invalid.
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         
-        fast_num_rays = 50
         if isinstance(num_rays, (float, int)):
-            test_hotregion.set_num_rays(num_rays, fast_num_rays)
+            test_hotregion.set_num_rays(num_rays)
             assert test_hotregion.num_rays == int(num_rays), f"Expected num_rays to be {num_rays}, got {test_hotregion.num_rays}"
-            assert test_hotregion._fast_num_rays == fast_num_rays, f"Expected _fast_num_rays to be {fast_num_rays}, got {test_hotregion._fast_num_rays}"    
         else:
             with pytest.raises(ValueError):
-                test_hotregion.set_num_rays(num_rays, fast_num_rays)
+                test_hotregion.set_num_rays(num_rays)
                 
     def test_image_order_limit_getter(self):
         # Set a value directly to the private attribute
@@ -154,22 +152,19 @@ class TestHotRegion(object):
                 test_hotregion.image_order_limit = 3.5
 
     @pytest.mark.parametrize(
-        "sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells, fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells, expect_error",
+        "sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells, expect_error",
         [
             # Valid cases
-            (32, 10, 80, 16, 4, 16, None),           # Standard valid input
-            (4, 4, 4, 4, 4, 4, None),               # Minimal valid input
-            (80, 10, 80, 16, 4, 16, None),          # Edge of max valid
+            (32, 10, 80, None),           # Standard valid input
+            (4, 4, 4,None),               # Minimal valid input
+            (80, 10, 80, None),          # Edge of max valid
 
             # Invalid cases
-            (3, 10, 80, 16, 4, 16, ValueError),     # sqrt_num_cells < 4
-            ("invalid", 10, 80, 16, 4, 16, ValueError), # Non-integer sqrt_num_cells
-            (32, 80, 10, 16, 4, 16, AssertionError), # min > max for regular cells
-            (32, 10, 80, 16, 16, 4, AssertionError), # min > max for fast cells
+            (3, 10, 80, ValueError),     # sqrt_num_cells < 4
+            ("invalid", 10, 80, ValueError), # Non-integer sqrt_num_cells
         ],
     )
     def test_set_num_cells(self, sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
-                           fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells,
                            expect_error):
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         
@@ -177,12 +172,10 @@ class TestHotRegion(object):
             with pytest.raises(expect_error):
                 test_hotregion.set_num_cells(
                     sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
-                    fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells
                 )
         else:
             test_hotregion.set_num_cells(
                 sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
-                fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells
             )
 
             # Validate attributes for regular cells
@@ -190,11 +183,6 @@ class TestHotRegion(object):
             assert test_hotregion._num_cells == sqrt_num_cells**2
             assert test_hotregion._min_sqrt_num_cells == min_sqrt_num_cells
             assert test_hotregion._max_sqrt_num_cells == max_sqrt_num_cells
-
-            # Validate attributes for fast cells
-            assert test_hotregion._fast_num_cells == fast_sqrt_num_cells**2
-            assert test_hotregion._fast_min_sqrt_num_cells == fast_min_sqrt_num_cells
-            assert test_hotregion._fast_max_sqrt_num_cells == fast_max_sqrt_num_cells
 
     def test_leaves_property(self):
         # Set a value directly to the private attribute
@@ -207,49 +195,32 @@ class TestHotRegion(object):
         )
         
     @pytest.mark.parametrize(
-        "num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, do_fast, expect_error",
+        "num_leaves, num_phases, phases, expect_error",
         [
-            # Valid cases not fast
-            (5, None, None, None, None, None, False, None),
-            (5, None, np.linspace(0, 1, 5), None, None, None, False, None),
-            (5, 6, None, None, None, None, False, None),
-            (5, None, np.linspace(0, 1, 5), None, None, None, False, None),
-            
-            
-            # Invalid cases
-            (None, None, None, None, None, None, False, TypeError), # not allowed no leaves
-            (5, "not_a_number", None, None, None, None, False, ValueError), # not allowed invalid num_phases
-            (5, None, "not_an_array", None, None, None, False, TypeError), # not allowed invalid phases
-            (5, None, np.array([0, 2, 1]), None, None, None, False, TypeError), # non monotonical
-            (5, None, np.array([-0.1, 0.5, 1]), None, None, None, False, TypeError), # negative
-            (5, None, np.array([0, 0.5, 1.1]), None, None, None, False, TypeError), # more than 1
+            # Valid cases
+            (5, None, None, None),
+            (5, None, np.linspace(0, 1, 5), None),
+            (5, 6, None, None),
+            (5, None, np.linspace(0, 1, 5), None),
 
-            
-            # Fast valid cases
-            (5, None, None, 5, None, None, True, None),
-            (5, None, np.linspace(0, 1, 5), 5, None, np.linspace(0, 1, 5), True, None),
-            (5, 6, None, 5, 6, None, True, None),
-            (5, None, np.linspace(0, 1, 5), 5, 6, np.linspace(0, 1, 5), True, None),
-            
-            # Fast invalid cases
-            (5, None, None, None, None, None, True, TypeError), # not allowed no leaves
-            (5, None, None, 5, "not_a_number", None, True, ValueError), # not allowed invalid num_phases
-            (5, None, None, 5, None, "not_an_array", True, TypeError), # not allowed invalid phases
-            (5, None, None, 5, None, np.array([0, 2, 1]), True, TypeError), # non monotonical
-            (5, None, None, 5, None, np.array([-0.1, 0.5, 1]), True, TypeError), # negative
-            (5, None, None, 5, None, np.array([0, 0.5, 1.1]), True, TypeError), # more than 1
+            # Invalid cases
+            (None, None, None, TypeError),
+            (5, "not_a_number", None, ValueError),
+            (5, None, "not_an_array", TypeError),
+            (5, None, np.array([0, 2, 1]), TypeError),
+            (5, None, np.array([-0.1, 0.5, 1]), TypeError),
+            (5, None, np.array([0, 0.5, 1.1]), TypeError),
         ]
     )
-    def test_set_phases(self,num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, do_fast, expect_error):    
+    def test_set_phases(self,num_leaves, num_phases, phases, expect_error):    
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
-        test_hotregion.do_fast = do_fast
         # Expect error for invalid cases
         if expect_error:
             with pytest.raises(expect_error):
-                test_hotregion.set_phases(num_leaves, num_phases=num_phases, phases=phases, fast_num_leaves=fast_num_leaves, fast_num_phases=fast_num_phases, fast_phases=fast_phases)
+                test_hotregion.set_phases(num_leaves, num_phases=num_phases, phases=phases)
         else:
             # Test valid cases
-            test_hotregion.set_phases(num_leaves, num_phases=num_phases, phases=phases, fast_num_leaves=fast_num_leaves, fast_num_phases=fast_num_phases, fast_phases=fast_phases)
+            test_hotregion.set_phases(num_leaves, num_phases=num_phases, phases=phases)
             if phases is None and num_phases is None:
                 num_temp = num_leaves
                 linspace_temp = np.linspace(0, 1, num_temp)
@@ -262,21 +233,16 @@ class TestHotRegion(object):
             assert np.allclose(test_hotregion._phases_cycles, linspace_temp), f"Expected phases {linspace_temp}, but got {test_hotregion._phases_cycles}"
             assert np.allclose(test_hotregion._leaves, np.linspace(0.0, 2*np.pi, 5)), f"Expected leaves to be np.linspace(0.0, 2*np.pi, 5), but got {test_hotregion._leaves}"
             
-        #HotRegion.do_fast = False # restore
         
         
     def test_phases_in_cycles_property(self):
         # Set a value directly to the private attribute
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_hotregion._phases_cycles = "test_value"
-        test_hotregion._fast_phases_cycles = "test_value"
 
         # Verify that the property returns the correct value
         assert test_hotregion.phases_in_cycles == "test_value", (
             f"Expected phases_in_cycles to return 'test_value', but got {test_hotregion.phases_in_cycles}"
-        )
-        assert test_hotregion.fast_phases_in_cycles == "test_value", (
-            f"Expected fast_phases_in_cycles to return 'test_value', but got {test_hotregion.fast_phases_in_cycles}"
         )
         
     def test_num_cells_property(self):
@@ -395,9 +361,8 @@ class TestHotRegion(object):
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
 
-        test_hotregion.fast_mode = False
-        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+        test_hotregion.set_num_cells(32, 10, 80)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         # Not yet testing invalid cases and failing cases yet. Also: not testing yet underlying functions individually.
         
 
@@ -432,10 +397,9 @@ class TestHotRegion(object):
         test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
-    
-        test_hotregion.fast_mode = False
-        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+
+        test_hotregion.set_num_cells(32, 10, 80)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         
         test_hotregion._HotRegion__compute_rays(test_spacetime, 
                                                 test_photosphere, 1)
@@ -447,11 +411,9 @@ class TestHotRegion(object):
         test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
-    
-        
-        test_hotregion.fast_mode = False
-        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+
+        test_hotregion.set_num_cells(32, 10, 80)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         test_hotregion._HotRegion__compute_rays(test_spacetime, 
                                                 test_photosphere, 1)
         test_hotregion._HotRegion__calibrate_lag(test_spacetime, 
@@ -464,11 +426,8 @@ class TestHotRegion(object):
         test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
-        test_hotregion.fast_mode=False
-        
-        test_hotregion._HotRegion__construct_cellMesh(test_spacetime,
-                                  None,
-                                  1)
+
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, 1)
         test_hotregion._HotRegion__compute_rays(test_spacetime, 
                                                 test_photosphere, 1)
         test_hotregion._HotRegion__compute_cellParamVecs()
@@ -498,44 +457,16 @@ class TestHotRegion(object):
         test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
-    
-        test_hotregion.fast_mode=False
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+
+        test_hotregion.embed(test_spacetime, test_photosphere, 1)
         # Also testing the optional args that produce a correction.           
         # Mock function to be passed as *args
         def mock_correction_function(vector):
             return np.ones((len(vector), len(vector), 1))
 
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1, mock_correction_function)
+        test_hotregion.embed(test_spacetime, test_photosphere, 1, mock_correction_function)
         
         
-    def test_do_fast_getter_setter(self):
-        # Initial state of _do_fast
-        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
-        initial_value = False
-        test_hotregion.do_fast = initial_value
-        
-        # Test the getter
-        assert test_hotregion.do_fast == initial_value, f"Expected {initial_value}, but got {test_hotregion.do_fast}"
-    
-        # Test the setter
-        new_value = True
-        test_hotregion.do_fast = new_value
-        assert test_hotregion.do_fast == new_value, f"Expected {new_value}, but got {test_hotregion.do_fast}"
-
-    def test_fast_mode_getter_setter(self):
-        # Initial state of _do_fast
-        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
-        initial_value = False
-        test_hotregion.fast_mode = initial_value
-        
-        # Test the getter
-        assert test_hotregion.fast_mode == initial_value, f"Expected {initial_value}, but got {test_hotregion.do_fast}"
-    
-        # Test the setter
-        new_value = True
-        test_hotregion.fast_mode = new_value
-        assert test_hotregion.fast_mode == new_value, f"Expected {new_value}, but got {test_hotregion.do_fast}"
 
     def test_cede_getter_setter(self):
         # Test with initial value of _cede
@@ -598,9 +529,8 @@ class TestHotRegion(object):
         test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
-    
-        test_hotregion.fast_mode=False
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+
+        test_hotregion.embed(test_spacetime, test_photosphere, 1)
         
         atm_ext_else = None
         energies = np.linspace(1,2,10) # keV
@@ -612,9 +542,8 @@ class TestHotRegion(object):
         test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
         test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
-    
-        test_hotregion.fast_mode=False
-        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
+
+        test_hotregion.embed(test_spacetime, test_photosphere, 1)
         
         atm_ext_else = None
         energies = np.linspace(1,2,10) # keV

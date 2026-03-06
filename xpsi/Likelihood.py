@@ -12,6 +12,7 @@ from xpsi.Star import Star
 from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
 from xpsi.Prior import Prior
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.EmissionModels import EmissionModel, EmissionModels
 from xpsi import HotRegion
 from xpsi import Elsewhere
 
@@ -39,9 +40,6 @@ class Likelihood(ParameterSubspace):
         in logarithmic space within the union of waveband coverages
         achieved by some set of instruments. Gaps in waveband coverage will
         be skipped.
-
-    :param float fast_rel_num_energies:
-        Fraction of the normal number of energies to use in *fast* mode.
 
     :param int threads:
         The number of ``OpenMP`` threads to spawn for integration. The default
@@ -76,8 +74,8 @@ class Likelihood(ParameterSubspace):
 
     """
     def __init__(self, star, signals,
+                 emission_models = None,
                  num_energies = 128,
-                 fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
                  prior = None,
@@ -85,11 +83,9 @@ class Likelihood(ParameterSubspace):
 
         self.star = star
         self.signals = signals
-
-        self._do_fast = False
+        self.emission_models = emission_models
 
         self._num_energies = num_energies
-        self._fast_rel_num_energies = fast_rel_num_energies
 
         for photosphere, signals in zip(star.photospheres, self._signals):
             try:
@@ -106,19 +102,17 @@ class Likelihood(ParameterSubspace):
             energies = construct_energy_array(num_energies,
                                               list(signals),
                                               max_energy)
-            num = int( fast_rel_num_energies * num_energies )
-            fast_energies = construct_energy_array(num,
-                                                   list(signals),
-                                                   max_energy)
 
             for signal in signals:
                 signal.energies = energies
                 signal.phases = photosphere.surface.phases_in_cycles
 
-                if photosphere.surface.do_fast:
-                    signal.fast_energies = fast_energies
-                    signal.fast_phases = photosphere.surface.fast_phases_in_cycles
-                    self._do_fast = True
+                # Add emission phase arrays
+                if self._emission_models is not None:
+                    phases = signal.phases
+                    for model in self._emission_models:
+                        phases.append( model._phases )
+                    signal.phases = phases
 
         self.threads = threads
 
@@ -130,7 +124,7 @@ class Likelihood(ParameterSubspace):
             self.prior = prior
 
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))
+        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]), self._emission_models)
 
     @property
     def threads(self):
@@ -145,10 +139,6 @@ class Likelihood(ParameterSubspace):
         except TypeError:
             raise TypeError('Thread number must be an integer.')
 
-    @property
-    def do_fast(self):
-        """ Does fast mode need to be activated? """
-        return self._do_fast
 
     @property
     def star(self):
@@ -241,6 +231,27 @@ class Likelihood(ParameterSubspace):
             pass # nothing to be done
 
     @property
+    def emission_models(self):
+        return self._emission_models
+
+    @emission_models.setter
+    def emission_models(self, models):
+        if isinstance(models, EmissionModels):
+            self._emission_models = models
+        elif isinstance(models, EmissionModel) or isinstance( models, tuple ) or isinstance( models, list):
+            self._emission_models = EmissionModels(models)
+        elif models is None:
+            self._emission_models = None
+        else:
+            print( 'Warning: emission_models is not an EmissionModels object. No emission models will be used' )
+            self._emission_models = None
+
+        # Reference to parameter container into the emission models
+        if self._emission_models is not None:
+            for model in self._emission_models:
+                model.parameters = self # a reference to the parameter container
+
+    @property
     def llzero(self):
         """ Get the minimum log-likelihood setting passed to MultiNest. """
         return self._llzero
@@ -273,8 +284,8 @@ class Likelihood(ParameterSubspace):
     @staticmethod
     def _divide(obj, x):
         """ Helper operator to check for compatibility first.
-
-        As an example, if fast mode is activated for some hot region but not
+########### Devarshi: Might need a better example here. Placeholder dosctring having removed fast mode.
+        As an example, if a hot region is inactive for some component but not
         another, :obj:`obj` would be ``None`` and thus a safeguard is needed.
 
         """
@@ -283,21 +294,13 @@ class Likelihood(ParameterSubspace):
         else:
             return None
 
-    def _driver(self, fast_mode=False, synthesise=False, force_update=False, **kwargs):
+    def _driver(self, synthesise=False, force_update=False, **kwargs):
         """ Main likelihood evaluation driver routine. """
 
-        self._star.activate_fast_mode(fast_mode)
-
         star_updated = False
-        if self._star.needs_update or force_update: # ignore fast parameters in this version
+        if self._star.needs_update or force_update:
             try:
-                if fast_mode or not self._do_fast:
-                    fast_total_counts = None
-                else:
-                    fast_total_counts = tuple(signal.fast_total_counts for\
-                                                        signal in self._signals)
-
-                self._star.update(fast_total_counts, self.threads,force_update=force_update)
+                self._star.update(self.threads, force_update=force_update)
 
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
@@ -310,10 +313,7 @@ class Likelihood(ParameterSubspace):
 
             for photosphere, signals in zip(self._star.photospheres, self._signals):
                 try:
-                    if fast_mode:
-                        energies = signals[0].fast_energies
-                    else:
-                        energies = signals[0].energies
+                    energies = signals[0].energies
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
@@ -335,88 +335,87 @@ class Likelihood(ParameterSubspace):
                     print('Parameter vector: ', super(Likelihood,self).__call__())
                     return self.random_near_llzero
 
+            # Add emission models from outside the photosphere
+            if self._emission_models is not None:
+                self._emission_models.update(self.threads,force_update=force_update)
+                self._emission_models.integrate(signals[0].energies, self.threads)
+
             star_updated = True
 
         # register the signals by operating with the instrument response
         for signals, photosphere in zip(self._signals, self._star.photospheres):
             for signal in signals:
                 if star_updated or signal.needs_update:
+                    
+                    # Define which photosphere signal to use
                     if signal.isI:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signal),
-                                    fast_mode=fast_mode, threads=self.threads)
-                    elif signal.isQ:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalQ),
-                                    fast_mode=fast_mode, threads=self.threads)
-                    elif signal.isU:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalU),
-                                    fast_mode=fast_mode, threads=self.threads)
-                    elif signal.isQn:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalQ),
-                                    fast_mode=fast_mode, threads=self.threads)
-                        Qsignal = signal.signals
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signal),
-                                    fast_mode=fast_mode, threads=self.threads)
-                        Isignal = signal.signals
-                        for ihot in range(len(photosphere.signalQ)):
-                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Qsignal[ihot]/Isignal[ihot])
-                    elif signal.isUn:
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signalU),
-                                    fast_mode=fast_mode, threads=self.threads)
-                        Usignal = signal.signals
-                        signal.register(tuple(
-                                         tuple(self._divide(component,
-                                                      self._star.spacetime.d_sq)
-                                               for component in hot_region)
-                                         for hot_region in photosphere.signal),
-                                    fast_mode=fast_mode, threads=self.threads)
-                        Isignal = signal.signals
-                        for ihot in range(len(photosphere.signalU)):
-                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
+                        photosphere_signal = photosphere.signal
+                    elif signal.isQ or signal.isQn:
+                        photosphere_signal =  photosphere.signalQ
+                    elif signal.isU or signal.isUn:
+                        photosphere_signal =  photosphere.signalU
                     else:
                         raise TypeError('Signal type must be either I, Q, U, Qn, or Un.')
+                    
+                    # Apply this choice to register appropriate signal
+                    signal_to_register = tuple( tuple(self._divide(component,
+                                                                self._star.spacetime.d_sq)
+                                                            for component in hot_region)
+                                                    for hot_region in photosphere_signal)
+                    signal.register(signal_to_register, threads=self.threads)
+
+                    # Normalize if required
+                    if signal.isQn or signal.isUn:
+
+                        # Save old value
+                        polarized_signal = signal.signals
+
+                        # Compute the I component
+                        signal_to_nomalize = tuple( tuple(self._divide(component,
+                                                                self._star.spacetime.d_sq)
+                                                            for component in hot_region)
+                                                    for hot_region in photosphere.signal)
+                        signal.register(signal_to_nomalize, threads=self.threads)
+                        Isignal = signal.signals
+
+                        # Normalize
+                        for ihot in range(len(polarized_signal)):
+                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, polarized_signal[ihot]/Isignal[ihot])
+
+                    # Add emission models from outside the photosphere
+                    if self._emission_models is not None:
+                        signal.register(tuple( tuple( component for component in model)
+                                                    for model in self._emission_models.signal),
+                                        threads=self.threads, reset=False)
+
                     reregistered = True
                 else:
                     reregistered = False
 
-                if not fast_mode and reregistered:
+                if reregistered:
                     if synthesise:
                         hot = photosphere.surface
                         try:
                             kws = kwargs.pop(signal.prefix)
                         except AttributeError:
                             kws = {}
-
                         shifts = [h['phase_shift'] for h in hot.objects]
+                        
+                        # For simplicity when building the emission models, the shift are applied during integration for these
+                        if self._emission_models is not None:
+                            shifts = shifts + [0.0] * len(self._emission_models)
+
                         signal.shifts = _np.array(shifts)
                         signal.synthesise(threads=self._threads, **kws)
                     else:
                         try:
                             hot = photosphere.surface
                             shifts = [h['phase_shift'] for h in hot.objects]
+
+                            # For simplicity when building the emission models, the shift are applied during integration for these
+                            if self._emission_models is not None:
+                                shifts = shifts + [0.0] * len(self._emission_models)
+
                             signal.shifts = _np.array(shifts)
                             signal(threads=self._threads, llzero=self._llzero)
                         except LikelihoodError:
@@ -428,6 +427,7 @@ class Likelihood(ParameterSubspace):
                                   'signal%s.' % prefix)
                             print('Parameter vector: ', super(Likelihood,self).__call__())
                             return self.random_near_llzero
+
 
         return star_updated
 
@@ -442,8 +442,8 @@ class Likelihood(ParameterSubspace):
 
         self.__init__(self._star,
                       self._signals,
+                      self._emission_models,
                       self._num_energies,
-                      self._fast_rel_num_energies,
                       self._threads,
                       self._llzero)
 
@@ -485,23 +485,10 @@ class Likelihood(ParameterSubspace):
                     super(Likelihood, self).__call__(self.cached)
                     return self.random_near_llzero
 
-            if self._do_fast:
-                # perform a low-resolution precomputation to direct cell
-                # allocation
-                x = self._driver(fast_mode=True,force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return x
-                elif x:
-                    x = self._driver(force_update=force)
-                    if not isinstance(x, bool):
-                        super(Likelihood, self).__call__(self.cached) # restore
-                        return x
-            else:
-                x = self._driver(force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return x
+            x = self._driver(force_update=force)
+            if not isinstance(x, bool):
+                super(Likelihood, self).__call__(self.cached) # restore
+                return x
 
             # memoization: update parameter value caches
             super(Likelihood, self).__call__(self.vector)
@@ -714,20 +701,7 @@ class Likelihood(ParameterSubspace):
                 super(Likelihood, self).__call__(self.cached)
                 return None
 
-        if self._do_fast:
-            # perform a low-resolution precomputation to direct cell
-            # allocation
-            x = self._driver(fast_mode=True,force_update=force)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return None
-            elif x:
-                x = self._driver(synthesise=True,force_update=force, **kwargs)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return None
-        else:
-            x = self._driver(synthesise=True,force_update=force, **kwargs)
-            if not isinstance(x, bool):
-                super(Likelihood, self).__call__(self.cached) # restore
-                return None
+        x = self._driver(synthesise=True,force_update=force, **kwargs)
+        if not isinstance(x, bool):
+            super(Likelihood, self).__call__(self.cached) # restore
+            return None

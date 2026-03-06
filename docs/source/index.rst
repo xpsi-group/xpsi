@@ -39,8 +39,10 @@
    Post-processing
    Emitting_patterns_2Dprojection
    Accretion_disk
+   Other_Emission_Models
    Multiple_imaging
    Importance_sampling
+   Synthetic_data
    Module_generator_tutorial
    Example_script_and_modules
    Example_job

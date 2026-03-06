@@ -176,7 +176,9 @@ class Runs(Metadata):
                         roots.append(roots[vec]+f"mode{mode+1}")
                         run_IDs.append(run_IDs[vec]+f"{mode_label} {mode+1}")
                         base_dirs.append(base_dirs[vec])
-                        use_nestcheck.append(use_nestcheck[vec])
+                        use_nestcheck.append(False)     
+                        # No nestcheck for individual modes because we have no individual
+                        # dead-birth and phys_live-birth files for each mode
 
                     # Save useful information
                     len_modes[run_IDs[vec]] = len(modes)
