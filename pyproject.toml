@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 # ---------------------------------------------------------
 [project]
 name = "xpsi"
-version = "pre-3.3.0"
+version = "3.3.0b"
 authors = [
     { name = "The X-PSI Core Team", email = "A.L.Watts@uva.nl" },
 ]
