@@ -443,7 +443,7 @@ class Photosphere(ParameterSubspace):
         stored in signal, signalQ, and signalU. """
         return self._stokes
 
-    def embed(self, fast_total_counts, threads):
+    def embed(self, threads):
         """ Embed the photosphere in an ambient Schwarzschild spacetime.
 
         In other words, generate a discrete representation of the photospheric
@@ -462,13 +462,11 @@ class Photosphere(ParameterSubspace):
                 if self._hot is not None:
                     self._hot.embed(self._spacetime,
                                     self,
-                                    fast_total_counts,
                                     threads,
                                     self._elsewhere._compute_cellParamVecs)
             elif self._hot is not None:
                 self._hot.embed(self._spacetime,
                                 self,
-                                fast_total_counts,
                                 threads)
 
     def integrate(self, energies, threads):

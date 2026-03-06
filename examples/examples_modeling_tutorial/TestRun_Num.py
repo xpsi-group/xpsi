@@ -166,7 +166,6 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
                             max_sqrt_num_cells=100,
                             num_leaves=100,
                             num_rays=200,
-                            do_fast=False,
                             is_antiphased=True,
                             atm_ext="Num4D",
                             image_order_limit=3,

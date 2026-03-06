@@ -63,7 +63,6 @@ class Derive(object, metaclass=ABCMeta):
                                     max_sqrt_num_cells=64,
                                     num_leaves=100,
                                     num_rays=200,
-                                    do_fast=False,
                                     prefix='p')
 
         bounds = dict(omit_colatitude = (None, None),
@@ -95,7 +94,6 @@ class Derive(object, metaclass=ABCMeta):
                                       max_sqrt_num_cells=100,
                                       num_leaves=100,
                                       num_rays=200,
-                                      do_fast=False,
                                       is_antiphased=True,
                                       prefix='s')
 

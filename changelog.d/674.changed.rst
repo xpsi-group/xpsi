@@ -1,0 +1,1 @@
+Changed the structure of the likelihood computations and added many comments to make them clearer.

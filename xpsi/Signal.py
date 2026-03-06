@@ -353,16 +353,6 @@ class Signal(ParameterSubspace):
             self._energy_edges = self._instrument.energy_edges[a:b + 1]
             self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
 
-    @property
-    def fast_energies(self):
-        """ Get coarse array of energies for fast-mode likelihood evals. """
-        return self._fast_energies
-
-    @fast_energies.setter
-    def fast_energies(self, energies):
-        """ Set energies for fast mode."""
-        self._fast_energies = energies
-
     def create_energy_array(self, rel_num_energies=10.0):
         """ Get a (finer) array of energies spanning instrument waveband.
 
@@ -386,7 +376,7 @@ class Signal(ParameterSubspace):
         """ Get a :class:`numpy.ndarray` of energy edges. """
         return self._energy_edges
 
-    def register(self, signals, fast_mode=False, threads=1):
+    def register(self, signals, threads=1):
         """  Register an incident signal by operating with the response matrix.
 
         A :class:`numpy.ndarray` is stored as an instance attribute containing
@@ -394,101 +384,71 @@ class Signal(ParameterSubspace):
         (assuming instrument effective area units are cm^2).
 
         """
-        if fast_mode:
+        try:
+            del self.signals
+        except AttributeError:
+            pass
+
+        if self.cache:
             try:
-                del self.fast_total_counts
+                del self.incident_specific_flux_signals
             except AttributeError:
                 pass
 
-            for hotRegion in signals:
-                fast_total_counts = []
+            for hotRegion in signals: # iterate over hot regions
+                signal = None
+                for component in hotRegion: # add other components
+                    try:
+                        signal += component
+                    except TypeError:
+                        signal = component.copy()
+                # cache total hot region signal
+                self.incident_specific_flux_signals = signal
 
-                for component, phases in zip(hotRegion, self.fast_phases):
-                    if component is None:
-                        fast_total_counts.append(None)
-                    else:
-                        integrated = energy_integrator(threads,
-                                                       component,
-                                                       _np.log10(self.fast_energies),
-                                                       _np.log10(self._energy_edges))
-
-                        # move interstellar to star?
-                        if self._interstellar is not None:
-                            self._interstellar(self._energy_mids, integrated)
-
-                        temp = self._instrument(integrated,
-                                                self._input_interval_range,
-                                                self._instrument_index_range_channels)
-
-                        fast_total_counts.append(_np.sum(temp))
-
-                self.fast_total_counts = tuple(fast_total_counts)
-        else:
             try:
-                del self.signals
+                del self.incident_flux_signals
             except AttributeError:
                 pass
+
+            try:
+                self.execute_custom_cache_instructions()
+            except NotImplementedError:
+                pass # no custom caching targets
+
+        for hotRegion in signals:
+            integrated = None
+            for component in hotRegion:
+                temp = energy_integrator(threads,
+                                         component,
+                                         _np.log10(self._energies),
+                                         _np.log10(self._energy_edges))
+                try:
+                    integrated += temp
+                except TypeError:
+                    integrated = temp
 
             if self.cache:
-                try:
-                    del self.incident_specific_flux_signals
-                except AttributeError:
-                    pass
+                self.incident_flux_signals = integrated.copy()
 
-                for hotRegion in signals: # iterate over hot regions
-                    signal = None
-                    for component in hotRegion: # add other components
-                        try:
-                            signal += component
-                        except TypeError:
-                            signal = component.copy()
-                    # cache total hot region signal
-                    self.incident_specific_flux_signals = signal
+            if self._interstellar is not None:
+                self._interstellar(self._energy_mids, integrated)
 
-                try:
-                    del self.incident_flux_signals
-                except AttributeError:
-                    pass
+            self.signals = self._instrument(integrated,
+                                            self._input_interval_range,
+                                            self._instrument_index_range_channels)
 
-                try:
-                    self.execute_custom_cache_instructions()
-                except NotImplementedError:
-                    pass # no custom caching targets
+        if self._background is not None:
+            try:
+                self._background(self._energy_edges,
+                                 self._data.phases)
+            except TypeError:
+                print('Error when evaluating the incident background.')
+                raise
 
-            for hotRegion in signals:
-                integrated = None
-                for component in hotRegion:
-                    temp = energy_integrator(threads,
-                                             component,
-                                             _np.log10(self._energies),
-                                             _np.log10(self._energy_edges))
-                    try:
-                        integrated += temp
-                    except TypeError:
-                        integrated = temp
-
-                if self.cache:
-                    self.incident_flux_signals = integrated.copy()
-
-                if self._interstellar is not None:
-                    self._interstellar(self._energy_mids, integrated)
-
-                self.signals = self._instrument(integrated,
-                                                self._input_interval_range,
-                                                self._instrument_index_range_channels)
-
-            if self._background is not None:
-                try:
-                    self._background(self._energy_edges,
-                                     self._data.phases)
-                except TypeError:
-                    print('Error when evaluating the incident background.')
-                    raise
-
-                self._background.registered_background = \
-                                self._instrument(self._background.incident_background,
-                                                 self._input_interval_range,
-                                                 self._instrument_index_range_channels)
+            self._background.registered_background = \
+                            self._instrument(self._background.incident_background,
+                                             self._input_interval_range,
+                                             self._instrument_index_range_channels)
 
     @property
     def num_components(self):
@@ -505,16 +465,6 @@ class Signal(ParameterSubspace):
         self._phases = obj
 
     @property
-    def fast_phases(self):
-        return [phases.copy() for phases in self._fast_phases]
-
-    @fast_phases.setter
-    def fast_phases(self, obj):
-        if not isinstance(obj, list):
-            obj = [obj]
-        self._fast_phases = obj
-
-    @property
     def energies(self):
         return self._energies
 
@@ -525,21 +475,6 @@ class Signal(ParameterSubspace):
     @energies.deleter
     def energies(self):
         del self._energies
-
-    @property
-    def fast_total_counts(self):
-        return tuple(self._fast_total_counts)
-
-    @fast_total_counts.setter
-    def fast_total_counts(self, obj):
-        try:
-            self._fast_total_counts.append(obj)
-        except AttributeError:
-            self._fast_total_counts = [obj]
-
-    @fast_total_counts.deleter
-    def fast_total_counts(self):
-        del self._fast_total_counts
 
     @property
     def store(self):

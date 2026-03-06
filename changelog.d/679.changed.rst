@@ -1,0 +1,1 @@
+Changed 23 files that deal with `fast_mode`,  `do_fast`, and associated attibutes, methods, args and refactoring.
