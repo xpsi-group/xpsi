@@ -1,0 +1,1753 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other emission models &mdash; x-psi 3.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3eb8911e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Multiple imaging" href="Multiple_imaging.html" />
+    <link rel="prev" title="Accretion disk" href="Accretion_disk.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Other emission models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Emission-models">Emission models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Prepare-X-PSI-model">Prepare X-PSI model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Load-data,-instrument-files-and-signal">Load data, instrument files and signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Spacetime-and-hotspot">Spacetime and hotspot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#New-emission-models">New emission models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Powerlaw">Powerlaw</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Prior-and-likelihood">Prior and likelihood</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Sampling-and-Post-Processing">Sampling and Post-Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Synthesize-data">Synthesize data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Synthetic_data.html">Synthetic data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Other emission models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Other_Emission_Models.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Other-emission-models">
+<h1>Other emission models<a class="headerlink" href="#Other-emission-models" title="Link to this heading"></a></h1>
+<p>This notebook explains how to use and implement emission models that are <strong>NOT</strong> hot regions at the surface of Neutron Stars. Such models can be fixed or fitted alongside the usual hot region and spacetime parameters. Here, we provide a simple model that can be fitted to data.</p>
+<p>Note that such emission models need to be handled with care for various reasons. For instance, using such models can introduce large errors and bias when the background of the data is not well defined. This is because part of the emission model can be mistaken for background during inference, which in turn bias parameter estimation of the emission model components and hence of the hot spot parameters and ultimately of the mass and radius. This phenomenon has been observed to happen in every test
+run that used background marginalization likelihood alongside poorly defined background. Moreover, the proposed power law model here is not physical, but rather phenomenological. Hence, as it is poorly understood, the chosen spectral and pulse shapes may be wrong, which would result in biased mass and radius.</p>
+<p>To run this tutorial, all data files should be available in in the directory <code class="docutils literal notranslate"><span class="pre">examples/examples_modeling_tutorial/model_data/</span></code>. It is also recommended to have basic knowledge of X-PSI before reading this notebook, by reading the <code class="docutils literal notranslate"><span class="pre">XPSI_101</span></code>, <code class="docutils literal notranslate"><span class="pre">Modeling</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">Modeling_without_statistics</span></code> tutorials.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import math, os
+import numpy as np
+import matplotlib.pyplot as plt
+
+from matplotlib import rcParams
+rcParams[&#39;text.usetex&#39;] = False
+rcParams[&#39;font.size&#39;] = 14.0
+
+import xpsi
+
+from xpsi.global_imports import gravradius
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 3.3.0               |
+|---------------------------------------------|
+|      https://xpsi-group.github.io/xpsi      |
+\=============================================/
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/saltuomo/xpsi/xpsi_lmauviard/xpsi/xpsi/EmissionModels.py:132: SyntaxWarning: invalid escape sequence &#39;\G&#39;
+  &#34;&#34;&#34; Simple powerlaw emission model, which can be pulsed or not.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imported emcee version: 3.1.6
+Imported PyMultiNest.
+Imported UltraNest.
+Imported GetDist version: 1.5.3
+Imported nestcheck version: 0.2.1
+</pre></div></div>
+</div>
+</section>
+<section id="Emission-models">
+<h1>Emission models<a class="headerlink" href="#Emission-models" title="Link to this heading"></a></h1>
+<p>Here is a rundown of the the tools available with the emission models and how to setup one yourself.</p>
+<p>A powerlaw model, that can be pulsed or not, is provided out of the box. Here is how to instansiate it using the usual X-PSI nomenclature for ParametersSubspace, with <code class="docutils literal notranslate"><span class="pre">values</span></code> and <code class="docutils literal notranslate"><span class="pre">bounds</span></code>. Its flux is as follows:</p>
+<div class="math notranslate nohighlight">
+\[F(E) = K \times \left( \frac{E}{\rm 1keV} \right)^{-\Gamma}\]</div>
+<p>where E is the energy, K is the normalization of the powerlaw (its flux at 1keV), and <span class="math notranslate nohighlight">\(\Gamma\)</span> is the photon index of the power law (dimensionless).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = {}
+values = {&#39;norm&#39;:1e-5,
+          &#39;gamma&#39;:1.5,
+          }
+PowerLaw = xpsi.PowerLaw(bounds=bounds,
+                        values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;norm&#34; with fixed value 1.000e-05.
+    &gt; Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV.
+Creating parameter:
+    &gt; Named &#34;gamma&#34; with fixed value 1.500e+00.
+    &gt; Photon index of the PowerLaw.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; Phase shift of the PowerLaw.
+</pre></div></div>
+</div>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">PowerLaw</span></code> uses 5 phase bins. This a minimum required by X-PSI, as the energy integrator used has been made for 2D arrays and only works with a minimum of 5 phase values.</p>
+<p>After the emission model <code class="docutils literal notranslate"><span class="pre">integrate</span></code> function has been called, the attribute <code class="docutils literal notranslate"><span class="pre">signal</span></code> is set. Let’s check what it looks like.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Integrate the model
+energies = np.logspace(0.0, np.log10(3.0), 50)
+PowerLaw.integrate(energies=energies, threads=1)
+print( PowerLaw.signal[0].shape ) # To be X-PSI compliant, the signal is a tuple containing a single 2D array with shape (number of energies, number of phases)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(50, 5)
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Helper function for plotting signal
+def plotSignal( energies, model , title=None , log=True):
+
+    im = plt.pcolormesh( energies, model.phases, model.signal[0].T[:-1, :-1], shading=&#39;flat&#39;)
+    plt.xlabel(&#39;Energy [keV]&#39;)
+    plt.ylabel(&#39;Phase&#39;)
+    plt.colorbar(im, label=&#39;Flux [photon/cm^2/s/keV]&#39;)
+    if title is not None:
+        plt.title(title)
+    plt.show()
+
+    # Now the signal as a function of energy integrated oved phase bins. As it is phase independent, we retrieve the powerlaw
+    phase_integrated_signal = np.trapz( y=model.signal[0], x = model.phases )
+    print( model.phases.shape, model.signal[0].shape )
+    plt.loglog(energies, phase_integrated_signal, label=&#39;Bin centers&#39;)
+    plt.step(energies, phase_integrated_signal, where=&#39;mid&#39;, alpha=0.7,  label=&#39;Bins&#39;)
+    plt.xlabel(&#39;Energy [keV]&#39;)
+    plt.ylabel(&#39;Flux [photon/cm^2/s/keV]&#39;)
+    if not log:
+        plt.xscale(&#39;linear&#39;)
+        plt.yscale(&#39;linear&#39;)
+    plt.legend()
+    if title is not None:
+        plt.title(title)
+    plt.show()
+
+    # Now the signal as a function of phase integrated oved energy bins
+    energy_integrated_signal = np.trapz( y=model.signal[0].T, x = energies )
+    plt.plot(model.phases, energy_integrated_signal, label=&#39;Bin centers&#39;)
+    plt.step(model.phases, energy_integrated_signal, where=&#39;mid&#39;, alpha=0.7,  label=&#39;Bins&#39;)
+    plt.xlabel(&#39;Phase&#39;)
+    plt.ylabel(&#39;Flux [photon/cm^2/s]&#39;)
+    plt.legend()
+    if title is not None:
+        plt.title(title)
+    plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Plot the signal
+plotSignal( energies, PowerLaw, title=&#39;Powerlaw&#39; ) # The signal is phase independent so we see no variation with phase
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_7_0.png" src="_images/Other_Emission_Models_7_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(5,) (50, 5)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_7_2.png" src="_images/Other_Emission_Models_7_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_7_3.png" src="_images/Other_Emission_Models_7_3.png" />
+</div>
+</div>
+<p>The flux in all the phase bins equals to 1e-5 photons/cm^2/s/keV at 1keV in the first figure. When we integrate over the phases from zero to one, we keep this value since the flux is constant across the phase array. In this phase integrated case, we retrieve a simple power law shape.</p>
+<p>It is also possible to use a sinusoidal pulsed power law model. This model is defined as:</p>
+<div class="math notranslate nohighlight">
+\[F(E) = K \times \left( \frac{E}{\rm 1keV} \right)^{-\Gamma} \left[ 1 + A \times \cos( 2\pi (\phi - \phi_0)) \right]\]</div>
+<p>Where A is the amplitude of the oscialltion and <span class="math notranslate nohighlight">\(\phi_0\)</span> the phase center. This model can be imported as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = {}
+values = {&#39;norm&#39;:1e-5,
+          &#39;gamma&#39;:1.5,
+          &#39;oscillation_amplitude&#39;:0.2,
+          &#39;phase_shift&#39;:0.2}
+PulsedPowerLaw = xpsi.PowerLaw(bounds=bounds,
+                        values=values,
+                        pulsed=True,    # Requires the model to be pulsed
+                        num_leaves=32,  # Number of phase bins to use for model computation
+                        )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;norm&#34; with fixed value 1.000e-05.
+    &gt; Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV.
+Creating parameter:
+    &gt; Named &#34;gamma&#34; with fixed value 1.500e+00.
+    &gt; Photon index of the PowerLaw.
+Creating parameter:
+    &gt; Named &#34;oscillation_amplitude&#34; with fixed value 2.000e-01.
+    &gt; Amplitude of oscillation of the PowerLaw.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 2.000e-01.
+    &gt; Phase shift of the PowerLaw.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Integrate the model
+energies = np.logspace(0.0, np.log10(3.0), 50)
+PulsedPowerLaw.integrate(energies=energies, threads=1)
+print( PulsedPowerLaw.signal[0].shape ) # To be X-PSI compliant, the signal is a tuple containing a single 2D array with shape (number of energies, number of phases)
+
+# Plot the signal
+plotSignal( energies, PulsedPowerLaw, title=&#39;Pulsed Powerlaw&#39; ) # The signal depends on phase now, so we see a pulse
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(50, 32)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_10_1.png" src="_images/Other_Emission_Models_10_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(32,) (50, 32)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_10_3.png" src="_images/Other_Emission_Models_10_3.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_10_4.png" src="_images/Other_Emission_Models_10_4.png" />
+</div>
+</div>
+<p>This time, we retrieve the same power law spectrum because the pulsed component is sinusoidal it averages to 0 over [0;1]. However, we can see clear modulation with a defined pulse when integrating over the energies.</p>
+<p>Note that the powerlaw is shifted by 0.2 phases as required. This is different from hot spots, for which the phase shift is not applied during integration, but rather when the signals from all components are added up in the call of the likelihood. Emission models have been implemented this way for simplicity of writting and testing custom emission models.</p>
+<p>If you wish to write your own, any other emission model can be built from the base <code class="docutils literal notranslate"><span class="pre">EmissionModel</span></code> class. It requires a <code class="docutils literal notranslate"><span class="pre">phase_shift</span></code> parameter and the definition of an <code class="docutils literal notranslate"><span class="pre">integrate</span></code> method, which computes the flux from the model in [photon/cm^2/s]. If needed, a <code class="docutils literal notranslate"><span class="pre">embed</span></code> method can be created to embed the emission model into the ambiant spacetime, which is relevant to precompute cells at the surface of an oblate neutron star for instance. The base <code class="docutils literal notranslate"><span class="pre">EmissionModel</span></code> class comes with helper
+function to properly build a signal that can be used by X-PSI.</p>
+<p>Here is an example of a Gaussian.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi import Parameter, EmissionModel
+class GaussianModel( EmissionModel ):
+
+    &quot;&quot;&quot; Simple Gaussian line emission model.&quot;&quot;&quot;
+
+    required_names = [&#39;norm&#39;,
+                      &#39;E0&#39;,
+                      &#39;sigma&#39;,
+                      &#39;phase_shift&#39;]
+
+    def __init__(self,
+                 bounds,
+                 values,
+                 **kwargs):
+
+        # Initiate the necessary parameters
+        norm = Parameter(&#39;norm&#39;,
+                        strict_bounds = (0.0, np.infty),
+                        bounds = bounds.get(&#39;norm&#39;, None),
+                        doc = &quot;Flux of the Gaussian @E0 keV in [photon/cm^2/s/keV]&quot;,
+                        symbol = &#39;norm&#39;,
+                        value = values.get(&#39;norm&#39;, None))
+
+        E0 = Parameter(&#39;E0&#39;,
+                strict_bounds = (0.0, np.infty),
+                bounds = bounds.get(&#39;E0&#39;, None),
+                doc = &quot;Energy center of the Gaussian in [keV]&quot;,
+                symbol = r&#39;$E_0$&#39;,
+                value = values.get(&#39;E0&#39;, None))
+
+        sigma = Parameter(&#39;sigma&#39;,
+                strict_bounds = (1e-10, np.infty),
+                bounds = bounds.get(&#39;sigma&#39;, None),
+                doc = &quot;Energy width of the Gaussian in [keV]&quot;,
+                symbol = r&#39;$\sigma$&#39;,
+                value = values.get(&#39;sigma&#39;, None))
+
+        # Define a fixed phase shift
+        phase_shift = Parameter(&#39;phase_shift&#39;,
+                strict_bounds = (0. , 1.),
+                bounds = None,
+                doc = &quot;Phase shift of the Gaussian&quot;,
+                symbol = r&#39;$\phi_0$&#39;,
+                value = 0.)
+
+        # Set the value of num_leaves
+        self._num_leaves = 5 # Default to 5 so that energy integrator works
+        self._phases =  np.linspace(0.0, 1.0, int(self._num_leaves))
+
+        # Initiate the parent class
+        super(GaussianModel, self).__init__( norm, E0, sigma, phase_shift, **kwargs ) # prefix in kwargs
+
+    # The integrate method is needed by X-PSI to compute the signal
+    # Also, the helper function from the base class is present here to build the signal properly
+    def integrate(self, energies, threads, *args, **kwargs):
+
+        # Compute the Gaussian
+        gaussian = self[&#39;norm&#39;] * np.exp( -0.5 * np.power( (energies - self[&#39;E0&#39;]) / self[&#39;sigma&#39;], 2.0 ) )
+        self.signal = self.buildPhaseIndependentSignal( gaussian ) # Helper function to build the signal in a phase independent way
+</pre></div>
+</div>
+</div>
+<p>Now the Gaussian model can be instanciated easily, as it was the case for the PowerLaw.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = {}
+values = {&#39;norm&#39;:1e-5,
+          &#39;E0&#39;:2.0,
+          &#39;sigma&#39;:0.15,
+          }
+Gaussian = GaussianModel(bounds=bounds,
+                        values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;norm&#34; with fixed value 1.000e-05.
+    &gt; Flux of the Gaussian @E0 keV in [photon/cm^2/s/keV].
+Creating parameter:
+    &gt; Named &#34;E0&#34; with fixed value 2.000e+00.
+    &gt; Energy center of the Gaussian in [keV].
+Creating parameter:
+    &gt; Named &#34;sigma&#34; with fixed value 1.500e-01.
+    &gt; Energy width of the Gaussian in [keV].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; Phase shift of the Gaussian.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Integrate the model
+energies = np.logspace(0.0, np.log10(3.0), 50)
+Gaussian.integrate(energies=energies, threads=1)
+
+# Plot the signal
+plotSignal( energies, Gaussian, title=&#39;Gaussian&#39; , log=False)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_15_0.png" src="_images/Other_Emission_Models_15_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(5,) (50, 5)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_15_2.png" src="_images/Other_Emission_Models_15_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_15_3.png" src="_images/Other_Emission_Models_15_3.png" />
+</div>
+</div>
+<p>This model is not very complicated and is phase independent. We can build a more general Gaussian model that can be pulsed using the helper functions from the base <code class="docutils literal notranslate"><span class="pre">EmissionModel</span></code> class. Here is an implementation of such a model</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from xpsi import Parameter, EmissionModel
+class PulsedGaussianModel( EmissionModel ):
+
+    &quot;&quot;&quot; Simple Gaussian line emission model.&quot;&quot;&quot;
+
+    required_names = [&#39;norm&#39;,
+                      &#39;E0&#39;,
+                      &#39;sigma&#39;,
+                      &#39;phase_shift&#39;]
+
+    optional_names = [&#39;oscillation_amplitude&#39;]
+
+    def __init__(self,
+                 bounds,
+                 values,
+                 pulsed = False,
+                 num_leaves = 32,
+                 **kwargs):
+
+        # Initiate the necessary parameters
+        norm = Parameter(&#39;norm&#39;,
+                        strict_bounds = (0.0, np.infty),
+                        bounds = bounds.get(&#39;norm&#39;, None),
+                        doc = &quot;Flux of the Gaussian @E0 keV in [photon/cm^2/s]&quot;,
+                        symbol = &#39;norm&#39;,
+                        value = values.get(&#39;norm&#39;, None))
+
+        E0 = Parameter(&#39;E0&#39;,
+                strict_bounds = (0.0, np.infty),
+                bounds = bounds.get(&#39;E0&#39;, None),
+                doc = &quot;Energy center of the Gaussian in [keV]&quot;,
+                symbol = r&#39;$E_0$&#39;,
+                value = values.get(&#39;E0&#39;, None))
+
+        sigma = Parameter(&#39;sigma&#39;,
+                strict_bounds = (1e-10, np.infty),
+                bounds = bounds.get(&#39;sigma&#39;, None),
+                doc = &quot;Energy width of the Gaussian in [keV]&quot;,
+                symbol = r&#39;$\sigma$&#39;,
+                value = values.get(&#39;sigma&#39;, None))
+
+        # Add more if pulsed
+        self.is_pulsed = pulsed
+        if self.is_pulsed:
+
+            # Define oscillation amplitude parameter
+            oscillation_amplitude = Parameter(&#39;oscillation_amplitude&#39;,
+                    strict_bounds = (0. , 1.0),
+                    bounds = bounds.get(&#39;oscillation_amplitude&#39;, None),
+                    doc = &quot;Amplitude of oscillation of the Gaussian&quot;,
+                    symbol = &#39;A&#39;,
+                    value = values.get(&#39;oscillation_amplitude&#39;, None))
+
+            # Define phase shift parameter values
+            phase_shift_bounds = bounds.get(&#39;phase_shift&#39;, None)
+            phase_shift_value = values.get(&#39;phase_shift&#39;, None)
+
+            # Define the integration method
+            self.integrate = self.integrate_pulsed
+
+        else:
+
+            # Define oscillation amplitude and phase shift parameters values
+            oscillation_amplitude = None
+            phase_shift_bounds = None
+            phase_shift_value = 0.
+
+            # Define the integration method
+            self.integrate = self.integrate_phase_independent
+
+        # Define phase shift
+        phase_shift = Parameter(&#39;phase_shift&#39;,
+                strict_bounds = (0. , 1.),
+                bounds = phase_shift_bounds,
+                doc = &quot;Phase shift of the Gaussian&quot;,
+                symbol = r&#39;$\Delta $\phi_0$&#39;,
+                value = phase_shift_value)
+
+        # Set the value of num_leaves
+        self._num_leaves = kwargs.pop(&#39;num_leaves&#39;, 32) if pulsed else 5 # Default to 5 so that energy integrator works
+        self._phases = np.linspace(0.0, 1.0, int(self._num_leaves))
+
+        # Initiate the parent class
+        super(PulsedGaussianModel, self).__init__( norm, E0, sigma, oscillation_amplitude, phase_shift, **kwargs ) # prefix in kwargs
+
+    def integrate_phase_independent(self, energies, threads, *args, **kwargs):
+        gaussian = self.gaussian(energies)
+        self.signal = self.buildPhaseIndependentSignal(gaussian) # Helper function to build the signal in a phase independent way
+
+    def integrate_pulsed(self, energies, threads, *args, **kwargs):
+        gaussian = self.gaussian(energies)
+        self.signal = self.buildSinusoidalSignal(gaussian) # Helper function to build the signal with a sinusoidal dependence if needed
+
+    def gaussian(self, energies):
+        return self[&#39;norm&#39;] * np.exp( -0.5 * np.power( (energies - self[&#39;E0&#39;]) / self[&#39;sigma&#39;], 2.0 ) )
+</pre></div>
+</div>
+</div>
+<p>Now the pulsed Gaussian model can be instanciated again and then computed for a given set of parameters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = {}
+values = {&#39;norm&#39;:1e-5,
+          &#39;E0&#39;:2.0,
+          &#39;sigma&#39;:0.15,
+          &#39;phase_shift&#39;:0.2,
+          &#39;oscillation_amplitude&#39;:0.3,
+          }
+Gaussian = PulsedGaussianModel(bounds=bounds,
+                        values=values,
+                        num_leaves=64,
+                        pulsed=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;norm&#34; with fixed value 1.000e-05.
+    &gt; Flux of the Gaussian @E0 keV in [photon/cm^2/s].
+Creating parameter:
+    &gt; Named &#34;E0&#34; with fixed value 2.000e+00.
+    &gt; Energy center of the Gaussian in [keV].
+Creating parameter:
+    &gt; Named &#34;sigma&#34; with fixed value 1.500e-01.
+    &gt; Energy width of the Gaussian in [keV].
+Creating parameter:
+    &gt; Named &#34;oscillation_amplitude&#34; with fixed value 3.000e-01.
+    &gt; Amplitude of oscillation of the Gaussian.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 2.000e-01.
+    &gt; Phase shift of the Gaussian.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Integrate the model
+energies = np.logspace(0.0, np.log10(3.0), 50)
+Gaussian.integrate(energies=energies, threads=1)
+
+# Plot the signal
+plotSignal( energies, Gaussian, title=&#39;Gaussian&#39; , log=False)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_20_0.png" src="_images/Other_Emission_Models_20_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(32,) (50, 32)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_20_2.png" src="_images/Other_Emission_Models_20_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_20_3.png" src="_images/Other_Emission_Models_20_3.png" />
+</div>
+</div>
+<p>If we want to use this for inference, we need to convolute the integrated signal with the instrument response, and some data to fit. This is done under the hood by X-PSI, and you only need to specify your Emission model in the Likelihood. Let’s load this.</p>
+<section id="Prepare-X-PSI-model">
+<h2>Prepare X-PSI model<a class="headerlink" href="#Prepare-X-PSI-model" title="Link to this heading"></a></h2>
+<p>To learn more on emission models, we need to prepare basic X-PSI structures. As these are not the primay focus of this tutorial, we skip precisions. If needed, see <code class="docutils literal notranslate"><span class="pre">XPSI_101</span></code> or <code class="docutils literal notranslate"><span class="pre">'Modeling</span></code> tutorials for more details on this part.</p>
+<section id="Load-data,-instrument-files-and-signal">
+<h3>Load data, instrument files and signal<a class="headerlink" href="#Load-data,-instrument-files-and-signal" title="Link to this heading"></a></h3>
+<p>First, load the dataset we want to model alongside the instrument files. Those are then linked together into a Signal.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load data and instrument. We use txt here because it is lightweight but one should use FITS files if possible
+data = xpsi.Data(counts = np.loadtxt(&#39;../../examples/example_emission_model/synthetic_PL_pulsed_Gaussian_realisation.dat&#39;, dtype=np.double),
+                channels=np.arange(30,301),
+                phases=np.linspace(0.0, 1.0, 33),
+                first=0, last=270,
+                exposure_time=2e6,)
+
+NICER = xpsi.Instrument.from_ogip_fits(RMF_path=&#39;nicer_20170601v003.rmf&#39;,
+                                        ARF_path=&#39;nicer_20170601v005.arf&#39;,
+                                        datafolder=&#39;../../examples/examples_modeling_tutorial/model_data/&#39;,
+                                        min_channel=30, max_channel=300)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+Loading instrument response matrix from OGIP compliant files...
+Triming the response matrix because it contains rows with only 0 values.
+ Now min_energy=0.15000000596046448 and max_energy=20.0
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+An empty subspace was created. This is normal behavior - no parameters were supplied.
+Response matrix loaded.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Make signal
+from xpsi.likelihoods.default_background_marginalisation import precomputation
+from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
+
+class CustomSignal(xpsi.Signal):
+
+    def __init__(self, **kwargs):
+
+        super(CustomSignal, self).__init__(**kwargs)
+
+        try:
+            self._precomp = precomputation(self._data.counts.astype(np.int32))
+        except AttributeError:
+            print(&#39;Warning: No data... can synthesise data but cannot evaluate a &#39;
+                  &#39;likelihood function.&#39;)
+
+        self._null_poisson_background = np.ascontiguousarray( tuple( np.zeros((271,32)) ) )
+
+    def __call__(self, *args, **kwargs):
+        self.loglikelihood, self.expected_counts = \
+                poisson_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          self._null_poisson_background,
+                                          self._precomp,
+                                          allow_negative=(False))
+
+signal = CustomSignal(data = data,
+                        instrument = NICER,
+                        background = None,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        tolerance = 1e-6,)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+</pre></div></div>
+</div>
+<p>Here, we setup the Poisson likelihood because we consider one case with only NICER data without background constraint. In this case it is important to use this likelihood as the likelihood with background maginalization will result in wrong parameter inference based on our preliminary test runs. To use the likelihood with background maginalization, it is preferrable to have some background constraints, as samples with the true input parameters could result in lower likelihood (by ~100 log units)
+than using fully different parameter vectors.</p>
+</section>
+<section id="Spacetime-and-hotspot">
+<h3>Spacetime and hotspot<a class="headerlink" href="#Spacetime-and-hotspot" title="Link to this heading"></a></h3>
+<p>Here, we set up the spacetime and an ST hotspot model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Spacetime
+bounds = dict(distance = (0.1,10.0),                     # distance in kpc
+                mass = (1.0, 2.0),                       # mass with default bounds
+                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+                cos_inclination = (0.0, 1.0))            # (Earth) inclination to rotation axis
+values = dict(frequency=200.0)                          # Fixed spin frequency
+spacetime = xpsi.Spacetime(bounds=bounds, values=values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 2.000e+02.
+    &gt; Spin frequency [Hz].
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 2.000e+00].
+    &gt; Gravitational mass [solar masses].
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+01].
+    &gt; Earth distance [kpc].
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Hotspots
+bounds = dict(super_colatitude = (None, None),  # latitude of the hot spot in radians, from north pole (default: 0) to south pole (default: pi)
+              super_radius = (None, None),      # radius of the hot spot, in radians (default: between 0 and pi/2 (half of the NS))
+              phase_shift = (-0.25, 0.75),      # longitude of the hot spot
+              super_temperature = (None, None)) # temperature of the hot spot, default: 3.0 to 7.6, from very cold to very hot
+values = {}
+
+# a simple circular, simply-connected spot
+primary = xpsi.HotRegion(bounds=bounds,
+                        values=values, # no initial values and no derived/fixed values
+                        symmetry=True,
+                        omit=False,
+                        cede=False,
+                        concentric=False,
+                        sqrt_num_cells=32,
+                        min_sqrt_num_cells=10,
+                        max_sqrt_num_cells=64,
+                        num_leaves=64,
+                        num_rays=200,
+                        atm_ext=&quot;BB&quot;, # default blackbody, other options: &quot;Num4D&quot; or &quot;user&quot;
+                        prefix=&#39;p&#39;)   # unique prefix to identify the region, needed if &gt;1 instances
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.600e+00].
+    &gt; log10(superseding region effective temperature [K]).
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Photosphere and star
+photosphere = xpsi.Photosphere(hot = primary, elsewhere = None,
+                                values=dict(mode_frequency = spacetime[&#39;frequency&#39;]))
+
+star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 2.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="New-emission-models">
+<h2>New emission models<a class="headerlink" href="#New-emission-models" title="Link to this heading"></a></h2>
+<p>Now, we instantiate emission models. Let’s use a pulsed power law and a gaussian. They can be instantiated like before.</p>
+<section id="Powerlaw">
+<h3>Powerlaw<a class="headerlink" href="#Powerlaw" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = {&#39;norm&#39;:(0.0,1e0),
+          &#39;gamma&#39;:(1.0,2.0),
+          &#39;oscillation_amplitude&#39;:(0.0,1.0),
+          &#39;phase_shift&#39;:(0.0,1.0)
+          }
+values = {}
+PowerLaw = xpsi.PowerLaw(bounds=bounds,
+                        values=values,
+                        pulsed=True,    # Requires the model to be pulsed
+                        num_leaves=128,  # Number of phase bins to use for model computation
+                        prefix=&#39;pl&#39;
+                        )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;norm&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV.
+Creating parameter:
+    &gt; Named &#34;gamma&#34; with bounds [1.000e+00, 2.000e+00].
+    &gt; Photon index of the PowerLaw.
+Creating parameter:
+    &gt; Named &#34;oscillation_amplitude&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Amplitude of oscillation of the PowerLaw.
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Phase shift of the PowerLaw.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds = {&#39;norm&#39;:(0.0,1.0),
+          &#39;E0&#39;:(1.0,3.0),
+          &#39;sigma&#39;:(1e-5,1.0),
+          }
+values = {}
+Gaussian = GaussianModel(bounds=bounds,
+                        values=values,
+                        prefix=&#39;gauss&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;norm&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Flux of the Gaussian @E0 keV in [photon/cm^2/s/keV].
+Creating parameter:
+    &gt; Named &#34;E0&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Energy center of the Gaussian in [keV].
+Creating parameter:
+    &gt; Named &#34;sigma&#34; with bounds [1.000e-05, 1.000e+00].
+    &gt; Energy width of the Gaussian in [keV].
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; Phase shift of the Gaussian.
+</pre></div></div>
+</div>
+</section>
+<section id="Prior-and-likelihood">
+<h3>Prior and likelihood<a class="headerlink" href="#Prior-and-likelihood" title="Link to this heading"></a></h3>
+<p>Now we make the prior and the likelihood. The <code class="docutils literal notranslate"><span class="pre">PowerLaw</span></code> model needs to be given in input to the likelihood.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Prior
+class CustomPrior(xpsi.Prior):
+    &quot;&quot;&quot; A custom (joint) prior distribution. &quot;&quot;&quot;
+
+    __derived_names__ = [&#39;compactness&#39;, ]
+    __draws_from_support__ = 3
+
+    def __init__(self):
+        super(CustomPrior, self).__init__() # not strictly required if no hyperparameters
+
+    def __call__(self, p = None):
+        &quot;&quot;&quot; Evaluate distribution at ``p``&quot;&quot;&quot;
+
+        temp = super(CustomPrior, self).__call__(p)
+        if not np.isfinite(temp):
+            return temp
+
+        # based on contemporary EOS theory
+        if not self.parameters[&#39;radius&#39;] &lt;= 16.0:
+            return -np.inf
+
+        ref = self.parameters.star.spacetime # shortcut
+
+        # limit polar radius to try to exclude deflections &gt;= \pi radians
+        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        if R_p &lt; 1.76 / ref.R_r_s:
+            return -np.inf
+
+        # 2-surface cross-section have a single maximum in |z|
+        # i.e., an elliptical surface; minor effect on support, if any,
+        # for high spin frequenies
+        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
+        if mu &lt; 1.0:
+            return -np.inf
+
+        ref = self.parameters # redefine shortcut
+
+        return 0.0
+
+    def inverse_sample(self, hypercube=None):
+        &quot;&quot;&quot; Draw sample uniformly from the distribution via inverse sampling. &quot;&quot;&quot;
+
+        to_cache = self.parameters.vector
+
+        if hypercube is None:
+            hypercube = np.random.rand(len(self))
+
+        # the base method -a uniform sampling within the bounds- is useful, so to avoid writing that code again:
+        _ = super(CustomPrior, self).inverse_sample(hypercube)
+
+        ref = self.parameters # shortcut
+
+        # flat priors in cosine of hot region centre colatitudes (isotropy)
+        # support modified by no-overlap rejection condition
+        idx = ref.index(&#39;p__super_colatitude&#39;)
+        a, b = ref.get_param(&#39;p__super_colatitude&#39;).bounds
+        a = math.cos(a); b = math.cos(b)
+        ref[&#39;p__super_colatitude&#39;] = math.acos(b + (a - b) * hypercube[idx])
+
+        # restore proper cache
+        for parameter, cache in zip(ref, to_cache):
+            parameter.cached = cache
+
+        return self.parameters.vector
+
+    def transform(self, p, **kwargs):
+        &quot;&quot;&quot; A transformation for post-processing. &quot;&quot;&quot;
+
+        p = list(p) # copy
+
+        return p
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Build prior and likelihood
+prior = CustomPrior()
+likelihood = xpsi.Likelihood(star = star, signals = signal,
+                             emission_models = PowerLaw,        # Put here the emission model, or a list of emission models
+                             prior = prior,
+                             num_energies=64,
+                             threads=1,
+                             externally_updated=True)
+
+likelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+An empty subspace was created. This is normal behavior - no parameters were supplied.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+pl__norm: Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV.
+pl__gamma: Photon index of the PowerLaw.
+pl__oscillation_amplitude: Amplitude of oscillation of the PowerLaw.
+pl__phase_shift: Phase shift of the PowerLaw.
+</pre></div></div>
+</div>
+<p>Alternatively, we can also use multiple emission models at once. You need to put them in a list. For instance:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Build prior and likelihood
+prior = CustomPrior()
+likelihood = xpsi.Likelihood(star = star, signals = signal,
+                             emission_models = [PowerLaw, Gaussian],        # Put here the emission model, or a list of emission models
+                             prior = prior,
+                             num_energies=64,
+                             threads=1,
+                             externally_updated=False)
+likelihood
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+An empty subspace was created. This is normal behavior - no parameters were supplied.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+pl__norm: Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV.
+pl__gamma: Photon index of the PowerLaw.
+pl__oscillation_amplitude: Amplitude of oscillation of the PowerLaw.
+pl__phase_shift: Phase shift of the PowerLaw.
+gauss__norm: Flux of the Gaussian @E0 keV in [photon/cm^2/s/keV].
+gauss__E0: Energy center of the Gaussian in [keV].
+gauss__sigma: Energy width of the Gaussian in [keV].
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Likelihood check
+p = [1.4,      # mass
+     12.0,     # radius
+     1.0,      # distance
+     0.4,      # cos_inclination
+     0.1,      # p__phase_shift
+     0.9,      # p__super_colatitude
+     0.2,      # p__super_radius
+     6.15,     # p__super_temperature
+     1e-3,      # pl__norm
+     1.5,      # pl__gamma
+     0.4,      # pl__oscillation_amplitude
+     0.1,       # pl__phase
+     5e-4,      # gauss__norm
+     2.0,      # gauss__E0
+     0.3,      # gauss__sigma
+     ]
+
+## Or check that you get the expected likelihood value
+likelihood( p=p, reinitialise=True )
+likelihood.check(None, [-40055.27257076219], 1.0e-6,
+                 physical_points=[p])
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Checking likelihood and prior evaluation before commencing sampling...
+Not using ``allclose`` function from NumPy.
+Using fallback implementation instead.
+Checking closeness of likelihood arrays:
+-4.0055272571e+04 | -4.0055272571e+04 .....
+Closeness evaluated.
+Log-likelihood value checks passed on root process.
+Checks passed.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;Log-likelihood value checks passed on root process.&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.plot( likelihood.signal.instrument.channel_edges[:-1], likelihood.signal.expected_counts.sum(axis=1))
+plt.xlabel(&#39;Channel energy [keV]&#39;)
+plt.ylabel(&#39;Counts&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Counts&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_37_1.png" src="_images/Other_Emission_Models_37_1.png" />
+</div>
+</div>
+<p>You can access the signal from the emission models like you do for hot spots. The emission models signals are appended to the hot spot signals. These are in photons/cm2/s, and can be accessed like so:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for i in range(3):
+    plt.imshow( likelihood.signal.signals[i] )
+    plt.colorbar()
+    plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_39_0.png" src="_images/Other_Emission_Models_39_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_39_1.png" src="_images/Other_Emission_Models_39_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_39_2.png" src="_images/Other_Emission_Models_39_2.png" />
+</div>
+</div>
+<p>These signals plotted here represent, in order, hot region, power law and gaussian. If you were to have a second hot region, it would show up as an extra plot here.</p>
+<p>Once the emission model is linked to the likelihood, it is possible to access the spacetime parameters values from the emission models, the same way as it is done in the prior, with <code class="docutils literal notranslate"><span class="pre">self.parameters</span></code>.</p>
+<p>Contrary to hot spot models, the flux is not divided by the square of the distance to the source in our case. If the user wishes to have such division occur, it can be done with something like this in the integrate method:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>d_sq = self.parameters._star.spacetime.d_sq
+integrated_signal = integrated_signal / d_sq
+</pre></div>
+</div>
+<p>Here is a short example on how to access it</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for m in likelihood.emission_models:
+    print( m.parameters._star.spacetime.d_sq )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+9.521406127714657e+38
+9.521406127714657e+38
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Sampling-and-Post-Processing">
+<h2>Sampling and Post-Processing<a class="headerlink" href="#Sampling-and-Post-Processing" title="Link to this heading"></a></h2>
+<p>Sampling and Post-Processing are the exact sames as without emission models. Do not forget to add your phase shift (and other necessary parameters) as wrapped parameters while sampling.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wrapped_params = [0]*len(likelihood)
+wrapped_params[likelihood.index(&#39;p__phase_shift&#39;)] = 1
+wrapped_params[likelihood.index(&#39;pl__phase_shift&#39;)] = 1
+</pre></div>
+</div>
+</div>
+<p>The following code block is commented as it will be long to run before you obtain satisfactory results.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># likelihood.externally_updated = True
+# runtime_params = {&#39;resume&#39;: False,
+#                   &#39;importance_nested_sampling&#39;: False,
+#                   &#39;multimodal&#39;: False,
+#                   &#39;n_clustering_params&#39;: None,
+#                   &#39;outputfiles_basename&#39;: &#39;./output/run_PL_Gauss/&#39;, # make ./Output directory manually
+#                   &#39;n_iter_before_update&#39;: 5,
+#                   &#39;n_live_points&#39;: 500,
+#                   &#39;sampling_efficiency&#39;: 0.8,
+#                   &#39;const_efficiency_mode&#39;: False,
+#                   &#39;wrapped_params&#39;: wrapped_params,
+#                   &#39;evidence_tolerance&#39;: 0.5,
+#                   &#39;verbose&#39;: True}
+# xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Synthesize-data">
+<h2>Synthesize data<a class="headerlink" href="#Synthesize-data" title="Link to this heading"></a></h2>
+<p>It can be interesting to synthesize data with your emission model to inspect what it looks like as seen through your instrument. It is also useful to test parameter recovery. Once again, this is done similarly as without the emission model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load data and instrument
+data = xpsi.Data(counts = np.ones((271, 32), dtype=np.double),
+                channels=np.arange(30,301),
+                phases=np.linspace(0.0, 1.0, 33),
+                first=0, last=270,
+                exposure_time=1.0,)
+
+NICER = xpsi.Instrument.from_ogip_fits(RMF_path=&#39;nicer_20170601v003.rmf&#39;,
+                                        ARF_path=&#39;nicer_20170601v005.arf&#39;,
+                                        datafolder=&#39;../../examples/examples_modeling_tutorial/model_data/&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+Loading instrument response matrix from OGIP compliant files...
+Triming the response matrix because it contains columns with only 0 values.
+ Now min_channel=9 and max_channel=1500
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+An empty subspace was created. This is normal behavior - no parameters were supplied.
+Response matrix loaded.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Make signal
+from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
+from xpsi.likelihoods.default_background_marginalisation import precomputation
+from xpsi.tools.synthesise import synthesise_exposure as _synthesise_expo
+from astropy.io import fits
+
+class CustomSignal(xpsi.Signal):
+
+    def __init__(self, **kwargs):
+
+        super(CustomSignal, self).__init__(**kwargs)
+
+        try:
+            self._precomp = precomputation(self._data.counts.astype(np.int32))
+        except AttributeError:
+            print(&#39;Warning: No data... can synthesise data but cannot evaluate a &#39;
+                  &#39;likelihood function.&#39;)
+
+        self._null_poisson_background = np.ascontiguousarray( tuple( np.zeros((271,32)) ) )
+
+    def __call__(self, *args, **kwargs):
+        self.loglikelihood, self.expected_counts = \
+                poisson_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          self._null_poisson_background,
+                                          self._precomp,
+                                          allow_negative=(False))
+
+    def synthesise(self,
+                exposure_time,
+                data_BKG,
+                instrument_name,
+                backscal_ratio=1.0,
+                name=&#39;synthetic&#39;,
+                directory=&#39;./&#39;,
+                seed=None,
+                **kwargs):
+
+            # Create or find directory
+            try:
+                if not os.path.isdir(directory):
+                    os.mkdir(directory)
+            except OSError:
+                print(&#39;Cannot create write directory.&#39;)
+                raise
+
+            # Rescale background
+            rescaled_background = data_BKG / backscal_ratio
+            expected_background_counts = rescaled_background.sum()
+            background_txt = rescaled_background.flatten()
+
+            # Make the phase resolved background (constant for all phases but needed for _synthesise_expo)
+            background_syn = np.zeros((len(self._data.channels),len(self._data.phases)-1))
+            for j in range(len(self._data.phases)-1):
+                background_syn[:,j] = background_txt/(len(self._data.phases)-1)
+
+            # Synthesise
+            self._expected_counts, synthetic, _  = _synthesise_expo(exposure_time,
+                                                                self._data.phases,
+                                                                self._signals,
+                                                                self._phases,
+                                                                self._shifts,
+                                                                expected_background_counts,
+                                                                background_syn,
+                                                                gsl_seed=seed)
+
+            # Write expected counts
+            kwargs = {&#39;channels&#39;:self._data.channels,
+                    &#39;counts&#39;:self._expected_counts,
+                    &#39;filename&#39;:os.path.join(directory, name),
+                    &#39;instrument&#39;:instrument_name,
+                    &#39;exposure&#39;:exposure_time,
+                    &#39;backscale&#39;:1.0}
+            self._write_EVT(**kwargs)
+
+            # Write synthetic counts (Poisson realisation of expected counts)
+            kwargs[&#39;counts&#39;] = synthetic
+            kwargs[&#39;filename&#39;] += &#39;_realization&#39;
+            self._write_EVT(**kwargs)
+
+    def _write_EVT(self,
+                channels,
+                counts,
+                filename,
+                instrument,
+                exposure,
+                backscale ):
+
+        # Create the header
+        header = {
+            &#39;INSTRUME&#39;: instrument,
+            &#39;HDUCLAS1&#39;: &#39;EVENTS&#39;,
+            &#39;HDUCLAS2&#39;: &#39;none&#39;,
+            &#39;DATE&#39;: &#39;2025-07-31&#39;,
+            &#39;EXPOSURE&#39;: exposure,
+            &#39;BACKSCAL&#39;: backscale,
+            &#39;ANCRFILE&#39;: &#39;none&#39;,
+            &#39;RESPFILE&#39;: &#39;none&#39;
+        }
+
+        # Get the phase array
+        phase_borders = np.linspace( 0., 1., counts.shape[1]+1 )
+        phase_centers = (phase_borders[1:] + phase_borders[:-1]) / 2
+        PI, PULSE_PHASE = [], []
+
+        # Fill the arrays
+        for i in range(counts.shape[0]):
+            for j in range(counts.shape[1]):
+                for k in range( int(counts[i,j]) ):
+                    PI.append( channels[i] )
+                    PULSE_PHASE.append( phase_centers[j] )
+
+        # Create the columns
+        cols = [
+            fits.Column(name=&#39;PI&#39;, array=np.array(PI), format=&#39;1J&#39;),
+            fits.Column(name=&#39;PULSE_PHASE&#39;, array=np.array(PULSE_PHASE), format=&#39;D&#39;),
+        ]
+
+        # Create a primary HDU (header/data unit) for the header info
+        primary_hdu = fits.PrimaryHDU()
+        bin_table = fits.BinTableHDU.from_columns(cols, name=&#39;EVENTS&#39;)
+
+        # Set header keywords
+        for key, value in header.items():
+            bin_table.header[key] = value
+
+        # Create the FITS file (PHA file)
+        hdul = fits.HDUList([primary_hdu, bin_table])
+
+        # Save to a PHA file
+        hdul.writeto(filename+&#39;.evt&#39;, overwrite=True)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>signal = CustomSignal(data = data,
+                        instrument = NICER,
+                        background = None,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        tolerance = 1e-4,
+                        prefix=&#39;NICER&#39;)
+
+# Build prior and likelihood
+prior = CustomPrior()
+likelihood = xpsi.Likelihood(star = star, signals = signal,
+                             emission_models = [PowerLaw, Gaussian],        # Put here the emission model, or a list of emission models
+                             prior = prior,
+                             num_energies=128,
+                             threads=1,
+                             externally_updated=False)
+
+p = [1.4,      # mass
+     12.0,     # radius
+     1.0,      # distance
+     0.4,      # cos_inclination
+     0.1,      # p__phase_shift
+     0.9,      # p__super_colatitude
+     0.2,      # p__super_radius
+     6.15,     # p__super_temperature
+     1e-3,      # pl__norm
+     1.5,      # pl__gamma
+     0.4,      # pl__oscillation_amplitude
+     0.1,       # pl__phase
+     5e-4,      # gauss__norm
+     2.0,      # gauss__E0
+     0.3,      # gauss__sigma
+     ]
+likelihood( p , reinitialise=True )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with fixed value 0.000e+00.
+    &gt; The phase shift for the signal, a periodic parameter [cycles].
+An empty subspace was created. This is normal behavior - no parameters were supplied.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-70210.16386158185
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NICER_kwargs = dict(exposure_time=2e6,
+                    data_BKG=np.zeros((271,)),
+                    instrument_name=&#39;NICER&#39;,
+                    name=&#39;synthetic_PL_pulsed_Gaussian&#39;,
+                    directory=&#39;./data&#39;,
+                    seed=42)
+
+likelihood.synthesise(p, force=True, NICER=NICER_kwargs)
+</pre></div>
+</div>
+</div>
+<p>Now we can load this data to see if it was well synthesized</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>newData = xpsi.Data.from_evt( &#39;./data/synthetic_PL_pulsed_Gaussian.evt&#39; )
+energies = likelihood.signal.instrument.channel_edges[21:293]
+phases = likelihood.signal.data.phases
+plt.pcolormesh( phases, energies, newData.counts )
+plt.xlabel(&#39;Phase&#39;)
+plt.ylabel(&#39;Energy [keV]&#39;)
+plt.colorbar(label=&#39;Counts/bin&#39;)
+plt.show()
+
+plt.plot( energies[:-1] , newData.counts.sum(axis=1) )
+plt.xlabel(&#39;Channel energy [keV]&#39;)
+plt.ylabel(&#39;Counts&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loading event list and phase binning...
+Setting channels for event data...
+Channels set.
+Events loaded and binned.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_52_1.png" src="_images/Other_Emission_Models_52_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Counts&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Other_Emission_Models_52_3.png" src="_images/Other_Emission_Models_52_3.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Accretion_disk.html" class="btn btn-neutral float-left" title="Accretion disk" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Multiple_imaging.html" class="btn btn-neutral float-right" title="Multiple imaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
