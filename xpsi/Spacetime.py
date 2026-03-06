@@ -162,9 +162,10 @@ class Spacetime(ParameterSubspace):
     def zeta(self):
         """ Get the derived parameter ``zeta`` for universal relations.
 
-        A dimensionless function of stellar properties.
+        Stellar compactness C = GM/(Rc^2), dimensionless quantity.
 
-        See Morsink et al. (2007), and AlGendy & Morsink (2014).
+        See variable denoted zeta in Eq.(9) Morsink et al. (2007),
+        or variable denoted x in Eq.(1) AlGendy & Morsink (2014).
 
         """
         try:
@@ -176,9 +177,10 @@ class Spacetime(ParameterSubspace):
     def epsilon(self):
         """ Get the derived parameter ``epsilon`` for universal relations.
 
-        A dimensionless function of stellar properties.
+        Square value of the dimensionless angular velocity.
 
-        See Morsink et al. (2007), and AlGendy & Morsink (2014).
+        See variable denoted epsilon in Eq.(10) Morsink et al. (2007),
+        and square of the variable denoted Omegab_bar Eq.(2) AlGendy & Morsink (2014).
 
         """
         try:
@@ -190,7 +192,9 @@ class Spacetime(ParameterSubspace):
     def a(self):
         """ Get the spin parameter, first order in spin.
 
-        See AlGendy & Morsink (2014).
+        Formula defined by Eq.(14) and Eq.(15) of AlGendy & Morsink (2014).
+        The dimensionless spin parameter denoted a in AlGendy & Morsink (2014) is
+        related to the spin angular momentum J as a = J/M.
 
         """
         try:
@@ -200,7 +204,7 @@ class Spacetime(ParameterSubspace):
 
             I_dimless = _m.sqrt(zeta) * (1.136 - 2.53 * zeta + 5.6 * zeta * zeta)
 
-            a = self.R * self.R * self.Omega * I_dimless / _c
+            a = self.R * self.R * self.Omega * I_dimless / _c # definition of the spin from conservation of angular momentum
 
             return a
 
@@ -221,15 +225,36 @@ class Spacetime(ParameterSubspace):
     def q(self):
         """ Get the dimensionless mass quadrupole, second order in spin.
 
-        See AlGendy & Morsink (2014).
+        AlGendy & Morsink (2014) computes in the fully relativistic framework
+        the physical mass quadrupole of the neutron star’s gravitational field.
+        If Q is denoted as the physical mass quadrupole of the spacetime, which
+        for an oblate star should be negative. Pappas & Apostolatos 2012 define q = Q/M^3:
+        quantifies how much the gravitational potential deviates from that of
+        spherical symmetry due to rotation. The coordinate invariant quantity
+        is defined as q_inv = q + 4/3 beta, the second term measuring the
+        rotational deformation of the star's shape.
+
+
+
+        In the Oblate-Schwarzschild approximation, Q is forces to be zero.
+        However TODO Anna explain the quasi Kerr thing.
+
+
+
+
+        See Eq.(17, 18, 19) of AlGendy & Morsink (2014).
+        Note: zeta is denoted x (compactness) in AlGendy & Morsink (2014),
+              epsilon is denoted Omega_bar^2
+        Given the line "-= self.a * self.a / (self.r_g * self.r_g)", it is unsure what the final quantity is.
+        Test thing when comparing to a paper which includes Throne Hartle explains the
 
         """
         try:
             return self._q
         except AttributeError:
-             temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
+             temp = self.epsilon *(-0.11) / (self.zeta * self.zeta) # -q in Eq.(17)
              temp -= self.a * self.a / (self.r_g * self.r_g)
-             return temp + 0.4554 * 4.0 * self.epsilon * self.zeta / 3.0
+             return temp + 0.4454 * 4.0 * self.epsilon * self.zeta / 3.0 # qinv in Eq.(18)
 
     @q.setter
     def q(self, q):
