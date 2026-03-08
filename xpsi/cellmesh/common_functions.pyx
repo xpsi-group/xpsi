@@ -131,7 +131,7 @@ cdef int disk_block(
     r_s_i = r_s_over_r_i*radius
     impact_b = radius * sin_alpha / sqrt(1 - r_s_over_r_i) # impact parameter
     r_psi_d = sqrt((r_s_i * r_s_i * (1 - cos_psi_d) * (1 - cos_psi_d)) / (4 * (1 + cos_psi_d) * (1 + cos_psi_d)) +  ((impact_b * impact_b) / (sin_psi_d * sin_psi_d))) - (r_s_i * (1 - cos_psi_d)) / (2 * (1 + cos_psi_d)) ##Ibragimov & Poutanen (2009), Equation (B9)
-    printf("r_psi_d = %.6e\n",r_psi_d)
+
     if theta_i_over_pi < 0.5 or (theta_i_over_pi > 0.5 and r_psi_d < R_in):
         return 1
     else: #theta > pi/2 and (theta < pi/2 or r_psi_d > R_in), don't calculate.
