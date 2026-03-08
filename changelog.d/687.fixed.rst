@@ -1,0 +1,3 @@
+Removed the old synthesise method from `synthesise.pyx`.
+
+Fixed the Signal synthesize to handle better the background

@@ -888,10 +888,9 @@ class Signal(ParameterSubspace):
                     if (format == 'TXT') and (backscal_ratio != 1.0):
                         raise ValueError('TXT format not supported for backscal_ratio != 1.')
 
-                # In the other case, if phase-averaged background was provided change it back
+                # In the other case, if phase-averaged background was provided, use it
                 elif len( data_BKG.shape ) == 1:
                     BKG = BKG.sum( axis = 1 )
-                    print( BKG )
 
                 # Write expected background
                 kwargs = {'channels':self._data.channels,
