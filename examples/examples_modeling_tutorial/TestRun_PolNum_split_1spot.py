@@ -77,7 +77,7 @@ from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 
 bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True, bounds=bounds,
-                                values=dict(mode_frequency = spacetime['frequency']))
+                                values=dict(mode_frequency = spacetime['frequency']),disk_blocking=False)
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
 photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
