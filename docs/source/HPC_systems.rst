@@ -233,12 +233,12 @@ For example job scripts, see the Helios example in :ref:`example_job`.
 Jean-Zay/IDRIS
 ------------------------------------
 
-`Jean-Zay <http://www.idris.fr/eng/jean-zay/index.html`_ is the French national supercomputer.
+`Jean-Zay <http://www.idris.fr/eng/jean-zay/index.html>`_ is the French national supercomputer.
 
 Installation
 ^^^^^^^^^^^^
 
-To install X-PSI in Jean-Zay, you need to check out if you have different projects for your IDRIS account, with the command ``idrproj``. The installation will be done only your currently working project, so you may have to switch between your projects and redo the complete installation.
+To install X-PSI in Jean-Zay, you need to check out if you have different projects for your IDRIS account, with the command ``idrproj``. The installation will be done only in your currently working project, so you may have to switch between your projects and redo the complete installation.
 
 For any installation, it is preferable to process in the ``$WORK`` folder of your project, because of the small storage of the ``$HOME``
 
