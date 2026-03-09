@@ -124,28 +124,17 @@ For Jean-Zay, a script like the following one can be prepared. Just check your w
    #SBATCH --time=20:00:00
    #SBATCH --partition=cpu_p1
    #SBATCH --qos=qos_cpu-t3
-   #SBATCH --nodes=5
    #SBATCH --ntasks=200
    #SBATCH --ntasks-per-node=40
    #SBATCH --hint=nomultithread
    #SBATCH --mail-user=myemail@mailservice.com
-   #SBATCH --mail-type=END
-   #SBATCH --mail-type=FAIL
+   #SBATCH --mail-type=END,FAIL
 
    module purge
    module load miniforge/24.9.0
-   module load cmake/3.21.3
    module load intel-all/19.0.4
    module load gsl/2.5
 
-   export FC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/ifort
-   export CC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc
-   export CXX=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icpc
-   export LDSHARED="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc -shared"
-   export OMP_NUM_THREADS=1
-   export OPENBLAS_NUM_THREADS=1
-   export GOTO_NUM_THREADS=1
-   export MKL_NUM_THREADS=1
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
    
