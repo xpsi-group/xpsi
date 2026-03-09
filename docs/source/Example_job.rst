@@ -3,7 +3,7 @@
 Example job
 ===========
 
-For both jobs you will need these 
+For the three jobs below you will need these 
 `auxiliary files <https://zenodo.org/record/7113931>`_ inside the ``model_data/``
 directory.
 
@@ -116,7 +116,7 @@ Jean-Zay/IDRIS
 
 For Jean-Zay, a script like the following one can be prepared. Just check your working project account.
 
-.. code block:: bash
+.. code-block:: bash
 
    #!/bin/bash
    #SBATCH --account=nameproject@cpu
