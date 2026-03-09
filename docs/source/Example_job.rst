@@ -119,7 +119,6 @@ For Jean-Zay, a script like the following one can be prepared. Just check your w
 .. code block:: bash
 
    #!/bin/bash
-
    #SBATCH --account=nameproject@cpu
    #SBATCH --job-name=XPSI3_BBTest
    #SBATCH --time=20:00:00
@@ -149,16 +148,18 @@ For Jean-Zay, a script like the following one can be prepared. Just check your w
    export MKL_NUM_THREADS=1
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
-
+   
    conda activate $WORK/conda/xpsi
-
+   
    cd $WORK
    mkdir TestBBXPSIrun
    cp -r cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* ./TestBBXPSIrun
    cd TestBBXPSIrun
-
+   
    cp -r config_LR_10000LP_0d1SE_0d1ET_nonMM.ini config.ini
-
+   
    srun python TestRun_BB.py > out1 2> err1
-
+   
    cp -r run out1 err1 $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
+
+
