@@ -114,7 +114,7 @@ For Helios, we can use the following type of job script:
 Jean-Zay/IDRIS
 ------
 
-For Jean-Zay, a script like the following one can be prepared. Just check your working project account.
+For Jean-Zay, a script like the following one can be prepared. Just check your working project account first, with ``idrproj``.
 
 .. code-block:: bash
 
