@@ -156,8 +156,6 @@ For Jean-Zay, a script like the following one can be prepared. Just check your w
    cp -r cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* ./TestBBXPSIrun
    cd TestBBXPSIrun
    
-   cp -r config_LR_10000LP_0d1SE_0d1ET_nonMM.ini config.ini
-   
    srun python TestRun_BB.py > out1 2> err1
    
    cp -r run out1 err1 $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
