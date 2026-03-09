@@ -152,13 +152,16 @@ For Jean-Zay, a script like the following one can be prepared. Just check your w
    conda activate $WORK/conda/xpsi
    
    cd $WORK
-   mkdir TestBBXPSIrun
-   cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* $WORK/TestBBXPSIrun/
-   cd $WORK/TestBBXPSIrun
+   mkdir TestBBXPSIrun/
+   cd TestBBXPSIrun/
+   mkdir examples/
+   cd examples/
+   mkdir examples_modeling_tutorial/
+   cd examples_modeling_tutorial/
+   cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* ./
    mkdir run
    
    srun python TestRun_BB.py > out1 2> err1
    
    cp -r out1 err1 run $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
-
 
