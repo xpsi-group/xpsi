@@ -153,11 +153,12 @@ For Jean-Zay, a script like the following one can be prepared. Just check your w
    
    cd $WORK
    mkdir TestBBXPSIrun
-   cp -r cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* ./TestBBXPSIrun
-   cd TestBBXPSIrun
+   cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* $WORK/TestBBXPSIrun/
+   cd $WORK/TestBBXPSIrun
+   mkdir run
    
    srun python TestRun_BB.py > out1 2> err1
    
-   cp -r run out1 err1 $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
+   cp -r out1 err1 run $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
 
 
