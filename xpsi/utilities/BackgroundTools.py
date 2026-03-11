@@ -196,7 +196,7 @@ def plotBackgroundSpectrum( XPSI_model,
     
     # Extract channels
     x0 = signal.instrument.channel_edges
-    x0 = ( x0[:-1] + x0[1:] ) / 2
+    x0 = ( x0[0] + x0[1] ) / 2
     
     # Extract background from samples
     if plot_range:

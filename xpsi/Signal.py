@@ -16,6 +16,8 @@ from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
 from copy import deepcopy
+from scipy import sparse
+from astropy.io import fits
 
 class LikelihoodError(xpsiError):
     """ Raised if there is a problem with the value of the log-likelihood. """
@@ -122,6 +124,76 @@ class Signal(ParameterSubspace):
             self._instrument = instrument
             self._original_instrument = deepcopy( instrument )
 
+        if hasattr(self._data, '_quality'):
+            newRSP=self._instrument.matrix[_np.where(self._data._quality[self._instrument.channels]==0)[0], :]
+            empty_inputs = _np.all( newRSP == 0, axis=0)
+            if (empty_inputs==True).any():
+                newRSP = newRSP[:,~empty_inputs]
+                edgesmin=self._instrument.energy_edges[0][_np.where(empty_inputs==False)[0]]
+                edgesmax=self._instrument.energy_edges[1][_np.where(empty_inputs==False)[0]]
+            else:
+                edgesmin=self._instrument.energy_edges[0]
+                edgesmax=self._instrument.energy_edges[1]
+            self._instrument.matrix=newRSP
+            self._instrument.energy_edges=_np.stack((edgesmin,edgesmax))
+            self._instrument.channel_edges=self._instrument.channel_edges[:,_np.where(self._data._quality[self._instrument.channels]==0)[0]]
+            if self._data._grpdata == False:
+                self._instrument.channels=self._data.channels
+            else:
+                self._instrument.channels=self._instrument.channels[_np.where(self._data._quality[self._instrument.channels]==0)[0]]
+        
+        if self._data._grpdata == True:
+            numchangrp=_np.where(self._data._grouping==1)[0] 
+            numchangrporig=numchangrp
+            numchangrp=numchangrp[_np.where(numchangrp>=self.instrument.channels[0])]
+            numchangrp=numchangrp[_np.where(numchangrp<=self.instrument.channels[-1])]
+            minuschans=0
+            if type(self._data._origdata)!=_np.ndarray:
+                minuschans=len(numchangrporig)-len(numchangrp)
+            if minuschans !=0:
+                print ('{} grouped channels will be ignored'.format(minuschans))
+            
+            if numchangrp[0]!= self.instrument.channels[0]:
+                if hasattr(self._data, '_srcdata'):
+                    if type(self._data._srcdata)!=_np.ndarray:
+                        firstbin=self._data._srcdata['COUNTS'][self.instrument.channels[0]:numchangrp[0]]
+                else:
+                    if type(self._data._origdata)!=_np.ndarray:
+                        firstbin=self._data._origdata['COUNTS'][self.instrument.channels[0]:numchangrp[0]]
+            else:
+                firstbin=None
+            
+            if firstbin is not None:
+                if firstbin.sum() > self.data._minbincnt:
+                    numchangrp=_np.hstack((self.instrument.channels[0], numchangrp))
+                    self.data._channels=_np.hstack((self.data.channels, self.data.channels[-1]+1))
+            
+            if self._data._quality[self.instrument.channels[-1]+1] != 0:
+                numchangrp=_np.hstack((numchangrp, self.instrument.channels[-1]+1))
+                if minuschans!=0:
+                    self.data._channels=self.data._channels[:-minuschans]
+            else:
+                if minuschans!=0:
+                    self.data._channels=self.data._channels[:-(1+minuschans)]
+            
+            self.data._first=self.data._channels[0]
+            self.data._last=self.data._channels[-1]
+                    
+            RSProws, RSPcols, RSPset = [], [], []
+            for i in range(len(numchangrp[1:])):
+                for j in range(numchangrp[:-1][i]-self.instrument.channels[0], numchangrp[1:][i]-self.instrument.channels[0]):
+                    RSProws.append(i)
+                    RSPcols.append(j)
+                    RSPset.append(True)
+            binchannels=numchangrp[1:]-numchangrp[:-1]
+            grpRSP=sparse.coo_matrix((RSPset, (RSProws, RSPcols)), shape=(len(numchangrp[1:]), len(self._instrument.matrix)))
+            newRSP=grpRSP @ self._instrument.matrix
+            self._instrument.matrix=newRSP
+            neweminchan=self._instrument.channel_edges[0, numchangrp[:-1]-self.instrument.channels[0]]
+            newemaxchan=self._instrument.channel_edges[1, numchangrp[1:]-self.instrument.channels[0]-1]
+            self._instrument.channel_edges=_np.array((neweminchan, newemaxchan))
+            self._instrument.channels=self._data.channels
+        
         # Trimming the data and response so they fit together
         if min_channel != 0 or max_channel != -1:
             try:
@@ -192,10 +264,11 @@ class Signal(ParameterSubspace):
                 for p in interstellar.params:
                     if p.value is None:
                         p.value = (p.bounds[0] +  p.bounds[1]) / 2
-                interstellar( self._instrument.energy_edges , fake_signal )
-                if not _np.all( fake_signal <= 1.0 ):
-                    raise ValueError('Interstellar attenuation must be lower than 1. ' \
-                    'This may happen when extrapolating interstellar attenuation.')
+                for i in range(self._instrument.energy_edges.ndim):
+                    interstellar( self._instrument.energy_edges[i] , fake_signal[i] )
+                    if not _np.all( fake_signal[i] <= 1.0 ):
+                        raise ValueError('Interstellar attenuation must be lower than 1. ' \
+                        'This may happen when extrapolating interstellar attenuation.')
                 else:
                     self._interstellar = interstellar
         else:
@@ -346,8 +419,11 @@ class Signal(ParameterSubspace):
             b = self._instrument.matrix.shape[1] + search(b-1, -1, -1) + 1
 
             self._input_interval_range = (a, b)
-            self._energy_edges = self._instrument.energy_edges[a:b + 1]
-            self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
+            #self._energy_edges = self._instrument.energy_edges[a:b + 1]
+            #self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
+            self._energy_edges = self._instrument.energy_edges[:, a:b]
+            self._energy_mids = (self._energy_edges[0]+self._energy_edges[1])/2.0
+            
 
     @property
     def fast_energies(self):
@@ -370,8 +446,8 @@ class Signal(ParameterSubspace):
             energies implemented for incident signal integration.
 
         """
-        L = self.energy_edges[0]
-        R = self.energy_edges[-1]
+        L = self.energy_edges[0,0]
+        R = self.energy_edges[-1,-1]
         energies = _np.logspace(_np.log10(L), _np.log10(R),
                                 int(rel_num_energies * len(self.energies)),
                                 base=10.0)
@@ -803,10 +879,10 @@ def construct_energy_array(num_energies, signals, max_energy=None):
                 try:
                     MAX
                 except NameError:
-                    MAX = signal.energy_edges[-1]
+                    MAX = signal.energy_edges[1,-1]
                     s = signal
 
-                E = signal.energy_edges[-1]
+                E = signal.energy_edges[1,-1]
                 if E > MAX:
                     MAX = E
                     s = signal
@@ -819,9 +895,9 @@ def construct_energy_array(num_energies, signals, max_energy=None):
                     try:
                         MIN
                     except NameError:
-                        MIN = signal.energy_edges[0]
+                        MIN = signal.energy_edges[0,0]
 
-                    E = signal.energy_edges[0]
+                    E = signal.energy_edges[0,0]
                     if E < MIN:
                         MIN = E
 
@@ -831,7 +907,7 @@ def construct_energy_array(num_energies, signals, max_energy=None):
             del MAX
 
         # find global limits
-        _signal_max = ordered[0].energy_edges[-1]
+        _signal_max = ordered[0].energy_edges[1,-1]
         if max_energy is not None and max_energy < _signal_max:
             MAX = max_energy
 
@@ -853,9 +929,9 @@ def construct_energy_array(num_energies, signals, max_energy=None):
             try:
                 MIN
             except NameError:
-                MIN = signal.energy_edges[0]
+                MIN = signal.energy_edges[0,0]
 
-            E = signal.energy_edges[0]
+            E = signal.energy_edges[0,0]
             if E < MIN:
                 MIN = E
 
