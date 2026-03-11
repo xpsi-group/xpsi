@@ -906,8 +906,7 @@ def allocate_cells(size_t num_cells,
                    double superAzimuth,
                    double holeColatitude,
                    double holeRadius,
-                   double holeAzimuth,
-                   fast_components):
+                   double holeAzimuth):
 
     cdef:
         double super_numCell, super_sqrt_numCell, super_cellArea, super_area
@@ -917,21 +916,7 @@ def allocate_cells(size_t num_cells,
         double cede_boundary_phi
         double cede_colat_lims[2]
         double f, y
-        double fast_super, fast_cede
         cdef gsl_cq_work *w = gsl_integration_cquad_workspace_alloc(100)
-
-    fast_super = 1.0
-    fast_cede = 1.0
-    if fast_components is not None and len(fast_components) > 1:
-        try:
-            fast_super, fast_cede = fast_components
-        except TypeError:
-            fast_super = 1.0
-            fast_cede = 1.0
-
-        if are_equal(fast_super, 0.0) and are_equal(fast_cede, 0.0): # invisible (at this res)
-            fast_super = 1.0 # just assume equal and base on relative area
-            fast_cede = 1.0
 
     superColatitude_cpy = superColatitude
     # first integrate area of default superseding region
@@ -1074,10 +1059,6 @@ def allocate_cells(size_t num_cells,
             super_area = super_cellArea / 1000.0
         if are_equal(cede_area, 0.0): # Gausian integral did not resolve
             cede_area = cede_cellArea / 1000.0
-
-        if fast_super > 0.0:
-            f = fast_super / (fast_super + fast_cede)
-            #print('Fast super signal/fast cede signal: %.8e' % f)
 
             y = ((1.0 - f)/f)*(cede_area/super_area) - 1.0
 

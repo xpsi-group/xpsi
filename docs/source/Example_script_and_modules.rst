@@ -9,7 +9,7 @@ A few example scripts and modules are found here: `examples`__.
 
 __ examples_
 
-The script called `examples/examples_fast/Modules/main.py`__ is a quick test run not requiring any input files. It assumes a single hot region with a uniform temperature using the default blackbody atmosphere extension and a fake instrument matrix.
+The script called `examples/examples_fast/Modules/main.py`__ is a quick test run not requiring any input files. It assumes a single hot region with a uniform temperature using the default blackbody atmosphere extension and a fake instrument matrix. The same directory also includes ``main_IS_likelihood.py`` and ``main_IS_prior.py`` scripts which are needed for the :doc:`Importance sampling<Importance_sampling>` tutorial.
 
 .. _t1: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_fast/Modules/main.py
 

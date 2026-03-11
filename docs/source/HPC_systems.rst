@@ -132,7 +132,7 @@ only need:
 
     git clone https://github.com/xpsi-group/xpsi.git
     cd ~/xpsi
-    LDSHARED="gcc -shared" CC=gcc python setup.py install
+    LDSHARED="gcc -shared" CC=gcc pip install .
 
 .. note::
 
@@ -223,8 +223,7 @@ If the above works, we can then continue building X-PSI:
    cd ~/My_codes
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
-   CC=$(which cc) python setup.py build
-   CC=$(which cc) python setup.py install
+   CC=$(which cc) pip install .
 
 Batch usage
 ^^^^^^^^^^^
@@ -332,7 +331,7 @@ Clone and Install X-PSI in ``~/Softwares``
     cd ~/Softwares
     git clone https://github.com/xpsi-group/xpsi.git
     cd xpsi/
-    LDSHARED="icc -shared" CC=icc python setup.py install
+    LDSHARED="icc -shared" CC=icc pip install .
 
     # Test installation
     cd ~/

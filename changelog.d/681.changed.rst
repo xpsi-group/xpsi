@@ -1,0 +1,1 @@
+Reduced repetitive codes in the cellmesh integrators by calculating polarization angle and accretion disk blocking in their own functions. Unit tests were also added to these.

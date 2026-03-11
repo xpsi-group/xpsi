@@ -194,7 +194,8 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                 except:
                     else_atm_ext = None
 
-                R_in = self.disk['R_in'] * 1000
+                if self.disk is not None:
+                    R_in = self.disk['R_in'] * 1000
                 if self._stokes:
                     if self._disk_blocking:
                         self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
