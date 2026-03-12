@@ -291,7 +291,7 @@ class Data(object):
         :param int channel_column:
             The column in the loaded file containing event channels.
 
-        :param ndarray[n+1] channel_edges:
+        :param ndarray[n+1] | ndarray[2,n] channel_edges:
             The nominal energy edges of the instrument channels, assumed to
             be contiguous if binning event energies in channel number.
 
@@ -321,11 +321,16 @@ class Data(object):
         for i in range(events.shape[0]):
             _channel = None
             if eV:
-                for j in range(len(channel_edges) - 1):
-                    #if channel_edges[j] <= events[i, channel_column]/1.0e3 < channel_edges[j+1]:
-                    if channel_edges[0, j] <= events[i, channel_column]/1.0e3 < channel_edges[1, j]:
-                        _channel = channels[j]
-                        break
+                if channel_edges.ndim == 2:
+                    for j in range(len(channel_edges)):
+                        if channel_edges[0, j] <= events[i, channel_column]/1.0e3 < channel_edges[1, j]:
+                            _channel = channels[j]
+                            break
+                else:
+                    for j in range(len(channel_edges) - 1):
+                        if channel_edges[j] <= events[i, channel_column]/1.0e3 < channel_edges[j+1]:
+                            _channel = channels[j]
+                            break
             else:
                 _channel = events[i, channel_column]
 

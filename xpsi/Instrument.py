@@ -41,12 +41,14 @@ class Instrument(ParameterSubspace):
         this nominal response model will be parametrised. So here load some
         nominal response matrix.
 
-    :param ndarray[2,q] energy_edges:
+    :param ndarray[p+1] | ndarray[2,q] energy_edges:
         Energy edges in keV of the instrument energy intervals which must be
-        congruent to the first dimension of the :attr:`matrix`: the edges must be 
-        sorted into 2 subarrays: one with the lower and the other with the upper edges for 
-        each :math:`q` energy bin. The edges must be monotonically increasing. These edges 
-        will correspond to the nominal response matrix and any deviation from this matrix (see above).
+        congruent to the first dimension of the :attr:`matrix`: 
+        - If twod_edges==True, the edges must be sorted into 2 subarrays: one with the lower and 
+        the other with the upper edges for each :math:`q` energy bin.
+        - Else, the number of edges must be :math: `q + 1`. 
+        The edges must be monotonically increasing. These edges will correspond to the nominal 
+        response matrix and any deviation from this matrix (see above).
 
     :param ndarray[p] channels:
         Instrument channel numbers which must be equal in number to the number
@@ -73,12 +75,18 @@ class Instrument(ParameterSubspace):
         q` then it is implied that subsets of adjacent output channels are
         effectively grouped together.
 
-    :param ndarray[2,p] channel_edges:
+    :param ndarray[p+1] | ndarray[2,p] channel_edges:
         The channel (energy) edges of the instrument, in keV. The array must
-        be congruent to the zeroth dimension of the :attr:`matrix`: the edges must be 
-        sorted into 2 subarrays: one with the lower and the other with the upper edges for 
-        each :math:`p` channel bin. The edges must be monotonically increasing. These edges 
-        will correspond to the nominal response matrix and any deviation from this matrix (see above).
+        be congruent to the zeroth dimension of the :attr:`matrix`: 
+        - If twod_edges==True, the edges must be sorted into 2 subarrays: one with the lower and
+        the other with the upper edges for each :math:`p` channel bin. 
+        - Else, the number of edges must be :math:`p + 1`.
+        The edges must be monotonically increasing. These edges will correspond to the nominal 
+        response matrix and any deviation from this matrix (see above).
+    
+    :param bool twod_edges:
+            If True, sort the the energy and channel edges into 2D arrays. Must be True if
+            further filtering due to data quality and/or grouping is anticipated. Default is False.
 
     :param tuple args:
         Container of parameter instances.
@@ -89,10 +97,11 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, channels, channel_edges=None,
+    def __init__(self, matrix, energy_edges, channels, channel_edges=None, twod_edges=False,
                  *args, **kwargs):
 
         self.matrix = matrix
+        self._twod_edges = twod_edges
         self.energy_edges = energy_edges
         self.channels = channels
         if channel_edges is not None:
@@ -221,17 +230,27 @@ class Instrument(ParameterSubspace):
             except TypeError:
                 raise EdgesError('Energy edges must be in a two-dimensional array of positive increasing values.')
 
-        try:
-            assert energy_edges.ndim == 2
-            for i in range(energy_edges.ndim):
-                assert (energy_edges[i] >= 0.0).all()
-                assert not (energy_edges[i, 1:] <= energy_edges[i, :-1]).any()
-            assert energy_edges.shape[1] == self._matrix.shape[1]
-            assert not (energy_edges[1] <= energy_edges[0]).any()
-        except AssertionError:
-            raise EdgesError('Energy edges must be in a two-dimensional array of positive increasing values, with a '
-                             'length equal to number of energy intervals in the matrix. Each energy bin must be sorted'
-                             'so each lower and upper bounds are found into separate subarrays.')
+        if self._twod_edges:
+            try:
+                assert energy_edges.ndim == 2
+                for i in range(energy_edges.ndim):
+                    assert (energy_edges[i] >= 0.0).all()
+                    assert not (energy_edges[i, 1:] <= energy_edges[i, :-1]).any()
+                assert energy_edges.shape[1] == self._matrix.shape[1]
+                assert not (energy_edges[1] <= energy_edges[0]).any()
+            except AssertionError:
+                raise EdgesError('With Instrument._twod_edges==True, energy edges must be in a two-dimensional array of '
+                                 'positive increasing values, with a length equal to number of energy intervals in the matrix. '
+                                 'Each energy bin must be sorted so each lower and upper bounds are found into separate subarrays.')
+        else:
+            try:
+                assert energy_edges.ndim == 1
+                assert (energy_edges >= 0.0).all()
+                assert energy_edges.shape[0] == self._matrix.shape[1] + 1
+                assert not (energy_edges[1:] <= energy_edges[:-1]).any()
+            except AssertionError:
+                raise EdgesError('Energy edges must be in a one-dimensional array of positive increasing values, with a '
+                                 'length equal to number of energy intervals in the matrix + 1.')
 
         self._energy_edges = energy_edges
 
@@ -269,19 +288,29 @@ class Instrument(ParameterSubspace):
             try:
                 channel_edges = _np.array(channel_edges)
             except TypeError:
-                raise EdgesError('Channel edges must be in a two-dimensional array of positive increasing values.')
+                raise EdgesError('Channel edges must be in a one or two-dimensional array of positive increasing values.')
 
-        try:
-            assert channel_edges.ndim == 2
-            for i in range(channel_edges.ndim):
-                assert (channel_edges[i] >= 0.0).all()
-                assert not (channel_edges[i, 1:] <= channel_edges[i, :-1]).any()
-            assert channel_edges.shape[1] == self._matrix.shape[0]
-            assert not (channel_edges[1] <= channel_edges[0]).any()
-        except AssertionError:
-            raise EdgesError('Channel edges must be in a two-dimensional array of positive increasing values, with a '
-                             'length equal to the number of channel intervals in the matrix + 1. Each channel bin must'
-                             'be sorted so each lower and upper bounds are found into separate subarrays.')
+        if self._twod_edges:
+            try:
+                assert channel_edges.ndim == 2
+                for i in range(channel_edges.ndim):
+                    assert (channel_edges[i] >= 0.0).all()
+                    assert not (channel_edges[i, 1:] <= channel_edges[i, :-1]).any()
+                assert channel_edges.shape[1] == self._matrix.shape[0]
+                assert not (channel_edges[1] <= channel_edges[0]).any()
+            except AssertionError:
+                raise EdgesError('With Instrument._twod_edges==True, channel edges must be in a two-dimensional array of '
+                                 'positive increasing values, with a length equal to number of channel intervals in the matrix. '
+                                 'Each channel bin must be sorted so each lower and upper bounds are found into separate subarrays.')
+        else:
+            try:
+                assert channel_edges.ndim == 1
+                assert (channel_edges >= 0.0).all()
+                assert channel_edges.shape[0] == self._matrix.shape[0] + 1
+                assert not (channel_edges[1:] <= channel_edges[:-1]).any()
+            except AssertionError:
+                raise EdgesError('Channel edges must be in a one-dimensional array of positive increasing values, with a '
+                                 'length equal to the number of channel intervals in the matrix + 1.')
 
         self._channel_edges = channel_edges
 
@@ -368,9 +397,16 @@ class Instrument(ParameterSubspace):
         self.matrix = self.matrix[:,new_input_indexes]
 
         # Get the edges of energies for both input and channel
-        self.energy_edges = [ self.energy_edges[:,k] for k in new_input_indexes ]
-        if hasattr( self , 'channel_edges' ):
-            self.channel_edges = [ self.channel_edges[:, _np.where(old_channels==chan)[0][0]] for chan in self.channels]
+        if self._twod_edges:
+            self.energy_edges = [ self.energy_edges[:,k] for k in new_input_indexes ]
+            if hasattr( self , 'channel_edges' ):
+                self.channel_edges = [ self.channel_edges[:, _np.where(old_channels==chan)[0][0]] for chan in self.channels]
+        else:
+            new_energy_edges = [ self.energy_edges[k] for k in new_input_indexes ]
+            self.energy_edges = _np.hstack( (new_energy_edges , self.energy_edges[ _np.where( self.energy_edges == new_energy_edges[-1] )[0] + 1 ] ) )
+            if hasattr( self , 'channel_edges' ):
+                new_channels_edges = [ self.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
+                self.channel_edges = _np.hstack( (new_channels_edges , self.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
 
         # Print if any trimming happens
         if len(old_channels) > len(self.channels):
@@ -378,8 +414,12 @@ class Instrument(ParameterSubspace):
                   f'Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
 
         if len(under_tolerance) > len(new_input_indexes):
-            print(f'Triming energy inputs of the response matrix with tolerance {tolerance}.\n '
-                  f'Now min_energy={self.energy_edges[0,0]} and max_energy={self.energy_edges[-1,-1]}')
+            if self._twod_edges:
+                print(f'Triming energy inputs of the response matrix with tolerance {tolerance}.\n '
+                      f'Now min_energy={self.energy_edges[0,0]} and max_energy={self.energy_edges[-1,-1]}')
+            else:
+                print(f'Triming energy inputs of the response matrix with tolerance {tolerance}.\n '
+                      f'Now min_energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
 
         # If ARF and RMF, trim them
         if hasattr( self , 'ARF' ):
@@ -396,6 +436,7 @@ class Instrument(ParameterSubspace):
               max_channel=-1,
               min_input=1,
               max_input=-1,
+              twod_edges=False,
               datafolder=None,
               **kwargs):
         """ Loading method for Instrument using OGIP defined ARF/RMF or RSP.
@@ -419,6 +460,10 @@ class Instrument(ParameterSubspace):
         :param int max_input:
             The maximum input energy number for which the instrument response is loaded.
             -1 will use the last input.
+        
+        :param bool twod_edges:
+            If True, sort the the energy and channel edges into 2D arrays. Must be True if
+            further filtering due to data quality and/or grouping is anticipated. Default is False.
 
         :param str | None datafolder:
             The path to the folder which contains both ARF and RMF files, if not specified in RMF_path or ARF_path.
@@ -513,17 +558,24 @@ class Instrument(ParameterSubspace):
         inputs = inputs[ ~empty_inputs ]
 
         # Get the edges of energies for both input and channel
-        #energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        #energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        energy_edges = _np.array( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs-1]).astype(dtype=_np.double)
+        if twod_edges:
+            energy_edges = _np.array( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs-1]).astype(dtype=_np.double)
+            channel_energy_edges = _np.array(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels-TLMIN])
+        else:
+            energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
+            channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
         energies = (RMF_MATRIX['ENERG_LO']+RMF_MATRIX['ENERG_HI'])/2
-        #channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
-        channel_energy_edges = _np.array(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels-TLMIN])
+        
 
         # Print informations
         if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
-                  f'Now min_energy={energy_edges[0]} and max_energy={energy_edges[-1]}')
+            if twod_edges:
+                print(f'Triming the response matrix because it contains rows with only 0 values.\n '
+                      f'Now min_energy={energy_edges[0,0]} and max_energy={energy_edges[1,-1]}')
+            else:
+                print(f'Triming the response matrix because it contains rows with only 0 values.\n '
+                      f'Now min_energy={energy_edges[0]} and max_energy={energy_edges[-1]}')
+        
         if empty_channels.sum() > 0:
             print(f'Triming the response matrix because it contains columns with only 0 values.\n'
                   f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
@@ -533,6 +585,7 @@ class Instrument(ParameterSubspace):
                          energy_edges,
                          channels,
                          channel_energy_edges,
+                         twod_edges=twod_edges,
                          **kwargs)
         
         # Add ARF and RMF for plotting

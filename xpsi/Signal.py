@@ -3,11 +3,12 @@ __all__ = ["Signal", "LikelihoodError"]
 from xpsi.global_imports import *
 
 from xpsi.Data import Data
-from xpsi.Instrument import Instrument, ChannelError
+from xpsi.Instrument import Instrument, ChannelError, EdgesError
 from xpsi.Background import Background
 from xpsi.Interstellar import Interstellar
 
 from xpsi.tools.energy_integrator import energy_integrator
+from xpsi.tools.energy_integrator_2Dedges import energy_integrator_2Dedges
 from xpsi.tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod
@@ -129,6 +130,11 @@ class Signal(ParameterSubspace):
             self._original_instrument = deepcopy( instrument )
 
         if hasattr(self._data, '_quality'):
+            try:
+                assert self._instrument.energy_edges.ndim == 2
+                assert self._instrument.channel_edges.ndim == 2
+            except AssertionError:
+                raise EdgesError('To filter good quality channels, the energy and channel edges must be sorted into 2D arrays')
             newRSP=self._instrument.matrix[_np.where(self._data._quality[self._instrument.channels]==0)[0], :]
             empty_inputs = _np.all( newRSP == 0, axis=0)
             if (empty_inputs==True).any():
@@ -147,6 +153,11 @@ class Signal(ParameterSubspace):
                 self._instrument.channels=self._instrument.channels[_np.where(self._data._quality[self._instrument.channels]==0)[0]]
         
         if self._data._grpdata == True:
+            try:
+                assert self._instrument.energy_edges.ndim == 2
+                assert self._instrument.channel_edges.ndim == 2
+            except AssertionError:
+                raise EdgesError('To group channels, the energy and channel edges must be sorted into 2D arrays')
             numchangrp=_np.where(self._data._grouping==1)[0] 
             numchangrporig=numchangrp
             numchangrp=numchangrp[_np.where(numchangrp>=self.instrument.channels[0])]
@@ -268,11 +279,15 @@ class Signal(ParameterSubspace):
                 for p in interstellar.params:
                     if p.value is None:
                         p.value = (p.bounds[0] +  p.bounds[1]) / 2
-                for i in range(self._instrument.energy_edges.ndim):
-                    interstellar( self._instrument.energy_edges[i] , fake_signal[i] )
-                    if not _np.all( fake_signal[i] <= 1.0 ):
-                        raise ValueError('Interstellar attenuation must be lower than 1. ' \
-                        'This may happen when extrapolating interstellar attenuation.')
+                if self._instrument._twod_edges:
+                    for i in range(self._instrument.energy_edges.ndim):
+                        interstellar( self._instrument.energy_edges[i] , fake_signal[i] )
+                else:
+                    interstellar( self._instrument.energy_edges , fake_signal )
+                
+                if not _np.all( fake_signal <= 1.0 ):
+                    raise ValueError('Interstellar attenuation must be lower than 1. ' \
+                    'This may happen when extrapolating interstellar attenuation.')
                 else:
                     self._interstellar = interstellar
         else:
@@ -423,10 +438,12 @@ class Signal(ParameterSubspace):
             b = self._instrument.matrix.shape[1] + search(b-1, -1, -1) + 1
 
             self._input_interval_range = (a, b)
-            #self._energy_edges = self._instrument.energy_edges[a:b + 1]
-            #self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
-            self._energy_edges = self._instrument.energy_edges[:, a:b]
-            self._energy_mids = (self._energy_edges[0]+self._energy_edges[1])/2.0
+            if self._instrument._twod_edges:
+                self._energy_edges = self._instrument.energy_edges[:, a:b]
+                self._energy_mids = (self._energy_edges[0]+self._energy_edges[1])/2.0
+            else:
+                self._energy_edges = self._instrument.energy_edges[a:b + 1]
+                self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
             
 
     def create_energy_array(self, rel_num_energies=10.0):
@@ -440,8 +457,12 @@ class Signal(ParameterSubspace):
             energies implemented for incident signal integration.
 
         """
-        L = self.energy_edges[0,0]
-        R = self.energy_edges[-1,-1]
+        if self.energy_edges.ndim == 2:
+            L = self.energy_edges[0,0]
+            R = self.energy_edges[-1,-1]
+        else:
+            L = self.energy_edges[0]
+            R = self.energy_edges[-1]
         energies = _np.logspace(_np.log10(L), _np.log10(R),
                                 int(rel_num_energies * len(self.energies)),
                                 base=10.0)
@@ -495,10 +516,16 @@ class Signal(ParameterSubspace):
         for hotRegion in signals:
             integrated = None
             for component in hotRegion:
-                temp = energy_integrator(threads,
-                                         component,
-                                         _np.log10(self._energies),
-                                         _np.log10(self._energy_edges))
+                if self._energy_edges.ndim == 2:
+                    temp = energy_integrator_2Dedges(threads,
+                                                     component,
+                                                     _np.log10(self._energies),
+                                                     _np.log10(self._energy_edges))
+                else:
+                    temp = energy_integrator(threads,
+                                             component,
+                                             _np.log10(self._energies),
+                                             _np.log10(self._energy_edges))
                 try:
                     integrated += temp
                 except TypeError:
@@ -1176,10 +1203,17 @@ def construct_energy_array(num_energies, signals, max_energy=None):
                 try:
                     MAX
                 except NameError:
-                    MAX = signal.energy_edges[1,-1]
+                    if signal.energy_edges.ndim == 2:
+                        MAX = signal.energy_edges[1,-1]
+                    else:
+                        MAX = signal.energy_edges[-1]
                     s = signal
 
-                E = signal.energy_edges[1,-1]
+                if signal.energy_edges.ndim == 2:
+                    E = signal.energy_edges[1,-1]
+                else:
+                    E = signal.energy_edges[-1]
+                
                 if E > MAX:
                     MAX = E
                     s = signal
@@ -1192,9 +1226,16 @@ def construct_energy_array(num_energies, signals, max_energy=None):
                     try:
                         MIN
                     except NameError:
-                        MIN = signal.energy_edges[0,0]
+                        if signal.energy_edges.ndim == 2:
+                            MIN = signal.energy_edges[0,0]
+                        else:
+                            MIN = signal.energy_edges[0]
 
-                    E = signal.energy_edges[0,0]
+                    if signal.energy_edges.ndim == 2:
+                        E = signal.energy_edges[0,0]
+                    else:
+                        E = signal.energy_edges[0]
+                    
                     if E < MIN:
                         MIN = E
 
@@ -1204,7 +1245,10 @@ def construct_energy_array(num_energies, signals, max_energy=None):
             del MAX
 
         # find global limits
-        _signal_max = ordered[0].energy_edges[1,-1]
+        if ordered[0].energy_edges.ndim == 2:
+            _signal_max = ordered[0].energy_edges[1,-1]
+        else:
+            _signal_max = ordered[0].energy_edges[-1]
         if max_energy is not None and max_energy < _signal_max:
             MAX = max_energy
 
@@ -1226,9 +1270,16 @@ def construct_energy_array(num_energies, signals, max_energy=None):
             try:
                 MIN
             except NameError:
-                MIN = signal.energy_edges[0,0]
+                if signal.energy_edges.ndim == 2:
+                    MIN = signal.energy_edges[0,0]
+                else:
+                    MIN = signal.energy_edges[0]
 
-            E = signal.energy_edges[0,0]
+            if signal.energy_edges.ndim == 2:
+                E = signal.energy_edges[0,0]
+            else:
+                E = signal.energy_edges[0]
+            
             if E < MIN:
                 MIN = E
 

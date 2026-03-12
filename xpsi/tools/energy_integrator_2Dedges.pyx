@@ -24,10 +24,10 @@ ctypedef gsl_interp_accel accel
 
 from .core cimport _get_phase_interpolant, gsl_interp_type
 
-def energy_integrator(size_t N_Ts,
+def energy_integrator_2Dedges(size_t N_Ts,
                        double[:,::1] signal,
                        double[::1] energies,
-                       double[::1] energy_edges):
+                       double[:,::1] energy_edges):
     """ Integrate a signal over energy intervals.
 
     :param size_t N_Ts:
@@ -40,7 +40,7 @@ def energy_integrator(size_t N_Ts,
     :param double[::1] energies:
         A :class:`numpy.ndarray` of the logarithms (base 10) of the energies.
 
-    :param double[::1] energy_edges:
+    :param double[:,::1] energy_edges:
         A :class:`numpy.ndarray` of the logarithm (base 10) of the energy
         interval edges.
 
@@ -65,7 +65,7 @@ def energy_integrator(size_t N_Ts,
         accel **acc = <accel**> malloc(N_Ts * sizeof(accel*))
 
         double[:,::1] binned_signal = np.zeros((signal.shape[1],
-                                               energy_edges.shape[0] - 1),
+                                               energy_edges.shape[1]),
                                                dtype = np.double)
 
     for T in range(N_Ts):
@@ -88,18 +88,18 @@ def energy_integrator(size_t N_Ts,
         gsl_interp_accel_reset(acc[T])
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
-        for j in range(<size_t>energy_edges.shape[0] - 1):
-            if energy_edges[j + 1] > max_energy:
+        for j in range(<size_t>energy_edges.shape[1] ):
+            if energy_edges[1][j] > max_energy:
                 upper_energy = max_energy
             else:
-                upper_energy = energy_edges[j + 1]
+                upper_energy = energy_edges[1][j]
             binned_signal[i,j] = gsl_interp_eval_integ(interp[T],
                                                        &(energies[0]),
                                                        cpy,
-                                                       energy_edges[j],
+                                                       energy_edges[0][j],
                                                        upper_energy,
                                                        acc[T])
-            if energy_edges[j + 1] > max_energy:
+            if energy_edges[1][j] > max_energy:
                 break
 
     for T in range(N_Ts):
