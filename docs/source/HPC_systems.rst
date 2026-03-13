@@ -313,7 +313,7 @@ Then its Python interface:
    cd $WORK/Softwares
    git clone https://github.com/JohannesBuchner/PyMultiNest.git ./pymultinest
    cd pymultinest
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$pathtosoftwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so 
    python setup.py install
 
@@ -324,7 +324,8 @@ Finally, xpsi can be installed:
    cd $WORK/Softwares
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi/
-   LDSHARED="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc -shared" CC="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc" pip install .
+   LDSHARED="icc -shared" CC=icc pip install .
+   #LDSHARED="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc -shared" CC="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc" pip install .
 
    # To check your installation
    cd ../
