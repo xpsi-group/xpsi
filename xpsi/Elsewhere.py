@@ -139,7 +139,12 @@ class Elsewhere(ParameterSubspace):
                  T_everywhere = 5.5,
                  coderes = 512,
                  filename = False,
-                 bhac_data = True):
+                 bhac_data = True,
+                 **kwargs):
+
+        if 'mycoolgrid' in kwargs:
+            raise TypeError("The 'mycoolgrid' argument has been removed; "
+                            "use 'use_interpolated_temperature' instead.")
 
         self.sqrt_num_cells = sqrt_num_cells
         self.num_rays = num_rays

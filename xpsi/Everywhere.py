@@ -190,7 +190,12 @@ class Everywhere(ParameterSubspace):
                  T_everywhere = 5.5,
                  coderes = 512,
                  filename=False,
-                 bhac_data = True):
+                 bhac_data = True,
+                 **kwargs):
+
+        if 'mycoolgrid' in kwargs:
+            raise TypeError("The 'mycoolgrid' argument has been removed; "
+                            "use 'use_interpolated_temperature' instead.")
 
         self.num_rays = num_rays
 
