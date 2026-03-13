@@ -1,0 +1,1 @@
+Added interpolated temperature functionality when using a pre-calculated temperature map.
