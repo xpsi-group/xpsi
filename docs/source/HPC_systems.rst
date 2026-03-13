@@ -254,30 +254,45 @@ First prepare your modules:
 
 We intend here to install X-PSI with Intel compilers. It is preferable to avoid using the recent Cmake versions because of their dependencies with the GCC compiler. 
 
-Now, let's prepare the conda environment for X-PSI. However, the prerequites must be mentioned explicitly:
+Now, let's prepare the conda environment for X-PSI, by installing some of the required packages. However, they must be mentioned explicitly:
 
 .. code-block:: bash
 
    cd $WORK
    mkdir conda
-   conda create -p $WORK/conda/xpsi python'>=3.9.0' numpy'<2.0.0' cython'~=3.0.11' matplotlib'==3.9.2' scipy wrapt gsl pytest getdist tqdm h5py nestcheck fgivenx astropy'>=5.2,<7.0.0' emcee ultranest mpi4py cmap   
+   conda create -p $WORK/conda/xpsi python'>=3.9.0' numpy'<2.0.0' cython'~=3.0.11' matplotlib'==3.9.2' scipy wrapt gsl pytest getdist tqdm nestcheck fgivenx astropy'>=5.2,<7.0.0' emcee ultranest 'h5py<3.16.0' cmap   
 
 
-Then point to the Intel compilers, here again by mentioning them explicitly:
+Then point to the Intel compilers. If needed, mention them explicitly:
 
 .. code-block:: bash
 
-   export CC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc
-   export CXX=/gpfslocalsys/intel/parallel_studio_xe_2019_update5_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icpc
-   export FC=/gpfslocalsys/intel/parallel_studio_xe_2019_update5_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/ifort
+   export CC=icc
+   export CXX=icpc
+   export FC=ifort
+   #export CC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc
+   #export CXX=/gpfslocalsys/intel/parallel_studio_xe_2019_update5_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icpc
+   #export FC=/gpfslocalsys/intel/parallel_studio_xe_2019_update5_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/ifort
+
+Then install mpi4py:
+
+.. code-block:: bash
+
+   cd $WORK
+   mkdir Softwares
+   cd Softwares
+   wget https://github.com/mpi4py/mpi4py/releases/download/4.0.3/mpi4py-4.0.3.tar.gz
+   tar zxvf mpi4py-4.0.3.tar.gz
+   cd mpi4py-4.0.3
+   python setup.py build
+   python setup.py install
+
 
 Now that the environment is set, MultiNest can be installed:
 
 .. code-block:: bash
    
-   cd $WORK
-   mkdir Softwares
-   cd Softwares
+   cd $WORK/Softwares
    git clone https://github.com/farhanferoz/MultiNest.git  ./MultiNest
    cd MultiNest/MultiNest_v3.12_CMake/multinest/
    mkdir build
@@ -298,10 +313,9 @@ Then its Python interface:
    cd $WORK/Softwares
    git clone https://github.com/JohannesBuchner/PyMultiNest.git ./pymultinest
    cd pymultinest
-   python setup.py install
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$pathtosoftwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so 
-   #Those last exports are needed for the pymultinest checking test.
+   python setup.py install
 
 Finally, xpsi can be installed:
 
