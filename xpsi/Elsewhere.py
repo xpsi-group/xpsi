@@ -92,10 +92,34 @@ class Elsewhere(ParameterSubspace):
         on a surface (accounting for the surface tilt due to rotation), then
         the iteration over image orders terminates.
 
+    :param bool use_interpolated_temperature:
+        If ``True``, replace the uniform elsewhere temperature field with
+        temperatures interpolated from ``filename`` onto the X-PSI elsewhere
+        mesh.
+
+    :param bool myelsewhere:
+        Region selector passed to the interpolation helper for elsewhere-only
+        shell data handling.
+
+    :param float T_everywhere:
+        Lower floor applied to interpolated log10 temperatures after
+        interpolation.
+
+    :param int coderes:
+        Resolution of the input shell grid. The file is assumed to represent
+        a ``coderes x coderes`` angular mesh.
+
+    :param str filename:
+        Path to the shell data file used when
+        ``use_interpolated_temperature=True``.
+
+    :param bool bhac_data:
+        If ``True``, derive temperatures from BHAC shell fluxes; otherwise
+        read temperatures directly from the file.
+
     """
     required_names = ['elsewhere_temperature (if no custom specification)']
     optional_names = ['use_interpolated_temperature',
-                      'mycoolgrid (legacy)',
                       'myelsewhere',
                       'T_everywhere',
                       'coderes',
@@ -111,7 +135,6 @@ class Elsewhere(ParameterSubspace):
                  custom = None,
                  image_order_limit = None,
                  use_interpolated_temperature = None,
-                 mycoolgrid = None,
                  myelsewhere = False,
                  T_everywhere = 5.5,
                  coderes = 512,
@@ -124,16 +147,8 @@ class Elsewhere(ParameterSubspace):
         self.atm_ext = atm_ext
 
         requested_interp = use_interpolated_temperature
-        if mycoolgrid is not None and requested_interp is not None:
-            if bool(mycoolgrid) != bool(requested_interp):
-                raise ValueError('Conflicting interpolation flags: '
-                                 'use_interpolated_temperature and '
-                                 'mycoolgrid (legacy).')
-        if requested_interp is None:
-            requested_interp = mycoolgrid if mycoolgrid is not None else False
 
         self.use_interpolated_temperature = bool(requested_interp)
-        self.mycoolgrid = self.use_interpolated_temperature
         self.myelsewhere = myelsewhere
         self.T_everywhere = T_everywhere
         self.coderes = coderes
@@ -320,6 +335,8 @@ class Elsewhere(ParameterSubspace):
                     self._cellParamVecs[:,i,-1] *= self._effGrav
 
         else:
+            # Replace the uniform elsewhere temperature field with values read
+            # from the shell file and interpolated onto the X-PSI mesh.
             shell_interp = Temp_Interpolator_shells()
             shell_interp.coderes = self.coderes
             shell_interp.filename = self.filename

@@ -225,6 +225,31 @@ class HotRegion(ParameterSubspace):
         on a surface (accounting for the surface tilt due to rotation), then
         the iteration over image orders terminates.
 
+    :param bool use_interpolated_temperature:
+        If ``True``, replace the uniform hot-region temperature field with
+        temperatures interpolated from ``filename`` onto the X-PSI hot-region
+        mesh.
+
+    :param bool first_spot:
+        Select the first hotspot segment when regridding shell snapshot data
+        for interpolated temperatures.
+
+    :param bool second_spot:
+        Select the second hotspot segment when regridding shell snapshot data
+        for interpolated temperatures.
+
+    :param float T_everywhere:
+        Lower floor applied to interpolated log10 temperatures after
+        interpolation.
+
+    :param int coderes:
+        Resolution of the input shell grid. The file is assumed to represent
+        a ``coderes x coderes`` angular mesh.
+
+    :param str filename:
+        Path to the shell data file used when
+        ``use_interpolated_temperature=True``.
+
     """
     required_names = ['super_colatitude',
                       'super_radius',
@@ -239,7 +264,6 @@ class HotRegion(ParameterSubspace):
                       'cede_azimuth',
                       'cede_temperature',
                       'use_interpolated_temperature',
-                      'mycoolgrid (legacy)',
                       'first_spot',
                       'second_spot',
                       'T_everywhere',
@@ -275,7 +299,6 @@ class HotRegion(ParameterSubspace):
                  custom = None,
                  image_order_limit = None,
                  use_interpolated_temperature = None,
-                 mycoolgrid = None,
                  first_spot = False,
                  second_spot = False,
                  T_everywhere = 5.5,
@@ -283,17 +306,13 @@ class HotRegion(ParameterSubspace):
                  filename = False,
                  **kwargs):
 
+        if 'mycoolgrid' in kwargs:
+            raise TypeError("The 'mycoolgrid' argument has been removed; "
+                            "use 'use_interpolated_temperature' instead.")
+
         requested_interp = use_interpolated_temperature
-        if mycoolgrid is not None and requested_interp is not None:
-            if bool(mycoolgrid) != bool(requested_interp):
-                raise ValueError('Conflicting interpolation flags: '
-                                 'use_interpolated_temperature and '
-                                 'mycoolgrid (legacy).')
-        if requested_interp is None:
-            requested_interp = mycoolgrid if mycoolgrid is not None else False
 
         self.use_interpolated_temperature = bool(requested_interp)
-        self.mycoolgrid = self.use_interpolated_temperature
 
         self.is_antiphased = kwargs.get('is_secondary', is_antiphased)
 
@@ -320,7 +339,6 @@ class HotRegion(ParameterSubspace):
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
-        self.mycoolgrid = self.use_interpolated_temperature
         self.first_spot = first_spot
         self.second_spot = second_spot
         self.filename = filename
@@ -1021,6 +1039,8 @@ class HotRegion(ParameterSubspace):
                                              dtype=_np.double)
 
         if self.use_interpolated_temperature:
+            # Load the shell map once, then interpolate it onto whichever
+            # hot-region mesh is being populated below.
             shell_interp = Temp_Interpolator_shells()
             shell_interp.coderes = self.coderes
             shell_interp.filename = self.filename
@@ -1036,7 +1056,8 @@ class HotRegion(ParameterSubspace):
             Temperature_interpolated = shell_interp.temp_interpolation_flux(thetacode=data_snapshot[1],phicode=data_snapshot[0],
                                                                             Fluxcode=data_snapshot[2],tracercode=data_snapshot[3],
                                                                             T_everywhere=self.T_everywhere)
-            
+
+            # Interpolation overrides the uniform super_temperature field.
             self._super_cellParamVecs[:,:,0] = Temperature_interpolated[:,:]
 
         for i in range(self._super_cellParamVecs.shape[1]):
