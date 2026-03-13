@@ -135,10 +135,35 @@ class Everywhere(ParameterSubspace):
         default global mesh (i.e., no subclassing) results in a time-invariant
         signal.
 
+    :param bool use_interpolated_temperature:
+        If ``True``, replace the uniform global temperature field with
+        temperatures interpolated from ``filename`` onto the X-PSI mesh.
+
+    :param bool myeverywhere:
+        Legacy alias for enabling interpolated temperatures.
+
+    :param bool everywhere_flag:
+        Legacy alias for enabling interpolated temperatures.
+
+    :param float T_everywhere:
+        Lower floor applied to interpolated log10 temperatures after
+        interpolation.
+
+    :param int coderes:
+        Resolution of the input shell grid. The file is assumed to represent
+        a ``coderes x coderes`` angular mesh.
+
+    :param str filename:
+        Path to the shell data file used when
+        ``use_interpolated_temperature=True``.
+
+    :param bool bhac_data:
+        If ``True``, derive temperatures from BHAC shell fluxes; otherwise
+        read temperatures directly from the file.
+
     """
     required_names = ['temperature (if no custom specification)']
     optional_names = ['use_interpolated_temperature',
-                      'mycoolgrid (legacy)',
                       'myeverywhere (legacy)',
                       'everywhere_flag (legacy)',
                       'T_everywhere',
@@ -160,7 +185,6 @@ class Everywhere(ParameterSubspace):
                  image_order_limit = None,
                  _integrator_toggle = False,
                  use_interpolated_temperature = None,
-                 mycoolgrid = None,
                  myeverywhere = None,
                  everywhere_flag = None,
                  T_everywhere = 5.5,
@@ -211,20 +235,17 @@ class Everywhere(ParameterSubspace):
         self._integrator_toggle = _integrator_toggle
 
         requested_interp = use_interpolated_temperature
-        legacy_flags = [v for v in (mycoolgrid, myeverywhere, everywhere_flag)
-                        if v is not None]
+        legacy_flags = [v for v in (myeverywhere, everywhere_flag) if v is not None]
         if legacy_flags:
             if any(bool(v) != bool(legacy_flags[0]) for v in legacy_flags[1:]):
                 raise ValueError('Conflicting legacy interpolation flags: '
-                                 'myeverywhere, everywhere_flag, and '
-                                 'mycoolgrid.')
+                                 'myeverywhere and everywhere_flag.')
 
             legacy_flag = bool(legacy_flags[0])
             if requested_interp is not None and legacy_flag != bool(requested_interp):
                 raise ValueError('Conflicting interpolation flags: '
                                  'use_interpolated_temperature and legacy '
-                                 'flags (myeverywhere/everywhere_flag/'
-                                 'mycoolgrid).')
+                                 'flags (myeverywhere/everywhere_flag).')
         else:
             legacy_flag = None
 
@@ -232,7 +253,6 @@ class Everywhere(ParameterSubspace):
             requested_interp = legacy_flag if legacy_flag is not None else False
 
         self.use_interpolated_temperature = bool(requested_interp)
-        self.mycoolgrid = self.use_interpolated_temperature
         self.myeverywhere = self.use_interpolated_temperature
         self.T_everywhere = T_everywhere
         self.coderes = coderes
@@ -509,6 +529,8 @@ class Everywhere(ParameterSubspace):
         if not self.use_interpolated_temperature:
             self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
         else:
+            # Replace the uniform everywhere temperature field with values
+            # read from the shell file and interpolated onto the X-PSI mesh.
             shell_interp = Temp_Interpolator_shells()
             shell_interp.bhac_shell_avg = self.bhac_data
             shell_interp.coderes= self.coderes
