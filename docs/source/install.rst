@@ -428,7 +428,7 @@ already present in the Mac OS:
 
     brew install llvm
 
-Also use homebrew to install ``cmake``, ``gfortran`` (with ``gcc``) and ``open-mpi`.
+Also use homebrew to install ``cmake``, ``gfortran`` (with ``gcc``) and ``open-mpi``.
 
 .. code-block:: bash
 
