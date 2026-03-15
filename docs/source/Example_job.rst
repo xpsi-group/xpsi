@@ -3,12 +3,12 @@
 Example job
 ===========
 
-For both jobs you will need these 
+For the three jobs below you will need these 
 `auxiliary files <https://zenodo.org/record/7113931>`_ inside the ``model_data/``
 directory.
 
-Snellius
---------
+Snellius (SURF)
+---------------
 
 The following job script ``job.sh`` is an example job script for analysis on the Snellius system (see :ref:`hpcsystems`).
 
@@ -58,8 +58,8 @@ number of processes to spawn as a flag argument.
 
 Finally, note that only the root process will generate output for inspection.
 
-Helios
-------
+Helios (API)
+------------
 
 For Helios, we can use the following type of job script:
 
@@ -109,4 +109,48 @@ For Helios, we can use the following type of job script:
     #Clean the scratch automatically here.
     #But remember to remove manually in each node, if the main program ends by crashing.
     rm -rf $OUTPUT_FOLDER
-    
+  
+
+Jean-Zay (IDRIS)
+----------------
+
+For Jean-Zay, a script like the following one can be prepared. Just check your working project account first, with ``idrproj``.
+
+.. code-block:: bash
+
+   #!/bin/bash
+   #SBATCH --account=nameproject@cpu
+   #SBATCH --job-name=XPSI3_BBTest
+   #SBATCH --time=20:00:00
+   #SBATCH --partition=cpu_p1
+   #SBATCH --qos=qos_cpu-t3
+   #SBATCH --ntasks=200
+   #SBATCH --ntasks-per-node=40
+   #SBATCH --hint=nomultithread
+   #SBATCH --mail-user=myemail@mailservice.com
+   #SBATCH --mail-type=END,FAIL
+
+   module purge
+   module load miniforge/24.9.0
+   module load intel-all/19.0.4
+   module load gsl/2.5
+
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
+   export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
+   
+   conda activate $WORK/conda/xpsi
+   
+   cd $WORK
+   mkdir TestBBXPSIrun/
+   cd TestBBXPSIrun/
+   mkdir examples/
+   cd examples/
+   mkdir examples_modeling_tutorial/
+   cd examples_modeling_tutorial/
+   cp -r $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/* ./
+   mkdir run
+   
+   srun python TestRun_BB.py > out1 2> err1
+   
+   cp -r out1 err1 run $WORK/Softwares/xpsi/examples/examples_modeling_tutorial/.
+
