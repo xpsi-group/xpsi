@@ -7,8 +7,8 @@ For the three jobs below you will need these
 `auxiliary files <https://zenodo.org/record/7113931>`_ inside the ``model_data/``
 directory.
 
-Snellius
---------
+Snellius (SURF)
+---------------
 
 The following job script ``job.sh`` is an example job script for analysis on the Snellius system (see :ref:`hpcsystems`).
 
@@ -58,8 +58,8 @@ number of processes to spawn as a flag argument.
 
 Finally, note that only the root process will generate output for inspection.
 
-Helios
-------
+Helios (API)
+------------
 
 For Helios, we can use the following type of job script:
 
@@ -111,8 +111,8 @@ For Helios, we can use the following type of job script:
     rm -rf $OUTPUT_FOLDER
   
 
-Jean-Zay/IDRIS
-------
+Jean-Zay (IDRIS)
+----------------
 
 For Jean-Zay, a script like the following one can be prepared. Just check your working project account first, with ``idrproj``.
 

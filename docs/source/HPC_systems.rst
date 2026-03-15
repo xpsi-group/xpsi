@@ -230,8 +230,8 @@ Batch usage
 
 For example job scripts, see the Helios example in :ref:`example_job`.
 
-Jean-Zay/IDRIS
-------------------------------------
+Jean-Zay (IDRIS)
+----------------
 
 `Jean-Zay <http://www.idris.fr/eng/jean-zay/index.html>`_ is the French national supercomputer.
 
@@ -338,8 +338,8 @@ For example job scripts, see the Jean-Zay example in :ref:`example_job`.
 
 .. _CALMIPsystem:
 
-CALMIP
-------------------------------------
+CALMIP (U. of Toulouse)
+-----------------------
 
 `CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
 
