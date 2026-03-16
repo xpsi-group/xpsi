@@ -1,0 +1,1 @@
+Argument ´´plot_sky_maps´´ was renamed as ´´generate_sky_maps´´for making sky maps. Using the old argument name is not supported anymore, and it will not yield the expected outcome.
