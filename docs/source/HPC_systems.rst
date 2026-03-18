@@ -224,16 +224,122 @@ If the above works, we can then continue building X-PSI:
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
    CC=$(which cc) pip install .
-
+   
 Batch usage
 ^^^^^^^^^^^
 
 For example job scripts, see the Helios example in :ref:`example_job`.
 
+Jean-Zay (IDRIS)
+----------------
+
+`Jean-Zay <http://www.idris.fr/eng/jean-zay/index.html>`_ is the French national supercomputer.
+
+Installation
+^^^^^^^^^^^^
+
+To install X-PSI in Jean-Zay, you need to check out if you have different projects for your IDRIS account, with the command ``idrproj``. The installation will be done only in your currently working project, so you may have to switch between your projects and redo the complete installation.
+
+For any installation, it is preferable to process in the ``$WORK`` folder of your project, because of the small storage of the ``$HOME``
+
+First prepare your modules:
+
+.. code-block:: bash
+
+   module purge
+   module load miniforge/24.9.0
+   module load cmake/3.21.3
+   module load intel-all/19.0.4
+   module gsl/2.5
+
+We intend here to install X-PSI with Intel compilers. It is preferable to avoid using the recent Cmake versions because of their dependencies with the GCC compiler. 
+
+Now, let's prepare the conda environment for X-PSI, by installing some of the required packages. However, they must be mentioned explicitly:
+
+.. code-block:: bash
+
+   cd $WORK
+   mkdir conda
+   conda create -p $WORK/conda/xpsi python'>=3.9.0' numpy'<2.0.0' cython'~=3.0.11' matplotlib'==3.9.2' scipy wrapt gsl pytest getdist tqdm nestcheck fgivenx astropy'>=5.2,<7.0.0' emcee ultranest 'h5py<3.16.0' cmap   
+
+
+Then point to the Intel compilers. If needed, mention them explicitly:
+
+.. code-block:: bash
+
+   export CC=icc
+   export CXX=icpc
+   export FC=ifort
+   #export CC=/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc
+   #export CXX=/gpfslocalsys/intel/parallel_studio_xe_2019_update5_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icpc
+   #export FC=/gpfslocalsys/intel/parallel_studio_xe_2019_update5_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/ifort
+
+Then install mpi4py:
+
+.. code-block:: bash
+
+   cd $WORK
+   mkdir Softwares
+   cd Softwares
+   wget https://github.com/mpi4py/mpi4py/releases/download/4.0.3/mpi4py-4.0.3.tar.gz
+   tar zxvf mpi4py-4.0.3.tar.gz
+   cd mpi4py-4.0.3
+   python setup.py build
+   python setup.py install
+
+
+Now that the environment is set, MultiNest can be installed:
+
+.. code-block:: bash
+   
+   cd $WORK/Softwares
+   git clone https://github.com/farhanferoz/MultiNest.git  ./MultiNest
+   cd MultiNest/MultiNest_v3.12_CMake/multinest/
+   mkdir build
+   cd build
+   cmake -DCMAKE_INSTALL_PREFIX=~/pathtosoftwares/MultiNest \
+               -DCMAKE_{C,CXX}_FLAGS="-O3 -xCORE-AVX512 -mkl" \
+               -DCMAKE_Fortran_FLAGS="-O3 -xCORE-AVX512 -mkl" \
+               -DCMAKE_C_COMPILER=mpiicc    \
+               -DCMAKE_CXX_COMPILER=mpiicpc \
+               -DCMAKE_Fortran_COMPILER=mpiifort  ..
+   make
+   ls ../lib
+   
+Then its Python interface:
+
+.. code-block:: bash
+
+   cd $WORK/Softwares
+   git clone https://github.com/JohannesBuchner/PyMultiNest.git ./pymultinest
+   cd pymultinest
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORK/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
+   export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so 
+   python setup.py install
+
+Finally, xpsi can be installed:
+
+.. code-block:: bash
+
+   cd $WORK/Softwares
+   git clone https://github.com/xpsi-group/xpsi.git
+   cd xpsi/
+   LDSHARED="icc -shared" CC=icc pip install .
+   #LDSHARED="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc -shared" CC="/gpfslocalsys/intel/parallel_studio_xe_2019_update4_cluster_edition/compilers_and_libraries_2019.4.243/linux/bin/intel64/icc" pip install .
+
+   # To check your installation
+   cd ../
+   python -c "import xpsi"
+
+Batch usage
+^^^^^^^^^^^
+
+For example job scripts, see the Jean-Zay example in :ref:`example_job`. 
+
 .. _CALMIPsystem:
 
-CALMIP
-------------------------------------
+CALMIP (U. of Toulouse)
+-----------------------
 
 `CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
 

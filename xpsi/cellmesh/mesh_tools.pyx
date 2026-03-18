@@ -915,7 +915,7 @@ def allocate_cells(size_t num_cells,
         double cede_numCell, cede_sqrt_numCell, cede_cellArea, cede_area
         double cede_boundary_phi
         double cede_colat_lims[2]
-        double f, y
+        double y
         cdef gsl_cq_work *w = gsl_integration_cquad_workspace_alloc(100)
 
     superColatitude_cpy = superColatitude
@@ -1060,17 +1060,14 @@ def allocate_cells(size_t num_cells,
         if are_equal(cede_area, 0.0): # Gausian integral did not resolve
             cede_area = cede_cellArea / 1000.0
 
-            y = ((1.0 - f)/f)*(cede_area/super_area) - 1.0
+        y = (cede_area/super_area) - 1.0
 
-            if are_equal(y, 0.0):
-                super_numCell = 0.5 * <double>num_cells
-                cede_numCell = 0.5 * <double>num_cells
-            else:
-                super_numCell = <double>num_cells * ((sqrt(1.0 + y) - 1.0)/y)
-                cede_numCell = <double>num_cells - super_numCell
+        if are_equal(y, 0.0):
+            super_numCell = 0.5 * <double>num_cells
+            cede_numCell = 0.5 * <double>num_cells
         else:
-            super_numCell = 0.0
-            cede_numCell = <double>num_cells
+            super_numCell = <double>num_cells * ((sqrt(1.0 + y) - 1.0)/y)
+            cede_numCell = <double>num_cells - super_numCell
 
         #print(super_numCell, super_cellArea, super_area)
         super_sqrt_numCell = ceil(sqrt(super_numCell * super_cellArea / super_area))

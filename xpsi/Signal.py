@@ -991,6 +991,10 @@ class Signal(ParameterSubspace):
                     if (format == 'TXT') and (backscal_ratio != 1.0):
                         raise ValueError('TXT format not supported for backscal_ratio != 1.')
 
+                # In the other case, if phase-averaged background was provided, use it
+                elif len( data_BKG.shape ) == 1:
+                    BKG = BKG.sum( axis = 1 )
+
                 # Write expected background
                 kwargs = {'channels':self._data.channels,
                     'counts':BKG,
@@ -1014,8 +1018,15 @@ class Signal(ParameterSubspace):
         if format == 'TXT':
             self._write_TXT(**kwargs)
         elif format == 'FITS':
-            if len(self._data.phases) > 2:
-                self._write_EVT(**kwargs)
+            # Case of 2D counts
+            if (len(kwargs['counts'].shape) == 2):
+                # If counts is phase-resolved
+                if kwargs['counts'].shape[1] > 1:
+                    self._write_EVT(**kwargs)
+                # If counts is phase-averaged
+                else:
+                    kwargs['counts'] = kwargs['counts'][:,0]
+                    self._write_PHA(**kwargs)
             else:
                 self._write_PHA(**kwargs)
         else:
