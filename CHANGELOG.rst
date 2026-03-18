@@ -1,3 +1,107 @@
+[v3.3] - 2026-03-18
+~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+- Updated installation method to work with latest ``setuptools``, and corresponding docs and CI actions. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+
+
+Fixed
+^^^^^
+
+- Fixes the nestcheck postprocessing option when loading multi-modal Multinest runs. (`#621 <https://github.com/xpsi-group/xpsi/pull/621>`__)
+- Corrected a bug in ``InstrumentPileup`` to call ``super()``, where the RMF and ARF arguments were missing and needed. (`#628 <https://github.com/xpsi-group/xpsi/pull/628>`__)
+- Polarization angle correction for small sin(psi) to avoid divisions by zero (`#630 <https://github.com/xpsi-group/xpsi/pull/630>`__)
+- Corrected error when loading `Signal` that would crash if column_density parameter was fixed and its bounds not defined. Added a check to get the correct value when `p.value` exists (`#649 <https://github.com/xpsi-group/xpsi/pull/649>`__)
+- Fixing a small issue in the background plots of the post-processing (`#651 <https://github.com/xpsi-group/xpsi/pull/651>`__)
+- Fixed ``CHANGELOG.rst``. (`#657 <https://github.com/xpsi-group/xpsi/pull/657>`__)
+- Removed the old synthesise method from `synthesise.pyx`.
+
+  Fixed the Signal synthesize to handle better the background (`#687 <https://github.com/xpsi-group/xpsi/pull/687>`__)
+- Fixed a ceding vs super region cell mesh allocation bug caused by the removal of fast parameters in commit #7e6d6ad. (`#690 <https://github.com/xpsi-group/xpsi/pull/690>`__)
+- Updated the global surface emission tutorial and the modeling without statistics tutorial so that it uses the new correct flag for generating a sky map. (`#697 <https://github.com/xpsi-group/xpsi/pull/697>`__)
+- Tutorial notebooks were rerun and the likelihood check value was fixed in the Post-processing notebook. (`#701 <https://github.com/xpsi-group/xpsi/pull/701>`__)
+
+
+Added
+^^^^^
+
+- ``EmissonModels`` have been added. They offer a way to include any model you want alongside X-PSI and can have parameters that can be fitted. 
+  They are provided with a ``PowerLaw`` model. A notebook explaining the code and structure is also provided.
+
+  Added interface of the emission models to the ``Likelihood`` and ``Signal``.
+
+  Added a ``reset`` option to the Signal registration, which is by default ``True`` to remove the cached signal and execute the same as before. 
+  The Signal registration was only called once for each likelihood call before. The option ``reset=False`` is needed for emission models, as the Signal registration can be called more than once now. (`#631 <https://github.com/xpsi-group/xpsi/pull/631>`__)
+- Added how to recompute the evidence after importance sampling in the Importance Sampling notebook. To do so, the weights normalization value (needed to rescale the evidence) is printed when running the sampling in ``Sample.py``. (`#639 <https://github.com/xpsi-group/xpsi/pull/639>`__)
+- Added instructions for installation on MacOS with proper MultiNest (using open-mpi). (`#648 <https://github.com/xpsi-group/xpsi/pull/648>`__)
+- Added ``pyproject.toml`` file. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+- Added plotting functionality for the photon intensity sky map that includes deformation due to compactness. (`#659 <https://github.com/xpsi-group/xpsi/pull/659>`__)
+- Added a method to compute the expected counts with computing a likelihood. (`#674 <https://github.com/xpsi-group/xpsi/pull/674>`__)
+- Added a method to synthesize mock data in both TXT and FITS format in Signal.py.
+  The method allows to save background values as well.
+
+  This previously needed custom implementation of the code to do and has been simplified.
+
+  The `Synthetic_data.ipynb` now gives information on synthesizing FITS and with background data. (`#680 <https://github.com/xpsi-group/xpsi/pull/680>`__)
+- Add documentation about installing X-PSI in the Jean-Zay supercomputer. (`#688 <https://github.com/xpsi-group/xpsi/pull/688>`__)
+- Added interpolated temperature functionality when using a pre-calculated temperature map. (`#692 <https://github.com/xpsi-group/xpsi/pull/692>`__)
+
+
+Changed
+^^^^^^^
+
+- Changed the branched `if` statements for signal registration to a simpler and cleaner structure.
+
+  Changed the ``Modeling`` notebook and the associated files to remove the Steffen interpolation part.
+
+  Modified the Background tools so that it works properly with the new ``EmissionModel`` (`#631 <https://github.com/xpsi-group/xpsi/pull/631>`__)
+- Changed ``setup.py`` to use ``pip install .`` instead of ``python setup.py install``.
+  Migrated functionality from ``setup.py`` to ``pyproject.toml``.
+  Updated ``install.rst``. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+- Changed ``changelog.d/README.rst``. (`#657 <https://github.com/xpsi-group/xpsi/pull/657>`__)
+- Added the "clrmap" and "custcols" parameters for the "plotBackgroundSpectrum" function in the "BackgroundTools" script, with new colormaps to use or the ability to create our own. (`#658 <https://github.com/xpsi-group/xpsi/pull/658>`__)
+- Argument ´´plot_sky_maps´´ was renamed as ´´generate_sky_maps´´for making sky maps. Using the old argument name is not supported anymore, and it will not yield the expected outcome. (`#659 <https://github.com/xpsi-group/xpsi/pull/659>`__)
+- Background limits added to all the fast example main scripts to not have a wrong parameter vector giving a way better likelihood than the true one. (`#660 <https://github.com/xpsi-group/xpsi/pull/660>`__)
+- Changed `.github/workflows/build_docs.yml` (`#669 <https://github.com/xpsi-group/xpsi/pull/669>`__)
+- Updated versions of checkout, micromamba, gcc and python in Github action and environment files. (`#673 <https://github.com/xpsi-group/xpsi/pull/673>`__)
+- Changed the structure of the likelihood computations and added many comments to make them clearer. (`#674 <https://github.com/xpsi-group/xpsi/pull/674>`__)
+- Changed 23 files that deal with `fast_mode`,  `do_fast`, and associated attibutes, methods, args and refactoring. (`#679 <https://github.com/xpsi-group/xpsi/pull/679>`__)
+- Moved the `Synthetic_data.ipynb` from examples_fast to the documentation. (`#680 <https://github.com/xpsi-group/xpsi/pull/680>`__)
+- Reduced repetitive codes in the cellmesh integrators by calculating polarization angle and accretion disk blocking in their own functions. Unit tests were also added to these. (`#681 <https://github.com/xpsi-group/xpsi/pull/681>`__)
+- Phi-grid definition changed in cellmesh/global_mesh.pyx to match temperature map interpolation assumptions. (`#692 <https://github.com/xpsi-group/xpsi/pull/692>`__)
+
+
+Removed
+^^^^^^^
+
+- Removed ``towncrier.toml`` file.
+  Migrated changelog generation to ``pyproject.toml``. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+- Sampling.ipynb tutorial was removed from the fast examples, since we already provide very similar tutorials and/or scripts elsewhere. (`#660 <https://github.com/xpsi-group/xpsi/pull/660>`__)
+- Removed all code related to `fast_mode` and `do_fast`, and associated attributes, methods, arguments. (`#679 <https://github.com/xpsi-group/xpsi/pull/679>`__)
+
+
+Attribution
+^^^^^^^^^^^
+
+- Lucien Mauviard (`#621 <https://github.com/xpsi-group/xpsi/pull/621>`__, `#631 <https://github.com/xpsi-group/xpsi/pull/631>`__, `#674 <https://github.com/xpsi-group/xpsi/pull/674>`__, `#687 <https://github.com/xpsi-group/xpsi/pull/687>`__)
+- Christine Kazantsev (`#628 <https://github.com/xpsi-group/xpsi/pull/628>`__, `#639 <https://github.com/xpsi-group/xpsi/pull/639>`__, `#649 <https://github.com/xpsi-group/xpsi/pull/649>`__)
+- Tuomo Salmi (`#630 <https://github.com/xpsi-group/xpsi/pull/630>`__, `#660 <https://github.com/xpsi-group/xpsi/pull/660>`__, `#681 <https://github.com/xpsi-group/xpsi/pull/681>`__, `#690 <https://github.com/xpsi-group/xpsi/pull/690>`__, `#701 <https://github.com/xpsi-group/xpsi/pull/701>`__)
+- Sebastien Guillot (`#648 <https://github.com/xpsi-group/xpsi/pull/648>`__)
+- Lucien Mauviard
+  Sebastien Guillot (`#651 <https://github.com/xpsi-group/xpsi/pull/651>`__, `#680 <https://github.com/xpsi-group/xpsi/pull/680>`__)
+- Devarshi Choudhury. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
+- Devarshi Choudhury (`#657 <https://github.com/xpsi-group/xpsi/pull/657>`__, `#679 <https://github.com/xpsi-group/xpsi/pull/679>`__)
+- Pierre Stammler. (`#658 <https://github.com/xpsi-group/xpsi/pull/658>`__)
+- Mariska Hoogkamer (`#659 <https://github.com/xpsi-group/xpsi/pull/659>`__, `#697 <https://github.com/xpsi-group/xpsi/pull/697>`__)
+- Devarshi Choudhury
+  Anna Watts (`#669 <https://github.com/xpsi-group/xpsi/pull/669>`__)
+- Anna Watts (`#673 <https://github.com/xpsi-group/xpsi/pull/673>`__)
+- Pierre Stammler (`#688 <https://github.com/xpsi-group/xpsi/pull/688>`__)
+- Pushpita Das (`#692 <https://github.com/xpsi-group/xpsi/pull/692>`__)
+
+
 [v3.2] - 2025-12-01
 ~~~~~~~~~~~~~~~~~~~
 
