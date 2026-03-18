@@ -6,6 +6,7 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.shell_interpolator import Temp_Interpolator_shells
 
 class AtmosError(xpsiError):
     """ Raised if the numerical atmosphere data were not preloaded. """
@@ -134,9 +135,41 @@ class Everywhere(ParameterSubspace):
         default global mesh (i.e., no subclassing) results in a time-invariant
         signal.
 
+    :param bool use_interpolated_temperature:
+        If ``True``, replace the uniform global temperature field with
+        temperatures interpolated from ``filename`` onto the X-PSI mesh.
+
+    :param bool myeverywhere:
+        Legacy alias for enabling interpolated temperatures.
+
+    :param bool everywhere_flag:
+        Legacy alias for enabling interpolated temperatures.
+
+    :param float T_everywhere:
+        Lower floor applied to interpolated log10 temperatures after
+        interpolation.
+
+    :param int coderes:
+        Resolution of the input shell grid. The file is assumed to represent
+        a ``coderes x coderes`` angular mesh.
+
+    :param str filename:
+        Path to the shell data file used when
+        ``use_interpolated_temperature=True``.
+
+    :param bool bhac_data:
+        If ``True``, derive temperatures from BHAC shell fluxes; otherwise
+        read temperatures directly from the file.
+
     """
     required_names = ['temperature (if no custom specification)']
-
+    optional_names = ['use_interpolated_temperature',
+                      'myeverywhere (legacy)',
+                      'everywhere_flag (legacy)',
+                      'T_everywhere',
+                      'coderes',
+                      'filename',
+                      'bhac_data']
     def __init__(self,
                  time_invariant,
                  bounds = None,
@@ -150,7 +183,19 @@ class Everywhere(ParameterSubspace):
                  beam_opt=0,
                  custom = None,
                  image_order_limit = None,
-                 _integrator_toggle = False):
+                 _integrator_toggle = False,
+                 use_interpolated_temperature = None,
+                 myeverywhere = None,
+                 everywhere_flag = None,
+                 T_everywhere = 5.5,
+                 coderes = 512,
+                 filename=False,
+                 bhac_data = True,
+                 **kwargs):
+
+        if 'mycoolgrid' in kwargs:
+            raise TypeError("The 'mycoolgrid' argument has been removed; "
+                            "use 'use_interpolated_temperature' instead.")
 
         self.num_rays = num_rays
 
@@ -194,6 +239,34 @@ class Everywhere(ParameterSubspace):
         self.time_invariant = time_invariant
         self._integrator_toggle = _integrator_toggle
 
+        requested_interp = use_interpolated_temperature
+        legacy_flags = [v for v in (myeverywhere, everywhere_flag) if v is not None]
+        if legacy_flags:
+            if any(bool(v) != bool(legacy_flags[0]) for v in legacy_flags[1:]):
+                raise ValueError('Conflicting legacy interpolation flags: '
+                                 'myeverywhere and everywhere_flag.')
+
+            legacy_flag = bool(legacy_flags[0])
+            if requested_interp is not None and legacy_flag != bool(requested_interp):
+                raise ValueError('Conflicting interpolation flags: '
+                                 'use_interpolated_temperature and legacy '
+                                 'flags (myeverywhere/everywhere_flag).')
+        else:
+            legacy_flag = None
+
+        if requested_interp is None:
+            requested_interp = legacy_flag if legacy_flag is not None else False
+
+        self.use_interpolated_temperature = bool(requested_interp)
+        self.myeverywhere = self.use_interpolated_temperature
+        self.T_everywhere = T_everywhere
+        self.coderes = coderes
+        self.filename = filename
+        self.bhac_data = bhac_data
+        
+        if self.use_interpolated_temperature and self.filename is False:
+            raise ValueError('Filename not given for interpolation')
+        
     @property
     def atm_ext(self):
         """ ... """
@@ -458,8 +531,25 @@ class Everywhere(ParameterSubspace):
                                         2),
                                        dtype=_np.double)
 
-        self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
+        if not self.use_interpolated_temperature:
+            self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
+        else:
+            # Replace the uniform everywhere temperature field with values
+            # read from the shell file and interpolated onto the X-PSI mesh.
+            shell_interp = Temp_Interpolator_shells()
+            shell_interp.bhac_shell_avg = self.bhac_data
+            shell_interp.coderes= self.coderes
+            shell_interp.filename = self.filename
+            shell_interp.everywhere_xpsi= self.myeverywhere
+            shell_interp.xpsi_theta = self._theta
+            shell_interp.xpsi_phi = self._phi
+            data_avg = shell_interp.read_average_shell(bhac_shell_avg=self.bhac_data)
 
+            Temperature_interpolated = shell_interp.temp_interpolation_avg(thetacode=data_avg[0],phicode=data_avg[1],
+                                                                        Tempcode=data_avg[2], T_everywhere = self.T_everywhere)
+
+            self._cellParamVecs[:,:,0] = Temperature_interpolated[:,:]
+            
         for i in range(self._cellParamVecs.shape[1]):
             self._cellParamVecs[:,i,-1] *= self._effGrav
 

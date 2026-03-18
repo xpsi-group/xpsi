@@ -7,6 +7,7 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
 from xpsi.Parameter import Parameter, Derive
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.shell_interpolator import Temp_Interpolator_shells
 
 class AtmosError(xpsiError):
     """ Raised if the numerical atmosphere data were not preloaded. """
@@ -220,6 +221,31 @@ class HotRegion(ParameterSubspace):
         on a surface (accounting for the surface tilt due to rotation), then
         the iteration over image orders terminates.
 
+    :param bool use_interpolated_temperature:
+        If ``True``, replace the uniform hot-region temperature field with
+        temperatures interpolated from ``filename`` onto the X-PSI hot-region
+        mesh.
+
+    :param bool first_spot:
+        Select the first hotspot segment when regridding shell snapshot data
+        for interpolated temperatures.
+
+    :param bool second_spot:
+        Select the second hotspot segment when regridding shell snapshot data
+        for interpolated temperatures.
+
+    :param float T_everywhere:
+        Lower floor applied to interpolated log10 temperatures after
+        interpolation.
+
+    :param int coderes:
+        Resolution of the input shell grid. The file is assumed to represent
+        a ``coderes x coderes`` angular mesh.
+
+    :param str filename:
+        Path to the shell data file used when
+        ``use_interpolated_temperature=True``.
+
     """
     required_names = ['super_colatitude',
                       'super_radius',
@@ -232,7 +258,13 @@ class HotRegion(ParameterSubspace):
                       'cede_colatitude',
                       'cede_radius',
                       'cede_azimuth',
-                      'cede_temperature']
+                      'cede_temperature',
+                      'use_interpolated_temperature',
+                      'first_spot',
+                      'second_spot',
+                      'T_everywhere',
+                      'coderes',
+                      'filename']
 
     def __init__(self,
                  bounds,
@@ -254,9 +286,23 @@ class HotRegion(ParameterSubspace):
                  split=False,
                  custom = None,
                  image_order_limit = None,
+                 use_interpolated_temperature = None,
+                 first_spot = False,
+                 second_spot = False,
+                 T_everywhere = 5.5,
+                 coderes = 512,
+                 filename = False,
                  **kwargs):
 
-        self.is_antiphased = is_antiphased
+        if 'mycoolgrid' in kwargs:
+            raise TypeError("The 'mycoolgrid' argument has been removed; "
+                            "use 'use_interpolated_temperature' instead.")
+
+        requested_interp = use_interpolated_temperature
+
+        self.use_interpolated_temperature = bool(requested_interp)
+
+        self.is_antiphased = kwargs.get('is_secondary', is_antiphased)
 
         self.set_num_rays(num_rays)
 
@@ -275,6 +321,15 @@ class HotRegion(ParameterSubspace):
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
+        self.first_spot = first_spot
+        self.second_spot = second_spot
+        self.filename = filename
+        self.T_everywhere = T_everywhere
+        self.coderes = coderes
+        
+        if self.use_interpolated_temperature and self.filename is False:
+            raise ValueError('Filename not given for interpolation')
+        
         # first the parameters that are fundemental to this class
         doc = """
         The colatitude of the centre of the superseding region [radians].
@@ -913,7 +968,27 @@ class HotRegion(ParameterSubspace):
                                               2),
                                              dtype=_np.double)
 
-        self._super_cellParamVecs[...,:-1] *= self['super_temperature']
+        if self.use_interpolated_temperature:
+            # Load the shell map once, then interpolate it onto whichever
+            # hot-region mesh is being populated below.
+            shell_interp = Temp_Interpolator_shells()
+            shell_interp.coderes = self.coderes
+            shell_interp.filename = self.filename
+            shell_interp.first_spot = self.first_spot
+            shell_interp.second_spot = self.second_spot
+            data_snapshot = shell_interp.read_regrid()
+
+        if not self.use_interpolated_temperature:
+            self._super_cellParamVecs[...,:-1] *= self['super_temperature']
+        else:
+            shell_interp.xpsi_theta = self._super_theta
+            shell_interp.xpsi_phi = self._super_phi
+            Temperature_interpolated = shell_interp.temp_interpolation_flux(thetacode=data_snapshot[1],phicode=data_snapshot[0],
+                                                                            Fluxcode=data_snapshot[2],tracercode=data_snapshot[3],
+                                                                            T_everywhere=self.T_everywhere)
+
+            # Interpolation overrides the uniform super_temperature field.
+            self._super_cellParamVecs[:,:,0] = Temperature_interpolated[:,:]
 
         for i in range(self._super_cellParamVecs.shape[1]):
             self._super_cellParamVecs[:,i,-1] *= self._super_effGrav
@@ -927,7 +1002,16 @@ class HotRegion(ParameterSubspace):
                                                  self._cede_radiates.shape[1],
                                                  2), dtype=_np.double)
 
-            self._cede_cellParamVecs[...,:-1] *= self['cede_temperature']
+            if not self.use_interpolated_temperature:
+                self._cede_cellParamVecs[...,:-1] *= self['cede_temperature']
+            else:
+                shell_interp.xpsi_theta = self._cede_theta
+                shell_interp.xpsi_phi = self._cede_phi
+                Temperature_interpolated = shell_interp.temp_interpolation_flux(thetacode=data_snapshot[1],phicode=data_snapshot[0],
+                                                                                Fluxcode=data_snapshot[2],tracercode=data_snapshot[3],
+                                                                                T_everywhere=self.T_everywhere)
+                # Bug fix: ceding-region interpolation must update ceding cells.
+                self._cede_cellParamVecs[:,:,0] = Temperature_interpolated[:,:]
 
             for i in range(self._cede_cellParamVecs.shape[1]):
                 self._cede_cellParamVecs[:,i,-1] *= self._cede_effGrav
