@@ -1,1 +1,0 @@
-Updated the global surface emission tutorial and the modeling without statistics tutorial so that it uses the new correct flag for generating a sky map. 

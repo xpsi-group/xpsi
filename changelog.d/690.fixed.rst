@@ -1,1 +1,0 @@
-Fixed a ceding vs super region cell mesh allocation bug caused by the removal of fast parameters in commit #7e6d6ad.
