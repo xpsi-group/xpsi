@@ -4,8 +4,7 @@
 Summary
 ^^^^^^^
 
-- Updated installation method to work with latest ``setuptools``, and corresponding docs and CI actions. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
-
+- This minor release includes several updates, new features, bug fixes, and documentation changes. See details below.
 
 Fixed
 ^^^^^
@@ -16,7 +15,7 @@ Fixed
 - Corrected error when loading `Signal` that would crash if column_density parameter was fixed and its bounds not defined. Added a check to get the correct value when `p.value` exists (`#649 <https://github.com/xpsi-group/xpsi/pull/649>`__)
 - Fixing a small issue in the background plots of the post-processing (`#651 <https://github.com/xpsi-group/xpsi/pull/651>`__)
 - Fixed ``CHANGELOG.rst``. (`#657 <https://github.com/xpsi-group/xpsi/pull/657>`__)
-- Fixed the Signal synthesize to handle better the background (`#687 <https://github.com/xpsi-group/xpsi/pull/687>`__)
+- Fixed the Signal synthesize to handle the background better (`#687 <https://github.com/xpsi-group/xpsi/pull/687>`__)
 - Fixed a ceding vs super region cell mesh allocation bug caused by the removal of fast parameters in commit #7e6d6ad. (`#690 <https://github.com/xpsi-group/xpsi/pull/690>`__)
 - Updated the global surface emission tutorial and the modeling without statistics tutorial so that it uses the new correct flag for generating a sky map. (`#697 <https://github.com/xpsi-group/xpsi/pull/697>`__)
 - Tutorial notebooks were rerun and the likelihood check value was fixed in the Post-processing notebook. (`#701 <https://github.com/xpsi-group/xpsi/pull/701>`__)
@@ -25,17 +24,16 @@ Fixed
 Added
 ^^^^^
 
-- ``EmissonModels`` have been added. They offer a way to include any model you want alongside X-PSI and can have parameters that can be fitted.
-  They are provided with a ``PowerLaw`` model. A notebook explaining the code and structure is also provided.(`#631 <https://github.com/xpsi-group/xpsi/pull/631>`__)
+- ``EmissionModels`` have been added. They offer a way to include any model you want alongside X-PSI and can have parameters that can be fitted. They are provided with a ``PowerLaw`` model. A notebook explaining the code and structure is also provided.(`#631 <https://github.com/xpsi-group/xpsi/pull/631>`__)
 - Added interface of the emission models to the ``Likelihood`` and ``Signal``. (`#631 <https://github.com/xpsi-group/xpsi/pull/631>`__)
 - Added a ``reset`` option to the Signal registration, which is by default ``True`` to remove the cached signal and execute the same as before.  The Signal registration was only called once for each likelihood call before. The option ``reset=False`` is needed for emission models, as the Signal registration can be called more than once now. (`#631 <https://github.com/xpsi-group/xpsi/pull/631>`__)
 - Added how to recompute the evidence after importance sampling in the Importance Sampling notebook. To do so, the weights normalization value (needed to rescale the evidence) is printed when running the sampling in ``Sample.py``. (`#639 <https://github.com/xpsi-group/xpsi/pull/639>`__)
 - Added instructions for installation on MacOS with proper MultiNest (using open-mpi). (`#648 <https://github.com/xpsi-group/xpsi/pull/648>`__)
 - Added ``pyproject.toml`` file. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__)
 - Added plotting functionality for the photon intensity sky map that includes deformation due to compactness. (`#659 <https://github.com/xpsi-group/xpsi/pull/659>`__)
-- Added a method to compute the expected counts with computing a likelihood. (`#674 <https://github.com/xpsi-group/xpsi/pull/674>`__)
+- Added a method to compute the expected counts when computing a likelihood. (`#674 <https://github.com/xpsi-group/xpsi/pull/674>`__)
 - Added a method to synthesize mock data in both TXT and FITS format in Signal.py. The method allows one to save background values as well. The previously needed custom implementation of the code to do this has been simplified. The notebook `Synthetic_data.ipynb` now gives information on synthesizing FITS and with background data. (`#680 <https://github.com/xpsi-group/xpsi/pull/680>`__)
-- Add documentation about installing X-PSI in the Jean-Zay supercomputer. (`#688 <https://github.com/xpsi-group/xpsi/pull/688>`__)
+- Added documentation about installing X-PSI on the Jean-Zay supercomputer. (`#688 <https://github.com/xpsi-group/xpsi/pull/688>`__)
 - Added interpolated temperature functionality when using a pre-calculated temperature map. (`#692 <https://github.com/xpsi-group/xpsi/pull/692>`__)
 
 Changed
@@ -73,8 +71,8 @@ Attribution
 - Christine Kazantsev (`#628 <https://github.com/xpsi-group/xpsi/pull/628>`__, `#639 <https://github.com/xpsi-group/xpsi/pull/639>`__, `#649 <https://github.com/xpsi-group/xpsi/pull/649>`__)
 - Tuomo Salmi (`#630 <https://github.com/xpsi-group/xpsi/pull/630>`__, `#660 <https://github.com/xpsi-group/xpsi/pull/660>`__, `#681 <https://github.com/xpsi-group/xpsi/pull/681>`__, `#690 <https://github.com/xpsi-group/xpsi/pull/690>`__, `#701 <https://github.com/xpsi-group/xpsi/pull/701>`__)
 - Sebastien Guillot (`#648 <https://github.com/xpsi-group/xpsi/pull/648>`__, `#651 <https://github.com/xpsi-group/xpsi/pull/651>`__, `#680 <https://github.com/xpsi-group/xpsi/pull/680>`__)
-- Devarshi Choudhury. (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__, `#657 <https://github.com/xpsi-group/xpsi/pull/657>`__, `#669 <https://github.com/xpsi-group/xpsi/pull/669>`__, `#679 <https://github.com/xpsi-group/xpsi/pull/679>`__)
-- Pierre Stammler. (`#658 <https://github.com/xpsi-group/xpsi/pull/658>`__, `#688 <https://github.com/xpsi-group/xpsi/pull/688>`__)
+- Devarshi Choudhury (`#653 <https://github.com/xpsi-group/xpsi/pull/653>`__, `#657 <https://github.com/xpsi-group/xpsi/pull/657>`__, `#669 <https://github.com/xpsi-group/xpsi/pull/669>`__, `#679 <https://github.com/xpsi-group/xpsi/pull/679>`__)
+- Pierre Stammler (`#658 <https://github.com/xpsi-group/xpsi/pull/658>`__, `#688 <https://github.com/xpsi-group/xpsi/pull/688>`__)
 - Mariska Hoogkamer (`#659 <https://github.com/xpsi-group/xpsi/pull/659>`__, `#697 <https://github.com/xpsi-group/xpsi/pull/697>`__)
 - Anna Watts (`#669 <https://github.com/xpsi-group/xpsi/pull/669>`__, `#673 <https://github.com/xpsi-group/xpsi/pull/673>`__)
 - Pushpita Das (`#692 <https://github.com/xpsi-group/xpsi/pull/692>`__)
