@@ -1,0 +1,2 @@
+Added a .zenodo.json file to once again trigger automatic updates of the xpsi zenodo repository on new releases.
+
