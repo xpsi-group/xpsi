@@ -75,81 +75,12 @@
     ],
     "title": "xpsi-group/xpsi: Release v3.3.1",
     "version": "3.3.1",
-    "rights": [
-      {
-        "description": {
-          "en": "Permissions of this strong copyleft license are conditioned on making available complete source code of licensed works and modifications, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights."
-        },
-        "id": "gpl-3.0-or-later",
-        "props": {
-          "scheme": "spdx",
-          "url": "https://www.gnu.org/licenses/gpl-3.0-standalone.html"
-        },
-        "title": {
-          "en": "GNU General Public License v3.0 or later"
-        }
-      }
-    ],
+    "license": "gpl-3.0-or-later",
     "upload_type": "software",
     "language": "eng",
-    "funding": [
-      {
-        "award": {
-          "acronym": "AEONS",
-          "id": "00k4n6c32::865768",
-          "identifiers": [
-            {
-              "identifier": "https://cordis.europa.eu/projects/865768",
-              "scheme": "url"
-            }
-          ],
-          "number": "865768",
-          "program": "H2020-EU.1.1.",
-          "title": {
-            "en": "Advancing the Equation of state of Neutron Stars"
-          }
-        },
-        "funder": {
-          "id": "00k4n6c32",
-          "name": "European Commission"
-        }
-      },
-      {
-        "award": {
-          "acronym": "CSINEUTRONSTAR",
-          "id": "00k4n6c32::639217",
-          "identifiers": [
-            {
-              "identifier": "https://cordis.europa.eu/projects/639217",
-              "scheme": "url"
-            }
-          ],
-          "number": "639217",
-          "program": "H2020-EU.1.1.",
-          "title": {
-            "en": "The physics and forensics of neutron star explosions"
-          }
-        },
-        "funder": {
-          "id": "00k4n6c32",
-          "name": "European Commission"
-        }
-      },
-      {
-        "award": {
-          "number": "OCENW.XL21.XL21.038",
-          "title": {
-            "en": "Probing the phase diagram of Quantum Chromodynamics"
-          }
-        },
-        "funder": {
-          "id": "04jsz6e67",
-          "name": "Dutch Research Council"
-        }
-      }
-    ],
     "grants": [
        {"id": "00k4n6c32::865768"},
-       {"id": "00k4n6c32::639217"}
+       {"id": "00k4n6c32::639217"},
+       {"id": "04jsz6e67::OCENW.XL21.XL21.038"}
     ]
 }
