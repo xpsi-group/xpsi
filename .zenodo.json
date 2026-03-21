@@ -42,7 +42,7 @@
         {
             "name": "Kazantsev, Christine",
             "affiliation": "Institut de Recherche en Astrophysique et Plan\u00e9tologie",
-            "orcid": "orcid: 0009-0008-3894-4783"
+            "orcid": "0009-0008-3894-4783"
         },
         {
             "name": "Hoogkamer, Mariska",
@@ -71,7 +71,7 @@
         {
             "name": "Das, Pushpita",
             "orcid": "0000-0002-4764-6189"
-        },
+        }
     ],
     "title": "xpsi-group/xpsi: Release v3.3.1",
     "version": "3.3.1",
@@ -151,5 +151,5 @@
     "grants": [
        {"id": "00k4n6c32::865768"},
        {"id": "00k4n6c32::639217"}
-    ],
+    ]
 }
