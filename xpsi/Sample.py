@@ -1,4 +1,4 @@
-__all__ = ["run_multinest", "run_emcee", "run_ultranest"]
+__all__ = ["run_multinest", "run_emcee", "run_ultranest", "run_nautilus"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
@@ -18,6 +18,11 @@ try:
     from xpsi.UltranestSampler import UltranestSampler
 except ImportError:
     print("""Check your installation of UltraNest if using the UltranestSampler""")
+try:
+    from xpsi.NautilusSampler import NautilusSampler
+except ImportError:
+    print("""Check your installation of nautilus-sampler if using the NautilusSampler""")
+
 
 posterior = None
 
@@ -396,3 +401,27 @@ def ultranested(likelihood,
                          use_stepsampler=use_stepsampler,
                          stepsampler_params=stepsampler_params,
                          out_filename=out_filename)
+
+
+def run_nautilus(
+    likelihood,
+    prior,
+    sampler_build_kwargs={},
+    runtime_params={},
+    MPI=True,
+    out_filename="weighted_post_nautilus_xpsi"
+):
+    """
+    Coucou
+    """
+
+    # initialise the sampler
+    sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, MPI=MPI)
+
+    # start sampling
+    sampler(runtime_params)
+
+    # store output
+    sampler.write_results(out_filename)
+
+    return sampler
