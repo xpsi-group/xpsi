@@ -411,8 +411,24 @@ def run_nautilus(
     MPI=True,
     out_filename="weighted_post_nautilus_xpsi"
 ):
-    """
-    Coucou
+    """  Wrapper for the nautilus-sampler (https://nautilus-sampler.readthedocs.io/en/latest/)
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to run the sampler.
+
+    :param bool MPI:
+        Whether to use MPI or not for parallelized sampling.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.NautilusSampler`
     """
 
     # initialise the sampler
