@@ -363,11 +363,12 @@ Then, create the conda environnnement and Install python packages with conda (or
 
     conda create -n xpsi --clone base
     conda activate xpsi
-    conda install numpy scipy matplotlib wrapt astropy
-    pip install cython~=3.0.11
-    conda install h5py
+    conda install numpy'<2.0.0'
+    conda install cython'=3.0.12'
+    conda install matplotlib'=3.9.2'
+    conda install astropy'=6.1.3'
+    conda install scipy h5py wrapt pandas
     conda install -c conda-forge fgivenx
-    pip install schwimmbad --user
 
 Point to the Intel compilers
 
@@ -383,9 +384,9 @@ Install mpi4py in your ``$HOME`` (e.g. in ``~/Softwares``):
 
     mkdir Softwares
     cd Softwares
-    wget https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
-    tar zxvf mpi4py-3.1.5.tar.gz
-    cd mpi4py-3.1.5
+    wget https://github.com/mpi4py/mpi4py/releases/download/4.0.3/mpi4py-4.0.3.tar.gz
+    tar zxvf mpi4py-4.0.3.tar.gz
+    cd mpi4py-4.0.3
     python setup.py build
     python setup.py install
     # Test on login node:
