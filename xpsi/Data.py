@@ -692,12 +692,11 @@ class Data(object):
         TLMIN= _np.int32(Header['TLMIN1'])
         
         if checkqual:
-            if 'QUALITY' not in spectrum.columns.names :
-                if checkdatasrc is not None:
-                    if hasattr(checkdatasrc, '_quality'):
-                        quality = checkdatasrc._quality
-                else:
-                    raise IOError('QUALITY information are not found in the PHA file.')
+            if checkdatasrc is not None:
+                assert hasattr(checkdatasrc, '_quality')
+                quality=checkdatasrc._quality
+            elif 'QUALITY' not in spectrum.columns.names :
+                raise IOError('QUALITY information are not found in the PHA file.')
             else: 
                 quality=spectrum['QUALITY']
             print('Bad bins detected...')
@@ -714,12 +713,11 @@ class Data(object):
         
         origpha = None
         if checkgrp:
-            if 'GROUPING' not in spectrum.columns.names :
-                if checkdatasrc is not None:
-                    if hasattr(checkdatasrc, '_grouping'):
-                        groupcha = checkdatasrc._grouping
-                else:
-                    raise IOError('GROUPING information are not found in the PHA file')
+            if checkdatasrc is not None:
+                assert hasattr(checkdatasrc, '_grouping')
+                groupcha=checkdatasrc._grouping
+            elif 'GROUPING' not in spectrum.columns.names :
+                raise IOError('GROUPING information are not found in the PHA file')
             else:
                 groupcha=spectrum['GROUPING']
             grpdata = True
@@ -727,6 +725,11 @@ class Data(object):
             print('Counts will be grouped into larger channels')
             min_binchannel = _np.where(groupcha == 1)[0]
             max_binchannel = _np.hstack((min_binchannel[1:], len(channels)))
+            if checkdatasrc is not None:
+                if type(checkdatasrc._origdata)==_np.ndarray: ##Few changes if the source data was loaded from an EVT file.
+                    mskch = [groupcha[i]==1 and checkdatasrc._quality[i]==0 for i in range(len(groupcha))]
+                    min_binchannel = _np.where(mskch)[0] - _np.where(checkdatasrc._quality==0)[0][0]
+                    max_binchannel = _np.hstack((min_binchannel[1:], len(_np.where(checkdatasrc._quality==0)[0])))
             groupcounts=_np.zeros(len(min_binchannel))
             if withuncs:
                 grouperrors=_np.zeros(len(min_binchannel))
