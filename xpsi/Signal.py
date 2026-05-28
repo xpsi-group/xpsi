@@ -829,9 +829,8 @@ class Signal(ParameterSubspace):
                 else:
                     BKG = data_BKG
 
-                # Apply backscal
-                BKG *= backscal_ratio
-                bkg_cts = BKG.sum()
+                # Apply backscal to get the right total number of bkg counts
+                bkg_cts = BKG.sum() / backscal_ratio
 
             # Otherwise, use null background
             else:
