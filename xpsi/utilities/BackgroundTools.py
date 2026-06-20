@@ -252,7 +252,7 @@ def plotBackgroundSpectrum( XPSI_model,
 
     # Plotting data and expected values
     ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=2, label='Expected signal')  # lw=3
-    ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=1, label='Data light curve') # lw=2
+    ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=1, label='Data spectrum') # lw=2
     
     # Plotting background support
     if plot_support and signal._support is not None and signal._support[signal._support>0].any():
