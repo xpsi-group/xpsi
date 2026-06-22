@@ -4,7 +4,7 @@ channels:
         - conda-forge
 dependencies:
         - python >= 3.10.0
-        - numpy < 2.0.0
+        - numpy
         - cython~= 3.0.11
         - matplotlib == 3.9.2  # STRICT REQUIREMENT FROM FGIVENX
         - scipy
