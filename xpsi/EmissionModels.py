@@ -179,14 +179,14 @@ class PowerLaw( EmissionModel ):
 
         # Initiate the necessary parameters
         norm = Parameter('norm',
-                        strict_bounds = (0.0, _np.infty),
+                        strict_bounds = (0.0, _np.inf),
                         bounds = bounds.get('norm', None),
                         doc = "Normalization of the PowerLaw in photons/cm2/s/keV @ 1keV",
                         symbol = 'K',
                         value = values.get('norm', None))
         
         gamma = Parameter('gamma',
-                strict_bounds = (0.0, _np.infty),
+                strict_bounds = (0.0, _np.inf),
                 bounds = bounds.get('gamma', None),
                 doc = "Photon index of the PowerLaw",
                 symbol = r'$\gamma$',
