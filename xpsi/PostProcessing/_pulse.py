@@ -441,7 +441,10 @@ class PulsePlot(SignalPlot):
         self._ax_1d.yaxis.set_minor_locator(AutoMinorLocator())
 
         # 2D
-        Delta_E = ref.energy_edges[1:] - ref.energy_edges[:-1]
+        if ref.energy_edges.ndim == 2:
+            Delta_E = ref.energy_edges[1] - ref.energy_edges[0]
+        else:
+            Delta_E = ref.energy_edges[1:] - ref.energy_edges[:-1]
         for i in range(total.shape[1]):
             total[:,i] /= Delta_E # mean specific flux in each interval
 
@@ -453,8 +456,12 @@ class PulsePlot(SignalPlot):
                                        rasterized = self._rasterized)
 
         incident.set_edgecolor('face')
-        self._ax.set_ylim([_np.max([ref.energy_edges[0],0.001]),
-                           ref.energy_edges[-1]])
+        if ref.energy_edges.ndim == 2:
+            self._ax.set_ylim([_np.max([ref.energy_edges[0,0],0.001]),
+                               ref.energy_edges[1,-1]])
+        else:
+            self._ax.set_ylim([_np.max([ref.energy_edges[0],0.001]),
+                               ref.energy_edges[-1]])
         self._ax.set_yscale('log')
 
         self._incident_cb = plt.colorbar(incident, cax=self._ax_cb,
