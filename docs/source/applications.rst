@@ -26,6 +26,11 @@ NICER rotation-powered millisecond pulsar papers
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
+**Kini et al. 2026** `(ApJ, 1005, 201) <https://ui.adsabs.harvard.edu/abs/2026ApJ..1005..201K/abstract>`_ *A NICER View of PSR J0030+0451: Updated Constraints from 6 yr of NICER Observations*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo26kini: https://doi.org/10.5281/zenodo.18741941
+__ Zenodo26kini_
+
 **Hoogkamer et al. 2026** `(PRD, 113, 063049) <https://ui.adsabs.harvard.edu/abs/2026PhRvD.113f3049H/abstract>`_ *Equation-of-state-informed pulse profile modeling*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo26hoogkamer: https://doi.org/10.5281/zenodo.17257402
@@ -103,8 +108,13 @@ __ Zenodo21_
 __ Zenodo_
 
 
-PPM for accreting/bursting neutron stars
-****************************************  
+PPM for quiescent, accreting and bursting neutron stars
+*******************************************************  
+
+**Kazantsev et al. 2026** `(A&A, 710, A334) <https://ui.adsabs.harvard.edu/abs/2026A%26A...710A.334K/abstract>`_ *Mass and radius measurements of the neutron star 47 Tuc X7: A new bias-free method*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo26kazantsev: https://doi.org/10.5281/zenodo.20312254
+__ Zenodo26kazantsev_ 
 
 **Dorsman et al. 2026** `(MNRAS, 545, staf1983) <https://ui.adsabs.harvard.edu/abs/2026MNRAS.545f1983D/abstract>`_ *Pulse profile modelling of the accretion-powered millisecond pulsar SAX J1808.4-3658 using NICER data from its 2019 and 2022 outbursts*.  See also the associated `Zenodo repository`__.
 
