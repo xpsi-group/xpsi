@@ -1,0 +1,1 @@
+Propose a new structure for the energy and channel edges, and allow the use of statistical errors and optional filtering from data quality and/or grouping of channels.

@@ -93,7 +93,7 @@ class Data(object):
         The exposure time, in seconds, to acquire this set of event data.
 
     """
-    def __init__(self, counts, channels, phases, first, last, exposure_time):
+    def __init__(self, counts, channels, phases, first, last, exposure_time, grpdata=False, origdata=None):
 
         if not isinstance(counts, _np.ndarray):
             try:
@@ -147,6 +147,13 @@ class Data(object):
             self._exposure_time = float(exposure_time)
         except TypeError:
             raise TypeError('Exposure time must be a float.')
+        
+        self._grpdata = grpdata
+        
+        if self._grpdata==True:
+            self._origdata=origdata
+        else:
+            self._origdata=None
 
     @property
     def exposure_time(self):
@@ -284,7 +291,7 @@ class Data(object):
         :param int channel_column:
             The column in the loaded file containing event channels.
 
-        :param ndarray[n+1] channel_edges:
+        :param ndarray[n+1] | ndarray[2,n] channel_edges:
             The nominal energy edges of the instrument channels, assumed to
             be contiguous if binning event energies in channel number.
 
@@ -314,10 +321,16 @@ class Data(object):
         for i in range(events.shape[0]):
             _channel = None
             if eV:
-                for j in range(len(channel_edges) - 1):
-                    if channel_edges[j] <= events[i, channel_column]/1.0e3 < channel_edges[j+1]:
-                        _channel = channels[j]
-                        break
+                if channel_edges.ndim == 2:
+                    for j in range(len(channel_edges)):
+                        if channel_edges[0, j] <= events[i, channel_column]/1.0e3 < channel_edges[1, j]:
+                            _channel = channels[j]
+                            break
+                else:
+                    for j in range(len(channel_edges) - 1):
+                        if channel_edges[j] <= events[i, channel_column]/1.0e3 < channel_edges[j+1]:
+                            _channel = channels[j]
+                            break
             else:
                 _channel = events[i, channel_column]
 
@@ -347,7 +360,12 @@ class Data(object):
              n_phases=32, 
              channels=None, 
              phase_column='PULSE_PHASE',
-             channel_column='PI'):
+             channel_column='PI',
+             minbincnt=None,
+             withuncs= False,
+             checkqual=False,
+             checkgrp=False,
+             checkdatasrc=None):
         """ Load an OGIP compliant event list (EVT) or spectrum (PHA) fits file by redirecting to more specific class methods.
         
         :param str path:
@@ -365,6 +383,26 @@ class Data(object):
 
         :param str channel_column:
             If the file is a EVT file, column containing event channels.
+        
+        :param int | None minbincnt:
+            If the file is a EVT file, prepare a customized grouping of the event channels, by determining 
+            a minimal amount of counts required for each new large channel. New channels with not enough 
+            counts shall be ignored. If None, keep the original event list.
+            If the file is a PHA file, return the minimal amount of counts for each new grouped bin built with grppha. 
+            Cannot be None with checkgrp=True.
+        
+        :param bool withuncs:
+            If the file is a PHA file, should the statistical errors be recorded? For some likelihoods computations, they might be required.
+        
+        :param bool checkqual:
+            If the file is a PHA file, check quality of the spectra counts.
+        
+        :param bool checkgrp:
+            If the file is a PHA file, apply grouping of the spectra counts.
+        
+        :param xpsi.Data | None checkdatasrc:
+            Seek for QUALITY and GROUPING information from another PHA file. Should lead to the source file when
+            the background support is used. 
 
         """
         
@@ -374,14 +412,16 @@ class Data(object):
 
         # Select the case based on HDUCLAS1
         if HDUCLAS1 == 'SPECTRUM':
-            Data = cls.from_pha(path, channels=channels )
+            Data = cls.from_pha(path, channels=channels, withuncs=withuncs, checkqual=checkqual, checkgrp=checkgrp, minbincnt=minbincnt, checkdatasrc=checkdatasrc)
         
         elif HDUCLAS1 == 'EVENTS':
             Data = cls.from_evt(path, 
                  n_phases=n_phases, 
                  channels=channels, 
                  phase_column=phase_column,
-                 channel_column=channel_column)
+                 channel_column=channel_column,
+                 minbincnt=minbincnt,
+                 checkdatasrc=checkdatasrc)
         
         else:
             raise IOError('HDUCLAS1 of Header does not match PHA or EVT files values. Could not load.')
@@ -400,7 +440,9 @@ class Data(object):
                  channels=None, 
                  phase_column='PULSE_PHASE',
                  channel_column='PI',
-                 phase_shift=0.0):
+                 phase_shift=0.0,
+                 minbincnt=None,
+                 checkdatasrc=None):
         """ Load an OGIP compliant event list EVT fits file.
         
         :param str path:
@@ -421,6 +463,15 @@ class Data(object):
 
         :param float phase_shift:
             A common phase shift to apply to the event phases.
+        
+        :param int | None minbincnt:
+            Prepare a customized grouping of the extracted event channels, by determining a minimal amount of counts 
+            required for each new large channel. New channels with not enough counts shall be ignored. 
+            If None, keep the original event list.
+        
+        :param xpsi.Data | None checkdatasrc:
+            Seek for QUALITY and GROUPING information from another PHA file. Should lead to the source file when
+            the background support is used. 
         """
 
         # Read the fits file
@@ -452,21 +503,136 @@ class Data(object):
         mask = [ ch>=min_channel and ch<=max_channel for ch in channel_data ]
         counts_histogram, _, _ = _np.histogram2d( channel_data[mask] , phases_data[mask], 
                                                  bins=[channel_borders, phases_borders])
-
+        TLMIN= _np.int32(Header['TLMIN13'])
+        grpevdata = False
+        origevt = None
+        
+        if checkdatasrc is not None:
+            if hasattr(checkdatasrc, '_quality'):
+                qualchans = checkdatasrc._quality
+            else:
+                raise IOError('QUALITY information cannot be found in the Source Data module')
+            
+            if hasattr(checkdatasrc, '_grouping'):
+                groupcha = checkdatasrc._grouping
+                origevt=counts_histogram.astype(dtype=_np.double)
+                print('Counts will be grouped into larger channels')
+                binline=_np.array([])
+                binchan=origevt[0]
+                for i in range(len(groupcha)-1):
+                    if groupcha[i+1]!=1:
+                        binchan=binchan+origevt[i+1]
+                    else:
+                        if binline.ndim==1:
+                            binline=_np.array([binchan])
+                        else:
+                            binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
+                        binchan=origevt[i+1]
+                if groupcha[-1]==-1:
+                    binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
+                counts_histogram = binline
+                print(r'Counts grouped on {} new channels'.format(len(counts_histogram[:,0])))
+                qualcha=qualchans[min_channel:min_channel+len(qualcha)]
+                qualgrpchannels = qualcha[_np.where(groupcha==1)]
+                counts_histogram = counts_histogram[_np.where(qualgrpchannels==0)]
+                print(r'Spectrum reduced to {} channels'.format(_np.shape(counts_histogram)[0]))
+                groupchans=_np.arange(_np.shape(counts_histogram)[0])
+                min_channel = _np.min( groupchans )
+                max_channel = _np.max( groupchans )
+                first = 0
+                last = max_channel - min_channel
+                channels = _np.arange(min_channel,max_channel+1)
+                grpevdata = True
+                
+            else:
+                raise IOError('GROUPING information cannot be found in the Source Data module')
+        
+        if minbincnt is not None:
+            evtcnts=counts_histogram.sum(axis=1)
+            if (evtcnts<minbincnt).any():
+                qualchans=_np.ones(_np.max(channel_data)-_np.min(channel_data))
+                grpchans=_np.ones(_np.max(channel_data)-_np.min(channel_data))
+                origevt=counts_histogram.astype(dtype=_np.double)
+                print('Counts will be grouped into larger channels')
+                groupcha=_np.ones_like(evtcnts)
+                qualcha=_np.zeros_like(evtcnts)
+                binline=_np.array([])
+                binchan=origevt[0]
+                bincnt=evtcnts[0]
+                for i in range(len(groupcha)-1):
+                    if bincnt<minbincnt:
+                        bincnt=bincnt+evtcnts[i+1]
+                        binchan=binchan+origevt[i+1]
+                        groupcha[i+1]=-1
+                    else:
+                        if binline.ndim==1:
+                            binline=_np.array([binchan])
+                        else:
+                            binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
+                        bincnt=evtcnts[i+1]
+                        binchan=origevt[i+1]
+                
+                if bincnt>minbincnt:
+                    binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
+                elif groupcha[-1] == 1 and bincnt<minbincnt:
+                    print('Large channels with less counts than required will be ignored')
+                    qualcha[-1]=1
+                else:
+                    print('Large channels with less counts than required will be ignored')
+                    qualcha[-1]=1
+                    jqual=1
+                    while groupcha[-jqual]!=1:
+                        jqual=jqual+1
+                        qualcha[-jqual]=1
+                
+                qualchans[min_channel:min_channel+len(qualcha)]=qualcha
+                grpchans[min_channel:min_channel+len(groupcha)]=groupcha
+                counts_histogram = binline
+                print(r'Counts grouped on {} new channels'.format(len(counts_histogram[:,0])))
+                qualgrpchannels = qualcha[_np.where(groupcha==1)]
+                counts_histogram = counts_histogram[_np.where(qualgrpchannels==0)]
+                print(r'Spectrum reduced to {} channels'.format(_np.shape(counts_histogram)[0]))
+                groupchans=_np.arange(_np.shape(counts_histogram)[0])
+                min_channel = _np.min( groupchans )
+                max_channel = _np.max( groupchans )
+                first = 0
+                last = max_channel - min_channel
+                channels = _np.arange(min_channel,max_channel+1)
+                grpevdata = True
+            
+            else:
+                print('No need for grouping! We have enough counts for each channel!')
         # Instatiate the class
-        return cls( counts_histogram.astype( dtype=_np.double ),
+        Data=cls( counts_histogram.astype( dtype=_np.double ),           
                     channels=channels,
                     phases=phases_borders,
                     first=first,
                     last=last,
-                    exposure_time=exposure )
+                    exposure_time=exposure,
+                    grpdata=grpevdata,
+                    origdata=origevt )
+        
+        if checkdatasrc is not None:
+            Data._srcdata = checkdatasrc
+        
+        if grpevdata:
+            Data._quality=qualchans
+            Data._grouping=grpchans
+            Data._minbincnt=minbincnt      
+        
+        return Data
     
 
     @classmethod
     @make_verbose('Loading PHA spectrum and phase binning',
                   'Spectrum loaded')
     def from_pha( cls, path, 
-                  channels=None ):
+                  channels=None,
+                  withuncs= False,
+                  checkqual=False,
+                  checkgrp=False,
+                  minbincnt=None,
+                  checkdatasrc=None ):
         """ Load an OGIP compliant spectrum PHA fits file.
         
         :param str path:
@@ -475,6 +641,23 @@ class Data(object):
         :param ndarray[n] channels:
             The energy channels to extract the data from. Should be the same as the channels of the instrument to use.
             If None, extract all channels in the PHA file.
+        
+        :param bool withuncs:
+            Should the statistical errors be recorded? For some likelihoods computations, they might be required.
+        
+        :param bool checkqual:
+            Check quality of the spectra counts.
+        
+        :param bool checkgrp:
+            Apply grouping of the spectra counts.
+        
+        :param int | None minbincnt:
+            Return the minimal amount of counts for each new grouped bin built with grppha. 
+            Cannot be None with checkgrp=True.
+        
+        :param xpsi.Data | None checkdatasrc:
+            Seek for QUALITY and GROUPING information from another PHA file. Should lead to the source file when
+            the background support is used. 
         """
 
         # Read the fits files
@@ -490,6 +673,12 @@ class Data(object):
         except KeyError:
             counts_data = spectrum['RATE']
             exposure = _np.double(1.0)
+        
+        if withuncs:
+            if 'STAT_ERR' not in spectrum.columns.names :
+                raise IOError ('STAT_ERR information are not found in the PHA file')
+            else:
+                errors_data = spectrum['STAT_ERR']
 
         # No channels specified, use everything
         if channels is None:
@@ -499,8 +688,71 @@ class Data(object):
         else:
             min_channel = channels[0]
             max_channel = channels[-1]
+       
+        TLMIN= _np.int32(Header['TLMIN1'])
+        
+        if checkqual:
+            if checkdatasrc is not None:
+                assert hasattr(checkdatasrc, '_quality')
+                quality=checkdatasrc._quality
+            elif 'QUALITY' not in spectrum.columns.names :
+                raise IOError('QUALITY information are not found in the PHA file.')
+            else: 
+                quality=spectrum['QUALITY']
+            print('Bad bins detected...')
+            qualchannels = _np.where(quality==0)
+            spectrum = spectrum[qualchannels]
+            print(r'Spectrum reduced to {} channels'.format(_np.shape(qualchannels)[1]))
+            channel_data = _np.arange(TLMIN, TLMIN+len(spectrum['CHANNEL']))
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+            counts_data = spectrum['COUNTS']
+            if withuncs:
+                errors_data = spectrum['STAT_ERR']
+        
+        origpha = None
+        if checkgrp:
+            if checkdatasrc is not None:
+                assert hasattr(checkdatasrc, '_grouping')
+                groupcha=checkdatasrc._grouping
+            elif 'GROUPING' not in spectrum.columns.names :
+                raise IOError('GROUPING information are not found in the PHA file')
+            else:
+                groupcha=spectrum['GROUPING']
+            grpdata = True
+            origpha=spectrum
+            print('Counts will be grouped into larger channels')
+            min_binchannel = _np.where(groupcha == 1)[0]
+            max_binchannel = _np.hstack((min_binchannel[1:], len(channels)))
+            if checkdatasrc is not None:
+                if type(checkdatasrc._origdata)==_np.ndarray: ##Few changes if the source data was loaded from an EVT file.
+                    mskch = [groupcha[i]==1 and checkdatasrc._quality[i]==0 for i in range(len(groupcha))]
+                    min_binchannel = _np.where(mskch)[0] - _np.where(checkdatasrc._quality==0)[0][0]
+                    max_binchannel = _np.hstack((min_binchannel[1:], len(_np.where(checkdatasrc._quality==0)[0])))
+            groupcounts=_np.zeros(len(min_binchannel))
+            if withuncs:
+                grouperrors=_np.zeros(len(min_binchannel))
+            jchan=0
+            for i in range(len(min_binchannel)):
+                while jchan < len(channel_data) and channel_data[jchan]>=min_binchannel[i]+TLMIN and channel_data[jchan]<max_binchannel[i]+TLMIN :
+                    groupcounts[i]=groupcounts[i]+counts_data[jchan]
+                    if withuncs:
+                        grouperrors[i]=grouperrors[i]+_np.pow(errors_data[jchan], 2)
+                    jchan=jchan+1
             
-         # Get intrinsinc values
+            grpchans=_np.arange(len(min_binchannel))
+            print(r'Counts grouped on {} new channels'.format(len(min_binchannel)))
+            channel_data = grpchans
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+            counts_data = groupcounts
+            if withuncs:
+                grouperrors=_np.sqrt(grouperrors)
+                errors_data=grouperrors
+        
+        # Get intrinsinc values
         first = 0
         last = max_channel - min_channel
         phases = _np.array([0.0, 1.0])
@@ -510,13 +762,34 @@ class Data(object):
         if not all(ch in channel_counts_map for ch in channels):
             raise ValueError("Not all channels exist in channel_data.")
         counts = _np.array( [[float(channel_counts_map[ch]) for ch in channels]] , dtype=_np.double).T
+        if withuncs:
+            channel_errors_map = dict(zip(channel_data, errors_data))
+            errors = _np.array( [[float(channel_errors_map[ch]) for ch in channels]] , dtype=_np.double).T
         
         Data = cls( counts,
                     channels=channels,
                     phases=phases,
                     first=first,
                     last=last,
-                    exposure_time=exposure )
+                    exposure_time=exposure,
+                    grpdata=checkgrp,
+                    origdata=origpha )
+        
+        if withuncs:
+            Data.errors = errors
+        
+        if checkqual:
+            Data._quality = quality
+        
+        if checkgrp:
+            Data._grouping = groupcha
+            if minbincnt is not None :
+                Data._minbincnt  = minbincnt
+            else:
+                raise AttributeError('Anything mentioning how the grouping was done must be returned.')
+        
+        if checkdatasrc is not None:
+            Data._srcdata = checkdatasrc._origdata
         
         # Add useful paths
         Data.backscal = Header['BACKSCAL']
