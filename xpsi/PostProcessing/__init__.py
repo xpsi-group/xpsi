@@ -101,6 +101,13 @@ else:
     else:
         __all__.append("CornerPlotter")
 
+    try:
+        from ._correlation_matrix import CorrelationMatrix
+    except ImportError:
+        _warning("Cannot use CorrelationMatrix module.")
+    else:
+        __all__.append("CorrelationMatrix")
+
 def set_random_seed(value):
     """ Set the NumPy random seed for the post-processing module. """
     from . import _global_imports
