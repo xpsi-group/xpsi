@@ -341,7 +341,8 @@ For example job scripts, see the Jean-Zay example in :ref:`example_job`.
 CALMIP (U. of Toulouse)
 -----------------------
 
-`CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
+`CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_.
+Note that OLYMPE was recently replaced by KAIROS.  The instruction below are for KAIROS.
 
 Installation
 ^^^^^^^^^^^^
@@ -351,17 +352,17 @@ In your ``$HOME`` file system, from the login node, start by loading the necessa
 .. code-block:: bash
 
     module purge
-    module load conda
-    module load cmake
-    module load intel/19.5.041
-    module load intelmpi/19.5.041
-    module load gsl/2.5-icc
+    module load miniforge
+    module load gcc/14.1
+    module load openmpi/gcc/5.0.8-gcc14.1
+    module load openblas/0.3.31-gcc14.1
+    module load cmake/3.25.1
 
-Then, create the conda environnnement and Install python packages with conda (or pip):
+Then, create the conda environnnement and Install python packages with conda:
 
 .. code-block:: bash
 
-    conda create -n xpsi --clone base
+    conda create -n xpsi python=3.11
     conda activate xpsi
     conda install numpy'<2.0.0'
     conda install cython'=3.0.12'
@@ -369,31 +370,15 @@ Then, create the conda environnnement and Install python packages with conda (or
     conda install astropy'=6.1.3'
     conda install scipy h5py wrapt pandas
     conda install -c conda-forge fgivenx
+    conda install gsl
 
-Point to the Intel compilers
-
-.. code-block:: bash
-
-    export FC=ifort
-    export CC=icc
-    export CXX=icpc
-
-Install mpi4py in your ``$HOME`` (e.g. in ``~/Softwares``):
+``mpi4py`` must be installed ``pip`` and not with ``conda`` (because other it will pulls
+its own ``mpich`` which will not be compatible with the cluster OpenMPI:
 
 .. code-block:: bash
 
-    mkdir Softwares
-    cd Softwares
-    wget https://github.com/mpi4py/mpi4py/releases/download/4.0.3/mpi4py-4.0.3.tar.gz
-    tar zxvf mpi4py-4.0.3.tar.gz
-    cd mpi4py-4.0.3
-    python setup.py build
-    python setup.py install
-    # Test on login node:
-    mpiexec -n 4 python demo/helloworld.py
+    pip install mpi4py
 
-
-If you get a ``CMake Error`` when building mpi4py, you might need to use another intel compiler version. Load instead : intel/19.4.243 and intelmpi/19.4.243
 
 Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwares``):
 
@@ -404,12 +389,15 @@ Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwa
     cd MultiNest/MultiNest_v3.12_CMake/multinest/
     mkdir build
     cd build
-    cmake -DCMAKE_INSTALL_PREFIX=~/Softwares/MultiNest \
-                -DCMAKE_{C,CXX}_FLAGS="-O3 -xCORE-AVX512 -mkl" \
-                -DCMAKE_Fortran_FLAGS="-O3 -xCORE-AVX512 -mkl" \
-                -DCMAKE_C_COMPILER=mpiicc    \
-                -DCMAKE_CXX_COMPILER=mpiicpc \
-                -DCMAKE_Fortran_COMPILER=mpiifort  ..
+    cmake .. \
+      -DCMAKE_Fortran_COMPILER=mpifort \
+      -DCMAKE_C_COMPILER=mpicc \
+      -DCMAKE_CXX_COMPILER=mpicxx \
+      -DLAPACK_LIBRARIES="-L/softs/x86/openblas/gcc14.1/0.3.31/int64/lib -lopenblas" \
+      -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops -ffree-line-length-none -fallow-argument-mismatch -w" \
+      -DCMAKE_C_FLAGS="-O3 -march=native -funroll-loops" \
+      -DCMAKE_CXX_FLAGS="-O3 -march=native -funroll-loops" \
+      -DCMAKE_BUILD_TYPE=Release
     make
 
     ## Check that libraries have been compiled and are present
@@ -438,7 +426,7 @@ Clone and Install X-PSI in ``~/Softwares``
     cd ~/Softwares
     git clone https://github.com/xpsi-group/xpsi.git
     cd xpsi/
-    LDSHARED="icc -shared" CC=icc pip install .
+    LDSHARED="gcc -shared" CC=gcc pip install .
 
     # Test installation
     cd ~/
@@ -453,6 +441,5 @@ Set up your library paths:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
-    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
 
 Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_job`) to execute a run.
