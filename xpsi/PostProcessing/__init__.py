@@ -11,6 +11,8 @@ The typical usage pattern is to use the following classes:
       marginal posterior density distributions (from a set of
       :class:`~xpsi.PostProcessing.Runs` instances) in lower-triangular
       form, and to compute various posterior estimators;
+    * :class:`~xpsi.PostProcessing.CorrelationMatrix` to plot the 
+      posterior distributions correlation structures;
     * :class:`~xpsi.PostProcessing.SignalPlotter` to plot thematic
       X-ray signals (or, generally, derived quantities) in posterior-
       expected form or conditional-posterior form, together with ground
