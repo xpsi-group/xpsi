@@ -250,7 +250,7 @@ First prepare your modules:
    module load miniforge/24.9.0
    module load cmake/3.21.3
    module load intel-all/19.0.4
-   module gsl/2.5
+   module load gsl/2.5
 
 We intend here to install X-PSI with Intel compilers. It is preferable to avoid using the recent Cmake versions because of their dependencies with the GCC compiler. 
 
