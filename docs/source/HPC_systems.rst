@@ -442,4 +442,12 @@ Set up your library paths:
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
 
-Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_job`) to execute a run.
+A warning that looks like an error (starting with ``[LOG_CAT_ML] ...``)may appear in test runs
+and in the outputs of runs. To disable these warning, you can define the environment variable:
+
+.. code-block:: bash
+
+    export OMPI_MCA_coll_hcoll_enable=0
+
+
+Note that the ``module`` commands, and the library paths and ``export`` above will have to be added in your SBATCH script (see :ref:`example_job`) to execute a run.
