@@ -131,11 +131,11 @@ class PowerLaw( EmissionModel ):
 
     """ Simple powerlaw emission model, which can be pulsed or not.
 
-    $$F_E = K E^{-\Gamma} \left( 1 + A\cos(2\pi (\phi - \phi_0) ) \right)$$ 
+    $$F_E = K E^{-\\Gamma} \\left( 1 + A\\cos(2\\pi (\\phi - \\phi_0) ) \right)$$
 
     where F_E is the flux in [photon/cm^2/s/keV] at energy E, K is the normalization
-    (value of the unabsorbed powerlaw in [photon/cm^2/s/keV] at 1keV), $\Gamma$ is the
-    power of the powerlaw, A is the pulsation amplitude, and $\phi_0$ is the pulsation phase.
+    (value of the unabsorbed powerlaw in [photon/cm^2/s/keV] at 1keV), $\\Gamma$ is the
+    power of the powerlaw, A is the pulsation amplitude, and $\\phi_0$ is the pulsation phase.
 
     :param dict bounds:
         Hard prior parameter bounds for the free parameters. The dictionary
