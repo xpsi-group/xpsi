@@ -26,6 +26,31 @@ The typical usage pattern is to use the following classes:
 
       and can be configured both on a class and instance level.
 
+Statistical residual diagnostics
+--------------------------------
+
+The :class:`~xpsi.PostProcessing.ResidualPlot` class can optionally
+quantify whether the standardised (data minus posterior-expected)
+residuals exhibit 2D structure over the joint phase-channel intervals,
+or are instead consistent with random noise. Pass
+``analyse_residual_structure=True`` at instantiation to run a suite of
+six complementary statistical tests after plot finalisation:
+
+    * a 2D power spectrum (FFT) test for periodic patterns;
+    * Moran's I global spatial autocorrelation (optional dependencies
+      ``esda`` and ``libpysal``);
+    * an empirical variogram test for distance-dependent correlation;
+    * a Wald-Wolfowitz runs test applied per row and per column;
+    * a 2D autocorrelation-function scan over all lag vectors, sensitive
+      to clustered residuals at any orientation (including diagonal);
+    * a Kolmogorov-Smirnov normality test combined with a Ljung-Box
+      autocorrelation test (optional dependency ``statsmodels``).
+
+A combined verdict (``STRUCTURED``, ``RANDOM``, or ``INCONCLUSIVE``) is
+printed and stored on the instance, and a companion diagnostic figure
+can be produced with
+:meth:`~xpsi.PostProcessing.ResidualPlot.plot_structure_diagnostics`.
+
 Customization
 -------------
 
