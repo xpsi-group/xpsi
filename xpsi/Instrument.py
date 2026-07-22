@@ -191,6 +191,7 @@ class Instrument(ParameterSubspace):
         """
         matrix = self.construct_matrix()
 
+        self.unfolded_spectrum = signal
         self._cached_signal = _np.dot(matrix[orange[0]:orange[1],
                                              irange[0]:irange[1]], signal)
 
@@ -543,6 +544,8 @@ class InstrumentPileup(Instrument):
 
     def __call__(self, signal, *args):
         """ Overwrite. """
+        self.unfolded_spectrum = signal
+        
         ## Compute spectrum with pileup
         piled_spectrum = self.pileup.analyze(signal,
                                              alpha=self['grade_migration'],
@@ -578,7 +581,7 @@ class InstrumentPileup(Instrument):
                     value = values.get('grade_migration', None))
     
         psffrac = Parameter('psf_fraction',
-                    strict_bounds = (0.8,1.0),  #min in sherpa set at 0.85
+                    strict_bounds = (0.0,1.0),  #min in sherpa set at 0.85
                     bounds = bounds.get('psf_fraction', None),
                     doc = 'fraction of events in the source extraction region to which pileup will be applied',
                     symbol = r'$PSF_frac',
