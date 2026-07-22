@@ -1,4 +1,4 @@
-__all__ = ["run_multinest", "run_emcee", "run_ultranest"]
+__all__ = ["run_multinest", "run_emcee", "run_ultranest", "run_nautilus"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
@@ -18,6 +18,11 @@ try:
     from xpsi.UltranestSampler import UltranestSampler
 except ImportError:
     print("""Check your installation of UltraNest if using the UltranestSampler""")
+try:
+    from xpsi.NautilusSampler import NautilusSampler
+except ImportError:
+    print("""Check your installation of nautilus-sampler if using the NautilusSampler""")
+
 
 posterior = None
 
@@ -396,3 +401,43 @@ def ultranested(likelihood,
                          use_stepsampler=use_stepsampler,
                          stepsampler_params=stepsampler_params,
                          out_filename=out_filename)
+
+
+def run_nautilus(
+    likelihood,
+    prior,
+    sampler_build_kwargs={},
+    runtime_params={},
+    MPI=True,
+    out_filename="weighted_post_nautilus_xpsi"
+):
+    """  Wrapper for the nautilus-sampler (https://nautilus-sampler.readthedocs.io/en/latest/)
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to run the sampler.
+
+    :param bool MPI:
+        Whether to use MPI or not for parallelized sampling.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.NautilusSampler`
+    """
+
+    # initialise the sampler
+    sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, MPI=MPI)
+
+    # start sampling
+    sampler(runtime_params)
+
+    # store output
+    sampler.write_results(out_filename)
+
+    return sampler
