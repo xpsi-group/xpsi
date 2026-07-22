@@ -191,7 +191,6 @@ class Instrument(ParameterSubspace):
         """
         matrix = self.construct_matrix()
 
-        self.unfolded_spectrum = signal
         self._cached_signal = _np.dot(matrix[orange[0]:orange[1],
                                              irange[0]:irange[1]], signal)
 
@@ -544,7 +543,6 @@ class InstrumentPileup(Instrument):
 
     def __call__(self, signal, *args):
         """ Overwrite. """
-        self.unfolded_spectrum = signal
         
         ## Compute spectrum with pileup
         piled_spectrum = self.pileup.analyze(signal,
