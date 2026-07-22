@@ -680,7 +680,7 @@ def eval_marginal_likelihood(double exposure_time,
         else:
             limit = av_STAR * SCALE - slim * sqrt(av_STAR * SCALE) - av_DATA
             if limit > 0.0:
-                LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand(1))
+                LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand())
                 break
 
         # Now get the average count rates, divided by n for the model 
