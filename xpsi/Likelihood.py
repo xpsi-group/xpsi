@@ -268,7 +268,7 @@ class Likelihood(ParameterSubspace):
     def random_near_llzero(self):
         """ Get the minimum log-likelihood scaled randomly by up to an
             order of magnitude. """
-        return self._llzero * (0.1 + 0.9*_np.random.rand(1))
+        return self._llzero * (0.1 + 0.9*_np.random.rand())
 
     @property
     def externally_updated(self):
