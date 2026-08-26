@@ -168,3 +168,6 @@ examples/examples_modeling_tutorial/model_data/nicer_v1.01_rmf_energymap.txt*
 examples/examples_modeling_tutorial/model_data/nicer_v1.01_rmf_matrix.txt*
 examples/examples_modeling_tutorial/model_data/nsx_H_v200804.npy
 examples/examples_modeling_tutorial/model_data/nsx_H_v200804.out
+
+# pytorch lightning logs
+./docs/source/lightning_logs/*
