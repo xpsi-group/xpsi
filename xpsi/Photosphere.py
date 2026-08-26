@@ -527,6 +527,25 @@ class Photosphere(ParameterSubspace):
                         raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
 
         #TBD: Similar check for Everywhere.
+        if self._everywhere is not None:
+            if self._everywhere.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+                T_low, T_high = self._everywhere_atmosphere[0][0], self._everywhere_atmosphere[0][len(self._everywhere_atmosphere[0])-1]
+                g_low, g_high = self._everywhere_atmosphere[1][0], self._everywhere_atmosphere[1][len(self._everywhere_atmosphere[1])-1]
+
+                temperature = self._everywhere[0]
+
+                if not T_low <= temperature <= T_high:
+                    raise Exception(" Everywhere temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
+
+                ref = self._spacetime
+                grav = effective_gravity(_np.array([1.0, 0.0]),
+                                        _np.array([ref.R] * 2 ),
+                                        _np.array([ref.zeta] * 2),
+                                        _np.array([ref.epsilon] * 2))
+
+                for g in grav:
+                    if not g_low <= g <= g_high:
+                        raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
 
         if self._everywhere is not None:
             if self._stokes:

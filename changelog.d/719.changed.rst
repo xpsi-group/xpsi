@@ -1,0 +1,6 @@
+includes:
+
+- correction of background plotter in the case of an `Everywhere`, where there are no phases, in which case the new integration returned 0. Now if `len(phases)=1`, the 1D spectrum is returned.
+- in the case of a table atmosphere, check of whether T and log g are within atmosphere table bounds in `Photosphere`. Identical to the `Elsewhere` checks.
+- in the pileup module, `psf_frac` is now allowed to go down to 0, which can be useful when comparing to a "no pileup" case
+
