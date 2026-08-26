@@ -691,7 +691,11 @@ class SpectrumPlot(SignalPlot):
 
         ax.set_ylim(bottom = view_y_bottom)
 
-        ax.set_xlim([_np.max([self._signal.energy_edges[0],0.001]),
+        if self._signal.energy_edges.ndim == 2:
+            ax.set_xlim([_np.max([self._signal.energy_edges[0,0],0.001]),
+                     self._signal.energy_edges[1,-1]])
+        else:
+            ax.set_xlim([_np.max([self._signal.energy_edges[0],0.001]),
                      self._signal.energy_edges[-1]])
         locmaj = LogLocator(base=10.0, numticks=100)
         ax.yaxis.set_major_locator(locmaj)
