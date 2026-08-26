@@ -733,7 +733,7 @@ class Signal(ParameterSubspace):
                 name='synthetic',
                 directory='./',
                 seed=None,
-                save_background=True,
+                save_background=False,
                 **kwargs):
         
             """ Synthesise data set in FITS format that can be used in input of X-PSI.
@@ -779,6 +779,8 @@ class Signal(ParameterSubspace):
                 If True, the synthetic background is saved in the FITS file.
                 If False, it is not saved.
                 For NICER for instance, it does not need to be saved as it is unknown.
+                Defaults to False so that callers who supply no background do not
+                crash with AttributeError on the None data_BKG reference.
             """
             
             # Create or find directory
