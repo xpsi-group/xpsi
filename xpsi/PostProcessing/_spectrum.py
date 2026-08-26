@@ -793,7 +793,7 @@ class SpectrumPlot(SignalPlot):
         registered = self._ax_registered.pcolormesh(ref.data.channels,
                                     self._phases,
                                     total.T, # channel number as x-axis
-                                    cmap = cm.get_cmap(self._registered_cmap),
+                                    cmap = plt.get_cmap(self._registered_cmap),
                                     linewidth = 0,
                                     rasterized = self._rasterized)
 

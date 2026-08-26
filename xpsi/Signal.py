@@ -232,7 +232,7 @@ class Signal(ParameterSubspace):
                                  'a maximum of one cycle.')
 
         phase_shift = Parameter('phase_shift',
-                                strict_bounds = (-_np.infty, _np.infty),
+                                strict_bounds = (-_np.inf, _np.inf),
                                 bounds = phase_bounds,
                                 doc = doc,
                                 symbol = r'$\phi$',
