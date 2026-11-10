@@ -16,7 +16,7 @@ dependencies:
         - tqdm   # progress bar package
         - h5py  # storage of X-ray signals computed from posterior samples
         - nestcheck  # posterior error analysis, plotting, run combination, etc.
-        - fgivenx  # conditional posterior plotting; also required by nestcheck
+        - fgivenx>=2.5.1   # >=2.5.1 needed for numpy 2.x / newer matplotlib
         - astropy # reading FITS files
         - emcee  # MCMC sammpler
         - cmap # For PostProcessing colormaps
