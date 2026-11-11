@@ -1,0 +1,1 @@
+Fixed plotting with ``fgivenx`` (``use_fgivenx=True``) in the post-processing tools, which failed with recent numpy and matplotlib versions. This requires ``fgivenx>=2.5.1``, which ``environment.yml`` now installs with pip.
