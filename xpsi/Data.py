@@ -503,7 +503,6 @@ class Data(object):
         mask = [ ch>=min_channel and ch<=max_channel for ch in channel_data ]
         counts_histogram, _, _ = _np.histogram2d( channel_data[mask] , phases_data[mask], 
                                                  bins=[channel_borders, phases_borders])
-        TLMIN= _np.int32(Header['TLMIN13'])
         grpevdata = False
         origevt = None
         
