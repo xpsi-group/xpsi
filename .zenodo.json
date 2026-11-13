@@ -1,0 +1,86 @@
+{
+    "creators": [
+        {
+            "name": "Riley, Thomas E.",
+            "orcid": "0000-0002-1825-0097"
+        },
+        {
+            "name": "Salmi, Tuomo",
+            "affiliation": "University of Helsinki",
+            "orcid": "0000-0001-6356-125X"
+        },
+        {
+            "name": "Guillot, Sebastien",
+            "affiliation": "Institut de Recherche en Astrophysique et Plan\u00e9tologie",
+            "orcid": "0000-0002-6449-106X"
+        },        
+        {
+            "name": "Choudhury, Devarshi",
+            "affiliation": "University of Amsterdam",
+            "orcid": "0000-0002-2651-5286"
+        },   
+        {
+            "name": "Watts, Anna",
+            "affiliation": "University of Amsterdam",
+            "orcid": "0000-0002-1009-2354"
+        },        
+        {
+            "name": "Huppenkothen, Daniela",
+            "affiliation": "University of Amsterdam",
+            "orcid": "0000-0002-1169-7486"
+        },        
+        {
+            "name": "Mauviard, Lucien",
+            "affiliation": "Institut de Recherche en Astrophysique et Plan\u00e9tologie",
+            "orcid": "0000-0002-3408-2759"
+        },             
+        {
+            "name": "Dorsman, Bas",
+            "affiliation": "University of Amsterdam",
+            "orcid": "0000-0002-9407-0733"
+        },
+        {
+            "name": "Kazantsev, Christine",
+            "affiliation": "Institut de Recherche en Astrophysique et Plan\u00e9tologie",
+            "orcid": "0009-0008-3894-4783"
+        },
+        {
+            "name": "Hoogkamer, Mariska",
+            "affiliation": "University of Amsterdam",
+            "orcid": "0009-0005-8019-0426"
+        },
+        {
+            "name": "Gonz\u00e1lez-Caniulef, Denis",
+            "affiliation": "Institut de Recherche en Astrophysique et Plan\u00e9tologie",
+            "orcid": "0000-0001-5848-0180"
+        },
+        {
+            "name": "Kini, Yves",
+            "affiliation": "University of Amsterdam",
+            "orcid": "0000-0002-0428-8430"
+        },
+        {
+            "name": "Stammler, Pierre",
+            "affiliation": "Institut de Recherche en Astrophysique et Plan\u00e9tologie",
+            "orcid": "0009-0005-7766-5638"
+        },
+        {
+            "name": "Vinciguerra, Serena",
+            "orcid": "0000-0003-3068-6974"
+        },
+        {
+            "name": "Das, Pushpita",
+            "orcid": "0000-0002-4764-6189"
+        }
+    ],
+    "title": "xpsi-group/xpsi: Release v3.3.1",
+    "version": "3.3.1",
+    "license": "gpl-3.0-or-later",
+    "upload_type": "software",
+    "language": "eng",
+    "grants": [
+       {"id": "00k4n6c32::865768"},
+       {"id": "00k4n6c32::639217"},
+       {"id": "04jsz6e67::OCENW.XL21.XL21.038"}
+    ]
+}

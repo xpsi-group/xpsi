@@ -13,4 +13,5 @@ We are currently working on the following upgrades:
 * Having the option of specifying EOS model-informed mass-radius priors.
 * Testing the robustness of universal relations used in the code.
 * Improving plotting and graphics routines to visualize results.
-* Defining and implementing code standards
+* Defining and implementing code standards.
+* Providing documentation for the interpolated temperature map functionality implemented in v3.3.0.

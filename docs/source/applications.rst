@@ -26,6 +26,16 @@ NICER rotation-powered millisecond pulsar papers
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
+**Kini et al. 2026** `(ApJ, 1005, 201) <https://ui.adsabs.harvard.edu/abs/2026ApJ..1005..201K/abstract>`_ *A NICER View of PSR J0030+0451: Updated Constraints from 6 yr of NICER Observations*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo26kini: https://doi.org/10.5281/zenodo.18741941
+__ Zenodo26kini_
+
+**Hoogkamer et al. 2026** `(PRD, 113, 063049) <https://ui.adsabs.harvard.edu/abs/2026PhRvD.113f3049H/abstract>`_ *Equation-of-state-informed pulse profile modeling*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo26hoogkamer: https://doi.org/10.5281/zenodo.17257402
+__ Zenodo26hoogkamer_ 
+
 **Mauviard et al. 2025** `(ApJ, 995, 60) <https://ui.adsabs.harvard.edu/abs/2025ApJ...995...60M/abstract>`_ *A NICER view of the 1.4 solar-mass edge-on pulsar PSR J0614--3329*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo25mauviard: https://doi.org/10.5281/zenodo.15603405
@@ -98,10 +108,20 @@ __ Zenodo21_
 __ Zenodo_
 
 
-PPM for accreting/bursting neutron stars
-****************************************  
+PPM for quiescent, accreting and bursting neutron stars
+*******************************************************  
 
-**Dorsman et al. 2026** `(MNRAS, 545, staf1983) <https://ui.adsabs.harvard.edu/abs/2026MNRAS.545f1983D/abstract>`_ *Pulse profile modelling of the accretion-powered millisecond pulsar SAX J1808.4-3658 using NICER data from its 2019 and 2022 outbursts*.  See also the associated `Zenodo repository`__.
+**Dorsman et al. 2026b** `(MNRAS, 551, stag1340) <https://ui.adsabs.harvard.edu/abs/2026MNRAS.551g1340D/abstract>`_ *Pulse profile modelling of the 2024 outburst of the accreting millisecond pulsar SRGA J144459.2−604207*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo26dorsmanb: https://doi.org/10.5281/zenodo.18376255
+__ Zenodo26dorsmanb_
+
+**Kazantsev et al. 2026** `(A&A, 710, A334) <https://ui.adsabs.harvard.edu/abs/2026A%26A...710A.334K/abstract>`_ *Mass and radius measurements of the neutron star 47 Tuc X7: A new bias-free method*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo26kazantsev: https://doi.org/10.5281/zenodo.20312254
+__ Zenodo26kazantsev_ 
+
+**Dorsman et al. 2026a** `(MNRAS, 545, staf1983) <https://ui.adsabs.harvard.edu/abs/2026MNRAS.545f1983D/abstract>`_ *Pulse profile modelling of the accretion-powered millisecond pulsar SAX J1808.4-3658 using NICER data from its 2019 and 2022 outbursts*.  See also the associated `Zenodo repository`__.
 
 .. _Zenodo26dorsman: https://doi.org/10.5281/zenodo.17232362
 __ Zenodo26dorsman_
@@ -149,5 +169,16 @@ General PPM studies
 .. _Zenodo25bootsma: https://doi.org/10.5281/zenodo.12569158
 __ Zenodo25bootsma_
 
+
+PhD theses
+**********
+
+**Bas Dorsman**, `Pulse profile modelling of accreting millisecond X-ray pulsars <https://dare.uva.nl/id/890d3e4d-f5ad-4334-a57f-d410a279b6f4>`_. University of Amsterdam, 2026. 
+
+**Devarshi Choudhury**, `Peering into neutron stars: Rays, relativity, and rapid inference <https://dare.uva.nl/id/ce5dda57-d8d5-4719-827b-ad01bbcbb3bc>`_. University of Amsterdam, 2025.
+
+**Yves Kini**, `Pulse profile modelling of thermonuclear burst oscillations <https://dare.uva.nl/id/6c3f136d-121c-473c-a289-e54b2428ff96>`_. University of Amsterdam, 2025. 
+
+**Thomas E. Riley**, `Neutron star parameter estimation from a NICER perspective <https://dare.uva.nl/id/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a>`_. University of Amsterdam, 2019.
 
 

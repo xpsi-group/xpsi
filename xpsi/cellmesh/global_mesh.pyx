@@ -122,7 +122,7 @@ def construct_closed_cellMesh(size_t numThreads,
     cdef double delta_phi
 
     delta_phi = _2pi / (<double>sqrt_numCell)
-    phi = np.linspace(_2pi - 0.5 * delta_phi, 0.5 * delta_phi, sqrt_numCell)
+    phi = np.linspace(-M_PI + 0.5 * delta_phi, M_PI - 0.5 * delta_phi, sqrt_numCell)
 
     for i in range(numCellsCompute, sqrt_numCell):
         cellColatitudes[i] = _pi - cellColatitudes[sqrt_numCell - i - 1]

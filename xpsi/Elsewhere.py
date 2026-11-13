@@ -6,6 +6,7 @@ from xpsi.cellmesh.integrator_for_time_invariance import integrate as _integrato
 
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.shell_interpolator import Temp_Interpolator_shells
 
 class AtmosError(xpsiError):
     """ Raised if the numerical atmosphere data were not preloaded. """
@@ -91,8 +92,39 @@ class Elsewhere(ParameterSubspace):
         on a surface (accounting for the surface tilt due to rotation), then
         the iteration over image orders terminates.
 
+    :param bool use_interpolated_temperature:
+        If ``True``, replace the uniform elsewhere temperature field with
+        temperatures interpolated from ``filename`` onto the X-PSI elsewhere
+        mesh.
+
+    :param bool myelsewhere:
+        Region selector passed to the interpolation helper for elsewhere-only
+        shell data handling.
+
+    :param float T_everywhere:
+        Lower floor applied to interpolated log10 temperatures after
+        interpolation.
+
+    :param int coderes:
+        Resolution of the input shell grid. The file is assumed to represent
+        a ``coderes x coderes`` angular mesh.
+
+    :param str filename:
+        Path to the shell data file used when
+        ``use_interpolated_temperature=True``.
+
+    :param bool bhac_data:
+        If ``True``, derive temperatures from BHAC shell fluxes; otherwise
+        read temperatures directly from the file.
+
     """
     required_names = ['elsewhere_temperature (if no custom specification)']
+    optional_names = ['use_interpolated_temperature',
+                      'myelsewhere',
+                      'T_everywhere',
+                      'coderes',
+                      'filename',
+                      'bhac_data']
 
     def __init__(self,
                  sqrt_num_cells = 64,
@@ -101,15 +133,38 @@ class Elsewhere(ParameterSubspace):
                  values = None,
                  atm_ext="BB",
                  custom = None,
-                 image_order_limit = None):
+                 image_order_limit = None,
+                 use_interpolated_temperature = None,
+                 myelsewhere = False,
+                 T_everywhere = 5.5,
+                 coderes = 512,
+                 filename = False,
+                 bhac_data = True,
+                 **kwargs):
+
+        if 'mycoolgrid' in kwargs:
+            raise TypeError("The 'mycoolgrid' argument has been removed; "
+                            "use 'use_interpolated_temperature' instead.")
 
         self.sqrt_num_cells = sqrt_num_cells
         self.num_rays = num_rays
         self.image_order_limit = image_order_limit
         self.atm_ext = atm_ext
 
+        requested_interp = use_interpolated_temperature
+
+        self.use_interpolated_temperature = bool(requested_interp)
+        self.myelsewhere = myelsewhere
+        self.T_everywhere = T_everywhere
+        self.coderes = coderes
+        self.filename = filename
+        self.bhac_data = bhac_data
+
         if bounds is None: bounds = {}
         if values is None: values = {}
+
+        if self.use_interpolated_temperature and self.filename is False:
+            raise ValueError('Filename not given for interpolation')
 
         if not custom: # setup default temperature parameter
             T = Parameter('elsewhere_temperature',
@@ -259,29 +314,74 @@ class Elsewhere(ParameterSubspace):
             An *ndarray[n,n]* of mesh-point colatitudes.
 
         """
-        if args: # hot region mesh shape information
-            cellParamVecs = _np.ones((args[0].shape[0],
-                                      args[0].shape[1],
-                                      len(self.vector)+1),
-                                     dtype=_np.double)
+        if not self.use_interpolated_temperature:
+            if args: # hot region mesh shape information
+                cellParamVecs = _np.ones((args[0].shape[0],
+                                          args[0].shape[1],
+                                          len(self.vector)+1),
+                                         dtype=_np.double)
 
-            # get self.vector because there may be fixed variables
-            # that also need to be directed to the integrators
-            # for intensity evaluation
-            cellParamVecs[...,:-1] *= _np.array(self.vector)
+                # get self.vector because there may be fixed variables
+                # that also need to be directed to the integrators
+                # for intensity evaluation
+                cellParamVecs[...,:-1] *= _np.array(self.vector)
 
-            return cellParamVecs
+                return cellParamVecs
+
+            else:
+                self._cellParamVecs = _np.ones((self._theta.shape[0],
+                                                self._theta.shape[1],
+                                                len(self.vector)+1),
+                                               dtype=_np.double)
+
+                self._cellParamVecs[...,:-1] *= _np.array(self.vector)
+
+                for i in range(self._cellParamVecs.shape[1]):
+                    self._cellParamVecs[:,i,-1] *= self._effGrav
 
         else:
-            self._cellParamVecs = _np.ones((self._theta.shape[0],
-                                            self._theta.shape[1],
-                                            len(self.vector)+1),
-                                           dtype=_np.double)
+            # Replace the uniform elsewhere temperature field with values read
+            # from the shell file and interpolated onto the X-PSI mesh.
+            shell_interp = Temp_Interpolator_shells()
+            shell_interp.coderes = self.coderes
+            shell_interp.filename = self.filename
+            shell_interp.bhac_shell_avg = self.bhac_data
+            shell_interp.elsewhere_xpsi = self.myelsewhere
+            data_avg = shell_interp.read_average_shell(bhac_shell_avg=self.bhac_data)
 
-            self._cellParamVecs[...,:-1] *= _np.array(self.vector)
+            if args: # hot region mesh shape information
+                shell_interp.xpsi_theta = args[0]
+                shell_interp.xpsi_phi = self._phi
 
-            for i in range(self._cellParamVecs.shape[1]):
-                self._cellParamVecs[:,i,-1] *= self._effGrav
+                cellParamVecs = _np.ones((args[0].shape[0],
+                                          args[0].shape[1],
+                                          len(self.vector)+1),
+                                         dtype=_np.double)
+
+                temperature_interpolated = shell_interp.temp_interpolation_avg(
+                    thetacode=data_avg[0],
+                    phicode=data_avg[1],
+                    Tempcode=data_avg[2],
+                    T_everywhere=self.T_everywhere)
+                cellParamVecs[:,:,0] = temperature_interpolated[:,:]
+                return cellParamVecs
+
+            else:
+                shell_interp.xpsi_theta = self._theta
+                shell_interp.xpsi_phi = self._phi
+                self._cellParamVecs = _np.ones((self._theta.shape[0],
+                                                self._theta.shape[1],
+                                                len(self.vector)+1),
+                                               dtype=_np.double)
+
+                temperature_interpolated = shell_interp.temp_interpolation_avg(
+                    thetacode=data_avg[0],
+                    phicode=data_avg[1],
+                    Tempcode=data_avg[2],
+                    T_everywhere=self.T_everywhere)
+                self._cellParamVecs[:,:,0] = temperature_interpolated[:,:]
+                for i in range(self._cellParamVecs.shape[1]):
+                    self._cellParamVecs[:,i,-1] *= self._effGrav
 
     def embed(self, spacetime, threads):
         """ Embed the photosphere elsewhere. """

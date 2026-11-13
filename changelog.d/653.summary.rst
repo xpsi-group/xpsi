@@ -1,1 +1,0 @@
-Updated installation method to work with latest ``setuptools``, and corresponding docs and CI actions.
