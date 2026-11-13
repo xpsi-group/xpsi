@@ -1,10 +1,15 @@
 [v3.4] - 2026-11-13
 ~~~~~~~~~~~~~~~~~~~
 
+Summary
+^^^^^^^
+
+- This minor release adds optional 2D energy and channel edges, with filtering by data quality and channel grouping, and fixes the background contribution in synthetic data. See details below.
+
 Fixed
 ^^^^^
 
-- Fixed the Signal.synthesize method when using data_BKG, which previously resulted in overestimated background contribution. (`#709 <https://github.com/xpsi-group/xpsi/pull/709>`__)
+- Fixed the ``Signal.synthesise`` method when using ``data_BKG``, which previously resulted in overestimated background contribution. (`#709 <https://github.com/xpsi-group/xpsi/pull/709>`__)
 
 
 Added
@@ -23,7 +28,10 @@ Attribution
 ^^^^^^^^^^^
 
 - Pierre Stammler (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+- Tuomo Salmi (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+- Sebastien Guillot (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
 - Anna Watts (`#703 <https://github.com/xpsi-group/xpsi/pull/703>`__)
+- Lucien Mauviard (`#709 <https://github.com/xpsi-group/xpsi/pull/709>`__)
 
 
 [v3.3] - 2026-03-19
