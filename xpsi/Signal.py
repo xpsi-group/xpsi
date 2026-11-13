@@ -152,7 +152,7 @@ class Signal(ParameterSubspace):
             else:
                 self._instrument.channels=self._instrument.channels[_np.where(self._data._quality[self._instrument.channels]==0)[0]]
         
-        if self._data._grpdata == True:
+        if getattr(self._data, '_grpdata', False) == True:
             try:
                 assert self._instrument.energy_edges.ndim == 2
                 assert self._instrument.channel_edges.ndim == 2
