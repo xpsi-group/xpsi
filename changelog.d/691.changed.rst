@@ -1,1 +1,1 @@
-Propose a new structure for the energy and channel edges, and allow the use of statistical errors and optional filtering from data quality and/or grouping of channels.
+Energy and channel edges can now optionally be given in a 2D structure (the default 1D structure still works), and data can optionally use statistical errors and be filtered by data quality and/or channel grouping.
