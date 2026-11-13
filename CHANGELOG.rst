@@ -1,3 +1,31 @@
+[v3.4] - 2026-11-13
+~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+- Fixed the Signal.synthesize method when using data_BKG, which previously resulted in overestimated background contribution. (`#709 <https://github.com/xpsi-group/xpsi/pull/709>`__)
+
+
+Added
+^^^^^
+
+- Added a .zenodo.json file to once again trigger automatic updates of the xpsi zenodo repository on new releases. (`#703 <https://github.com/xpsi-group/xpsi/pull/703>`__)
+
+
+Changed
+^^^^^^^
+
+- Energy and channel edges can now optionally be given in a 2D structure (the default 1D structure still works), and data can optionally use statistical errors and be filtered by data quality and/or channel grouping. (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+
+
+Attribution
+^^^^^^^^^^^
+
+- Pierre Stammler (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+- Anna Watts (`#703 <https://github.com/xpsi-group/xpsi/pull/703>`__)
+
+
 [v3.3] - 2026-03-19
 ~~~~~~~~~~~~~~~~~~~
 

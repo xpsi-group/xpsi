@@ -1,1 +1,0 @@
-Energy and channel edges can now optionally be given in a 2D structure (the default 1D structure still works), and data can optionally use statistical errors and be filtered by data quality and/or channel grouping.
