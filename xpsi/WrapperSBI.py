@@ -130,6 +130,7 @@ def synthesise_for_sbi(self,
                        nchannels=None,
                        nphases=None,
                        seed=0,
+                       bkg=None, 
                        **kwargs):
     """ Synthesise a data set.
 
@@ -149,6 +150,9 @@ def synthesise_for_sbi(self,
         Number of phase bins in the synthesised data.
     :param optional[int] seed:
         Seed for the Poisson noise random number generation.
+    :param optional[numpy.ndarray] bkg:
+            Background for the synthesized pulse profile. Default set to zero 
+            if none is provided. 
 
     :returns ndarray synthetic:
         The synthesised data set.
@@ -156,7 +160,9 @@ def synthesise_for_sbi(self,
     if nchannels is None or nphases is None:
         raise ValueError('nchannels and nphases must be specified.')
 
-    bkg = np.zeros((nchannels, nphases))
+    # Set the background to zero if no background is provided 
+    if bkg is None: 
+        bkg = np.zeros((nchannels, nphases))
 
     if exposure_time:
         _, synthetic, _ = synthesise_exposure(exposure_time,
