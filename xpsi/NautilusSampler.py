@@ -109,5 +109,5 @@ class NautilusSampler:
         data, weights, logl = self._sampler.posterior()
 
         # save extra output file special for xpsi post-processing
-        output = np.column_stack((weights, -2 * logl, data))
+        output = np.column_stack((np.exp(weights), -2 * logl, data))
         np.savetxt(f"{out_filename}.txt", output)
