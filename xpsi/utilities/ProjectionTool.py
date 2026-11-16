@@ -129,13 +129,13 @@ def transform(thetaR,phiR,V,phi0=0.0):
         phi0 = phi0*np.pi*2.
 
         RA = [-np.sin(phi0),np.cos(phi0),0.]
-        V = np.matrix(V)
+        V = np.asarray(V, dtype=float)
         phiR = phiR*2*np.pi
 
-        Mphi     = np.matrix([[np.cos(phiR),-np.sin(phiR),0.],
+        Mphi     = np.array([[np.cos(phiR),-np.sin(phiR),0.],
                               [np.sin(phiR),np.cos(phiR),0.],
                               [0.,0.,1.]]) #_z
-        Mtheta = np.matrix([[np.cos(thetaR)+ RA[0]*RA[0]*(1.-np.cos(thetaR)),
+        Mtheta = np.array([[np.cos(thetaR)+ RA[0]*RA[0]*(1.-np.cos(thetaR)),
                              RA[0]*RA[1]*(1.-np.cos(thetaR)) - RA[2]*np.sin(thetaR),
                              RA[0]*RA[2]*(1.-np.cos(thetaR)) + RA[1]*np.sin(thetaR),],
                             [RA[0]*RA[1]*(1.-np.cos(thetaR)) + RA[2]*np.sin(thetaR),
@@ -146,11 +146,11 @@ def transform(thetaR,phiR,V,phi0=0.0):
                             np.cos(thetaR)+ RA[2]*RA[2]*(1.-np.cos(thetaR))]])
 
         Mtheta[np.abs(Mtheta)<1e-16] = 0.0
-        M = Mphi*Mtheta
-        if np.shape(V)[0] ==1:
+        M = Mphi @ Mtheta
+        if V.ndim == 2 and np.shape(V)[0] == 1:
             V = np.transpose(V)
-        Vout = M*V
-        Vout = np.squeeze(np.array(Vout))
+        Vout = M @ V
+        Vout = np.squeeze(Vout)
         return Vout
 
 def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = False, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
@@ -180,7 +180,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     # Set abbreviations for plot labels
     Plab = 'Primary'
     Slab = 'Secondary'
-    Tlab = 'Tertiary'
     EMIlab = ' emission'
     OMIlab = ' omission'
     SUPERlab = ' superseding'
@@ -281,38 +280,17 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         ##### OUTPUTS #####
         hot_name: name of primary hot spot (according to our naming convention)
         hot_name_s: name of the secondary hot spot (according to our naming convention)
-        hot_name_t: name of the tertiary hot spot (according to our naming convention)
         """
         hot_name = ''
         hot_name_s = ''
-        hot_name_t = ''
         if ('-' in model) and (not('-S' in model) and  not('-U' in model) and not('-Ua' in model)):
             print (r"ERROR: model not recognised. If model has derived quantities and does not fall into the categories mentioned below: transform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
             raise IpyExit
-        if (model.count('+')==2) or ('U3' in model):
-            print("YOU ARE USING A 3 HOT SPOT MODEL")
-            if ('-U3' in model):
-                ind = model.find('-')
-                hot_name = model[:ind]
-                hotspot_check(hot_name,DICT_VECTOR,'p')
-                hotspot_check(hot_name,DICT_VECTOR,'s')
-                hotspot_check(hot_name,DICT_VECTOR,'t')
-            
-            elif ('+' in model):
-                ind = model.find('+')
-                ind2 = model[ind+1:].find('+')
-                hot_name = model[:ind]
-                hotspot_check(hot_name,DICT_VECTOR,'p')
-                hot_name_s = model[ind+1:]
-                hotspot_check(hot_name_s,DICT_VECTOR,'s')
-                hot_name_t = model[ind+1:][ind2+1:]
-                hotspot_check(hot_name_t,DICT_VECTOR,'t')
-                
-            else:
-                print ("ERROR! MODEL NOT RECOGNISED")
-                raise IpyExit
-            
-        elif ('+' in model) or ('-' in model):
+        if (model.count('+')>1) or ('-U3' in model):
+            print ("ERROR: only models with one or two hot spots are supported")
+            raise IpyExit
+
+        if ('+' in model) or ('-' in model):
             print ("YOU ARE USING A 2 HOT SPOT MODEL")
             if ('-S' in model):
                 ind = model.find('-')
@@ -355,14 +333,14 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             hotspot_check(hot_name,DICT_VECTOR,'p')
 
             
-        return hot_name,hot_name_s,hot_name_t
+        return hot_name,hot_name_s
         
         
     def fillVECTORS(HStag, hot_name, flagUa = False):
         """
         GOAL: filling vectors describing geometries and temperature of hot spots and labels for plots
         ##### INPUTS #####
-        HStag: Hot Spot tag, "p" for primary hot spot (also for single hot spot models); "s" for secondary hot spot; "t" for tertiary hot spot
+        HStag: Hot Spot tag, "p" for primary hot spot (also for single hot spot models); "s" for secondary hot spot
         hot_name: name (according to our naming convention) of the hot spot
         ##### OUTPUTS #####
         phiA: phases of hot spot components [cycle]
@@ -373,16 +351,14 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         flagUa: flag True if model "-Ua" (bool)
         """
 
-        if (HStag!='p') and (HStag!='s') and (HStag!='t'):
-            print ("ERROR: invalid Key argument (only 'p', 's' and 't' allowed), not ",HStag)
+        if (HStag!='p') and (HStag!='s'):
+            print ("ERROR: invalid Key argument (only 'p' and 's' allowed), not ",HStag)
             raise IpyExit
 
         if HStag == 'p':
             Mlab = Plab
         elif HStag == 's':
             Mlab = Slab
-        elif HStag == 't':
-            Mlab = Tlab
 
         labels = [Mlab]
     
@@ -493,7 +469,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         return phiA_s,thetaA_s,labels_s
 
     # run model check
-    HSname_p, HSname_s, HSname_t =  check_model_param_names()
+    HSname_p, HSname_s =  check_model_param_names()
     
     # Defining phases, colatitudes, angular radii, temperatures and labels for primary hot spot
     phiA_p,thetaA_p,zetaA_p,TA_p,labels_p = fillVECTORS('p',HSname_p)
@@ -555,30 +531,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             else:
                 CAall=[mycolors0[nColors-1],'black',mycolors0[nColors-1],'black']
     
-    # Define phases, colatitudes, angular radii, temperatures and labels for tertiary hot spot (if any)
-    phiA_t = []
-    thetaA_t = []
-    zetaA_t = []
-    TA_t = []
-    labels_t =[]
-
-    if ((model.count('+')==2) or ('U3' in model)):
-        phiA_t,thetaA_t,zetaA_t,TA_t,labels_t = fillVECTORS('t',HSname_t)
-        TAall = TA_p+TA_s+TA_t
-        LABall = labels_p +labels_s+labels_t
-        ind = [1,2,4,5]
-
-        argT = np.argsort(TAall)
-        j = 0
-        for i in range(len(LABall)):
-            if (OMIlab in LABall[i]):
-                coli = 'black'
-            else:
-                ind_i = ind[argT[j]]
-                coli = mycolors0[ind_i]
-                j = j+1
-            CAall.append(coli)
-
     if antipodal:
             
         phiA_anti,thetaA_anti,labels_anti = SYMMETRIC(phiA_p,thetaA_p,labels_p)
@@ -610,9 +562,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         VA.append(Vi)
     for i in range(len(zetaA_s)):
         Vi  = [np.cos(x2)*np.sin(zetaA_s[i]),np.sin(x2)*np.sin(zetaA_s[i]),np.cos(zetaA_s[i])*np.ones(len(x2))]
-        VA.append(Vi)
-    for i in range(len(zetaA_t)):
-        Vi  = [np.cos(x2)*np.sin(zetaA_t[i]),np.sin(x2)*np.sin(zetaA_t[i]),np.cos(zetaA_t[i])*np.ones(len(x2))]
         VA.append(Vi)
 
     theta_sub = 0.0
@@ -671,8 +620,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                     theta_sub = dictVp['s'+REF['OC']]
             else:
                 ii = [i for i, s in enumerate(labels_s) if OMIlab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondaryOmission"
 
         elif POV=="SE":
@@ -688,8 +637,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                     phi_sub = phi_s
             else:
                 ii = [i for i, s in enumerate(labels_s) if EMIlab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondaryEmission"
 
         elif POV=="S":
@@ -707,8 +656,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 phi_sub = dictVp['s'+REF['PS']] +0.5 if antiphase else dictVp['s'+REF['PS']]
             else:
                 ii = [i for i, s in enumerate(labels_s) if SUPERlab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondarySuper"
 
         elif POV=="SC":
@@ -725,8 +674,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 phi_sub = phi_c
             else:
                 ii = [i for i, s in enumerate(labels_s) if CEDElab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondaryCede"
 
         elif POV=="P":
@@ -771,13 +720,12 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             theta_sub = np.arccos(cosi)
             labPOV ="Earth"
         elif not(isinstance(POV, str)):
-            a = np.matrix(POV)*np.transpose(np.matrix([0,0.,1.]))
-            cosT = a[0,0]
+            cosT = np.dot(np.asarray(POV, dtype=float), [0., 0., 1.])
             theta_sub = np.arccos(cosT)
 
             phi_sub = 0.0
             if np.abs(np.sin(theta_sub))>1e-16:
-                a0 = POV[0]/np.sin(theta_sub)
+                a0 = np.clip(POV[0]/np.sin(theta_sub), -1., 1.)
                 phi_sub = np.arccos(a0) if POV[1]>=0. else np.arccos(a0)+np.pi
                 phi_sub = phi_sub/(2.*np.pi)
 
@@ -962,10 +910,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     #rotating and plotting edges of hot regions
-    THETAall = list(thetaA_p)+list(thetaA_s)+list(thetaA_t)
-    PHIall = list(phiA_p)+list(phiA_s)+list(phiA_t)
-    LABall = list(labels_p)+list(labels_s)+list(labels_t)
-    TAall = list(TA_p)+list(TA_s)+list(TA_t)
+    THETAall = list(thetaA_p)+list(thetaA_s)
+    PHIall = list(phiA_p)+list(phiA_s)
+    LABall = list(labels_p)+list(labels_s)
+    TAall = list(TA_p)+list(TA_s)
 
 
     for i in range(len(VA)):
