@@ -1,0 +1,1 @@
+All NASA ADS links have been modified to SciX links, except in the JOSS .bib file.
