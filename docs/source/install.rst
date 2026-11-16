@@ -15,8 +15,8 @@ necessary prerequisites on your local self-administered system.
 
 .. note::
 
-    For installation on a high-performance computing system, we direct the 
-    reader to the :ref:`hpcsystems` page for guidance since the instructions 
+    For installation on a high-performance computing system, we direct the
+    reader to the :ref:`hpcsystems` page for guidance since the instructions
     on this page are either not applicable or do not target performance.
 
 .. _dev_env:
@@ -24,7 +24,7 @@ necessary prerequisites on your local self-administered system.
 Prerequisite Python Packages
 ----------------------------
 
-X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
+X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of
 X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
 per instructions below so as to not disrupt your Python ecosystem.
 
@@ -64,7 +64,7 @@ The content of the ``environment.yml`` are:
         - h5py                      # storage of X-ray signals computed from posterior samples
         - nestcheck                 # posterior error analysis, plotting, run combination, etc.
         - fgivenx                   # conditional posterior plotting; also required by nestcheck
-        - astropy >= 5.2, < 7.0.0   # reading FITS files
+        - astropy >=7.2.0   # reading FITS files
         - emcee                     # MCMC sammpler
 
 
@@ -107,7 +107,7 @@ Activate the environment as:
 
 
 We now install
-`mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
+`mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for
 nested sampling:
 
 .. code-block:: bash
@@ -162,8 +162,8 @@ Build and install guidelines are given below.
 
 .. note::
 
-    The next steps require an `OpenMP <http://www.openmp.org>`_-enabled C 
-    compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most 
+    The next steps require an `OpenMP <http://www.openmp.org>`_-enabled C
+    compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most
     linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out
     the GCC path-executable on your system, run ``which gcc``.
 
@@ -177,7 +177,7 @@ Although production sampling runs need to be performed on a high-performance
 system and X-PSI can be installed locally without sampling functionality, it is
 advisable to install MultiNest on your personal machine to gain experience in
 application to inexpensive test problems. In addition, to leverage some
-capabilities of sample post-processing software you 
+capabilities of sample post-processing software you
 `require MultiNest <https://github.com/farhanferoz/MultiNest>`_ ``v3.12``.
 To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
@@ -231,13 +231,13 @@ following line to ``~/.bashrc``:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/my/directory/MultiNest/lib/:$LD_LIBRARY_PATH
-    
-It's also good to check whether this has worked. In a new kernel, try 
+
+It's also good to check whether this has worked. In a new kernel, try
 
 .. code-block:: bash
 
     python -c 'import pymultinest'
-    
+
 which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
 successfully installed or could not be found.  While X-PSI will run properly,
@@ -339,8 +339,8 @@ Alternatively, to build X-PSI in-place:
 
     CC=<path/to/compiler/executable> pip install --no-build-isolation -e .
 
-This installs a pointer to your source directory. Python imports directly from there, so 
-`.py` changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require 
+This installs a pointer to your source directory. Python imports directly from there, so
+`.py` changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require
 re-running the command to recompile the extensions.
 
 If you want to reinstall from scratch, run the `rm` command above to clean the C files and run:
@@ -353,7 +353,7 @@ Documentation
 -------------
 
 
-If you wish to compile the documentation you require 
+If you wish to compile the documentation you require
 `Sphinx <http://www.sphinx-doc.org/en/master>`_ and extensions. To install
 these, run the following command:
 
@@ -401,7 +401,7 @@ Tips for installing on Mac OS
 Most of the aforementioned instructions for linux are also applicable for Mac
 OS. Here we note some of the changes required.
 
-After creating the environment using the ``environment.yml`` file, 
+After creating the environment using the ``environment.yml`` file,
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
 and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy``, ``astropy >= 5.2, < 7.0.0`` and ``cython ~= 3.0.11``
@@ -533,7 +533,7 @@ You may also try to use the MacOS native version of ``clang``:
 
 .. code-block:: bash
 
-    XPSI_NO_OPENMP=1 CC=/usr/bin/clang CC=gcc pip install . [--user] 
+    XPSI_NO_OPENMP=1 CC=/usr/bin/clang CC=gcc pip install . [--user]
 
 
 
@@ -558,7 +558,7 @@ Tips for installing on Windows
 
 
 X-PSI was successfully installed and run on Windows in the year 2020, at least
-for the purpose of likelihood functionality, using the following 
+for the purpose of likelihood functionality, using the following
 user-contributed procedure.
 
 * Clone the X-PSI repository to a directory on your Windows computer (see above).
