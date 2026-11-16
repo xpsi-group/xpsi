@@ -1,0 +1,1 @@
+Removed redundant driver function in the CustomLikelihoodSBI to increase readability and to avoid bugs when base driver function changes.
