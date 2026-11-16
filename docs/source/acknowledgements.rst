@@ -23,7 +23,7 @@ Those involved in maintenance and development (technical and scientific).
 * Denis Gonzalez-Caniulef (dgonzalez-ca[at]irap.omp.eu), IRAP/University of Toulouse
 * Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP/University of Toulouse
 * Mariska Hoogkamer (m.m.hoogkamer[at]uva.nl), University of Amsterdam
-* Mattéo Sautron (matteo.sautron[at]utoulouse.fr), IRAP/University of Toulouse
+* Matt√©o Sautron (matteo.sautron[at]utoulouse.fr), IRAP/University of Toulouse
 * Daniela Huppenkothen (d.huppenkothen[at]uva.nl), University of Amsterdam
 * Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP/University of Toulouse
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
@@ -50,7 +50,7 @@ Folks who have used X-PSI in their research or engaged with the team during
 development and science analysis, thereby prompting fixes or
 improvements.
 
-Matteo Bacchetti, Anna Bilous, Erik Bootsma, Johannes Buchner, Yuri Cavecchi, Frank Chambers, Alex Chen, Pushpita Das, Julia Deneva, Siem Fenne, Chun Huang, Gwénaël Loyer, Geert Raaijmakers, Paul Ray, Evert Rol, Rahul Silié, Emma van der Wateren, Bob de Witte, The NICER collaboration
+Matteo Bacchetti, Anna Bilous, Erik Bootsma, Johannes Buchner, Yuri Cavecchi, Frank Chambers, Alex Chen, Pushpita Das, Julia Deneva, Siem Fenne, Chun Huang, Gw√©na√´l Loyer, Geert Raaijmakers, Paul Ray, Evert Rol, Rahul Sili√©, Emma van der Wateren, Bob de Witte, The NICER collaboration
 
 **Miscellaneous**
 
