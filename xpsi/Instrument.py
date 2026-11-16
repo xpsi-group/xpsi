@@ -150,7 +150,7 @@ class Instrument(ParameterSubspace):
                 assert matrix[:,j].any()
         except AssertionError:
             raise ResponseError('Each column of the matrix must contain at least one positive number.')
-        self._matrix = matrix
+        self._matrix = _np.ascontiguousarray(matrix)  # ensure contiguous for faster computations
 
     def construct_matrix(self):
         """ Construct the response matrix if it is parameterised.
@@ -366,7 +366,7 @@ class Instrument(ParameterSubspace):
 
         :param float tolerance:
             The tolerance value to use for trimming the instrument response.
-            Trimming occurs at the first energy where every channel’s cumulative response is above the (1−tolerance) quantile.
+            Trimming occurs at the first energy where every channel's cumulative response is above the (1-tolerance) quantile.
             This allows to trim long tails of the response with little weight.
             If zero, no trimming is performed.
 

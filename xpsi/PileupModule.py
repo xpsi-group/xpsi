@@ -21,11 +21,14 @@ class XrayPileup:
         self.frame_time = Instrument['frame_time']
 
         # Load data files
-        self.rmf_data = Instrument.RMF 
+        self.rmf_data = np.ascontiguousarray( np.maximum(Instrument.RMF, 0) ) 
         self.arf_data = Instrument.ARF
         self.energies = Instrument.energies
         self.instrument = Instrument
 
+        # This is an offset we will require in the convolution in case energy_ar(0) is non-zero. 
+        # Note that we assume the energy array is linear and starts at a multiple of the energy bin size.
+        self._arf_pos_ioff = -int(self.energies[0] // (self.energies[1] - self.energies[0])) 
 
     def perform_pileup(self, spectrum: np.ndarray, alpha: float, psf_frac_init: float) -> np.ndarray:
         """     
@@ -40,11 +43,7 @@ class XrayPileup:
         # ARF convolution
         arf_s = spectrum * self.arf_data   
         arf_s = np.maximum(arf_s, 0)
-        
-        # This is an offset we will require in the convolution in case energy_ar(0) is non-zero. 
-        # Note that we assume the energy array is linear and starts at a multiple of the energy bin size.
-        ioff = -int(self.energies[0] // (self.energies[1] - self.energies[0])) 
-        
+                
         # Calculate pileup following original algorithm
         psf_frac = psf_frac_init / num_regions / fracexpo
         arf_s_tmp = arf_s* psf_frac   
@@ -67,7 +66,7 @@ class XrayPileup:
         factor = 1
 
         # Compute FFT with offset
-        tmpar = [arf_s_tmp[ie + ioff] for ie in range(self.num_points)]
+        tmpar = [arf_s_tmp[ie + self._arf_pos_ioff] for ie in range(self.num_points)]
         arf_s_fft_2 = fft(tmpar)
 
         # Calculate higher order terms
@@ -122,7 +121,6 @@ class XrayPileup:
         
         # Apply RMF if available
         if self.rmf_data is not None:
-            self.rmf_data = np.maximum(self.rmf_data, 0)
-            piled_spectrum =  np.dot(self.rmf_data, piled_spectrum) 
+            piled_spectrum =  self.rmf_data @ piled_spectrum 
         
         return piled_spectrum
