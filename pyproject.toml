@@ -3,7 +3,7 @@ requires = [
     "setuptools>=61",
     "wheel",
     "cython~=3.0.11",
-    "numpy<2.0.0",
+    "numpy",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 # ---------------------------------------------------------
 [project]
 name = "xpsi"
-version = "3.4.0"
+version = "3.5.0b1"
 authors = [
     { name = "The X-PSI Core Team", email = "A.L.Watts@uva.nl" },
 ]

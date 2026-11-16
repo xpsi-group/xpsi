@@ -1158,7 +1158,7 @@ class PhotospherePlotter( Photosphere ):
             except TypeError:
                 raise TypeError('Panel indices object must be iterable.')
 
-            if _np.product(panel_layout) < len(panel_indices):
+            if _np.prod(panel_layout) < len(panel_indices):
                 raise ValueError('There are too few panels for the requested '
                                  'number of intensity sky maps.')
 
@@ -1446,7 +1446,7 @@ class PhotospherePlotter( Photosphere ):
                     else:
                         _cmap = cmap
                     if (with_pulse_profile_and_spectrum or
-                        _np.product(panel_layout) - j - 1 < panel_layout[1]):
+                        _np.prod(panel_layout) - j - 1 < panel_layout[1]):
                         if ref.R < 1.5 * ref.r_s:
                             ax.set_xlabel(r'$(2x/(3\sqrt{3}r_{\rm s}))$')
                         else:
