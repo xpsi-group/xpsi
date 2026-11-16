@@ -25,7 +25,7 @@ condition upon, an extension can operate with the expected background count
 background marginalisation protocol; channel-by-channel
 background count rate variables will be numerically and rapidly marginalised
 over. See the discussion in `Riley et al. 2019
-<https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ and the
+<https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_ and the
 X-PSI technical notes to evaluate whether this is appropriate for coupling
 with a given model for target source signal.
 
