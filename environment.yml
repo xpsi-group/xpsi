@@ -8,6 +8,7 @@ dependencies:
         - cython~= 3.0.11
         - matplotlib
         - scipy
+        - pandas # reading tabulated temperature maps
         - wrapt
         - setuptools>=61
         - gsl # GNU Science library
