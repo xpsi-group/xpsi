@@ -1,0 +1,1 @@
+``Signal.synthesise`` now uses ``save_background=False`` by default, so it no longer crashes when no background is provided. A warning is printed if a background (``signal._background`` or ``data_BKG``) is used but not saved, or if ``save_background=True`` while no background is provided (`#721 <https://github.com/xpsi-group/xpsi/issues/721>`__).
