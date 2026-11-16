@@ -124,13 +124,13 @@ class SynthesiseData(xpsi.Data):
                              'last channel number.')
 
 
-def synthesise(self,
-               exposure_time=None,
-               expected_source_counts=None,
-               nchannels=None,
-               nphases=None,
-               seed=0,
-               **kwargs):
+def synthesise_for_sbi(self,
+                       exposure_time=None,
+                       expected_source_counts=None,
+                       nchannels=None,
+                       nphases=None,
+                       seed=0,
+                       **kwargs):
     """ Synthesise a data set.
 
     Bound onto a :class:`~xpsi.Signal.Signal` subclass (see example notebooks),
