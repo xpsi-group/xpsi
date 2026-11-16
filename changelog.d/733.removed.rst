@@ -1,0 +1,1 @@
+X-PSI no longer depends on the ``six`` package, which some installations were missing.
