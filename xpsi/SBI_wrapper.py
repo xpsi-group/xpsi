@@ -309,11 +309,16 @@ class xpsi_wrappers:
     # Todo: Enable cuda parallelisation.
     def __init__(self, prior, likelihood, 
                  instr_kwargs={}, 
-                 train_using_CNNs=True):
+                 train_using_CNNs=True,device="cpu"):
         self.prior = prior
         self.likelihood = likelihood
         self.instr_kwargs = instr_kwargs
         self.train_using_CNNs = train_using_CNNs
+
+        if device.startswith("cuda") and not torch.cuda.is_available():
+            raise RuntimeError("CUDA is not available.")
+
+        self.device= torch.device(device)
     
     def sample(self, sample_shape=torch.Size([])):
         """
@@ -326,9 +331,11 @@ class xpsi_wrappers:
         """
         if len(sample_shape) > 0:
             samples = self.prior.draw(sample_shape[0])
-            return torch.Tensor(samples[0]).cuda() if torch.cuda.is_available() else torch.Tensor(samples[0])
+            #return torch.Tensor(samples[0]).cuda() if torch.cuda.is_available() else torch.Tensor(samples[0])
+            return torch.as_tensor(samples[0], device=self.device)
         else:
-            return torch.Tensor(self.prior.draw(1)[0]).cuda() if torch.cuda.is_available() else torch.Tensor(self.prior.draw(1)[0])
+            return torch.as_tensor(self.prior.draw(1)[0],device=self.device)
+            #return torch.Tensor(self.prior.draw(1)[0]).cuda() if torch.cuda.is_available() else torch.Tensor(self.prior.draw(1)[0])
     
     def log_prob(self, parameter_vector):
         """
@@ -339,11 +346,13 @@ class xpsi_wrappers:
         :return:
             **log_probability** (`torch.Tensor`) The log probability of the parameter vector.
         """
-        parameter_vector = torch.Tensor(parameter_vector).cuda() if torch.cuda.is_available() else torch.Tensor(parameter_vector)
+        #parameter_vector = torch.Tensor(parameter_vector).cuda() if torch.cuda.is_available() else torch.Tensor(parameter_vector)
+        parameter_vector = torch.as_tensor(parameter_vector,device=self.device)
         log_probability = []
         for i in range(parameter_vector.shape[0]):
             log_probability.append(self.prior(parameter_vector[i,:]))
-        return torch.Tensor(log_probability).cuda() if torch.cuda.is_available() else torch.Tensor(log_probability)
+        return torch.as_tensor(log_probability,device=self.device)
+        #return torch.Tensor(log_probability).cuda() if torch.cuda.is_available() else torch.Tensor(log_probability)
     
     def simulator(self, parameter_vector):
         """
@@ -355,13 +364,21 @@ class xpsi_wrappers:
             **model_flux** (`torch.Tensor`) The pulse profile for the input parameter vector.
         """
         self.instr_kwargs['seed'] = randint(0,1000000000000000)
-        parameter_vector = np.array(parameter_vector.cpu())
+        #parameter_vector = np.array(parameter_vector.cpu())
+        parameter_vector = parameter_vector.detach().cpu().numpy()
         model_flux = self.likelihood.synthesise(parameter_vector, force=True, 
                                                 instr=self.instr_kwargs)
 
-        if self.train_using_CNNs==True:
-            model_flux = torch.Tensor(model_flux).cuda() if torch.cuda.is_available() else torch.Tensor(model_flux)
-        else:
-            model_flux = torch.flatten(torch.Tensor(model_flux)).cuda() if torch.cuda.is_available() else torch.flatten(torch.Tensor(model_flux))
+        model_flux = torch.as_tensor(model_flux,device=self.device)
+
+        if not self.train_using_CNNs:
+            model_flux = torch.flatten(model_flux)
+
+        #if self.train_using_CNNs==True:
+            #model_flux = torch.as_tensor(model_flux,device=self.device)
+            #model_flux = torch.Tensor(model_flux).cuda() if torch.cuda.is_available() else torch.Tensor(model_flux)
+        #else:
+            #model_flux = torch.flatten(torch.as_tensor(model_flux,device=self.device))
+            #model_flux = torch.flatten(torch.Tensor(model_flux)).cuda() if torch.cuda.is_available() else torch.flatten(torch.Tensor(model_flux))
 
         return model_flux
