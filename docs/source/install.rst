@@ -28,8 +28,7 @@ X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of
 X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
 per instructions below so as to not disrupt your Python ecosystem.
 
-Note that ``python >= 3.9.0`` is now required because of the version of
-``matplotlib`` needed.
+Note that ``python >= 3.10`` is required.
 
 .. _basic_env:
 
@@ -37,35 +36,17 @@ Conda Environment
 ^^^^^^^^^^^^^^^^^
 
 In the source directory we provide a dependency file ``environment.yml`` that
-installs the Python packages required for basic functionality of X-PSI. Note
-the script requirement for ``matplotlib``.  For now, we leave out the
-multinest/ultranest samplers, because of issues on MacOS.  Details for installation
-of those are below.
+installs the Python packages required for basic functionality of X-PSI. For
+now, we leave out the multinest/ultranest samplers, because of issues on MacOS.
+Details for installation of those are below.
 
-The content of the ``environment.yml`` are:
+The content of ``environment.yml`` is:
 
-.. code-block:: bash
+.. literalinclude:: ../../environment.yml
+   :language: yaml
 
-    name: xpsi
-    channels:
-        - defaults
-        - conda-forge
-    dependencies:
-        - python >= 3.9.0
-        - numpy < 2.0.0
-        - cython~= 3.0.11
-        - matplotlib == 3.9.2       # STRICT REQUIREMENT FROM FGIVENX
-        - scipy
-        - wrapt
-        - gsl                       # GNU Science library
-        - pytest                    # running functionality self-tests
-        - getdist                   # posterior KDE corner plotting
-        - tqdm                      # progress bar package
-        - h5py                      # storage of X-ray signals computed from posterior samples
-        - nestcheck                 # posterior error analysis, plotting, run combination, etc.
-        - fgivenx                   # conditional posterior plotting; also required by nestcheck
-        - astropy >=7.2.0   # reading FITS files
-        - emcee                     # MCMC sammpler
+Note that ``fgivenx`` is installed with ``pip``, because version 2.5.1 or newer
+is needed for compatibility with numpy 2.x and recent ``matplotlib`` versions.
 
 
 The core packages required for likelihood functionality are
@@ -129,11 +110,13 @@ Then, install optional packages
 `h5py <https://docs.h5py.org/en/stable/index.html>`_,
 `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_, and
 `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_ which are required for
-post-processing:
+post-processing (these are already included if you created the environment
+from ``environment.yml``):
 
 .. code-block:: bash
 
-    conda install -c conda-forge getdist h5py nestcheck fgivenx
+    conda install -c conda-forge getdist h5py nestcheck
+    pip install "fgivenx>=2.5.1"
 
 .. note::
 
@@ -404,7 +387,7 @@ OS. Here we note some of the changes required.
 After creating the environment using the ``environment.yml`` file,
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
-and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy``, ``astropy >= 5.2, < 7.0.0`` and ``cython ~= 3.0.11``
+and ``emcee`` (and ``matplotlib``, ``numpy``, ``scipy``, ``astropy`` and ``cython ~= 3.0.11``
 if not using the ``environment.yml``. You may use the file as a reference of the
 packages required).
 

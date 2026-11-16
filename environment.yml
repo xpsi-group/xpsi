@@ -6,7 +6,7 @@ dependencies:
         - python >= 3.10.0
         - numpy
         - cython~= 3.0.11
-        - matplotlib  # STRICT REQUIREMENT FROM FGIVENX
+        - matplotlib
         - scipy
         - wrapt
         - setuptools>=61
@@ -18,6 +18,6 @@ dependencies:
         - nestcheck  # posterior error analysis, plotting, run combination, etc.
         - pip:
           - fgivenx>=2.5.1   # >=2.5.1 needed for numpy 2.x / newer matplotlib
-        - astropy>=7.2.0 # reading FITS files
+        - astropy # reading FITS files
         - emcee  # MCMC sammpler
         - cmap # For PostProcessing colormaps
