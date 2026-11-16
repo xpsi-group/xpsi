@@ -8,7 +8,7 @@ import numpy as np
 import torch
 
 import xpsi
-from xpsi import Likelihood, Data
+from xpsi import Likelihood
 from xpsi.tools.synthesise import synthesise_exposure
 from xpsi.tools.synthesise import synthesise_given_total_count_number
 

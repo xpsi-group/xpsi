@@ -277,7 +277,7 @@ should print to screen something like the following:
     \=============================================/
 
     Imported emcee version: 3.1.6
-    Warning: Cannot import torch and test SBI_wrapper.
+    Warning: Cannot import torch and test WrapperSBI.
     Imported GetDist version: 1.6.4
     Imported nestcheck version: 0.2.1
 
