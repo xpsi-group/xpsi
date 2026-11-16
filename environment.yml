@@ -21,3 +21,4 @@ dependencies:
         - astropy # reading FITS files
         - emcee  # MCMC sammpler
         - cmap # For PostProcessing colormaps
+        - lxml # For PostProcessing corner plots (PDF format)
