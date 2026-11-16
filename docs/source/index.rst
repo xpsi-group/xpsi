@@ -33,6 +33,7 @@
    Instrument_synergy
    Hot_region_complexity
    Global_surface_emission
+   Interpolated_temperature_map
    Surface_radiation_field_tools
    Modeling_without_statistics
    Polarization

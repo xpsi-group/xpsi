@@ -18,6 +18,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Global surface emission<Global_surface_emission>` concerns surface emission from fields that span the full star and showcases three different options for signal integration. The first is a globally uniform temperature field, which allows for a time invariant signal integration. In the second case the temperature field is phase dependent and thus requires time dependent integration. The third case is general purpose and discretises a distant image plane instead of the stellar surface.
 
+* :doc:`Interpolated temperature map<Interpolated_temperature_map>` shows how to compute pulse profiles from a surface temperature map given on a grid of colatitudes and azimuths (e.g. from simulations), which X-PSI interpolates onto its own surface mesh. As an example, it reproduces pulse profiles from GRMHD simulations of accreting neutron stars by Das et al. (2025).
+
 * :doc:`Surface radiation field tools<Surface_radiation_field_tools>` demonstrates the usage of the default (blackbody) and an alternative (atmosphere interpolated from precomputed data) surface radiation field module to compute photon specific intensities. It also shows how to do beaming pattern and spectrum plots for the radiation fields.
 
 * :doc:`Modeling (without statistics)<Modeling_without_statistics>` is similar to :doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to generate models (and potentially synthetic data, see below).
