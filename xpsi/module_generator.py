@@ -3703,9 +3703,58 @@ class CustomInterstellar(xpsi.Interstellar):
 
         self._interpolator = Akima1DInterpolator(self._lkp_energies,
                                                  self._lkp_attenuation)
+        self._cache = {{}}
         self._interpolator.extrapolate = True
 
         super(CustomInterstellar, self).__init__(N_H)
+
+    def _get_entry(self, energies):
+        """
+        Per-energy-grid cache keyed by object identity (a few grids).
+        Useful when multiple instruments are fitted together.
+
+        If first time with the energy grid, compute the interpolated attenuation.
+        """
+
+        # Search the cache for the same energy grid
+        entry = self._cache.get(id(energies))
+
+        # If not present, compute it
+        if entry is None:
+            grid = np.asarray(energies, dtype=np.double)
+            att = self._interpolate(grid)
+
+            # Check for division by zero
+            with np.errstate(divide='ignore'):
+                log_att = np.log(att)                  # att == 0 -> -inf, exp(-inf) = 0
+            
+            # Check if not too many entries, ptherwise likely an error
+            if len(self._cache) >= 20:                  # safety against unbounded growth
+                self._cache.clear()
+            
+            # Keep a reference to `energies` so its id cannot be reused by another object
+            entry = (energies, log_att, np.empty_like(log_att))
+            self._cache[id(energies)] = entry
+
+        return entry
+
+    def _compute(self, energies, out=None):
+        """ Compute the attenuation using the cached values if needed. """
+
+        # Get the attenuation reference
+        _, log_att, buf = self._get_entry(energies)
+        if out is None:
+            out = buf
+
+        # Apply the power of the neutral hydrogen column density
+        nh = self['neutral_hydrogen_column_density']
+        if nh == 0.0:                                  # att**0 == 1, avoids 0 * -inf = nan
+            out.fill(1.0)
+        else:
+            np.multiply(log_att, nh, out=out)
+            np.exp(out, out=out)
+            
+        return out
 
     def attenuation(self, energies):
         """ Interpolate the attenuation coefficients.
@@ -3713,7 +3762,8 @@ class CustomInterstellar(xpsi.Interstellar):
         Useful for post-processing.
 
         """
-        return self._interpolate(energies)**(self['neutral_hydrogen_column_density'])
+        # Public API: return a fresh array, so callers can keep or modify it safely
+        return self._compute(energies, out=np.empty_like(self._get_entry(energies)[1]))
 
     def _interpolate(self, energies):
         """ Helper. """
