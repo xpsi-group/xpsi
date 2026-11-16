@@ -74,7 +74,7 @@ class Metadata(object):
     def ID(self, obj):
         """ Set the identification ``str`` of the sample set. """
 
-        if not isinstance(obj, _six.string_types):
+        if not isinstance(obj, str):
             raise TypeError('Invalid sample set ID specification. '
                             'See the docstring.')
         self._ID = obj
@@ -94,7 +94,7 @@ class Metadata(object):
 
     @parent_ID.setter
     def parent_ID(self, ID):
-        if not isinstance(ID, _six.string_types):
+        if not isinstance(ID, str):
             raise TypeError('Invalid parent ID specification.')
         self._parent_ID = ID
 
@@ -110,7 +110,7 @@ class Metadata(object):
 
         try:
             for name in obj:
-                if not isinstance(name, _six.string_types):
+                if not isinstance(name, str):
                     raise TypeError
         except TypeError:
             print('Invalid parameter name specification. See the docstring.')

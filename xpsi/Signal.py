@@ -738,7 +738,7 @@ class Signal(ParameterSubspace):
     @caching_targets.setter
     def caching_targets(self, obj):
         if isinstance(obj, list):
-            if all(isinstance(o, _six.string_types) for o in obj):
+            if all(isinstance(o, str) for o in obj):
                 if all(hasattr(self, o) for o in obj):
                     self._caching_targets = obj
                     return None

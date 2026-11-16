@@ -325,7 +325,7 @@ class Runs(Metadata):
 
     def __getitem__(self, ID):
         """ Get a :class:`~.Run` instance using the associated ID. """
-        if isinstance(ID, _six.string_types):
+        if isinstance(ID, str):
             for run in self._runs:
                 if ID == run.ID:
                     return run

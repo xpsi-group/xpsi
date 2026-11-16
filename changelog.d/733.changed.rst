@@ -1,0 +1,1 @@
+Updated the installation instructions: the installation page now shows the current ``environment.yml``, and ``fgivenx>=2.5.1`` is installed with pip.
