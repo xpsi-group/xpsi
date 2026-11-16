@@ -1,6 +1,6 @@
 """ Wrappers exposing the X-PSI likelihood to the ``sbi`` package. """
 
-__all__ = ["CustomLikelihoodSBI", "SynthesiseData", "SBIWrapper", "synthesise"]
+__all__ = ["CustomLikelihoodSBI", "SynthesiseData", "SBIWrapper"]
 
 from random import randint
 
