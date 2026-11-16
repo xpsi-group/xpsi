@@ -139,7 +139,9 @@ def plotBackgroundSpectrum( XPSI_model,
                             clrmap='petroff10',
                             custcols=None, 
                             yscale='linear',
-                            plot_support=False):
+                            plot_support=False,
+                            plot_data_errors=False,
+                            plot_residuals=False):
     """ Plot the spectrum generated along data for given parameters.
     
     :param obj XPSI_model:
@@ -174,12 +176,41 @@ def plotBackgroundSpectrum( XPSI_model,
 
     :param bool plot_support:
         Should the support of the background be plotted ?  
+
+    :param bool plot_data_errors:
+        Should error bars be plotted on the data spectrum? The errors are
+        taken from ``data.errors`` if available (e.g. PHA data loaded with
+        ``withuncs=True``), and otherwise assumed to be Poissonian,
+        i.e. :math:`\\sqrt{N}` (with :math:`N=0` channels assigned an
+        error of 1 count).
+
+    :param bool plot_residuals:
+        Should a lower panel with the residuals
+        :math:`(\\mathrm{data}-\\mathrm{model})/\\sigma` be added? The model is
+        the expected signal plus the background at the plotted parameters
+        (``BKG@MaxL``). The uncertainties :math:`\\sigma` are the same as for
+        ``plot_data_errors``.
+
+    :returns:
+        ``fig, ax`` or, if ``plot_residuals`` is ``True``,
+        ``fig, (ax, ax_res)`` where ``ax_res`` is the residuals panel.
     """
                     
     # Get signal and data
     signal = getSignal(XPSImodel=XPSI_model, InstrumentName=InstrumentName)
     data = signal.data
-    Data_Spectrum = data.counts.sum(axis=1)
+
+    # Restrict to the channels actually used (grouping in Signal may trim
+    # data.channels without trimming data.counts)
+    a, b = data.index_range
+    Data_Spectrum = data.counts[a:b].sum(axis=1)
+
+    # Uncertainties on the data spectrum, used for error bars and residuals
+    if plot_data_errors or plot_residuals:
+        if getattr(data, 'errors', None) is not None:
+            Data_Errors = np.sqrt( (data.errors[a:b]**2).sum(axis=1) )
+        else:
+            Data_Errors = np.sqrt( np.where(Data_Spectrum > 0, Data_Spectrum, 1.0) )
 
     # Get the parameters to plot the spectrum and backgound 
     if plot_params is None:
@@ -218,7 +249,12 @@ def plotBackgroundSpectrum( XPSI_model,
     lBp = 'BKG@MaxL'
     
     # Do the plotting
-    fig, ax = plt.subplots(1,1,figsize=(13,8)) 
+    if plot_residuals:
+        fig, (ax, ax_res) = plt.subplots(2, 1, figsize=(13,11), sharex=True,
+                                         gridspec_kw={'height_ratios': [4,1], 'hspace': 0.03})
+    else:
+        fig, ax = plt.subplots(1,1,figsize=(13,8))
+
     if clrmap == 'CustomCmap':
         try:
             assert type(custcols) == list
@@ -238,7 +274,9 @@ def plotBackgroundSpectrum( XPSI_model,
     mycolors = [cm(xcol) for xcol in np.linspace(0,1 , len(cm.colors))]
     ax.grid(linestyle="-.", color='grey',linewidth=0.7)
     ax.set_ylabel(r"Spectrum [counts]",fontsize=15 )
-    ax.set_xlabel("Energy Channel [keV]",fontsize=15 )
+
+    if not plot_residuals:
+        ax.set_xlabel("Energy Channel [keV]",fontsize=15 )
     
     # Plotting outputs
     for i in range(num_components):
@@ -255,7 +293,10 @@ def plotBackgroundSpectrum( XPSI_model,
 
     # Plotting data and expected values
     ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=2, label='Expected signal')  # lw=3
-    ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=1, label='Data spectrum') # lw=2
+    if plot_data_errors:
+        ax.errorbar(x0, Data_Spectrum, yerr=Data_Errors, fmt='--', color=mycolors[5], lw=1, elinewidth=1, label='Data spectrum')
+    else:
+        ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=1, label='Data spectrum') # lw=2
     
     # Plotting background support
     if plot_support and signal._support is not None and signal._support[signal._support>0].any():
@@ -265,5 +306,18 @@ def plotBackgroundSpectrum( XPSI_model,
     # Finish the plot
     _ = ax.legend(fontsize=15, loc='upper right' )
     ax.set_yscale( yscale )
-    
+
+    # Residuals panel
+    if plot_residuals:
+        # Full model: expected source counts plus the conditional max-likelihood background
+        Residuals = (Data_Spectrum - (Expected_Spectrum + BKG)) / Data_Errors
+        ax_res.grid(linestyle="-.", color='grey',linewidth=0.7)
+        ax_res.axhline(0.0, color='k', lw=1)
+        ax_res.errorbar(x0, Residuals, yerr=np.ones_like(Residuals), fmt='.', color=mycolors[5], elinewidth=1, label='Residuals')
+        ylim = max(4.0, 1.1 * (np.nanmax(np.abs(Residuals)) + 1.0))
+        ax_res.set_ylim(-ylim, ylim)
+        ax_res.set_ylabel(r"Residuals [$\sigma$]",fontsize=15 )
+        ax_res.set_xlabel("Energy Channel [keV]",fontsize=15 )
+        return fig, (ax, ax_res)
+
     return fig, ax
