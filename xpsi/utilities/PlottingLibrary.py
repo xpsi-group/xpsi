@@ -210,8 +210,12 @@ def plot_instruments(instruments, xlabel="Energy interval", ylabel="Channel"):
 
     for inst in instruments:
         label = inst.name if hasattr(inst,'name') else None
-        ax2.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
-                 np.sum(inst.matrix, axis=0), label=label)  
+        if inst.energy_edges.ndim == 2:
+            ax2.plot((inst.energy_edges[0] + inst.energy_edges[1]) / 2.0,
+                 np.sum(inst.matrix, axis=0), label=label)
+        else:
+            ax2.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
+                 np.sum(inst.matrix, axis=0), label=label)   
     if not label is None:
         ax2.legend()
     ax2.set_ylabel(r'Effective area [cm$^{2}$]')
@@ -246,7 +250,11 @@ def plot_arf(instruments,
 
     for i, inst in enumerate(instruments):
         label = inst.name if hasattr(inst,'name') else None
-        ax.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
+        if inst.energy_edges.ndim == 2:
+            ax.plot((inst.energy_edges[0] + inst.energy_edges[1]) / 2.0,
+                np.sum(inst.matrix, axis=0), label=label)
+        else:
+            ax.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
                 np.sum(inst.matrix, axis=0), label=label) 
 
     ax.set_ylabel('Effective area [cm$^{2}$]')

@@ -691,7 +691,11 @@ class SpectrumPlot(SignalPlot):
 
         ax.set_ylim(bottom = view_y_bottom)
 
-        ax.set_xlim([_np.max([self._signal.energy_edges[0],0.001]),
+        if self._signal.energy_edges.ndim == 2:
+            ax.set_xlim([_np.max([self._signal.energy_edges[0,0],0.001]),
+                     self._signal.energy_edges[1,-1]])
+        else:
+            ax.set_xlim([_np.max([self._signal.energy_edges[0],0.001]),
                      self._signal.energy_edges[-1]])
         locmaj = LogLocator(base=10.0, numticks=100)
         ax.yaxis.set_major_locator(locmaj)
@@ -793,7 +797,7 @@ class SpectrumPlot(SignalPlot):
         registered = self._ax_registered.pcolormesh(ref.data.channels,
                                     self._phases,
                                     total.T, # channel number as x-axis
-                                    cmap = cm.get_cmap(self._registered_cmap),
+                                    cmap = plt.get_cmap(self._registered_cmap),
                                     linewidth = 0,
                                     rasterized = self._rasterized)
 

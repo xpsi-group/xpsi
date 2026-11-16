@@ -230,7 +230,7 @@ class Everywhere(ParameterSubspace):
         #An extra phase_shift parameter fixed to 0 just to be able use the standard
         #Likelihood class when fitting data with Everywhere objects.
         phase_shift = Parameter('phase_shift',
-                                strict_bounds = (-_np.infty, _np.infty),
+                                strict_bounds = (-_np.inf, _np.inf),
                                 bounds = None,
                                 value = 0.0)
 
