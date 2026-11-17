@@ -85,13 +85,9 @@ class Spacetime(ParameterSubspace):
                       'distance',
                       'cos_inclination']
 
-    def __init__(self, bounds, values, obl_surfgrav=None):
+    def __init__(self, bounds, values, obl_surfgrav='universal'):
 
-        self._obl_surfgrav = None
-        self._obl_surfgrav_ind = None
-
-        if obl_surfgrav is not None:
-            self.obl_surfgrav = obl_surfgrav
+        self.obl_surfgrav = obl_surfgrav
 
         if not isinstance(bounds, dict) or not isinstance(values, dict):
              raise TypeError("Both bounds and values need to be dictionaries.")
