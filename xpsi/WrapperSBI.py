@@ -23,6 +23,15 @@ class CustomLikelihoodSBI(xpsi.Likelihood):
     synthesised signal is collected from each signal after driving.
     """
 
+    def __init__( self, *args, **kwargs ):
+        super(CustomLikelihoodSBI, self).__init__( *args, **kwargs )
+
+        # Check that there is only one signal for now
+        if len(self._signals) > 1 or len(self._signals[0]) > 1:
+            raise ValueError('There is more than one signal instance. '
+                             'This is currently not supported for SBI, '
+                             'please use only one signal.')
+
     def synthesise(self, p, reinitialise=False, force=False, **kwargs):
         """ Synthesise pulsation data.
 
@@ -79,18 +88,13 @@ class CustomLikelihoodSBI(xpsi.Likelihood):
 
         # clear any previously synthesised signals so a failed drive cannot
         # return stale data
-        for signals in self._signals:
-            for signal in signals:
-                signal.synthesised = None
+        self._signals[0][0].synthesised = None   # Only support one instrument for now
 
         x = self._driver(synthesise=True, force_update=force, **kwargs)
         if not isinstance(x, bool): # driver bailed out; restore cached values
             super(Likelihood, self).__call__(self.cached)
 
-        model_flux = None
-        for signals in self._signals:
-            for signal in signals:
-                model_flux = signal.synthesised
+        model_flux = self._signals[0][0].synthesised
         return model_flux
 
 

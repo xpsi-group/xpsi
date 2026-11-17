@@ -1,0 +1,2 @@
+Added a check that a single signal is provided in input for SBI. 
+X-PSI previously silently used only the last signal available, effectively using a single instrument and neglecting the others.
