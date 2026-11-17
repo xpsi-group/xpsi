@@ -3,7 +3,7 @@
 #cython: nonecheck=False
 #cython: wraparound=False
 
-from libc.math cimport sqrt, log10, fabs
+from libc.math cimport sqrt, log10, fabs, NAN
 
 cdef double c = 2.99792458e8
 
@@ -368,7 +368,7 @@ cdef double dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind) noexcept
 
     elif obl_surfgrav_ind == 5:
         # I have not computed the MoI for this star
-        return None
+        return NAN
 
 
 
@@ -396,7 +396,7 @@ cdef double beta1_coeff(int obl_surfgrav_ind) noexcept nogil:
         return 0.4454
     elif obl_surfgrav_ind == 5:
         # Not computed for J1231
-        return None
+        return NAN
 
 cpdef double py_dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind):
     return dimless_moment_of_inertia_i(x, obl_surfgrav_ind)

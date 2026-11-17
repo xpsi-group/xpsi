@@ -39,23 +39,23 @@ cdef double radiusNormalised(double mu,
         Morsink et al. (2007)).
 
     :param int obl_surfgrav_ind:
-        Integer flag selecting the oblateness / surface-gravity relation used by the backend.
-        The mapping is defined in ``Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL``.
+            Integer flag selecting the oblateness / surface-gravity relation used by the backend.
+            The mapping is defined in ``Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL``.
 
-    Current conventions are:
-      - 0 : Universal oblate relation (AlGendy & Morsink 2014)
-      - 1 : Spherical star
-      - 2 : PSR J0030+0451–calibrated relation
-      - 3 : PSR J0740+6620–calibrated relation
-      - 4 : PSR J0437−4715–calibrated relation
-      - 5 : PSR J1231−1411–calibrated relation
-      - 6 : PSR J0614−3329–calibrated relation
+        Current conventions are:
+          - 0 : Universal oblate relation (AlGendy & Morsink 2014)
+          - 1 : Spherical star
+          - 2 : PSR J0030+0451–calibrated relation
+          - 3 : PSR J0740+6620–calibrated relation
+          - 4 : PSR J0437−4715–calibrated relation
+          - 5 : PSR J1231−1411–calibrated relation
+          - 6 : PSR J0614−3329–calibrated relation
 
     :return:
-        The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
-        from the center of the star at a given colatitude, scaled by the equatorial radius.
+            The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
+            from the center of the star at a given colatitude, scaled by the equatorial radius.
     :rtype: double
-    """
+        """
 
     return 1.0 + epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind) * mu * mu
 
@@ -81,13 +81,24 @@ cdef double f_theta(double mu,
         The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 9).
 
     :param int obl_surfgrav_ind:
-        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or
-        to a spherical star (1).
+            Integer flag selecting the oblateness / surface-gravity relation used by the backend.
+            The mapping is defined in ``Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL``.
+
+        Current conventions are:
+          - 0 : Universal oblate relation (AlGendy & Morsink 2014)
+          - 1 : Spherical star
+          - 2 : PSR J0030+0451–calibrated relation
+          - 3 : PSR J0740+6620–calibrated relation
+          - 4 : PSR J0437−4715–calibrated relation
+          - 5 : PSR J1231−1411–calibrated relation
+          - 6 : PSR J0614−3329–calibrated relation
 
     :return:
-        The computed value of f_theta, representing the normalized derivative of the radius.
+            The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
+            from the center of the star at a given colatitude, scaled by the equatorial radius.
     :rtype: double
     """
+
 
     cdef double radiusDerivNormed
 
@@ -107,8 +118,8 @@ cdef double integrand(double theta, void *params) noexcept nogil:
         int av = <int>(<double*> params)[2]
         int obl_surfgrav_ind = <int>(<double*> params)[3]
 
-    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
-    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
+    radius = radiusNormalised(mu, epsilon, zeta,  obl_surfgrav_ind)
+    f = f_theta(mu, radius, epsilon, zeta,  obl_surfgrav_ind)
 
     if (av == 0):
         eval_integrand = radius * radius * sqrt(1.0 + f * f) * sin(theta)
@@ -904,8 +915,7 @@ def allocate_cells(size_t num_cells,
                    double superAzimuth,
                    double holeColatitude,
                    double holeRadius,
-                   double holeAzimuth,
-                   fast_components):
+                   double holeAzimuth):
 
     cdef:
         double super_numCell, super_sqrt_numCell, super_cellArea, super_area
@@ -914,22 +924,8 @@ def allocate_cells(size_t num_cells,
         double cede_numCell, cede_sqrt_numCell, cede_cellArea, cede_area
         double cede_boundary_phi
         double cede_colat_lims[2]
-        double f, y
-        double fast_super, fast_cede
+        double y
         cdef gsl_cq_work *w = gsl_integration_cquad_workspace_alloc(100)
-
-    fast_super = 1.0
-    fast_cede = 1.0
-    if fast_components is not None and len(fast_components) > 1:
-        try:
-            fast_super, fast_cede = fast_components
-        except TypeError:
-            fast_super = 1.0
-            fast_cede = 1.0
-
-        if are_equal(fast_super, 0.0) and are_equal(fast_cede, 0.0): # invisible (at this res)
-            fast_super = 1.0 # just assume equal and base on relative area
-            fast_cede = 1.0
 
     superColatitude_cpy = superColatitude
     # first integrate area of default superseding region
@@ -1073,21 +1069,14 @@ def allocate_cells(size_t num_cells,
         if are_equal(cede_area, 0.0): # Gausian integral did not resolve
             cede_area = cede_cellArea / 1000.0
 
-        if fast_super > 0.0:
-            f = fast_super / (fast_super + fast_cede)
-            #print('Fast super signal/fast cede signal: %.8e' % f)
+        y = (cede_area/super_area) - 1.0
 
-            y = ((1.0 - f)/f)*(cede_area/super_area) - 1.0
-
-            if are_equal(y, 0.0):
-                super_numCell = 0.5 * <double>num_cells
-                cede_numCell = 0.5 * <double>num_cells
-            else:
-                super_numCell = <double>num_cells * ((sqrt(1.0 + y) - 1.0)/y)
-                cede_numCell = <double>num_cells - super_numCell
+        if are_equal(y, 0.0):
+            super_numCell = 0.5 * <double>num_cells
+            cede_numCell = 0.5 * <double>num_cells
         else:
-            super_numCell = 0.0
-            cede_numCell = <double>num_cells
+            super_numCell = <double>num_cells * ((sqrt(1.0 + y) - 1.0)/y)
+            cede_numCell = <double>num_cells - super_numCell
 
         #print(super_numCell, super_cellArea, super_area)
         super_sqrt_numCell = ceil(sqrt(super_numCell * super_cellArea / super_area))
