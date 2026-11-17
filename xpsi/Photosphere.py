@@ -485,8 +485,8 @@ class Photosphere(ParameterSubspace):
 
         if self._hot is not None:
             for hot in self._hot.objects:
-                if hot.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
-
+                # Skip if the atmosphere is not loaded; HotRegion.integrate then raises AtmosError.
+                if hot.atm_ext == 2 and self._hot_atmosphere: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
                     T_low, T_high = self._hot_atmosphere[0][0], self._hot_atmosphere[0][len(self._hot_atmosphere[0])-1]
                     g_low, g_high = self._hot_atmosphere[1][0], self._hot_atmosphere[1][len(self._hot_atmosphere[1])-1]
 
@@ -507,7 +507,8 @@ class Photosphere(ParameterSubspace):
                             raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
 
         if self._elsewhere is not None:
-            if self._elsewhere.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+            # Skip if the atmosphere is not loaded; Elsewhere.integrate then raises AtmosError.
+            if self._elsewhere.atm_ext == 2 and self._elsewhere_atmosphere: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
                 T_low, T_high = self._elsewhere_atmosphere[0][0], self._elsewhere_atmosphere[0][len(self._elsewhere_atmosphere[0])-1]
                 g_low, g_high = self._elsewhere_atmosphere[1][0], self._elsewhere_atmosphere[1][len(self._elsewhere_atmosphere[1])-1]
 
@@ -531,7 +532,8 @@ class Photosphere(ParameterSubspace):
 
         #TBD: Similar check for Everywhere.
         if self._everywhere is not None:
-            if self._everywhere.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+            # Skip if the atmosphere is not loaded; Everywhere.integrate then raises AtmosError.
+            if self._everywhere.atm_ext == 2 and self._everywhere_atmosphere: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
                 T_low, T_high = self._everywhere_atmosphere[0][0], self._everywhere_atmosphere[0][len(self._everywhere_atmosphere[0])-1]
                 g_low, g_high = self._everywhere_atmosphere[1][0], self._everywhere_atmosphere[1][len(self._everywhere_atmosphere[1])-1]
 
