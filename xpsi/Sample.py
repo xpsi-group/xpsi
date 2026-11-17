@@ -432,12 +432,24 @@ def run_nautilus(
     """
 
     # initialise the sampler
-    sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, MPI=MPI)
+    if MPI :
+        from mpi4py.futures import MPIPoolExecutor
+        
+        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool=MPIPoolExecutor())
 
-    # start sampling
-    sampler(runtime_params)
+        # start sampling
+        sampler(runtime_params)
 
-    # store output
-    sampler.write_results(out_filename)
+        # store output
+        sampler.write_results(out_filename)
+
+    else:
+        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs)
+
+        # start sampling
+        sampler(runtime_params)
+
+        # store output
+        sampler.write_results(out_filename)
 
     return sampler

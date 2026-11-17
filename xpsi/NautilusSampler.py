@@ -32,7 +32,7 @@ class NautilusSampler:
         likelihood : Likelihood,
         prior : Prior,
         sampler_build_kwargs,
-        MPI=True,
+        pool=None, 
     ):
 
         if not isinstance(likelihood, Likelihood):
@@ -45,27 +45,14 @@ class NautilusSampler:
 
         self._param_names = self._likelihood.names
 
-        if MPI:
-            from mpi4py.futures import MPIPoolExecutor
-
-            self._sampler = nautilus.Sampler(
-                self._prior.inverse_sample, # prior
-                self.likelihood_wrapper,
-                n_dim=len(self._param_names),
-                pass_dict=False,
-                pool = MPIPoolExecutor(),
-                **sampler_build_kwargs
-            )
-
-        else:
-
-            self._sampler = nautilus.Sampler(
-                self._prior.inverse_sample, # prior
-                self.likelihood_wrapper,
-                n_dim=len(self._param_names),
-                pass_dict=False,
-                **sampler_build_kwargs
-            )
+        self._sampler = nautilus.Sampler(
+            self._prior.inverse_sample, # prior
+            self.likelihood_wrapper,
+            n_dim=len(self._param_names),
+            pass_dict=False,
+            pool=pool,
+            **sampler_build_kwargs
+        )
 
     def __call__(self, runtime_params):
         """ Run the sampler until target convergence criteria are fulfilled with the
