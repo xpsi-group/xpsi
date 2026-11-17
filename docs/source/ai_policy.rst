@@ -98,13 +98,13 @@ Automated workflows currently enabled by the X-PSI team:
 
 * **GitHub Actions** (acting as ``github-actions[bot]``), configured in
   ``.github/workflows/``. It runs the test suite on every pull request and on
-  ``main``, checks that each pull request has a changelog fragment and that
-  none of its commits lists an AI tool as co-author or author, and builds the
-  draft JOSS paper. It also writes to the repository in two cases: it
-  commits the updated ``CHANGELOG.rst`` to a pull request's branch when a
-  maintainer adds the ``ready-for-changelog`` label, and it deploys the
-  documentation to the ``gh-pages`` branch after each change to ``main``.
-  It does not open issues or pull requests.
+  ``main``, and checks that each pull request has a changelog fragment and
+  that none of its commits lists an AI tool as co-author or author. It also
+  writes to the repository in two cases: it commits the updated
+  ``CHANGELOG.rst`` to a pull request's branch when a maintainer adds the
+  ``ready-for-changelog`` label, and it deploys the documentation to the
+  ``gh-pages`` branch after each change to ``main``. It does not open issues
+  or pull requests.
 
 Use by the X-PSI team
 ~~~~~~~~~~~~~~~~~~~~~
