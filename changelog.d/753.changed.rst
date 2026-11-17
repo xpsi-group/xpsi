@@ -1,0 +1,4 @@
+Instrument.py: Force the response matrix to be C-contiguous when saving it.
+Interstellar.py: Changed attenuation re-computations that were happening once per phase bin so it is only called once.
+module_generator.py: Changed the custom interstellar, caching interpolation computations to avoid useless re-computations.
+PileupModule.py: Moved redundant computation to the initialization of the object and forces the RMF to be C-contiguous.
