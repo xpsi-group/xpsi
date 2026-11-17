@@ -1,0 +1,1 @@
+Fixed a backward incompatibility introduced in v3.4.0: parameters passed positionally to ``Instrument`` after ``channel_edges`` (e.g. in modules made by the module generator) were interpreted as ``twod_edges``. ``twod_edges`` is now a keyword-only argument.
