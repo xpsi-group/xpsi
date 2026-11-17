@@ -511,7 +511,10 @@ class Photosphere(ParameterSubspace):
                 T_low, T_high = self._elsewhere_atmosphere[0][0], self._elsewhere_atmosphere[0][len(self._elsewhere_atmosphere[0])-1]
                 g_low, g_high = self._elsewhere_atmosphere[1][0], self._elsewhere_atmosphere[1][len(self._elsewhere_atmosphere[1])-1]
 
-                temperature = self._elsewhere[0]
+                # Use vector[0] (free, fixed and derived parameters) to match
+                # Elsewhere._compute_cellParamVecs; integer indexing only
+                # sees free parameters and fails if the temperature is fixed.
+                temperature = self._elsewhere.vector[0]
 
                 if not T_low <= temperature <= T_high:
                     raise Exception(" Elsewhere temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
@@ -532,7 +535,10 @@ class Photosphere(ParameterSubspace):
                 T_low, T_high = self._everywhere_atmosphere[0][0], self._everywhere_atmosphere[0][len(self._everywhere_atmosphere[0])-1]
                 g_low, g_high = self._everywhere_atmosphere[1][0], self._everywhere_atmosphere[1][len(self._everywhere_atmosphere[1])-1]
 
-                temperature = self._everywhere[0]
+                # Use vector[0] (free, fixed and derived parameters) to match
+                # Everywhere._compute_cellParamVecs; integer indexing only
+                # sees free parameters and fails if the temperature is fixed.
+                temperature = self._everywhere.vector[0]
 
                 if not T_low <= temperature <= T_high:
                     raise Exception(" Everywhere temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
