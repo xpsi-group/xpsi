@@ -1,0 +1,2 @@
+``xpsi/utilities/ProjectionTool.py`` no longer uses ``numpy.matrix``, which numpy discourages and may remove; plain arrays are used instead, with identical results.
+Changed the style of the docstrings to match the rest of the code base.

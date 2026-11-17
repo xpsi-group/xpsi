@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 import xpsi
 from xpsi.global_imports import gravradius
-from xpsi.utilities.ProjectionTool import plot_projection_general
+from xpsi.utilities.ProjectionToolFilled import plot_projection_filled
 from xpsi.utilities.BackgroundTools import readSummary, plotBackgroundSpectrum
 
 class TestPostProcessing(object):
@@ -179,10 +179,12 @@ class TestPostProcessing(object):
                                     plot_range=True)
                                     
     def test_projection_tool_works(self):
-        'Testing that the projection tool does not fail when it should not.'
+        'Testing that the (filled) projection tool does not fail when it should not.'
 
         samples_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2')
         AverageP ,SigmaP, BestFitP, MAP_P = readSummary(samples_path,verbose=False)
         self.ST.likelihood(BestFitP,reinitialise=True)
-        ax = plot_projection_general(self.ST.likelihood, 'ST', "I","SP", antiphase=False, SaveFlag = False, Name = 'BestFit' )
+        ax = plot_projection_filled(self.ST.likelihood, 'ST', "I", resolution=200)
+        ax_front, ax_back = plot_projection_filled(self.ST.likelihood, 'ST', "P",
+                                                   back_view=True, resolution=200)
 
