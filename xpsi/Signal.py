@@ -1166,6 +1166,10 @@ class Signal(ParameterSubspace):
         for key, value in header.items():
             bin_table.header[key] = value
 
+        # Legal channel range of the CHANNEL column (first column), as written in the file
+        bin_table.header['TLMIN1'] = ( int(np.min(channels)), 'Lowest legal channel number' )
+        bin_table.header['TLMAX1'] = ( int(np.max(channels)), 'Highest legal channel number' )
+
         # Create the FITS file (PHA file)
         hdul = fits.HDUList([primary_hdu, bin_table])
 

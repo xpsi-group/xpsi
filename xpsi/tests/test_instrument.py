@@ -160,3 +160,61 @@ class TestInstrumentChannelEdges(object):
     def test_channeledges(self):
         self.st._channel_edges
         self.st.channel_edges
+
+
+def _write_rmf(path, tlmin=1, write_tlmin=True, extname='MATRIX', detchans=5):
+    """ Write a minimal OGIP-like diagonal RMF with ``detchans`` channels and
+    energies, channel numbers starting at ``tlmin``. """
+    from astropy.io import fits
+
+    n = detchans
+    energ_lo = np.arange(1.0, 1.0 + n)
+    matrix = np.zeros((n, 2), dtype=np.float32)
+    matrix[:, 0] = 1.0
+    matrix_cols = [
+        fits.Column(name='ENERG_LO', array=energ_lo, format='E'),
+        fits.Column(name='ENERG_HI', array=energ_lo + 1.0, format='E'),
+        fits.Column(name='N_GRP', array=np.ones(n, dtype=np.int16), format='I'),
+        fits.Column(name='F_CHAN', array=np.arange(tlmin, tlmin + n, dtype=np.int32), format='J'),
+        fits.Column(name='N_CHAN', array=np.ones(n, dtype=np.int32), format='J'),
+        fits.Column(name='MATRIX', array=matrix, format='2E'),
+    ]
+    matrix_hdu = fits.BinTableHDU.from_columns(matrix_cols, name=extname)
+    matrix_hdu.header['INSTRUME'] = 'TEST'
+    matrix_hdu.header['DETCHANS'] = n
+    if write_tlmin:
+        matrix_hdu.header['TLMIN4'] = tlmin
+        matrix_hdu.header['TLMAX4'] = tlmin + n - 1
+
+    ebounds_cols = [
+        fits.Column(name='CHANNEL', array=np.arange(tlmin, tlmin + n, dtype=np.int32), format='J'),
+        fits.Column(name='E_MIN', array=energ_lo, format='E'),
+        fits.Column(name='E_MAX', array=energ_lo + 1.0, format='E'),
+    ]
+    ebounds_hdu = fits.BinTableHDU.from_columns(ebounds_cols, name='EBOUNDS')
+    fits.HDUList([fits.PrimaryHDU(), matrix_hdu, ebounds_hdu]).writeto(path, overwrite=True)
+
+
+@pytest.mark.parametrize('tlmin, write_tlmin, extname', [
+    (0, True, 'MATRIX'),
+    (1, True, 'MATRIX'),
+    (1, False, 'MATRIX'),
+    (1, True, 'SPECRESP MATRIX'),
+])
+@pytest.mark.parametrize('twod_edges', [False, True])
+def test_from_ogip_fits_channel_range(tmp_path, tlmin, write_tlmin, extname, twod_edges):
+    'All DETCHANS channels are loaded, with or without TLMIN/TLMAX and for RMF or RSP extension names.'
+
+    path = tmp_path / 'response.rmf'
+    _write_rmf(str(path), tlmin=tlmin, write_tlmin=write_tlmin, extname=extname)
+
+    instr = Instrument.from_ogip_fits(str(path), twod_edges=twod_edges)
+
+    assert np.array_equal(instr.channels, np.arange(tlmin, tlmin + 5))
+    assert instr.TLMIN == tlmin
+    assert np.allclose(instr.matrix, np.eye(5))
+    if twod_edges:
+        assert instr.channel_edges.shape == (2, 5)
+        assert np.allclose(instr.channel_edges[0], np.arange(1.0, 6.0))
+    else:
+        assert np.allclose(instr.channel_edges, np.arange(1.0, 7.0))

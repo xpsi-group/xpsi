@@ -2,11 +2,12 @@
 __all__ = ["Data"]
 
 from xpsi.global_imports import *
-from xpsi.utils import make_verbose
+from xpsi.utils import make_verbose, fits_column_keyword
 
 from xpsi.Instrument import ChannelError
 
 from astropy.io import fits
+
 
 class Data(object):
     r""" A container for event data.
@@ -661,12 +662,23 @@ class Data(object):
 
         # Read the fits files
         with fits.open( path ) as hdul:
-            Header = hdul['SPECTRUM'].header 
+            Header = hdul['SPECTRUM'].header
             spectrum = hdul['SPECTRUM'].data
+            TLMIN = fits_column_keyword( hdul['SPECTRUM'], 'CHANNEL', 'TLMIN' )
 
         # Extract useful data
         exposure = _np.double( Header['EXPOSURE'] )
         channel_data = spectrum['CHANNEL']
+
+        # First legal channel number. If the TLMINn keyword of the CHANNEL
+        # column is missing (e.g. synthetic PHA files), use the first channel
+        # of the file, as OGIP PHA files list all channels from the first one.
+        if TLMIN is None:
+            TLMIN = int( _np.min( channel_data ) )
+            print(f'TLMIN keyword not found for the CHANNEL column of {path}. '
+                  f'Assuming the first channel is {TLMIN}.')
+        else:
+            TLMIN = int( TLMIN )
         try:
             counts_data = spectrum['COUNTS']
         except KeyError:
@@ -687,9 +699,7 @@ class Data(object):
         else:
             min_channel = channels[0]
             max_channel = channels[-1]
-       
-        TLMIN= _np.int32(Header['TLMIN1'])
-        
+
         if checkqual:
             if checkdatasrc is not None:
                 assert hasattr(checkdatasrc, '_quality')
