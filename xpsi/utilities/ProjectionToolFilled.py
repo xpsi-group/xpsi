@@ -19,10 +19,11 @@ Models with one or two hot regions are supported, using the model strings,
 parameter names and points of view described in the "Emitting patterns 2D
 projection" tutorial.
 
-No light bending is included: this is a plain orthographic projection of the
-unit sphere. Emission on the hemisphere facing the viewer is drawn solid;
-emission on the far hemisphere is hatched (or dimmed), as if seen through a
-glass sphere. ``back_view=True`` adds a panel showing the opposite side.
+No physcis are included (e.g. relativistic and Doppler effects): this is a plain 
+orthographic projection of the unit sphere. Emission on the hemisphere facing 
+the viewer is drawn solid; emission on the far hemisphere is hatched (or dimmed), 
+as if seen through a glass sphere. ``back_view=True`` adds a panel showing the 
+opposite side.
 
 ``animate_projection_filled`` writes a movie (MP4 or GIF) of the star rotating
 as seen by the observer, using the same rendering.
@@ -35,10 +36,13 @@ X-PSI installed.
 """
 
 import numpy as np
+from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.cm import ScalarMappable
 from scipy.ndimage import gaussian_filter
+import shutil
+import subprocess
 
 __all__ = ["plot_projection_filled", "animate_projection_filled",
            "parse_hot_regions", "HOT_GLOW_CMAP",
@@ -139,15 +143,22 @@ def _flavour(hot_name):
 
 
 def _read_region(dictVp, names, tag, hot_name, antiphase=False):
-    """
-    Build one hot region from tagged parameters, mirroring
-    ProjectionTool.fillVECTORS (and xpsi.HotRegion conventions).
+    """ Build one hot region from tagged parameters.
 
-    Returns a dict with keys
-        name, tag,
-        super = (theta, phi, zeta, logT),
-        omit  = (theta, phi, zeta)        or None,
-        cede  = (theta, phi, zeta, logT)  or None
+    Mirrors ``ProjectionTool.fillVECTORS`` (and the ``xpsi.HotRegion``
+    conventions).
+
+    :param dictVp: Parameter values (or an X-PSI ParameterSubspace).
+    :param list names: Available parameter names.
+    :param str tag: Hot-region tag, ``'p'`` (primary) or ``'s'`` (secondary).
+    :param str hot_name: Hot-spot name, e.g. ``'ST'``, ``'PST'`` or ``'CDT'``.
+    :param bool antiphase: If True, offset the secondary by 0.5 cycles.
+
+    :returns:
+        A dictionary describing the region, with keys ``name``, ``tag``,
+        ``super = (theta, phi, zeta, logT)``,
+        ``omit = (theta, phi, zeta)`` or ``None``, and
+        ``cede = (theta, phi, zeta, logT)`` or ``None``.
     """
     kind, geom = _flavour(hot_name)
     g = lambda k: _get(dictVp, names, tag + "__" + k)
@@ -402,60 +413,64 @@ def plot_projection_filled(dictVp, model, POV="", ThetaDisplay="", antiphase=Fal
                            SaveFlag=False, dir="", Name="", POVname="",
                            extension=".png", antipodal=False,
                            Tmin=None, Tmax=None, min_span=0.3, cmap=None, style="dark",
-                           show_far_side=True, far_alpha=0.45, far_style="hatch", far_legend=True, glow=None,
+                           show_far_side=True, far_alpha=0.45, far_style="hatch", far_legend=True,
                            show_outlines=False, grid_step=15.0, resolution=900,
                            colorbar=True, ax=None, figsize=None, back_view=False,
                            _M=None, _title=None, _warn=True):
-    """
-    Plot a filled, temperature-coloured 2D projection of the hot region(s).
+    """ Plot a filled, temperature-coloured 2D projection of the hot region(s).
 
-    ##### INPUTS (same meaning as plot_projection_general) #####
-    dictVp:   dict (or X-PSI ParameterSubspace) of parameter values
-    model:    model string, e.g. "ST", "PDT", "ST+PST", "CST-S", "ST-Ua", "ST-U"
-    POV:      point of view: "", "I", a component code ("P", "PE", "PO", "PS",
-              "PC", "S", ...) or a 3-vector pointing from the stellar centre
-              to the viewer
-    ThetaDisplay: accepted for compatibility; the latitude/longitude grid is
-              always drawn in the stellar frame instead
-    antiphase: secondary phase defined 0.5 cycles from the primary's origin
-    SaveFlag, dir, Name, POVname, extension: as in plot_projection_general
-    antipodal: also draw (dashed) the outline of the antipode of the primary
+    :param dictVp: Parameter values (or an X-PSI ParameterSubspace).
+    :param str model: Model string, e.g. ``"ST"``, ``"PDT"``, ``"ST+PST"``,
+        ``"CST-S"``, ``"ST-Ua"`` or ``"ST-U"``.
+    :param POV: Point of view: ``""``, ``"I"``, a component code (``"P"``,
+        ``"PE"``, ``"PO"``, ``"PS"``, ``"PC"``, ``"S"``, ...) or a 3-vector
+        pointing from the stellar centre to the viewer.
+    :param str ThetaDisplay: Accepted for compatibility; the latitude/longitude
+        grid is always drawn in the stellar frame instead.
+    :param bool antiphase: If True, the secondary phase is defined 0.5 cycles
+        from the primary's origin.
+    :param bool SaveFlag: Whether to save the figure to file.
+    :param str dir: Directory in which to save the figure.
+    :param str Name: Extra tag appended to the saved file name.
+    :param str POVname: Name used in the saved file name when ``POV`` is a
+        vector rather than a recognised string.
+    :param str extension: Extension of the saved file, e.g. ``".png"``.
+    :param bool antipodal: If True, also draw (dashed) the outline of the
+        antipode of the primary.
+    :param Tmin: Lower log10(T/K) limit of the colour scale (default: span of
+        the emitting temperatures in this model). Fix ``Tmin`` and ``Tmax`` to
+        compare several figures on the same scale.
+    :param Tmax: Upper log10(T/K) limit of the colour scale (see ``Tmin``).
+    :param float min_span: Minimum width [dex] of the automatic colour scale,
+        so that e.g. 6.10 vs 6.13 is not stretched across the whole map.
+    :param cmap: Matplotlib colormap or name (default: inferno; for the dark
+        style its darkest 20 % is cut off). ``HOT_GLOW_CMAP`` gives the
+        orange/magenta look.
+    :param str style: ``"dark"`` (wireframe on a night-sky background) or
+        ``"light"``.
+    :param bool show_far_side: If True, also show (dimmed) what lies on the far
+        hemisphere.
+    :param float far_alpha: Opacity of the far-hemisphere layer.
+    :param str far_style: ``"hatch"`` (default): far-side emission is drawn with
+        diagonal stripes and a dashed outline; ``"dim"``: just dimmed.
+    :param bool far_legend: If True, add a small legend explaining near vs far
+        side.
+    :param bool show_outlines: If True, draw thin outlines of every component,
+        including omission regions (dashed) and the masked part of ceding
+        regions.
+    :param float grid_step: Spacing of the latitude/longitude wireframe [deg].
+    :param int resolution: Number of pixels across the stellar disc.
+    :param bool colorbar: If True, add a log10(T) colour bar.
+    :param ax: Existing axes to draw into (a new figure is made otherwise).
+    :param figsize: Figure size (default ``(8.6, 8)``, or ``(16, 8)`` with
+        ``back_view``).
+    :param bool back_view: If True, add a second panel showing the star from the
+        opposite side, as if you walked around it (north stays up). Spots on the
+        far side in the main panel appear solid there.
 
-    ##### NEW INPUTS #####
-    Tmin, Tmax:   log10(T/K) limits of the colour scale (default: span of the
-                  emitting temperatures in this model). Fix these to compare
-                  several figures on the same scale.
-    min_span:     minimum width [dex] of the automatic colour scale, so that
-                  e.g. 6.10 vs 6.13 is not stretched across the whole map
-    cmap:         matplotlib colormap or name (default: inferno; for the dark
-                  style its darkest 20 % is cut off. HOT_GLOW_CMAP gives
-                  the orange/magenta look)
-    style:        "dark" (wireframe on night-sky background) or "light"
-    show_far_side: also show (dimmed) what lies on the far hemisphere
-    far_alpha:    opacity of the far-hemisphere layer
-    far_style:    "hatch" (default): far-side emission is drawn with diagonal
-                  stripes and a dashed outline; "dim": just dimmed
-    far_legend:   add a small legend explaining near vs far side
-    glow:         add a soft halo around emitting regions (default: on for
-                  the dark style, off for the light style)
-    show_outlines: draw thin outlines of every component, including omission
-                  regions (dashed) and the masked part of ceding regions
-    grid_step:    spacing of the latitude/longitude wireframe [deg]
-    resolution:   pixels across the stellar disc
-    colorbar:     add a log10(T) colour bar
-    ax:           existing axes to draw into (a new figure is made otherwise)
-    back_view:    add a second panel showing the star from the opposite
-                  side, as if you walked around it (north stays up). Spots on
-                  the far side in the main panel appear solid there.
-    figsize:      figure size (default (8.6, 8), or (16, 8) with back_view)
-
-    ##### OUTPUTS #####
-    ax  (or (ax_front, ax_back) when back_view=True)
-
+    :returns: ``ax`` (or ``(ax_front, ax_back)`` when ``back_view=True``).
     """
     st = STYLES[style]
-    if glow is None:
-        glow = (style == "dark")
     if cmap is None:
         cmap = INFERNO_DARK_CMAP if style == "dark" else plt.get_cmap("inferno")
     elif isinstance(cmap, str):
@@ -464,7 +479,7 @@ def plot_projection_filled(dictVp, model, POV="", ThetaDisplay="", antiphase=Fal
     if back_view:
         return _front_back(dictVp, model, POV, antiphase, SaveFlag, dir, Name, POVname,
                            extension, antipodal, Tmin, Tmax, min_span, cmap, style,
-                           show_far_side, far_alpha, far_style, far_legend, glow,
+                           show_far_side, far_alpha, far_style, far_legend,
                            show_outlines, grid_step, resolution, colorbar,
                            figsize or (16, 8))
     if figsize is None:
@@ -564,15 +579,7 @@ def plot_projection_filled(dictVp, model, POV="", ThetaDisplay="", antiphase=Fal
     ax.add_patch(plt.Circle((0, 0), 1.0, color=st["disk"], alpha=st["disk_alpha"],
                             zorder=2, lw=0))
 
-    # near hemisphere emission (+ glow)
-    if glow:
-        halo = near.copy()
-        sig = max(N / 180.0, 1.0)
-        a_bl = gaussian_filter(near[..., 3], sig * 2.5)
-        for k in range(3):
-            halo[..., k] = gaussian_filter(near[..., k] * near[..., 3], sig * 2.5) / np.maximum(a_bl, 1e-6)
-        halo[..., 3] = np.clip(a_bl * 0.9, 0, 1)
-        ax.imshow(halo, extent=ext, origin="upper", interpolation="antialiased", zorder=5)
+    # near hemisphere emission 
     ax.imshow(near, extent=ext, origin="upper", interpolation="antialiased", zorder=6)
 
     # limb
@@ -635,7 +642,6 @@ def plot_projection_filled(dictVp, model, POV="", ThetaDisplay="", antiphase=Fal
     ax.set_ylim(-L, L)
     ax.set_aspect("equal")
     if show_far_side and far_legend and far is not None and far[..., 3].any():
-        from matplotlib.patches import Patch
         mid = cmap(0.6)
         handles = [Patch(facecolor=mid, edgecolor="none", label="Near side"),
                    Patch(facecolor=(*mid[:3], far_alpha * 0.5), edgecolor=st["text"],
@@ -695,7 +701,7 @@ def _save(fig, dir, POV, POVname, labPOV, Name, extension):
 
 def _front_back(dictVp, model, POV, antiphase, SaveFlag, dir, Name, POVname, extension,
                 antipodal, Tmin, Tmax, min_span, cmap, style, show_far_side, far_alpha,
-                far_style, far_legend, glow, show_outlines, grid_step, resolution,
+                far_style, far_legend, show_outlines, grid_step, resolution,
                 colorbar, figsize):
     """Main view plus the view from the opposite side, sharing one colour scale."""
     st = STYLES[style]
@@ -717,7 +723,7 @@ def _front_back(dictVp, model, POV, antiphase, SaveFlag, dir, Name, POVname, ext
     ax_b = fig.add_axes([w, 0.0, w, 0.94])
     common = dict(antiphase=antiphase, antipodal=antipodal, Tmin=norm.vmin, Tmax=norm.vmax,
                   min_span=0.0, cmap=cmap, style=style, far_alpha=far_alpha,
-                  far_style=far_style, glow=glow, show_outlines=show_outlines,
+                  far_style=far_style, show_outlines=show_outlines,
                   grid_step=grid_step, resolution=resolution, colorbar=False)
     plot_projection_filled(dictVp, model, POV, show_far_side=show_far_side,
                            far_legend=far_legend, ax=ax_f,
@@ -750,32 +756,35 @@ def animate_projection_filled(dictVp, model, filename="rotation.mp4", n_frames=7
     [cycles], with the X-PSI convention: at phase ``t`` the observer is at
     azimuth ``-t`` in the stellar frame, so a hot region with
     ``phase_shift = s`` crosses the observer's meridian at ``t = -s`` (mod 1),
-    as in X-PSI pulse profiles (ignoring the small offsets from light bending,
+    as in X-PSI pulse profiles (ignoring the small offsets from e.g. light bending,
     time delays and Doppler boosting, which this projection does not include).
 
-    ##### INPUTS #####
-    dictVp, model, antiphase: as for plot_projection_filled
-    filename:    output file. ``.gif`` is written with Pillow (no extra
-                 software needed, plays inline almost everywhere, but larger
-                 files); anything else (e.g. ``.mp4``) is encoded as H.264
-                 with ffmpeg, which must be installed (e.g. ``conda install
-                 ffmpeg``).
-    n_frames:    number of frames (per movie, not per rotation)
-    fps:         frames per second
-    n_rotations: number of rotations shown; the movie loops seamlessly
-    inclination: observer colatitude [rad]; overrides cos/sin_inclination
-    dpi:         frame resolution (figure size x dpi gives the pixel size)
-    crf:         H.264 quality for MP4 output (lower = better, larger file)
-    show_phase:  put the current rotational phase in the title
-    **kwargs:    passed on to plot_projection_filled (e.g. Tmin, Tmax, cmap,
-                 style, show_outlines, far_style, resolution, figsize).
-                 ``POV``, ``back_view``, ``ax`` and ``SaveFlag`` are not
-                 available here.
+    :param dictVp: Parameter values (or an X-PSI ParameterSubspace), as for
+        :func:`plot_projection_filled`.
+    :param str model: Model string, as for :func:`plot_projection_filled`.
+    :param str filename: Output file. ``.gif`` is written with Pillow (no extra
+        software needed, plays inline almost everywhere, but larger files);
+        anything else (e.g. ``.mp4``) is encoded as H.264 with ffmpeg, which
+        must be installed (e.g. ``conda install ffmpeg``).
+    :param int n_frames: Number of frames (per movie, not per rotation).
+    :param int fps: Frames per second.
+    :param int n_rotations: Number of rotations shown; the movie loops
+        seamlessly.
+    :param inclination: Observer colatitude [rad]; overrides
+        ``cos_inclination`` / ``sin_inclination``.
+    :param bool antiphase: As for :func:`plot_projection_filled`.
+    :param int dpi: Frame resolution (figure size times dpi gives the pixel
+        size).
+    :param int crf: H.264 quality for MP4 output (lower = better, larger file).
+    :param bool show_phase: If True, put the current rotational phase in the
+        title.
+    :param kwargs: Passed on to :func:`plot_projection_filled` (e.g. ``Tmin``,
+        ``Tmax``, ``cmap``, ``style``, ``show_outlines``, ``far_style``,
+        ``resolution``, ``figsize``). ``POV``, ``back_view``, ``ax`` and
+        ``SaveFlag`` are not available here.
 
-    ##### OUTPUTS #####
-    filename
+    :returns: ``filename``.
     """
-    import os, shutil, subprocess
 
     for bad in ("POV", "back_view", "ax", "SaveFlag", "_M", "_title", "_warn"):
         if bad in kwargs:
