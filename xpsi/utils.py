@@ -1,7 +1,6 @@
 
 __all__ = ["make_verbose", "verbose", "fragile", "fits_column_keyword"]
 
-import six as _six
 from inspect import isgeneratorfunction as _isgeneratorfunction
 import wrapt
 from xpsi import _verbose
@@ -19,19 +18,19 @@ def make_verbose(enter_msg='', exit_msg=''):
         else:
             deactivate_verbosity = kwargs.pop('deactivate_verbosity', False)
         if _verbose and not deactivate_verbosity:
-            if enter_msg and isinstance(enter_msg, _six.string_types):
+            if enter_msg and isinstance(enter_msg, str):
                 msg = enter_msg
                 print(msg + ('...' if enter_msg[-1] != ':' else ''))
         if _isgeneratorfunction(func):
             for msg in func(*args, **kwargs):
                 if _verbose and not deactivate_verbosity:
-                    if msg and isinstance(msg, _six.string_types):
+                    if msg and isinstance(msg, str):
                         print(msg + ('...' if msg[-1] != '.' else ''))
                 final = msg  # catch last yield if generator
         else:
             final = func(*args, **kwargs)
         if _verbose and not deactivate_verbosity:
-            if exit_msg and isinstance(exit_msg, _six.string_types):
+            if exit_msg and isinstance(exit_msg, str):
                 if exit_msg == '\n':
                     print(exit_msg)
                 else:

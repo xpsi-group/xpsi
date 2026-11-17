@@ -29,7 +29,7 @@ class _Cache(object):
     def __init__(self, filename, cache_dir='./',
                  read_only=False, archive=True):
 
-        if isinstance(filename, _six.string_types):
+        if isinstance(filename, str):
             if filename[-3:] != '.h5':
                 self._filename = filename + '.h5'
             else:

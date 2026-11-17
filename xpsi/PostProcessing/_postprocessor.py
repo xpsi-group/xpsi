@@ -244,13 +244,13 @@ class PostProcessor(object):
         """ Get a :class:`~.Runs` instance using the associated ID. """
 
         def search(ID):
-            if isinstance(ID, _six.string_types):
+            if isinstance(ID, str):
                 for posterior in self._posteriors:
                     if ID == posterior.ID:
                         return posterior
             raise KeyError('No posterior with ID matching key.')
 
-        if isinstance(ID, _six.string_types):
+        if isinstance(ID, str):
             return search(ID)
         elif isinstance(ID, tuple):
             if len(ID) == 2:

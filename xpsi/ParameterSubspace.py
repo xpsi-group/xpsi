@@ -112,7 +112,7 @@ class ParameterSubspace(object, metaclass=ABCMeta):
     def get_param(self, name):
         """ Get a reference to a parameter object by name. """
 
-        if isinstance(name, _six.string_types):
+        if isinstance(name, str):
             for param in self._params:
                 if name == param.name:
                     return param
@@ -185,7 +185,7 @@ class ParameterSubspace(object, metaclass=ABCMeta):
     def __getitem__(self, key):
         """ Pass a string or an integer (latter only for free parameters). """
 
-        if isinstance(key, _six.string_types):
+        if isinstance(key, str):
             return self.get_param(key).evaluate(self) # "caller" is subspace
 
         elif isinstance(key, int):
@@ -197,7 +197,7 @@ class ParameterSubspace(object, metaclass=ABCMeta):
     def __setitem__(self, key, value):
         """ Pass a string or an integer (latter only for free parameters). """
 
-        if isinstance(key, _six.string_types):
+        if isinstance(key, str):
             try:
                 if self.prefix + '__' not in key:
                     key = self.prefix + '__' + key
@@ -303,7 +303,7 @@ class ParameterSubspace(object, metaclass=ABCMeta):
 
     @prefix.setter
     def prefix(self, prefix):
-        if isinstance(prefix, _six.string_types):
+        if isinstance(prefix, str):
             self._prefix = prefix
         else:
             raise ValueError('Invalid type for prefix string.')

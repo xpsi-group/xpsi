@@ -224,7 +224,7 @@ class SignalPlot(object, metaclass=ABCMeta):
 
     @posterior.setter
     def posterior(self, ID):
-        if not isinstance(ID, _six.string_types):
+        if not isinstance(ID, str):
             raise TypeError('Invalid type for ID.')
         else:
             self._posterior = ID

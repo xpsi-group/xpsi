@@ -79,7 +79,7 @@ class PhotospherePlotter( Photosphere ):
 
     @global_to_local_file.setter
     def global_to_local_file(self, filepath):
-        if not isinstance(filepath, _six.string_types):
+        if not isinstance(filepath, str):
             raise TypeError('File path must be a string.')
         elif not _os.path.isfile(filepath):
             raise IOError('File does not exist.')

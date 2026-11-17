@@ -201,6 +201,8 @@ def _write_rmf(path, tlmin=1, write_tlmin=True, extname='MATRIX', detchans=5):
     (1, False, 'MATRIX'),
     (1, True, 'SPECRESP MATRIX'),
 ])
+
+
 @pytest.mark.parametrize('twod_edges', [False, True])
 def test_from_ogip_fits_channel_range(tmp_path, tlmin, write_tlmin, extname, twod_edges):
     'All DETCHANS channels are loaded, with or without TLMIN/TLMAX and for RMF or RSP extension names.'
@@ -218,3 +220,51 @@ def test_from_ogip_fits_channel_range(tmp_path, tlmin, write_tlmin, extname, two
         assert np.allclose(instr.channel_edges[0], np.arange(1.0, 6.0))
     else:
         assert np.allclose(instr.channel_edges, np.arange(1.0, 7.0))
+        
+        
+class TestInstrumentParameterArguments(object):
+    """ Parameters can be passed positionally after ``channel_edges``.
+
+    Custom instruments (and modules made by the module generator) typically
+    end with ``cls(matrix, energy_edges, channels, channel_edges, alpha, **kwargs)``.
+    Regression test: in X-PSI v3.4.0, ``alpha`` was taken as ``twod_edges``.
+    """
+
+    class ScaledInstrument(Instrument):
+        """ Minimal custom instrument with an energy-independent scaling factor. """
+
+        def construct_matrix(self):
+            return self['alpha'] * self.matrix
+
+        @classmethod
+        def from_arrays(cls, matrix, energy_edges, channels, channel_edges, **kwargs):
+            from xpsi.Parameter import Parameter
+            alpha = Parameter('alpha',
+                              strict_bounds=(0.1, 1.9),
+                              bounds=(0.5, 1.5),
+                              doc='Energy-independent scaling factor',
+                              value=1.2)
+            return cls(matrix, energy_edges, channels, channel_edges, alpha, **kwargs)
+
+    def setup_class(cls):
+        cls.matrix = np.ones((3,3))
+        cls.energy_edges = np.arange(1,5,1)
+        cls.channels = [0,1,2]
+        cls.channel_edges = np.arange(1,5,1)
+
+    def test_positional_parameter(self):
+        st = self.ScaledInstrument.from_arrays(self.matrix, self.energy_edges,
+                                               self.channels, self.channel_edges,
+                                               prefix='XTI')
+        assert st._twod_edges is False
+        assert st['alpha'] == 1.2
+        assert np.allclose(st.construct_matrix(), 1.2 * self.matrix)
+
+    def test_twod_edges_keyword(self):
+        energy_edges = np.array([self.energy_edges[:-1], self.energy_edges[1:]])
+        channel_edges = np.array([self.channel_edges[:-1], self.channel_edges[1:]])
+        st = self.ScaledInstrument.from_arrays(self.matrix, energy_edges,
+                                               self.channels, channel_edges,
+                                               twod_edges=True)
+        assert st._twod_edges is True
+        assert st['alpha'] == 1.2

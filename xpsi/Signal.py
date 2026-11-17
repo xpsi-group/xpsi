@@ -1,6 +1,7 @@
 __all__ = ["Signal", "LikelihoodError"]
 
 from xpsi.global_imports import *
+from xpsi import _warning
 
 from xpsi.Data import Data
 from xpsi.Instrument import Instrument, ChannelError, EdgesError
@@ -737,7 +738,7 @@ class Signal(ParameterSubspace):
     @caching_targets.setter
     def caching_targets(self, obj):
         if isinstance(obj, list):
-            if all(isinstance(o, _six.string_types) for o in obj):
+            if all(isinstance(o, str) for o in obj):
                 if all(hasattr(self, o) for o in obj):
                     self._caching_targets = obj
                     return None
@@ -836,7 +837,7 @@ class Signal(ParameterSubspace):
                 name='synthetic',
                 directory='./',
                 seed=None,
-                save_background=True,
+                save_background=False,
                 **kwargs):
         
             """ Synthesise data set in FITS format that can be used in input of X-PSI.
@@ -880,8 +881,11 @@ class Signal(ParameterSubspace):
                 
             :param bool save_background: 
                 If True, the synthetic background is saved in the FITS file.
-                If False, it is not saved.
+                If False (default), it is not saved.
                 For NICER for instance, it does not need to be saved as it is unknown.
+                A warning is printed if a background (``signal._background`` or
+                ``data_BKG``) is used but not saved, or if saving is requested
+                while no background is provided (in which case nothing is saved).
             """
             
             # Create or find directory
@@ -978,6 +982,17 @@ class Signal(ParameterSubspace):
             kwargs['filename'] += '_realisation'
             kwargs['fmt'] = '%u'
             self._write(format,**kwargs)
+
+            # Check consistency between background and saving request
+            has_background = (self._background is not None) or (data_BKG is not None)
+            if save_background and not has_background:
+                _warning('save_background=True but neither signal._background '
+                         'nor data_BKG was provided: no background file will be saved.')
+                save_background = False
+            elif has_background and not save_background:
+                _warning('A background was used to synthesise the data but it '
+                         'will not be saved because save_background=False. '
+                         'Set save_background=True to save it.')
 
             # If requested, write background
             if save_background:

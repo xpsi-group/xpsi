@@ -540,7 +540,7 @@ class CornerPlotter(PostProcessor):
                 if isinstance(value, float) or isinstance(value, int):
                     setattr(plotter.settings, key,
                             getattr(plotter.settings, key) * value)
-                elif isinstance(value, _six.string_types):
+                elif isinstance(value, str):
                     if hasattr(plotter.settings, value):
                         setattr(plotter.settings, key,
                                 getattr(plotter.settings, value))
