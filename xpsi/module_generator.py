@@ -3,7 +3,6 @@ import os
 import sys
 
 import xpsi
-from xpsi.surface_radiation_field.effective_gravity_universal import (py_oblateness_func_o2 as oblateness_func_o2)
 
 def write(filename, module):
     """ Write a module to a file.
@@ -2886,6 +2885,7 @@ from xpsi.global_imports import _2pi, gravradius, _dpr
 from xpsi import Parameter
 
 from xpsi.cellmesh.mesh_tools import eval_cedeCentreCoords as eval_coords_under_rotation
+from xpsi.surface_radiation_field.effective_gravity_universal import (py_oblateness_func_o2 as oblateness_func_o2)
 from scipy.interpolate import Akima1DInterpolator
 
 if args.prior_import_statements is not None:
@@ -2987,7 +2987,8 @@ module += (
         grav = xpsi.surface_radiation_field.effective_gravity(np.array([1.0, 0.0]),
                                                               np.array([ref.R] * 2 ),
                                                               np.array([ref.zeta] * 2),
-                                                              np.array([ref.epsilon] * 2))
+                                                              np.array([ref.epsilon] * 2),
+                                                              ref._obl_surfgrav_ind)
 '''
 )
 
