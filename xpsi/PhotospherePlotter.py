@@ -66,7 +66,7 @@ class PhotospherePlotter( Photosphere ):
         try:
             "Loading the parameters provided by the parent Photosphere instance"
             return _np.array([self.photosphere['temperature']])
-        
+
         except KeyError:
             raise NotImplementedError('Subclass and provide an implementation.')
 
@@ -483,7 +483,7 @@ class PhotospherePlotter( Photosphere ):
             "BB": Analytical blackbody
             "Num4D": Numerical atmosphere using 4D-interpolation from the provided
             atmosphere data
-            "user": A user-provided extension which can be set up by replacing the contents of 
+            "user": A user-provided extension which can be set up by replacing the contents of
             the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
             (if not changed, "user" is the same as "BB").
 
@@ -652,6 +652,7 @@ class PhotospherePlotter( Photosphere ):
                                 cache_energy_indices,
                                 cache_phase_indices,
                                 single_precision_intensities,
+                                ref.obl_surfgrav_ind,
                                 _ray_map,
                                 self.global_to_local_file,
                                 self.photosphere._hot_atmosphere,
@@ -1700,11 +1701,11 @@ class PhotospherePlotter( Photosphere ):
 
         yield None
 
-    def _prepare_sky_map_data(self): 
-        """Extracting and preparing azimuth, photon intensities, and contour 
-        levels plotting sky maps. 
+    def _prepare_sky_map_data(self):
+        """Extracting and preparing azimuth, photon intensities, and contour
+        levels plotting sky maps.
         """
-        # information for vertical lines mesh grid 
+        # information for vertical lines mesh grid
         phi = _np.copy(self.images[4][...]) #  azimuth mapped to point (x,y) on image plane (1D array)
 
         for i in range(len(phi)):
@@ -1720,8 +1721,8 @@ class PhotospherePlotter( Photosphere ):
 
         phi_lvls = _np.linspace(_np.min(phi[phi > -100.0]),
                         _np.max(phi[phi > -100.0]), 25)
-        
-        # photon intensities for hotspots 
+
+        # photon intensities for hotspots
         if self.images[-1] is None:
             raise ValueError('You need to cache intensity sky maps in the image '
                         'function if you want to plot them.')
@@ -1730,11 +1731,11 @@ class PhotospherePlotter( Photosphere ):
         max_intensity = _np.max(intensity)
         intensity_lvls = _np.linspace(min_intensity,
                         max_intensity, 200)
-        
+
         return phi, phi_lvls, intensity, intensity_lvls
 
-    def plot_sky_map(self): 
-        """Plot the photon specific intensity sky map with a normalized 
+    def plot_sky_map(self):
+        """Plot the photon specific intensity sky map with a normalized
          temperature colorbar.
         """
 
@@ -1743,31 +1744,31 @@ class PhotospherePlotter( Photosphere ):
         fig = plt.figure(figsize=(12,10))
         ax = plt.gca()
 
-        # plot vertical lines of the mesh grid 
+        # plot vertical lines of the mesh grid
         ax.tricontour(self.images[1], # x-coordinate on image plane (1D array)
-                    self.images[2], # y-coordinate on image plane (1D array) 
+                    self.images[2], # y-coordinate on image plane (1D array)
                     phi,
                     levels=phi_lvls,
                     linestyles='solid',
                     linewidths=0.5,
                     colors='#0a0f2c')
 
-        # plot horizontal lines of the mesh grid 
-        ax.tricontour(self.images[1],   
-                    self.images[2],     
+        # plot horizontal lines of the mesh grid
+        ax.tricontour(self.images[1],
+                    self.images[2],
                     self.images[3], # colatitude mapped to point (x,y) on image plane (1D array)
                     levels=_np.linspace(0.1, _m.pi-0.1, 25),
                     colors='#0a0f2c',
                     linestyles='solid',
                     linewidths=0.5)
 
-        # plot hotspots 
+        # plot hotspots
         orange_to_red = LinearSegmentedColormap.from_list(
                 "orange_red", ["darkorange", "#990000"]
         )
 
-        hotspots = ax.tricontourf(self.images[1], 
-                    self.images[2], 
+        hotspots = ax.tricontourf(self.images[1],
+                    self.images[2],
                     intensity,
                     levels=intensity_lvls,
                     cmap=orange_to_red)

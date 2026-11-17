@@ -322,6 +322,7 @@ def intensity_from_globals(double[::1] energies,
                            double R_eq,
                            double zeta,
                            double epsilon,
+                           int obl_surfgrav_ind,
                            atmosphere = None,
                            atmos_extension = "BB",
                            size_t numTHREADS = 1):
@@ -380,6 +381,19 @@ def intensity_from_globals(double[::1] energies,
         effective gravity universal relation. It is recommended to supply this
         dimensionless variable by using an instance of :class:`~xpsi.Spacetime`.
 
+    :param int obl_surfgrav_ind:
+        Integer index selecting the stellar oblateness and effective
+        surface gravity prescription. The available options are:
+            0: Universal relation (AlGendy & Morsink 2014)
+            1: Spherical star
+            2: PSR J0030+0451
+            3: PSR J0740+6620
+            4: PSR J0437-4715
+            5: PSR J1231-1411
+            6: PSR J0614-3329
+            7: PSR J1614-2230
+        See :attr:`~xpsi.Spacetime.Spacetime.obl_surfgrav_ind`.
+
     :param tuple atmosphere:
         A numerical atmosphere preloaded into buffers. The buffers must be
         supplied in an :math:`n`-tuple whose :math:`n^{th}` element is an
@@ -431,8 +445,7 @@ def intensity_from_globals(double[::1] energies,
     GEOM.R_eq = R_eq
     GEOM.epsilon = epsilon
     GEOM.zeta = zeta
-    GEOM.star_shape_ind = 0 #assuming only oblate stars (Algendy & Morsink 2014) for global variables.
-
+    GEOM.obl_surfgrav_ind = obl_surfgrav_ind
     cdef fptr_init init_ptr = init_hot
     cdef fptr_free free_ptr = free_hot
     cdef fptr_eval eval_ptr = eval_hot_I
@@ -518,9 +531,12 @@ def effective_gravity(double[::1] cos_colatitude,
                       double[::1] R_eq,
                       double[::1] zeta,
                       double[::1] epsilon,
-                      str star_shape = "AGM_14"):
-    """ Approximate local effective gravity using a universal relation.
-    (or a spherical star if setting star_shape="sphere")
+                      int obl_surfgrav_ind):
+    """Approximate the local effective surface gravity of a neutron star.
+
+    The surface gravity is computed using the selected prescription,
+    including the universal relation of AlGendy & Morsink (2014),
+    a spherical-star approximation, or pulsar-specific prescriptions.
 
     See Morsink et al. (2007), AlGendy & Morsink (2014), and Bogdanov et al.
     (2019, ApJL, 887, L26).
@@ -544,10 +560,18 @@ def effective_gravity(double[::1] cos_colatitude,
         A 1D :class:`numpy.ndarray` of a dimensionless function of stellar
         properties. See :attr:`~xpsi.Spacetime.Spacetime.epsilon`.
 
-    :param double[::1] star_shape:
-        A string defining the shape model of the star ("AGM_14" or "sphere").
-        See :attr:`~xpsi.Spacetime.Spacetime.star_shape`.
-
+    :param int obl_surfgrav_ind:
+        Integer index selecting the stellar oblateness and effective
+        surface gravity prescription:
+            0: Universal relation (AlGendy & Morsink 2014)
+            1: Spherical star
+            2: PSR J0030+0451
+            3: PSR J0740+6620
+            4: PSR J0437-4715
+            5: PSR J1231-1411
+            6: PSR J0614-3329
+            7: PSR J1614-2230
+        See :attr:`~xpsi.Spacetime.Spacetime.obl_surfgrav_ind`.
     :returns:
         A 1D :class:`numpy.ndarray` of the logarithms (base 10) of the
         effective gravities in units of cm/s^2.
@@ -559,14 +583,11 @@ def effective_gravity(double[::1] cos_colatitude,
 
     cdef unsigned int i
 
-    allowed_models = ["AGM_14","sphere"]
-    cdef unsigned int star_shape_ind = allowed_models.index(star_shape)
-
     for i in range(<size_t>gravity.shape[0]):
         gravity[i] = effectiveGravity(cos_colatitude[i],
                                       R_eq[i],
                                       zeta[i],
                                       epsilon[i],
-                                      star_shape_ind)
+                                      obl_surfgrav_ind)
 
     return np.asarray(gravity, dtype = np.double, order = 'C')

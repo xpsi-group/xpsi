@@ -176,6 +176,6 @@ cdef int eval_local_variables(double theta,
                                      GEOM.R_eq,
                                      GEOM.zeta,
                                      GEOM.epsilon,
-                                     GEOM.star_shape_ind)
+                                     GEOM.obl_surfgrav_ind)
 
     return SUCCESS

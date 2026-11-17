@@ -17,12 +17,25 @@ class Star(ParameterSubspace):
     :param list photospheres: Each element must be an instance of
                               :class:`~.Photosphere`.
 
+    :param str name:
+        Name of the stellar for the oblateness and effective surface-gravity.
+         Defaults to ``"universal"`` when ``None``.
+        The selected prescription is stored in
+                             :attr:`~.Spacetime.Spacetime.obl_surfgrav`.
+
+
     """
-    def __init__(self, spacetime, photospheres):
+    def __init__(self, spacetime, photospheres, name=None):
         if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
 
         self._spacetime = spacetime
+
+        if name is None:
+            # Choose default model here
+            self._spacetime.obl_surfgrav = "universal"
+        else:
+            self._spacetime.obl_surfgrav = name
 
         try:
             assert isinstance(photospheres, list)
