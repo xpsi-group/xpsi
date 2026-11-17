@@ -30,7 +30,7 @@ class XrayPileup:
         # Note that we assume the energy array is linear and starts at a multiple of the energy bin size.
         self._arf_pos_ioff = -int(self.energies[0] // (self.energies[1] - self.energies[0])) 
 
-    def perform_pileup(self, spectrum: np.ndarray, alpha: float, psf_frac_init: float) -> np.ndarray:
+    def perform_pileup(self, spectrum: np.ndarray, alpha: float, psf_frac_init: float, ARF: np.ndarray) -> np.ndarray:
         """     
             Perform pileup calculation
             Code mainly inspired from the XSPEC equivalent, based on Davis 2001
@@ -41,7 +41,7 @@ class XrayPileup:
         fracexpo = self.instrument['frac_expo']
         
         # ARF convolution
-        arf_s = spectrum * self.arf_data   
+        arf_s = spectrum * ARF
         arf_s = np.maximum(arf_s, 0)
                 
         # Calculate pileup following original algorithm
@@ -93,7 +93,7 @@ class XrayPileup:
         return results 
 
 
-    def analyze(self, model_spectrum: np.ndarray, alpha: float, psf_frac: float) -> Tuple[np.ndarray, dict]:
+    def analyze(self, model_spectrum: np.ndarray, ARF: np.ndarray, alpha: float, psf_frac: float) -> Tuple[np.ndarray, dict]:
         """
         Perform pileup analysis on input spectrum
         
@@ -116,7 +116,7 @@ class XrayPileup:
         for k in range(model_spectrum.shape[1]):
 
             # Perform pileup calculation for each phase bin
-            spectrum_pileup = self.perform_pileup(model_spectrum[:,k], alpha, psf_frac) 
+            spectrum_pileup = self.perform_pileup(model_spectrum[:,k], alpha, psf_frac, ARF)
             piled_spectrum[:,k] = spectrum_pileup
         
         # Apply RMF if available
