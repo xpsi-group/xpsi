@@ -4,6 +4,8 @@ import math
 import os
 from collections import OrderedDict
 
+import matplotlib.pyplot as plt
+
 import xpsi
 from xpsi.global_imports import gravradius
 from xpsi.utilities.ProjectionToolFilled import plot_projection_filled
@@ -115,6 +117,82 @@ class TestPostProcessing(object):
 
         assert np.isclose(1.434, mass_median, rtol=1.0e-3) 
         assert np.isclose(0.09, mass_68interval, rtol=1.0e-3)
+
+    def _load_runs(self, **kwargs):
+        'Load the test runs, passing extra metadata kwargs (e.g., short_labels).'
+        ST = self.ST
+        return xpsi.Runs.load_runs(ID='ST',
+                                   run_IDs=['run'],
+                                   roots=['ST_live_1000_eff_0.3_seed0'],
+                                   base_dirs=[os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/')],
+                                   use_nestcheck=[False],
+                                   kde_settings=self.getdist_kde_settings,
+                                   likelihood=ST.likelihood,
+                                   names=ST.names,
+                                   bounds=ST.bounds,
+                                   labels=ST.labels,
+                                   implementation='multinest',
+                                   overwrite_transformed=True,
+                                   **kwargs)
+
+    def test_short_labels_default_to_labels(self):
+        'Testing that short labels default to the full labels if not provided.'
+        runs = self._load_runs()
+        assert runs.short_labels == self.ST.labels
+        assert runs.short_labels_defaulted == self.ST.names
+        for run in runs.runs:
+            assert run.short_labels == self.ST.labels
+
+    def test_short_labels_partial(self):
+        'Testing that missing short labels default to the full labels.'
+        short_labels = {'mass': r"M", 'radius': r"R_{\mathrm{eq}}"}
+        runs = self._load_runs(short_labels=short_labels)
+        for name in self.ST.names:
+            expected = short_labels.get(name, self.ST.labels[name])
+            assert runs.short_labels[name] == expected
+        assert runs.short_labels_defaulted == [name for name in self.ST.names
+                                               if name not in short_labels]
+
+    @pytest.mark.parametrize('short_labels', [{'not_a_parameter': r"X"},
+                                              {'mass': 1.4},
+                                              [r"M"]])
+    def test_short_labels_invalid(self, short_labels):
+        'Testing that invalid short labels raise a TypeError.'
+        with pytest.raises(TypeError):
+            _ = self._load_runs(short_labels=short_labels)
+
+    def _plot_labels_2D(self, runs):
+        pp = xpsi.PostProcessing.CornerPlotter([runs])
+        _ = pp.plot(params=self.ST.names,
+                    IDs=OrderedDict([('ST', ['run',]),]),
+                    prior_density=False,
+                    KL_divergence=False,
+                    labels_2D=True,
+                    bootstrap_estimators=False,
+                    credible_interval_1d=False,
+                    annotate_credible_interval=False,
+                    compute_all_intervals=False)
+        return pp
+
+    def test_cornerplotter_labels_2D_short_labels(self, capsys):
+        'Testing that labels_2D uses the short labels, with a message when defaulting.'
+        short_labels = {name: r"s_{%i}" % i for i, name in enumerate(self.ST.names)}
+        runs = self._load_runs(short_labels=short_labels)
+        capsys.readouterr()
+        pp = self._plot_labels_2D(runs)
+        texts = [t.get_text() for t in pp._plotter.subplots[1,0].texts]
+        expected = fr'${short_labels[self.ST.names[1]]}$ - ${short_labels[self.ST.names[0]]}$'
+        assert expected in texts
+        assert 'no short_labels given' not in capsys.readouterr().out
+
+        runs = self._load_runs()
+        capsys.readouterr()
+        pp = self._plot_labels_2D(runs)
+        texts = [t.get_text() for t in pp._plotter.subplots[1,0].texts]
+        expected = fr'${self.ST.labels[self.ST.names[1]]}$ - ${self.ST.labels[self.ST.names[0]]}$'
+        assert expected in texts
+        assert 'no short_labels given' in capsys.readouterr().out
+        plt.close('all')
 
     def test_residual_plotting_works(self):
         'Testing that the residual plotter does not fail when it should not.'
