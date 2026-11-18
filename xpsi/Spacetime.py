@@ -81,7 +81,6 @@ class Spacetime(ParameterSubspace):
         "agm_14": "universal",
         "algendy": "universal",
         "morsink": "universal",
-        "morsink 2007": "universal",
         "universal relation": "universal",
 
         # shorthand pulsar names

@@ -264,26 +264,6 @@ cdef double grav_j1614(double mu, double R_eq, double x, double epsilon) noexcep
     return log10(g * g_0) + 2.0
 
 
-cdef grav_fn select_gravity_fn(int obl_surfgrav_ind):
-    """
-    Select gravity function pointer.
-
-    Must be called with GIL (not inside nogil/prange).
-    Raises if model_id is invalid.
-    """
-    if obl_surfgrav_ind == 0:
-        return grav_algendy_morsink_2014
-    elif obl_surfgrav_ind == 1:
-        return grav_sphere
-    elif obl_surfgrav_ind == 5:
-        return grav_j1231
-    elif obl_surfgrav_ind == 7:
-        return grav_j1614
-
-    else:
-        raise ValueError("Unknown gravity model_id")
-
-
 cdef inline double effectiveGravity(double mu,
                                     double R_eq,
                                     double x,
