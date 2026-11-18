@@ -67,8 +67,10 @@ class Spacetime(ParameterSubspace):
 
     # Relations without a moment of inertia and quadrupole coefficient, so
     # the spin (a) and quadrupole (q) needed by the PhotospherePlotter are
-    # not available.
+    # not available. The spherical star is only meant for comparison
+    # calculations with the Schwarzschild + Doppler approximation.
     STAR_OBLATENESS_SURFGRAV_NO_SPIN_QUADRUPOLE = (
+        "sphere",
         "psr j1231-1411",
         "psr j1614-2230",)
 

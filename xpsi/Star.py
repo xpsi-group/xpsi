@@ -24,7 +24,7 @@ class Star(ParameterSubspace):
         pulsar-specific relations ``'psr j1231-1411'`` and
         ``'psr j1614-2230'`` (see also the aliases in
         :attr:`~.Spacetime.Spacetime.STAR_OBLATENESS_SURFGRAV_ALIASES`).
-        The pulsar-specific relations cannot yet be used with
+        Only ``'universal'`` can be used with
         :class:`~.PhotospherePlotter.PhotospherePlotter`.
         The selected prescription is stored in the spacetime and can be read
         from :attr:`~.Spacetime.Spacetime.obl_surfgrav`.

@@ -350,7 +350,7 @@ cdef double dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind) noexcept
         Compactness ratio x = M / Re.
     model : obl_surfgrav
         0 : AlGendy & Morsink (2014) slow-rotation universal fit
-        5   : Empirical fit from LORENE + CUTTER
+        other : not implemented (NaN)
 
     Returns
     -------
@@ -366,9 +366,8 @@ cdef double dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind) noexcept
         a2 = 5.6
         return sqrt(x) * (a0 + a1 * x + a2 * x * x)
 
-    elif obl_surfgrav_ind == 5:
-        # I have not computed the MoI for this star
-        return NAN
+    # Not computed for the spherical star or the pulsar-specific relations.
+    return NAN
 
 
 
@@ -385,7 +384,7 @@ cdef double beta1_coeff(int obl_surfgrav_ind) noexcept nogil:
     ----------
     model : obl_surfgrav
         0 : AlGendy & Morsink (2014) slow-rotation universal fit
-        5   : Empirical fit from LORENE + CUTTER
+        other : not implemented (NaN)
 
     Returns
     -------
@@ -394,9 +393,9 @@ cdef double beta1_coeff(int obl_surfgrav_ind) noexcept nogil:
     """
     if obl_surfgrav_ind == 0:
         return 0.4454
-    elif obl_surfgrav_ind == 5:
-        # Not computed for J1231
-        return NAN
+
+    # Not computed for the spherical star or the pulsar-specific relations.
+    return NAN
 
 cpdef double py_dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind):
     return dimless_moment_of_inertia_i(x, obl_surfgrav_ind)
