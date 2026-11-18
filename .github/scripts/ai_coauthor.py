@@ -126,7 +126,12 @@ def check(base, head):
         "",
         "This replaces each AI `Co-authored-by:` line with `Assisted-by:`, "
         "and makes you the author of any commit authored by an AI tool. "
-        "Rewriting history needs a force push; that is fine here.",
+        "It rewrites the commits on your pull request branch, so it has to "
+        "be pushed with `--force-with-lease`. This only affects your pull "
+        "request branch, never `main`, and `--force-with-lease` refuses to "
+        "overwrite commits that someone else has pushed to the branch in the "
+        "meantime. If other people also work on this branch, tell them "
+        "before you push.",        
         "",
         "**If only your latest commit is affected**, you can instead run "
         "`git commit --amend`, change the line by hand to "
