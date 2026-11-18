@@ -1287,7 +1287,10 @@ class ResidualPlot(SignalPlot):
         mu_hat = float(flat.mean())
         sd_hat = float(flat.std())
 
-        ks_stat, ks_p = _stats.kstest(flat, 'norm', args=(mu_hat, sd_hat))
+        # Pass a frozen CDF rather than ``'norm', args=(mu, sd)``: scipy 1.18
+        # maps the string 'norm' to ``special.ndtr``, which takes no
+        # loc/scale and raises a TypeError when ``args`` are supplied.
+        ks_stat, ks_p = _stats.kstest(flat, _stats.norm(loc=mu_hat, scale=sd_hat).cdf)
         ks_stat = float(ks_stat)
         ks_p = float(ks_p)
 
