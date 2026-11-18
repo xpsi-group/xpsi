@@ -287,7 +287,8 @@ class Spacetime(ParameterSubspace):
         except AttributeError:
             zeta = self.zeta
 
-            I_dimless = _m.sqrt(zeta) * dimless_moment_of_inertia_i(zeta, self._obl_surfgrav_ind)
+            # The returned i(x) already includes the factor sqrt(zeta).
+            I_dimless = dimless_moment_of_inertia_i(zeta, self._obl_surfgrav_ind)
 
             a = self.R * self.R * self.Omega * I_dimless / _c
 
