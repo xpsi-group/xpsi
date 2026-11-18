@@ -244,6 +244,20 @@ class TestPostProcessing(object):
                                 Nsamples=2,
                                 plot_range=False)
 
+    def test_background_plotting_errors_residuals(self):
+        'Testing the background plotter with data error bars and residuals panel.'
+
+        samples_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2')
+        fig, (ax, ax_res) = plotBackgroundSpectrum(XPSI_model=self.ST,
+                                samples_path=samples_path,
+                                InstrumentName=None,
+                                Nsamples=2,
+                                plot_range=False,
+                                plot_data_errors=True,
+                                plot_residuals=True)
+        residuals = ax_res.containers[0].lines[0].get_ydata()
+        assert np.all(np.isfinite(residuals))
+
     def test_background_plotting_fails(self):
         'Testing that the background plotter fails when trying to plot background uncertainty range'
         'with MultiNest output file having only 1 equally weighted posterior sample.'
