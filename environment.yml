@@ -23,3 +23,5 @@ dependencies:
         - emcee  # MCMC sammpler
         - cmap # For PostProcessing colormaps
         - lxml # For PostProcessing corner plots (PDF format)
+        - esda  # For PostProcessing residual plots
+        - libpysal   # For PostProcessing residual plots

@@ -155,21 +155,24 @@ class ResidualPlot(SignalPlot):
              Standard deviation for the optimal gaussian distribution to compare with the residuals.
 
         :param bool analyse_residual_structure:
-             If ``True``, run five complementary 2D structure tests on the
+             If ``True``, run six complementary 2D structure tests on the
              standardised residuals after finalising the plot and print a
-             summary table to stdout. The tests are:
+             summary table to stdout. The tests are (tests 1-4 have a
+             panel in :meth:`plot_structure_diagnostics`, tests 5-6 do not):
 
-             1. **2D Power Spectrum** – detects periodic/wave-like patterns
-                via the FFT peak-to-median power ratio.
-             2. **Moran's I** – global spatial autocorrelation statistic
+             1. **2D Power Spectrum** – detects periodic and smooth
+                structure from the 2-D periodogram (MC-calibrated).
+             2. **Variogram** – measures how correlation decays with
+                pixel-distance on the phase–channel grid (MC-calibrated).
+             3. **2D ACF scan** – correlation at every lag vector up to
+                ``structure_acf2d_max_lag``, at any orientation.
+             4. **KS + Ljung–Box** – check for Gaussianity and serial
+                autocorrelation in the flattened residuals
+                (Ljung–Box requires ``statsmodels``; KS always runs).
+             5. **Moran's I** – global spatial autocorrelation statistic
                 (requires ``esda`` and ``libpysal``; skipped if absent).
-             3. **Variogram** – measures how correlation decays with
-                pixel-distance on the phase–channel grid.
-             4. **Runs test** – Wald–Wolfowitz test applied row- and
+             6. **Runs test** – Wald–Wolfowitz test applied row- and
                 column-wise to detect 1-D autocorrelation along each axis.
-             5. **Ljung–Box + KS** – serial autocorrelation in the
-                flattened residuals and a check for Gaussianity
-                (requires ``statsmodels``; KS test always runs).
 
              The combined verdict (``STRUCTURED`` / ``RANDOM`` /
              ``INCONCLUSIVE``) is stored in
@@ -773,21 +776,21 @@ class ResidualPlot(SignalPlot):
     # 2-D residual structure analysis
     # -----------------------------------------------------------------------
     #
-    #              1. **2D Power Spectrum** - detects periodic/wave-like patterns
-    #                 via the FFT peak-to-median power ratio.
-    #              2. **Moran's I** - global spatial autocorrelation statistic
-    #                 (requires ``esda`` and ``libpysal``; skipped if absent).
-    #              3. **Variogram** - measures how correlation decays with
+    #   Tests with a diagnostic panel:
+    #              1. **2D Power Spectrum** - periodic and smooth structure
+    #                 from the 2-D periodogram (MC-calibrated).
+    #              2. **Variogram** - measures how correlation decays with
     #                 pixel-distance on the phase-channel grid.
-    #              4. **Runs test** - Wald-Wolfowitz test applied row- and
+    #              3. **2D ACF scan** - correlation at every lag vector, any
+    #                 orientation, up to ``structure_acf2d_max_lag``.
+    #              4. **KS + Ljung-Box** - Gaussianity check and serial
+    #                 autocorrelation in the flattened residuals
+    #                 (Ljung-Box requires ``statsmodels``; KS always runs).
+    #   Tests without a diagnostic panel:
+    #              5. **Moran's I** - global spatial autocorrelation statistic
+    #                 (requires ``esda`` and ``libpysal``; skipped if absent).
+    #              6. **Runs test** - Wald-Wolfowitz test applied row- and
     #                 column-wise to detect 1-D autocorrelation along each axis.
-    #              5. **Directional autocorrelation** - lag-1 correlation along
-    #                 the horizontal, vertical, diagonal and anti-diagonal
-    #                 directions; sensitive to obliquely clustered residuals
-    #                 that the axis-aligned runs test can miss.
-    #              6. **Ljung-Box + KS** - serial autocorrelation in the
-    #                 flattened residuals and a check for Gaussianity
-    #                 (requires ``statsmodels``; KS test always runs).
     # -----------------------------------------------------------------------
 
     def _run_structure_analysis(self):
@@ -805,25 +808,29 @@ class ResidualPlot(SignalPlot):
                                self._signal.data.counts) / _np.sqrt(
                 self.expected_counts)
 
-        # NOTE: the order of this list defines the reporting order AND the
-        # panel order in plot_structure_diagnostics().
+        # NOTE: the order of this list defines the test numbering used in
+        # the printed report AND in plot_structure_diagnostics(): tests
+        # with a diagnostic panel come first (in panel order), followed by
+        # the tests without a panel.
         results = [
+            # -- tests with a diagnostic panel --
             self._structure_test_power_spectrum(
                 self._residuals,
                 n_null=self._structure_power_n_null,
                 alpha=self._structure_power_alpha,
                 low_k_fraction=self._structure_power_low_k_fraction,
                 random_seed=self._structure_power_random_seed),
-            self._structure_test_morans_i(self._residuals),
             self._structure_test_variogram(
                 self._residuals,
                 max_lag=self._structure_variogram_max_lag,
                 n_null=self._structure_variogram_n_null,
                 alpha=self._structure_variogram_alpha,
                 random_seed=self._structure_variogram_random_seed),
-            self._structure_test_runs(self._residuals),
             self._structure_test_acf2d(self._residuals, self._structure_acf2d_max_lag),
             self._structure_test_normality_ljungbox(self._residuals),
+            # -- tests without a diagnostic panel --
+            self._structure_test_morans_i(self._residuals),
+            self._structure_test_runs(self._residuals),
         ]
 
         # Aggregate verdict: >=3 of the definitive tests flag structure
@@ -849,14 +856,14 @@ class ResidualPlot(SignalPlot):
         print('  XPSI 2-D RESIDUAL STRUCTURE ANALYSIS')
         print('  Axes: phase [cycles] x channel')
         print('=' * 65)
-        for t in results:
+        for i, t in enumerate(results, start=1):
             if t['structured'] is True:
                 flag = 'x STRUCTURED'
             elif t['structured'] is False:
                 flag = 'v random    '
             else:
                 flag = '- skipped   '
-            print(f"  [{flag}]  {t['test']}")
+            print(f"  [{flag}]  Test {i}: {t['test']}")
             print(f"                {t['interpretation']}")
         print('-' * 65)
         print(f"  VERDICT : {verdict}  "
@@ -1344,14 +1351,16 @@ class ResidualPlot(SignalPlot):
           phase [cycles] x channel grid (log channel axis), identical
           axes to the main residual panel.
         * **(1) Test 1** - 2-D power spectrum (log scale).
-        * **(2) Test 3** - normalised empirical variogram with a dashed
+        * **(2) Test 2** - normalised empirical variogram with a dashed
           pure-nugget reference line.
-        * **(3) Test 5** - 2D autocorrelation-function map over all lag
+        * **(3) Test 3** - 2D autocorrelation-function map over all lag
           vectors, with the most significant lag marked.
-        * **(4) Test 6** - normal Q-Q plot of the flattened residuals.
+        * **(4) Test 4** - normal Q-Q plot of the flattened residuals
+          (KS normality + Ljung-Box test).
         * **(5) Summary** - text panel listing all six test verdicts in
-          report order (covers Moran's I and the runs test, which have
-          no natural plot).
+          report order: first the tests shown in panels (1-4), then
+          the tests without a panel (5: Moran's I, 6: runs test),
+          followed by the overall verdict.
 
         :param tuple figsize: Figure size in inches.  Default ``(16, 9)``.
         :param str savefile: If given, the figure is saved to this path.
@@ -1419,7 +1428,7 @@ class ResidualPlot(SignalPlot):
         ax2.set_xlabel(r'$k_\phi$')
         ax2.set_ylabel(r'$k_\mathrm{ch}$')
 
-        # -- Panel (0,2): Test 3 - variogram (normalised) ------------------
+        # -- Panel (0,2): Test 2 - variogram (normalised) ------------------
         ax3 = fig.add_subplot(gs[0, 2])
         vg_t = results_map.get('Variogram (MC-calibrated)', {})
         if 'lags' in vg_t:
@@ -1428,18 +1437,18 @@ class ResidualPlot(SignalPlot):
             ax3.axhline(1.0, ls='--', color='gray', lw=1,
                         label='pure nugget (random)')
             ax3.set_title(
-                'Test 3: Variogram (normalised)\n'
+                'Test 2: Variogram (normalised)\n'
                 f"p_nugget = {vg_t.get('p_nugget', float('nan')):.4f}, "
                 f"p_maxdev = {vg_t.get('p_maxdev', float('nan')):.4f}")
         else:
             ax3.text(0.5, 0.5, 'No data', ha='center', va='center',
                      transform=ax3.transAxes)
-            ax3.set_title('Test 3: Variogram (normalised)')
+            ax3.set_title('Test 2: Variogram (normalised)')
         ax3.set_xlabel('Lag (pixels)')
         ax3.set_ylabel('Normalised semivariance')
         ax3.legend(fontsize=9, loc='best')
 
-        # -- Panel (1,0): Test 5 - 2D ACF scan ------------------------------
+        # -- Panel (1,0): Test 3 - 2D ACF scan ------------------------------
         ax4 = fig.add_subplot(gs[1, 0])
         acf_t = results_map.get('2D ACF scan (all orientations & lags)', {})
         if 'acf_map' in acf_t:
@@ -1454,7 +1463,7 @@ class ResidualPlot(SignalPlot):
             bdy, bdx = acf_t['best_lag']
             ax4.plot(bdx, bdy, 'x', color='k', ms=10, mew=2,
                      label=f'strongest lag ({bdy},{bdx})')
-            ax4.set_title('Test 5: 2D ACF scan\n'
+            ax4.set_title('Test 3: 2D ACF scan\n'
                           f"min-p = {acf_t.get('min_p', float('nan')):.2e}")
             ax4.set_xlabel(r'$\Delta$ phase bin')
             ax4.set_ylabel(r'$\Delta$ channel bin')
@@ -1462,9 +1471,9 @@ class ResidualPlot(SignalPlot):
         else:
             ax4.text(0.5, 0.5, 'No data', ha='center', va='center',
                      transform=ax4.transAxes)
-            ax4.set_title('Test 5: 2D ACF scan')
+            ax4.set_title('Test 3: 2D ACF scan')
 
-        # -- Panel (1,1): Test 6 - Q-Q plot --------------------------------
+        # -- Panel (1,1): Test 4 - Q-Q plot --------------------------------
         ax5 = fig.add_subplot(gs[1, 1])
         flat = residuals.ravel()
         (osm, osr), (slope, intercept, _) = _stats.probplot(flat, dist='norm')
@@ -1473,7 +1482,7 @@ class ResidualPlot(SignalPlot):
                  'r-', lw=1.5, label='normal reference')
         ks_t = results_map.get('KS normality + Ljung-Box autocorrelation', {})
         ks_p = ks_t.get('ks_pvalue', float('nan'))
-        ax5.set_title(f'Test 6: Normal Q-Q  (KS p = {ks_p:.4f})')
+        ax5.set_title(f'Test 4: Normal Q-Q  (KS p = {ks_p:.4f})')
         ax5.set_xlabel('Theoretical quantiles')
         ax5.set_ylabel('Sample quantiles')
         ax5.legend(fontsize=9)
@@ -1494,7 +1503,7 @@ class ResidualPlot(SignalPlot):
             # Short label: first part of the test name, wrapped over up
             # to two lines so long names never collide with the verdict
             label = t['test'].split(' (')[0]
-            wrapped = _textwrap.wrap(f'{i}. {label}', width=30)[:2]
+            wrapped = _textwrap.wrap(f'Test {i}: {label}', width=30)[:2]
             for j, line in enumerate(wrapped):
                 ax6.text(0.02, y - j * 0.055, line,
                          transform=ax6.transAxes, fontsize=13, va='top')
