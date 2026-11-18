@@ -1,20 +1,18 @@
 """ Tests for the background-marginalised likelihood. """
 
-import multiprocessing as mp
+import faulthandler
 
 import numpy as np
-import pytest
 
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
 
 # Maximum time (in seconds) allowed for one likelihood evaluation of a single channel
-# (including the import of X-PSI in the child process)
-TIMEOUT = 120.0
+TIMEOUT = 60.0
 
 
-def _loglikelihood(exposure_time, counts, signal, phase_shift, support, queue):
-    """ Evaluate the background-marginalised log-likelihood (run in a child process). """
+def _loglikelihood(exposure_time, counts, signal, phase_shift, support):
+    """ Evaluate the background-marginalised log-likelihood. """
     counts = np.array([counts], dtype=np.double)
     signal = np.array([signal], dtype=np.double)
     loglike = eval_marginal_likelihood(exposure_time,
@@ -26,7 +24,7 @@ def _loglikelihood(exposure_time, counts, signal, phase_shift, support, queue):
                                        precomputation(counts.astype(np.int32)),
                                        np.array([support], dtype=np.double),
                                        1000, 0.0, 1.0e-8, 1.0e-3, 10.0, -1.0e90)[0]
-    queue.put(loglike)
+    return loglike
 
 
 class TestBackgroundMarginalisationIssue518(object):
@@ -69,29 +67,25 @@ class TestBackgroundMarginalisationIssue518(object):
               0.15494509787599256, 0.15224282805060138, 0.14832037071555773,
               0.14338387244889514, 0.13763594437424936, 0.1312685255677862]
 
-    def _run_with_timeout(self, support):
-        # Run in a child process, so that a hanging integration fails the test
-        # instead of blocking the whole test suite
-        ctx = mp.get_context('spawn')
-        queue = ctx.Queue()
-        process = ctx.Process(target=_loglikelihood,
-                              args=(self.exposure_time, self.counts, self.signal,
-                                    self.phase_shift, support, queue))
-        process.start()
-        process.join(TIMEOUT)
-        if process.is_alive():
-            process.terminate()
-            process.join()
-            pytest.fail('Background marginalisation did not finish within %i s.' % TIMEOUT)
-        assert process.exitcode == 0
-        return queue.get()
+    def _run_with_timeout(self, support, capfd):
+        # The integration runs in compiled code that cannot be interrupted from
+        # Python. If it hangs, the faulthandler watchdog thread prints the stack
+        # and ends the test run, instead of blocking it (e.g. on CI) indefinitely.
+        # Output capturing is disabled so that the stack is shown in the log.
+        with capfd.disabled():
+            faulthandler.dump_traceback_later(TIMEOUT, exit=True)
+            try:
+                return _loglikelihood(self.exposure_time, self.counts, self.signal,
+                                      self.phase_shift, support)
+            finally:
+                faulthandler.cancel_dump_traceback_later()
 
-    def test_tight_support(self):
-        loglike = self._run_with_timeout([0.0, 1.0e-11])
+    def test_tight_support(self, capfd):
+        loglike = self._run_with_timeout([0.0, 1.0e-11], capfd)
         assert np.isfinite(loglike)
         assert np.isclose(loglike, -4521.763801536406, rtol=1.0e-8, atol=0.0)
 
-    def test_unbounded_support(self):
-        loglike = self._run_with_timeout([0.0, -1.0])
+    def test_unbounded_support(self, capfd):
+        loglike = self._run_with_timeout([0.0, -1.0], capfd)
         assert np.isfinite(loglike)
         assert np.isclose(loglike, -2772.718471175409, rtol=1.0e-8, atol=0.0)
