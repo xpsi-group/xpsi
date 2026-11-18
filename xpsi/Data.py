@@ -141,6 +141,15 @@ class Data(object):
                              'with the number of phases. Note that the phases array are '
                              'the phase bin edges (i.e., number of phases bins + 1)')
 
+        # Check that both counts and exposure time are positive and non null
+        if (counts < 0.0).any():
+            raise ValueError('Negative count numbers are invalid.')
+        if (counts == 0.0).all():
+            raise ValueError('Full zero count numbers are invalid.')
+        if exposure_time <= 0.0:
+            raise ValueError('Negative or null exposure time is invalid.')
+            
+
         self._counts = counts
 
         try:

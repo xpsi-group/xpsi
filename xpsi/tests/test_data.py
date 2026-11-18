@@ -110,24 +110,42 @@ class TestWrongInput( object ):
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
     def test_negative_counts( self ):
-        with pytest.raises( TypeError ):
-            Data(counts= -COUNTS, channels=CHANNELS, phases=PHASES, 
+        with pytest.raises( ValueError ):
+            d = Data(counts= -COUNTS, channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
     def test_zero_counts( self ):
-        with pytest.raises( TypeError ):
+        with pytest.raises( ValueError ):
             Data(counts= np.zeros_like( COUNTS ), channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
     def test_first_larger_than_last( self ):
         with pytest.raises( ValueError ):
-            Data(counts= -COUNTS, channels=CHANNELS, phases=PHASES, 
+            Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
                  first=LAST, last=FIRST, exposure_time=EXPOSURE)
 
     def test_negative_exposure_time( self ):
         with pytest.raises( ValueError ):
             Data(counts=COUNTS, channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=-EXPOSURE)
+
+#############################################
+### Check some objects can not be changed ###
+#############################################
+
+class TestImmutableObjects( object ):
+
+    def test_immutable_exposure( self , data ):
+        with pytest.raises( AttributeError ):
+            data.exposure_time = 1000.0
+
+    def test_immutable_phases( self , data ):
+        with pytest.raises( AttributeError ):
+            data.phases = PHASES + 1
+
+    def test_immutable_counts( self , data ):
+        with pytest.raises( AttributeError ):
+            data.counts = COUNTS
 
 
 #######################################
