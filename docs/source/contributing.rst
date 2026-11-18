@@ -163,7 +163,9 @@ central ``xpsi-group/xpsi`` repository.
   once you have opened a pull request from it, only merge (do not rebase), so
   that the branch history is preserved and you do not need to force push. (The
   one exception is fixing commits flagged by the AI co-author check described
-  in our :ref:`ai_policy`; the check explains what to do.)
+  in our :ref:`ai_policy`, which needs a force push with
+  ``--force-with-lease``, only on your own pull request branch and never on
+  ``main``; the check explains what to do.)
 
 * After integrating upstream changes, you might decide to continue working on
   your branch. Alternatively, you could work on another branch for a different
