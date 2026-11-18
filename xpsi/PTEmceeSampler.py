@@ -102,7 +102,49 @@ class PTEmceeSampler(_PTSampler):
 
     :param list walker_dist_moments:
         Optional set of tuples of means and standard deviations.
-        One per parameter.
+        One per parameter. Used when ``init_mode='gaussian'``.
+
+    :param str init_mode:
+        How to initialise the walker positions (ignored when resuming):
+
+            * ``'prior'``: random draws from the prior (inverse sampling);
+            * ``'gaussian'``: a Gaussian ball defined by
+              ``walker_dist_moments``;
+            * ``'samples'``: draws from existing posterior samples given by
+              ``init_samples`` (e.g. a MultiNest run);
+            * ``None`` (default): ``'samples'`` if ``init_samples`` is given,
+              else ``'gaussian'`` if ``walker_dist_moments`` is given, else
+              ``'prior'``.
+
+    :param init_samples:
+        Posterior samples to initialise from, for ``init_mode='samples'``.
+        Either a path to a text (``.txt``/``.dat``) or ``.npy`` file, or an
+        array. Accepted layouts:
+
+            * ``(nsamples, ndims + 2)``: X-PSI/MultiNest format, i.e. columns
+              of sample weight, minus-two-log-likelihood, then the physical
+              parameter vector (e.g. ``<root>.txt`` from a MultiNest run);
+            * ``(nsamples, ndims)``: equally weighted parameter vectors (e.g.
+              ``post_equal_weights.dat`` with its last column removed);
+            * ``(ntemps, nwalkers, ndims)``: exact walker positions, e.g. a
+              ``<root>_initial_walkers.npy`` file saved by an earlier run, used
+              as is.
+
+        Parameter columns must be in the order of the likelihood parameters.
+        Samples are drawn in proportion to their weights, without replacement
+        where enough samples with non-zero weight exist.
+
+    :param float init_scatter:
+        For ``init_mode='samples'``: scatter each drawn point by a Gaussian
+        with standard deviation ``init_scatter`` times the (weighted) posterior
+        standard deviation of each parameter, redrawing points that leave the
+        prior support. Default is ``0.0`` (start exactly on the samples).
+
+    :param bool save_init:
+        Save the initial walker positions to ``<root_dir>/<root>_initial_walkers.npy``
+        (shape ``(ntemps, nwalkers, ndims)``, can be passed back as
+        ``init_samples``) and a readable ``<root_dir>/<root>_initial_walkers.txt``?
+        Default is ``False``.
 
     :param obj _posterior:
         Reserved for internal usage when invoking MPI.
@@ -128,6 +170,10 @@ class PTEmceeSampler(_PTSampler):
                  progress: bool = True,
                  _posterior = None,
                  walker_dist_moments = None,
+                 init_mode: str = None,
+                 init_samples = None,
+                 init_scatter: float = 0.0,
+                 save_init: bool = False,
                  **kwargs):
 
         if not callable(loglikelihood) or not callable(logprior):
@@ -192,20 +238,203 @@ class PTEmceeSampler(_PTSampler):
             # continue from the last stored positions of every temperature
             self._p0 = self._resume_data['chain'][:, :, -1, :]
         else:
+            if init_mode is None:
+                if init_samples is not None:
+                    init_mode = 'samples'
+                elif walker_dist_moments is not None:
+                    init_mode = 'gaussian'
+                else:
+                    init_mode = 'prior'
+
+            if init_mode == 'samples':
+                if init_samples is None:
+                    raise ValueError('``init_mode=\'samples\'`` requires '
+                                     '``init_samples``.')
+                self._p0 = self._from_samples(init_samples,
+                                              float(init_scatter))
+            elif init_mode == 'gaussian':
+                if walker_dist_moments is None:
+                    raise ValueError('``init_mode=\'gaussian\'`` requires '
+                                     '``walker_dist_moments``.')
+                try:
+                    self._p0 = self._nd_ball(walker_dist_moments)
+                except (AssertionError, PriorError):
+                    self._p0 = self._from_prior()
+            elif init_mode == 'prior':
+                self._p0 = self._from_prior()
+            else:
+                raise ValueError('Unknown ``init_mode`` ``%s``: use '
+                                 '``\'prior\'``, ``\'gaussian\'`` or '
+                                 '``\'samples\'``.' % init_mode)
+
+            if save_init:
+                self._save_initial()
+
+    def _from_prior(self):
+        """ Draw the initial walker positions from the prior. """
+        print('Attempting to initialise the walker positions via '
+              'inverse sampling...')
+        draws = self._prior.draw(self._ntemps * self._nwalkers)[0]
+        p0 = draws.reshape(self._ntemps, self._nwalkers, self._ndims)
+        for p in p0.reshape(-1, self._ndims):
+            if not _np.isfinite(self._prior(p)):
+                raise PriorError('Failed to initialise walkers.')
+        print('Walker positions successfully initialised via inverse '
+              'sampling.')
+        return p0
+
+    def _in_support(self, p):
+        """ Check inclusion of ``p`` in the prior support.
+
+        The parameter vector of the likelihood object is restored afterwards.
+
+        """
+        q = self._likelihood.vector # make our own cache here
+        try:
             try:
-                self._p0 = self._nd_ball(walker_dist_moments)
-            except (AssertionError, PriorError):
-                print('Attempting to initialise the walker positions via '
-                      'inverse sampling...')
-                draws = self._prior.draw(self._ntemps * self._nwalkers)[0]
-                self._p0 = draws.reshape(self._ntemps,
-                                         self._nwalkers,
-                                         self._ndims)
-                for p in self._p0.reshape(-1, self._ndims):
-                    if not _np.isfinite(self._prior(p)):
-                        raise PriorError('Failed to initialise walkers.')
-                print('Walker positions successfully initialised via inverse '
-                      'sampling.')
+                ParameterSubspace.__call__(self._likelihood, p)
+            except StrictBoundsError:
+                return False
+
+            lp = self._prior(p)
+
+            if _np.isnan(lp):
+                raise PriorError('Failed to initialise walkers.')
+
+            return bool(_np.isfinite(lp))
+        finally:
+            ParameterSubspace.__call__(self._likelihood, q)
+
+    def _from_samples(self, samples, scatter):
+        """ Draw the initial walker positions from existing posterior samples.
+
+        :param samples: Path or array; see the class docstring.
+        :param float scatter: Scatter in units of the posterior std.
+
+        :return: An array of shape ``(ntemps, nwalkers, ndims)``.
+
+        """
+        source = 'array'
+        if isinstance(samples, str):
+            source = samples
+            if not _os.path.isfile(samples):
+                raise IOError('Initial samples file ``%s`` not found.'
+                              % samples)
+            if samples.endswith('.npy'):
+                samples = _np.load(samples)
+            else:
+                samples = _np.loadtxt(samples)
+
+        samples = _np.asarray(samples, dtype = _np.double)
+        shape = (self._ntemps, self._nwalkers, self._ndims)
+
+        # exact walker positions, e.g. saved by ``save_init``
+        if samples.ndim == 3:
+            if samples.shape != shape:
+                raise ValueError('Initial walker array has shape %s but %s '
+                                 'is required.' % (samples.shape, shape))
+            for p in samples.reshape(-1, self._ndims):
+                if not self._in_support(p):
+                    raise PriorError('An initial walker position lies outside '
+                                     'the prior support.')
+            print('Walker positions initialised from ``%s``.' % source)
+            return samples.copy()
+
+        if samples.ndim == 1: # a single row
+            samples = samples.reshape(1, -1)
+
+        if samples.shape[1] == self._ndims + 2:
+            weights = samples[:, 0].copy()
+            points = samples[:, 2:]
+        elif samples.shape[1] == self._ndims:
+            weights = _np.ones(samples.shape[0])
+            points = samples
+        else:
+            raise ValueError('Initial samples have %i columns but %i (weight, '
+                             '-2logL, parameters) or %i (parameters) are '
+                             'required.' % (samples.shape[1],
+                                            self._ndims + 2, self._ndims))
+
+        good = _np.isfinite(weights) & (weights > 0.0) \
+                    & _np.all(_np.isfinite(points), axis = 1)
+        weights = weights[good]
+        points = points[good]
+
+        # discard samples outside the prior support of the present model
+        inside = _np.array([self._in_support(p) for p in points], dtype=bool)
+        if not _np.all(inside):
+            print('Warning: discarding %i initial samples outside the prior '
+                  'support.' % _np.sum(~inside))
+        weights = weights[inside]
+        points = points[inside]
+
+        if points.shape[0] == 0:
+            raise PriorError('No usable initial samples in ``%s``.' % source)
+
+        weights /= _np.sum(weights)
+        n = self._ntemps * self._nwalkers
+
+        mean = _np.sum(weights[:, None] * points, axis = 0)
+        std = _np.sqrt(_np.sum(weights[:, None] * (points - mean)**2, axis=0))
+
+        replace = points.shape[0] < n
+        if replace:
+            print('Warning: only %i usable initial samples for %i walkers; '
+                  'drawing with replacement.' % (points.shape[0], n))
+            if scatter <= 0.0:
+                scatter = 1.0e-3
+                print('Warning: setting ``init_scatter=%g`` to avoid '
+                      'duplicate walkers.' % scatter)
+
+        idx = _np.random.choice(points.shape[0], size = n,
+                                replace = replace, p = weights)
+        p0 = points[idx].copy()
+
+        if scatter > 0.0:
+            for i in range(n):
+                for _ in range(1000):
+                    p = points[idx[i]] + scatter * std \
+                            * _np.random.normal(size = self._ndims)
+                    if self._in_support(p):
+                        p0[i] = p
+                        break
+                else: # keep the unscattered sample, which is in support
+                    print('Warning: could not scatter initial walker %i '
+                          'within the prior support.' % i)
+
+        print('Walker positions initialised from %i posterior samples in '
+              '``%s`` (scatter: %g posterior std).'
+              % (points.shape[0], source, scatter))
+
+        return p0.reshape(shape)
+
+    def _init_path(self, ext):
+        """ Path to the saved initial walker positions. """
+        return self._root_dir + self._root + '_initial_walkers' + ext
+
+    def _save_initial(self):
+        """ Save the initial walker positions. """
+        self._atomic_write(self._init_path('.npy'),
+                           lambda f: _np.save(f, self._p0))
+
+        t, w = _np.meshgrid(_np.arange(self._ntemps),
+                            _np.arange(self._nwalkers), indexing = 'ij')
+        table = _np.column_stack((t.ravel(), w.ravel(),
+                                  self._p0.reshape(-1, self._ndims)))
+        try:
+            names = ' '.join(self._likelihood.names)
+        except Exception:
+            names = ' '.join('p%i' % i for i in range(self._ndims))
+        header = ('Initial walker positions, shape (ntemps=%i, nwalkers=%i, '
+                  'ndims=%i); betas: %s\ntemp_index walker_index %s'
+                  % (self._ntemps, self._nwalkers, self._ndims,
+                     ' '.join('%.6g' % b for b in self.betas), names))
+        fmt = ['%d', '%d'] + ['%.16e'] * self._ndims
+        self._atomic_write(self._init_path('.txt'),
+            lambda f: _np.savetxt(f, table, fmt = fmt, header = header))
+
+        print('Initial walker positions saved to ``%s`` and ``%s``.'
+              % (self._init_path('.npy'), self._init_path('.txt')))
 
     def _resume_path(self):
         """ Path to the full-ladder resume/diagnostics file. """
@@ -243,7 +472,8 @@ class PTEmceeSampler(_PTSampler):
                                                        obj.minute,
                                                        obj.second)
 
-            for ext in ('_ptemcee.npz', '.txt', '.npy'):
+            for ext in ('_ptemcee.npz', '.txt', '.npy',
+                        '_initial_walkers.npy', '_initial_walkers.txt'):
                 src = self._root_dir + self._root + ext
                 if _os.path.isfile(src):
                     _os.rename(src, (self._root_dir +

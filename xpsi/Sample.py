@@ -138,6 +138,15 @@ def run_ptemcee(likelihood, prior, MPI = True, **kwargs):
             * adapt the temperature ladder, under keyword :obj:`adapt`;
             * moments of initial walker multivariate Gaussian distribution,
               under keyword :obj:`walker_dist_moments` (can be ``None``);
+            * walker initialisation mode (``'prior'``, ``'gaussian'`` or
+              ``'samples'``), under keyword :obj:`init_mode` (``None`` to
+              choose from the other arguments);
+            * posterior samples (path or array, e.g. a MultiNest ``.txt``
+              output) to initialise from, under keyword :obj:`init_samples`;
+            * scatter around those samples in units of the posterior standard
+              deviation, under keyword :obj:`init_scatter`;
+            * save the initial walker positions, under keyword
+              :obj:`save_init`;
             * root directory for output, under keyword :obj:`root_dir`;
             * output file-root basename, under keyword :obj:`root`;
             * checkpoint interval in iterations, under keyword :obj:`checkpoint`;
