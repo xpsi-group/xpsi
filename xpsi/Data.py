@@ -256,7 +256,6 @@ class Data(object):
                               phase_shift=0.0,
                               channel_edges=None,
                               skiprows=1,
-                              eV=False,
                               dtype=_np.int32,
                               *args, **kwargs):
         """ Load a phase-folded event list and bin the events in phase.
@@ -300,9 +299,6 @@ class Data(object):
             The top row of couple of rows will typically be reserved for
             column headers.
 
-        :param bool eV:
-            Are event energies in eV, instead of channel number?
-
         :param type dtype:
             The type of the count data. Sensible options are ``numpy.int`` (the
             default) or a :mod:`numpy` floating point type. The choice here
@@ -320,19 +316,7 @@ class Data(object):
 
         for i in range(events.shape[0]):
             _channel = None
-            if eV:
-                if channel_edges.ndim == 2:
-                    for j in range(len(channel_edges)):
-                        if channel_edges[0, j] <= events[i, channel_column]/1.0e3 < channel_edges[1, j]:
-                            _channel = channels[j]
-                            break
-                else:
-                    for j in range(len(channel_edges) - 1):
-                        if channel_edges[j] <= events[i, channel_column]/1.0e3 < channel_edges[j+1]:
-                            _channel = channels[j]
-                            break
-            else:
-                _channel = events[i, channel_column]
+            _channel = events[i, channel_column]
 
             if _channel is not None and _channel in channels:
                 if not phase_averaged:
