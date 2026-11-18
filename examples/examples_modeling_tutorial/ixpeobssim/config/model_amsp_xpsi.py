@@ -121,7 +121,7 @@ print("Scipy-integrated flux:",Imod_intg*kev2erg)
 
 print("Brightness in mCrab (more accurate):", 1000.0*(Isum*kev2erg)/2.4e-8)
 #Crab: 2- 10 keV: 2.4e-8 erg/cm2/s
-#flux ~130 mCrab (2.8×10−9 erg/cm2/s) in 2-8 keV  (https://ui.adsabs.harvard.edu/abs/2023IAUS..363..329D/abstract).
+#flux ~130 mCrab (2.8×10−9 erg/cm2/s) in 2-8 keV  (https://scixplorer.org/abs/2023IAUS..363..329D/abstract).
 #https://en.wikipedia.org/wiki/Crab_(unit)
 
 phi, energy_keV, St_I, PD_tot, PA_tot = phase, energies, Imod, PDobs, PAobs

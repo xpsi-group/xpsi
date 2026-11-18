@@ -1,0 +1,1 @@
+Removed the partial support for three hot regions (``t__`` parameters, models such as ``ST-U3``) from ``xpsi/utilities/ProjectionTool.py``. It was undocumented and only worked for ``-U3`` models; the projection tools now accept one or two hot regions.

@@ -1,0 +1,1 @@
+Updated the contributing guide: the Git workflow now follows GitHub's standard fork-first order (with ``origin`` for your fork and ``upstream`` for ``xpsi-group/xpsi``), and now covers running the tests locally, changelog fragments, draft pull requests and the AI disclosure.

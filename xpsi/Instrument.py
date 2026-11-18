@@ -97,8 +97,8 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, channels, channel_edges=None, twod_edges=False,
-                 *args, **kwargs):
+    def __init__(self, matrix, energy_edges, channels, channel_edges=None,
+                 *args, twod_edges=False, **kwargs):
 
         self.matrix = matrix
         self._twod_edges = twod_edges
@@ -150,7 +150,7 @@ class Instrument(ParameterSubspace):
                 assert matrix[:,j].any()
         except AssertionError:
             raise ResponseError('Each column of the matrix must contain at least one positive number.')
-        self._matrix = matrix
+        self._matrix = _np.ascontiguousarray(matrix)  # ensure contiguous for faster computations
 
     def construct_matrix(self):
         """ Construct the response matrix if it is parameterised.
@@ -366,7 +366,7 @@ class Instrument(ParameterSubspace):
 
         :param float tolerance:
             The tolerance value to use for trimming the instrument response.
-            Trimming occurs at the first energy where every channel’s cumulative response is above the (1−tolerance) quantile.
+            Trimming occurs at the first energy where every channel's cumulative response is above the (1-tolerance) quantile.
             This allows to trim long tails of the response with little weight.
             If zero, no trimming is performed.
 
@@ -604,6 +604,7 @@ class InstrumentPileup(Instrument):
 
     def __call__(self, signal, *args):
         """ Overwrite. """
+        
         ## Compute spectrum with pileup
         piled_spectrum = self.pileup.analyze(signal,
                                              alpha=self['grade_migration'],
@@ -639,7 +640,7 @@ class InstrumentPileup(Instrument):
                     value = values.get('grade_migration', None))
     
         psffrac = Parameter('psf_fraction',
-                    strict_bounds = (0.8,1.0),  #min in sherpa set at 0.85
+                    strict_bounds = (0.0,1.0),  #min in sherpa set at 0.85
                     bounds = bounds.get('psf_fraction', None),
                     doc = 'fraction of events in the source extraction region to which pileup will be applied',
                     symbol = r'$PSF_frac',

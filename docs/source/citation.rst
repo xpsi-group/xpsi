@@ -43,10 +43,10 @@ Citations to these packages may be found in the software acknowledgements of bot
 JOSS paper and our :ref:`Applications` papers, and in the
 article text where the relevant software is applied. Links to the software and
 associated preprints and journal articles may be found in the bibliographies.
-Please follow the guidelines demonstrated in e.g. `Riley et al. 2021 <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_
+Please follow the guidelines demonstrated in e.g. `Riley et al. 2021 <https://scixplorer.org/abs/2021ApJ...918L..27R/abstract>`_
 to ensure the authors of the software receive the recognition they should.
 The dependencies often have their own citation instructions that should be
-followed first and foremost, but as an example from `Riley et al. 2021 <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_. 
+followed first and foremost, but as an example from `Riley et al. 2021 <https://scixplorer.org/abs/2021ApJ...918L..27R/abstract>`_. 
 
 .. code-block:: latex
 
@@ -129,9 +129,7 @@ followed first and foremost, but as an example from `Riley et al. 2021 <https://
         pages = {arXiv:1910.13970},
         archivePrefix = {arXiv},
         eprint = {1910.13970},
-        primaryClass = {astro-ph.IM},
-        adsurl = {https://ui.adsabs.harvard.edu/abs/2019arXiv191013970L},
-        adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+        primaryClass = {astro-ph.IM}
     }
 
     @ARTICLE{PyMultiNest,
@@ -147,9 +145,7 @@ followed first and foremost, but as an example from `Riley et al. 2021 <https://
         volume = 564,
         eid = {A125},
         pages = {A125},
-        doi = {10.1051/0004-6361/201322971},
-        adsurl = {http://adsabs.harvard.edu/abs/2014A\%26A...564A.125B},
-        adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+        doi = {10.1051/0004-6361/201322971}
     }
 
     @ARTICLE{MultiNest_2009,
@@ -163,9 +159,7 @@ followed first and foremost, but as an example from `Riley et al. 2021 <https://
         month = oct,
         volume = 398,
         pages = {1601-1614},
-        doi = {10.1111/j.1365-2966.2009.14548.x},
-        adsurl = {http://adsabs.harvard.edu/abs/2009MNRAS.398.1601F},
-        adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+        doi = {10.1111/j.1365-2966.2009.14548.x}
     }
 
     @conference{Kluyver:2016aa,
@@ -353,10 +347,7 @@ followed first and foremost, but as an example from `Riley et al. 2021 <https://
         doi = {10.21105/joss.03001},
         archivePrefix = {arXiv},
         eprint = {2101.09604},
-        primaryClass = {stat.CO},
-        adsurl = {https://ui.adsabs.harvard.edu/abs/2021JOSS....6.3001B},
-        adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-        
+        primaryClass = {stat.CO}        
     }
 
 

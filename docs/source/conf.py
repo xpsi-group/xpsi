@@ -92,7 +92,10 @@ language = 'en'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['**.ipynb_checkpoints', 'old']
+exclude_patterns = ['**.ipynb_checkpoints', 'old',
+                    # outline-only version of the 2D projection tutorial, kept in the
+                    # repository but not built (superseded by Emitting_patterns_2Dprojection)
+                    'Emitting_patterns_2Dprojection_outlines.ipynb']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

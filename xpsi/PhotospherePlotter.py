@@ -11,7 +11,6 @@ from xpsi.tools.energy_integrator import energy_integrator
 from xpsi.tools.phase_integrator import phase_integrator
 
 if _mpl is not None:
-    import matplotlib
     from matplotlib import pyplot as plt
     from matplotlib.figure import Figure
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -79,7 +78,7 @@ class PhotospherePlotter( Photosphere ):
 
     @global_to_local_file.setter
     def global_to_local_file(self, filepath):
-        if not isinstance(filepath, _six.string_types):
+        if not isinstance(filepath, str):
             raise TypeError('File path must be a string.')
         elif not _os.path.isfile(filepath):
             raise IOError('File does not exist.')
@@ -112,31 +111,20 @@ class PhotospherePlotter( Photosphere ):
         msg = 'Image information element %i must have %i dimensions.'
 
         # tuple elements:
-        #   energy-phase resolved signal (2D array)
-        #   x coordinate on image plane (1D array)
-        #   y coordinate on image plane (1D array)
-        #   colatitude mapped to point (x,y) on image plane (1D array)
-        #   azimuth mapped to point (x,y) on image plane (1D array)
-        #   radial coord mapped to point (x,y) on image plane (1D array)
-        #   phase lag
-        #   redshift
-        #   aberrated ray angle to local surface normal
-        #   elliptical image-plane radial array
-        #   elliptical image-plane semi-major axis
-        #   elliptical image-plane semi-minor axis
-        #   energy-phase resolved specific intensity sky maps (3D array)
-        # the last element is None if intensities not cached
-        assert images[0].ndim == 2, msg % (0, 2)
-        assert images[1].ndim == 1, msg % (1, 1)
-        assert images[2].ndim == 1, msg % (2, 1)
-        assert images[3].ndim == 1, msg % (3, 1)
-        assert images[4].ndim == 1, msg % (4, 1)
-        assert images[5].ndim == 1, msg % (5, 1)
-        assert images[6].ndim == 1, msg % (6, 1)
-        assert images[7].ndim == 1, msg % (7, 1)
-        assert images[8].ndim == 1, msg % (8, 1)
-        assert images[9].ndim == 1, msg % (9, 1)
-        if images[12] is not None:
+        #   10: elliptical image-plane semi-major axis
+        #   11: elliptical image-plane semi-minor axis
+        #   the last element is None if intensities not cached
+        assert images[0].ndim == 2, msg % (0, 2) # energy-phase resolved signal (2D array)
+        assert images[1].ndim == 1, msg % (1, 1) # x coordinate on image plane (1D array)
+        assert images[2].ndim == 1, msg % (2, 1) # y coordinate on image plane (1D array)
+        assert images[3].ndim == 1, msg % (3, 1) # colatitude mapped to point (x,y) on image plane (1D array)
+        assert images[4].ndim == 1, msg % (4, 1) # azimuth mapped to point (x,y) on image plane (1D array)
+        assert images[5].ndim == 1, msg % (5, 1) # radial coord mapped to point (x,y) on image plane (1D array)
+        assert images[6].ndim == 1, msg % (6, 1) # phase lag
+        assert images[7].ndim == 1, msg % (7, 1) # redshift
+        assert images[8].ndim == 1, msg % (8, 1) # aberrated ray angle to local surface normal
+        assert images[9].ndim == 1, msg % (9, 1) # elliptical image-plane radial array
+        if images[12] is not None:               # energy-phase resolved specific intensity sky maps (3D array)
             assert images[12].ndim == 3, msg % (12, 3)
 
         _num_rays = len(images[1])
@@ -172,32 +160,20 @@ class PhotospherePlotter( Photosphere ):
         :param str directory:
             Path to directory to load files from. Should contain files written
             to disk by :meth:`write_image_data`.
-
         """
         _d = directory
 
         photon_specific_flux = _np.load(_join(_d, 'photon_specific_flux.npy'))
-
         x_coordinate = _np.load(_join(_d, 'x_coordinate.npy'))
-
         y_coordinate = _np.load(_join(_d, 'y_coordinate.npy'))
-
         colatitude = _np.load(_join(_d, 'colatitude.npy'))
-
         azimuth = _np.load(_join(_d, 'azimuth.npy'))
-
         radial_coord = _np.load(_join(_d, 'radial_coord.npy'))
-
         phase_lag = _np.load(_join(_d, 'phase_lag.npy'))
-
         redshift = _np.load(_join(_d, 'redshift.npy'))
-
         abberated_angle = _np.load(_join(_d, 'abberated_angle.npy'))
-
         IP_radial_array = _np.load(_join(_d, 'IP_radial_array.npy'))
-
         IP_ellipse_axes = _np.load(_join(_d, 'IP_ellipse_axes.npy'))
-
         intensity = _np.load(_join(_d, 'intensity.npy'))
 
         self.images = [photon_specific_flux,
@@ -219,33 +195,21 @@ class PhotospherePlotter( Photosphere ):
 
         :param str directory:
             Path to directory to write to. Must exist.
-
         """
         _d = directory
 
         _np.save(_join(_d, 'photon_specific_flux.npy'), self.images[0])
-
         _np.save(_join(_d, 'x_coordinate.npy'), self.images[1])
-
         _np.save(_join(_d, 'y_coordinate.npy'), self.images[2])
-
         _np.save(_join(_d, 'colatitude.npy'), self.images[3])
-
         _np.save(_join(_d, 'azimuth.npy'), self.images[4])
-
         _np.save(_join(_d, 'radial_coord.npy'), self.images[5])
-
         _np.save(_join(_d, 'phase_lag.npy'), self.images[6])
-
         _np.save(_join(_d, 'redshift.npy'), self.images[7])
-
         _np.save(_join(_d, 'abberated_angle.npy'), self.images[8])
-
         _np.save(_join(_d, 'IP_radial_array.npy'), self.images[9])
-
         _np.save(_join(_d, 'IP_ellipse_axes.npy'),
                  _np.array(self.images[10:12], dtype=_np.double))
-
         _np.save(_join(_d, 'intensity.npy'), self.images[12])
 
     @property
@@ -254,7 +218,6 @@ class PhotospherePlotter( Photosphere ):
 
         :return: A two-dimensional :class:`numpy.ndarray`, where photon energy
                  varies with row number, and phase varies with column number.
-
         """
         return self._images[0]
 
@@ -268,7 +231,6 @@ class PhotospherePlotter( Photosphere ):
                  dimension is phase, the second dimension is photon energy,
                  and the third dimension is sky direction (flattened from
                  two-dimensional sky coordinates to one dimension).
-
         """
         return self._images[12]
 
@@ -297,6 +259,7 @@ class PhotospherePlotter( Photosphere ):
               free_memory = True,
               atm_ext="BB",
               animate_kwargs = None,
+              deactivate_verbosity = False, 
               **kwargs):
         r""" Image the star as a function of phase and energy.
 
@@ -496,7 +459,6 @@ class PhotospherePlotter( Photosphere ):
             Deactivate the verbose output? Note that despite this keyword
             argument not appearing in the method signature, it is a valid
             switch.
-
         """
         if atm_ext=="BB":
             atmosphere_extension = 1
@@ -508,10 +470,7 @@ class PhotospherePlotter( Photosphere ):
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
                             'atmosphere options are at the moment "BB", "Num4D", and "user".')
         ref = self.photosphere._spacetime # geometry shortcut saves characters
-        try:
-            _DV = deactivate_verbosity
-        except NameError:
-            _DV = False
+        _DV = deactivate_verbosity
 
         _exc = ValueError('You need to cache intensity sky maps if you '
                           'want to plot them.')
@@ -1173,11 +1132,6 @@ class PhotospherePlotter( Photosphere ):
             # get coordinates of irregular set of points for triangulation
             X = self.images[1]
             Y = self.images[2]
-
-            #if not isinstance(energies, _np.ndarray):
-            #    raise TypeError('Imaging energies must be in an ndarray.')
-            #if not isinstance(phases, _np.ndarray):
-            #    raise TypeError('Imaging phases must be in an ndarray.')
 
             images = self.images[-1]
             if time_is_space: # transpose dimensions

@@ -49,10 +49,10 @@ class Interstellar(ParameterSubspace):
         if not isinstance(signal, _np.ndarray):
             raise TypeError('Signal must be a numpy.ndarray.')
 
+        att = self.attenuation(energies)
         if signal.ndim == 1:
-            signal[:] *= self.attenuation(energies)
+            signal *= att
         elif signal.ndim == 2:
-            for i in range(signal.shape[1]):
-                signal[:,i] *= self.attenuation(energies)
+            signal *= att[:, None]
         else:
             raise ValueError('Invalid number of signal array dimensions.')

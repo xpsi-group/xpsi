@@ -27,7 +27,7 @@ class ResidualPlot(SignalPlot):
           compared with an optimal gaussian one, and the one on the right shows a distribution of
           cluster sizes from residuals which have absolute values above the chosen threshold
 
-    The following example is (improved) from `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_:
+    The following example is (improved) from `Riley et al. 2019 <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_:
 
     .. image:: _static/_residualplot.png
 

@@ -15,8 +15,8 @@ necessary prerequisites on your local self-administered system.
 
 .. note::
 
-    For installation on a high-performance computing system, we direct the 
-    reader to the :ref:`hpcsystems` page for guidance since the instructions 
+    For installation on a high-performance computing system, we direct the
+    reader to the :ref:`hpcsystems` page for guidance since the instructions
     on this page are either not applicable or do not target performance.
 
 .. _dev_env:
@@ -24,12 +24,11 @@ necessary prerequisites on your local self-administered system.
 Prerequisite Python Packages
 ----------------------------
 
-X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
+X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of
 X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
 per instructions below so as to not disrupt your Python ecosystem.
 
-Note that ``python >= 3.9.0`` is now required because of the version of
-``matplotlib`` needed.
+Note that ``python >= 3.10`` is required.
 
 .. _basic_env:
 
@@ -37,35 +36,17 @@ Conda Environment
 ^^^^^^^^^^^^^^^^^
 
 In the source directory we provide a dependency file ``environment.yml`` that
-installs the Python packages required for basic functionality of X-PSI. Note
-the script requirement for ``matplotlib``.  For now, we leave out the
-multinest/ultranest samplers, because of issues on MacOS.  Details for installation
-of those are below.
+installs the Python packages required for basic functionality of X-PSI. For
+now, we leave out the multinest/ultranest samplers, because of issues on MacOS.
+Details for installation of those are below.
 
-The content of the ``environment.yml`` are:
+The content of ``environment.yml`` is:
 
-.. code-block:: bash
+.. literalinclude:: ../../environment.yml
+   :language: yaml
 
-    name: xpsi
-    channels:
-        - defaults
-        - conda-forge
-    dependencies:
-        - python >= 3.9.0
-        - numpy < 2.0.0
-        - cython~= 3.0.11
-        - matplotlib == 3.9.2       # STRICT REQUIREMENT FROM FGIVENX
-        - scipy
-        - wrapt
-        - gsl                       # GNU Science library
-        - pytest                    # running functionality self-tests
-        - getdist                   # posterior KDE corner plotting
-        - tqdm                      # progress bar package
-        - h5py                      # storage of X-ray signals computed from posterior samples
-        - nestcheck                 # posterior error analysis, plotting, run combination, etc.
-        - fgivenx                   # conditional posterior plotting; also required by nestcheck
-        - astropy >= 5.2, < 7.0.0   # reading FITS files
-        - emcee                     # MCMC sammpler
+Note that ``fgivenx`` is installed with ``pip``, because version 2.5.1 or newer
+is needed for compatibility with numpy 2.x and recent ``matplotlib`` versions.
 
 
 The core packages required for likelihood functionality are
@@ -107,7 +88,7 @@ Activate the environment as:
 
 
 We now install
-`mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
+`mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for
 nested sampling:
 
 .. code-block:: bash
@@ -129,11 +110,13 @@ Then, install optional packages
 `h5py <https://docs.h5py.org/en/stable/index.html>`_,
 `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_, and
 `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_ which are required for
-post-processing:
+post-processing (these are already included if you created the environment
+from ``environment.yml``):
 
 .. code-block:: bash
 
-    conda install -c conda-forge getdist h5py nestcheck fgivenx
+    conda install -c conda-forge getdist h5py nestcheck
+    pip install "fgivenx>=2.5.1"
 
 .. note::
 
@@ -162,8 +145,8 @@ Build and install guidelines are given below.
 
 .. note::
 
-    The next steps require an `OpenMP <http://www.openmp.org>`_-enabled C 
-    compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most 
+    The next steps require an `OpenMP <http://www.openmp.org>`_-enabled C
+    compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most
     linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out
     the GCC path-executable on your system, run ``which gcc``.
 
@@ -177,7 +160,7 @@ Although production sampling runs need to be performed on a high-performance
 system and X-PSI can be installed locally without sampling functionality, it is
 advisable to install MultiNest on your personal machine to gain experience in
 application to inexpensive test problems. In addition, to leverage some
-capabilities of sample post-processing software you 
+capabilities of sample post-processing software you
 `require MultiNest <https://github.com/farhanferoz/MultiNest>`_ ``v3.12``.
 To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
@@ -231,13 +214,13 @@ following line to ``~/.bashrc``:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/my/directory/MultiNest/lib/:$LD_LIBRARY_PATH
-    
-It's also good to check whether this has worked. In a new kernel, try 
+
+It's also good to check whether this has worked. In a new kernel, try
 
 .. code-block:: bash
 
     python -c 'import pymultinest'
-    
+
 which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
 successfully installed or could not be found.  While X-PSI will run properly,
@@ -277,7 +260,7 @@ should print to screen something like the following:
     \=============================================/
 
     Imported emcee version: 3.1.6
-    Warning: Cannot import torch and test SBI_wrapper.
+    Warning: Cannot import torch and test WrapperSBI.
     Imported GetDist version: 1.6.4
     Imported nestcheck version: 0.2.1
 
@@ -339,8 +322,8 @@ Alternatively, to build X-PSI in-place:
 
     CC=<path/to/compiler/executable> pip install --no-build-isolation -e .
 
-This installs a pointer to your source directory. Python imports directly from there, so 
-`.py` changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require 
+This installs a pointer to your source directory. Python imports directly from there, so
+`.py` changes are immediately live with no reinstall needed. Only `.pyx/.c` changes require
 re-running the command to recompile the extensions.
 
 If you want to reinstall from scratch, run the `rm` command above to clean the C files and run:
@@ -353,7 +336,7 @@ Documentation
 -------------
 
 
-If you wish to compile the documentation you require 
+If you wish to compile the documentation you require
 `Sphinx <http://www.sphinx-doc.org/en/master>`_ and extensions. To install
 these, run the following command:
 
@@ -401,10 +384,10 @@ Tips for installing on Mac OS
 Most of the aforementioned instructions for linux are also applicable for Mac
 OS. Here we note some of the changes required.
 
-After creating the environment using the ``environment.yml`` file, 
+After creating the environment using the ``environment.yml`` file,
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
-and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy``, ``astropy >= 5.2, < 7.0.0`` and ``cython ~= 3.0.11``
+and ``emcee`` (and ``matplotlib``, ``numpy``, ``scipy``, ``astropy`` and ``cython ~= 3.0.11``
 if not using the ``environment.yml``. You may use the file as a reference of the
 packages required).
 
@@ -533,7 +516,7 @@ You may also try to use the MacOS native version of ``clang``:
 
 .. code-block:: bash
 
-    XPSI_NO_OPENMP=1 CC=/usr/bin/clang CC=gcc pip install . [--user] 
+    XPSI_NO_OPENMP=1 CC=/usr/bin/clang CC=gcc pip install . [--user]
 
 
 
@@ -558,7 +541,7 @@ Tips for installing on Windows
 
 
 X-PSI was successfully installed and run on Windows in the year 2020, at least
-for the purpose of likelihood functionality, using the following 
+for the purpose of likelihood functionality, using the following
 user-contributed procedure.
 
 * Clone the X-PSI repository to a directory on your Windows computer (see above).

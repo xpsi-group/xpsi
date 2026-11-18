@@ -170,8 +170,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
 
         .. note::
 
-            As an example, the `Riley et al. 2019 <https://ui.adsabs.harvard
-            .edu/abs/2019ApJ...887L..21R/abstract>`_ samples are in inclination
+            As an example, the `Riley et al. 2019 <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_ samples are in inclination
             :math:`i` instead of :math:`\cos(i)` which is the current inclination
             parameter in the API. Therefore the transformation needed depends
             on the source of the parameter vector. If the vector is from the

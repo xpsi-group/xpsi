@@ -1,22 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import h5py as h5
-from matplotlib.ticker import NullFormatter
-import sys
-import scipy
-
-from io import StringIO
-import os
-import math
-import time
-
-from matplotlib import rcParams
-from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
-from matplotlib import gridspec
-from matplotlib import cm
-
-import xpsi
-
 """
 The main idea of this tool is to create a 2D image showing the neutron star surface with its hot spots.
 The hemisphere facing the observer has solid lines describing the hot spot; the hemisphere opposite to the observer has dimmed colored lines compared to what is shown in the legend.
@@ -26,6 +7,12 @@ Further rotation is necessary to account for the point of view.
 Colors: omitting regions are marked in black; emitting regions are plotted with RdBu colormap: dark blue -> light blue -> dim red -> dark red, moving from hotter to colder emitting hot spots.
 """
 
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
+import sys
+from io import StringIO
 
 rc = {"font.family" : "serif",
       "mathtext.fontset" : "stix"}
@@ -42,6 +29,21 @@ labelsize = labelsize*1.3
 rcParams['text.usetex'] = False
 rcParams['font.size'] = 14.0
 
+REFl= [   '__phase_shift',
+          '__super_colatitude',
+          '__super_radius',
+          '__super_temperature',
+          '__omit_azimuth',
+          '__omit_colatitude',
+          '__omit_radius',
+          '__cede_azimuth',
+          '__cede_colatitude',
+          '__cede_radius',
+          '__cede_temperature']
+
+ABBl = ['PS','SC','SR','ST','OA','OC','OR','CA','CC','CR','CT']
+
+REF = dict(list(zip(ABBl,REFl)))
 
 class IpyExit(SystemExit):
     """
@@ -60,16 +62,15 @@ class IpyExit(SystemExit):
 
 
 def veneer(x, y, axes, lw=1.0, length=8):
-    """
-    GOAL: Make the plots a little more aesthetically pleasing. Author Thomas E. Riley
-    ##### INPUTS #####
-    x: sets a x-axis tick every x[0] value, and shows the number corresponding to the x-axis tick values every x[1] value
-    y: sets a y-axis tick every y[0] value, and shows the number corresponding to the y-axis tick values every y[1] value
-    axes: axes of plot
-    lw: tick line width in points
-    length: tick length in points
-    ##### OUTPUTS #####
-    -
+    """ Make the plots a little more aesthetically pleasing. Author Thomas E. Riley.
+
+    :param x: Sets an x-axis tick every ``x[0]`` value, and labels the x-axis
+        tick values every ``x[1]`` value.
+    :param y: Sets a y-axis tick every ``y[0]`` value, and labels the y-axis
+        tick values every ``y[1]`` value.
+    :param axes: Axes of the plot.
+    :param lw: Tick line width in points.
+    :param length: Tick length in points.
     """
     if x is not None:
         if x[1] is not None:
@@ -99,88 +100,87 @@ def veneer(x, y, axes, lw=1.0, length=8):
     plt.setp(list(axes.spines.values()), linewidth=lw, color='black')
 
 
-REFl= [   '__phase_shift',
-          '__super_colatitude',
-          '__super_radius',
-          '__super_temperature',
-          '__omit_azimuth',
-          '__omit_colatitude',
-          '__omit_radius',
-          '__cede_azimuth',
-          '__cede_colatitude',
-          '__cede_radius',
-          '__cede_temperature']
-
-ABBl = ['PS','SC','SR','ST','OA','OC','OR','CA','CC','CR','CT']
-
-REF = dict(list(zip(ABBl,REFl)))
-
 def transform(thetaR,phiR,V,phi0=0.0):
-        """
-        GOAL: rotate vector V to the right coordinates
-        ##### INPUTS #####
-        thetaR: desired colatitude of the vector (could be hot spot center) [rad]
-        phitR: desired phase of the vector (could be hot spot center) [cycles]
-        V: starting vector (could be defining the hot spot circle)
-        phi0: phase of the point of view [cycle]
-        ##### OUTPUTS #####
-        Vout: rotated vector describing the hot spot
-        """
-        phi0 = phi0*np.pi*2.
+    """ Rotate vector ``V`` to the right coordinates.
 
-        RA = [-np.sin(phi0),np.cos(phi0),0.]
-        V = np.matrix(V)
-        phiR = phiR*2*np.pi
+    :param thetaR: Desired colatitude of the vector (could be a hot spot
+        centre) [rad].
+    :param phiR: Desired phase of the vector (could be a hot spot centre)
+        [cycles].
+    :param V: Starting vector (could be defining the hot spot circle).
+    :param phi0: Phase of the point of view [cycle].
 
-        Mphi     = np.matrix([[np.cos(phiR),-np.sin(phiR),0.],
-                              [np.sin(phiR),np.cos(phiR),0.],
-                              [0.,0.,1.]]) #_z
-        Mtheta = np.matrix([[np.cos(thetaR)+ RA[0]*RA[0]*(1.-np.cos(thetaR)),
-                             RA[0]*RA[1]*(1.-np.cos(thetaR)) - RA[2]*np.sin(thetaR),
-                             RA[0]*RA[2]*(1.-np.cos(thetaR)) + RA[1]*np.sin(thetaR),],
-                            [RA[0]*RA[1]*(1.-np.cos(thetaR)) + RA[2]*np.sin(thetaR),
-                             np.cos(thetaR)+ RA[1]*RA[1]*(1.-np.cos(thetaR)),
-                             RA[1]*RA[2]*(1.-np.cos(thetaR)) - RA[0]*np.sin(thetaR),],
-                            [RA[0]*RA[2]*(1.-np.cos(thetaR)) - RA[1]*np.sin(thetaR),
-                             RA[1]*RA[2]*(1.-np.cos(thetaR)) + RA[0]*np.sin(thetaR),
-                            np.cos(thetaR)+ RA[2]*RA[2]*(1.-np.cos(thetaR))]])
+    :returns: The rotated vector describing the hot spot.
+    """
+    phi0 = phi0*np.pi*2.
 
-        Mtheta[np.abs(Mtheta)<1e-16] = 0.0
-        M = Mphi*Mtheta
-        if np.shape(V)[0] ==1:
-            V = np.transpose(V)
-        Vout = M*V
-        Vout = np.squeeze(np.array(Vout))
-        return Vout
+    RA = [-np.sin(phi0),np.cos(phi0),0.]
+    V = np.asarray(V, dtype=float)
+    phiR = phiR*2*np.pi
+
+    Mphi     = np.array([[np.cos(phiR),-np.sin(phiR),0.],
+                            [np.sin(phiR),np.cos(phiR),0.],
+                            [0.,0.,1.]]) #_z
+    Mtheta = np.array([[np.cos(thetaR)+ RA[0]*RA[0]*(1.-np.cos(thetaR)),
+                            RA[0]*RA[1]*(1.-np.cos(thetaR)) - RA[2]*np.sin(thetaR),
+                            RA[0]*RA[2]*(1.-np.cos(thetaR)) + RA[1]*np.sin(thetaR),],
+                        [RA[0]*RA[1]*(1.-np.cos(thetaR)) + RA[2]*np.sin(thetaR),
+                            np.cos(thetaR)+ RA[1]*RA[1]*(1.-np.cos(thetaR)),
+                            RA[1]*RA[2]*(1.-np.cos(thetaR)) - RA[0]*np.sin(thetaR),],
+                        [RA[0]*RA[2]*(1.-np.cos(thetaR)) - RA[1]*np.sin(thetaR),
+                            RA[1]*RA[2]*(1.-np.cos(thetaR)) + RA[0]*np.sin(thetaR),
+                        np.cos(thetaR)+ RA[2]*RA[2]*(1.-np.cos(thetaR))]])
+
+    Mtheta[np.abs(Mtheta)<1e-16] = 0.0
+    M = Mphi @ Mtheta
+    if V.ndim == 2 and np.shape(V)[0] == 1:
+        V = np.transpose(V)
+    Vout = M @ V
+    Vout = np.squeeze(Vout)
+    return Vout
 
 def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = False, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
-    """
-    GOAL: printing 2D visualisation of hot spot(s) on a spherical surface
-    ##### INPUTS #####
-    Vp: vector of parameters
-    model: model adopted e.g. ST-U, ST+PST !PLEASE USE "-S" and not just "S" for symmetric models. Recognised hot spot names are "ST", "PST", "CST", "EST", "PDT", "CDT", "EDT"; for two hot spot model connect each hot spot model with "+" (first for primary; second for secondary). If the two hot spots have the same name, add "-S" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); "-U" if the properties of the secondary spot is completely unrelated to the primary ones; "-Ua" if the secondary hot spot is antipodal to the primary but has independent "radius" and "temperature".
-    POV: Point Of View - location (for string arguments: colatitude) from which the neutron star is observed; if string can be:
-        "I" -from the point of view of Earth-: in this case x and y are rotated compared
-                                           other configuration to visualise equator horizontally and North on top
-        or "P" -primary-,"S", -secondary-, SO" -secondary omission-, "SE" -secondary emission-,  "SC" -secondary cede-, or equivalently "PO", "PE", "PC", depending on the adopted model.
-        A vector of three coordinates, whose quadratic sum =1, can also be used to determine the location from which the NS surface is seen.
-    ThetaDisplay: in which pole would you like to see the countours of constant colatitude? Options are: "SP" for south pole and "NP" for north pole (where i ==0)
-    antiphase: is antiphase turned on for the secondary spot?
-    SaveFlag: bool: do you want to save the image
-    dir: directory path where to save the image
-    Name: Name to add to the file to be saved
-    POVname: If POV is something outside of the aforementioned options e.g. using a vector of 3 coordinates,
-             provide POV name to save file with
-    extension: extension of the file to be saved
-    antipodal: if you want to show antipodal configuration
-    ##### OUTPUTS #####
-    returns ax (ax = fig.add_subplot(111))
+    """ Print a 2D visualisation of hot spot(s) on a spherical surface.
+
+    :param dictVp: Vector of parameters (or an X-PSI ParameterSubspace).
+    :param str model: Model adopted, e.g. ``"ST-U"``, ``"ST+PST"``. Please use
+        ``"-S"`` and not just ``"S"`` for symmetric models. Recognised hot spot
+        names are ``"ST"``, ``"PST"``, ``"CST"``, ``"EST"``, ``"PDT"``,
+        ``"CDT"`` and ``"EDT"``; for a two hot spot model, connect each hot spot
+        model with ``"+"`` (first the primary, second the secondary). If the two
+        hot spots have the same name, add ``"-S"`` (the secondary is antipodal
+        and shares the primary's temperature and radius), ``"-U"`` (the
+        properties of the secondary are completely unrelated to the primary) or
+        ``"-Ua"`` (the secondary is antipodal to the primary but has an
+        independent radius and temperature).
+    :param POV: Point of view: the location (for string arguments, the
+        colatitude) from which the neutron star is observed. If a string, it can
+        be ``"I"`` (from the point of view of Earth; in this case x and y are
+        rotated compared to other configurations, to show the equator
+        horizontally and North on top), or ``"P"`` (primary), ``"S"``
+        (secondary), ``"SO"`` (secondary omission), ``"SE"`` (secondary
+        emission), ``"SC"`` (secondary cede), or equivalently ``"PO"``,
+        ``"PE"``, ``"PC"``, depending on the adopted model. A vector of three
+        coordinates, whose quadratic sum is 1, can also be used to set the
+        location from which the surface is seen.
+    :param ThetaDisplay: At which pole to show the contours of constant
+        colatitude: ``"SP"`` for the south pole and ``"NP"`` for the north pole
+        (where i == 0).
+    :param antiphase: Whether antiphase is turned on for the secondary spot.
+    :param bool SaveFlag: Whether to save the image.
+    :param str dir: Directory path where to save the image.
+    :param str Name: Name to add to the saved file.
+    :param str POVname: If ``POV`` is outside the options above (e.g. a vector
+        of 3 coordinates), the name used to save the file.
+    :param str extension: Extension of the saved file.
+    :param antipodal: Whether to show the antipodal configuration.
+
+    :returns: ``ax`` (``ax = fig.add_subplot(111)``).
     """
 
     # Set abbreviations for plot labels
     Plab = 'Primary'
     Slab = 'Secondary'
-    Tlab = 'Tertiary'
     EMIlab = ' emission'
     OMIlab = ' omission'
     SUPERlab = ' superseding'
@@ -198,15 +198,15 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         DICT_VECTOR = dictVp.names
         
     def hotspot_check(hot_name, params, HStag, asymFlag = False):
-        """
-        GOAL: check consistency between hot spot name and params
-        ##### INPUTS #####
-        hot_name: hot spot names according to our naming convention (P,E,C)ST/(P,E,C)DT
-        params: list of parameters
-        HStag: Hot Spot tag, "p" for primary hot spot (also for single hot spot models); "s" for secondary hot spot
-        asymFlag: if True it allows a "partially derived" hot spot to be described only by temperature and radius
-        ##### OUTPUTS ####
-        -
+        """ Check consistency between the hot spot name and the parameters.
+
+        :param hot_name: Hot spot name according to our naming convention,
+            ``(P,E,C)ST`` / ``(P,E,C)DT``.
+        :param params: List of parameters.
+        :param HStag: Hot spot tag, ``"p"`` for the primary hot spot (also for
+            single hot spot models) or ``"s"`` for the secondary hot spot.
+        :param asymFlag: If True, allows a "partially derived" hot spot to be
+            described only by temperature and radius.
         """
         ### check super
         T_name = HStag+REF['ST']
@@ -274,45 +274,22 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 
         
     def check_model_param_names():
-        """
-        GOAL: checking compatibility between specified model and parameters
-        ##### INPUTS #####
-        -
-        ##### OUTPUTS #####
-        hot_name: name of primary hot spot (according to our naming convention)
-        hot_name_s: name of the secondary hot spot (according to our naming convention)
-        hot_name_t: name of the tertiary hot spot (according to our naming convention)
+        """ Check compatibility between the specified model and the parameters.
+
+        :returns:
+            ``(hot_name, hot_name_s)``, the names of the primary and secondary
+            hot spots (according to our naming convention).
         """
         hot_name = ''
         hot_name_s = ''
-        hot_name_t = ''
         if ('-' in model) and (not('-S' in model) and  not('-U' in model) and not('-Ua' in model)):
             print (r"ERROR: model not recognised. If model has derived quantities and does not fall into the categories mentioned below: transform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
             raise IpyExit
-        if (model.count('+')==2) or ('U3' in model):
-            print("YOU ARE USING A 3 HOT SPOT MODEL")
-            if ('-U3' in model):
-                ind = model.find('-')
-                hot_name = model[:ind]
-                hotspot_check(hot_name,DICT_VECTOR,'p')
-                hotspot_check(hot_name,DICT_VECTOR,'s')
-                hotspot_check(hot_name,DICT_VECTOR,'t')
-            
-            elif ('+' in model):
-                ind = model.find('+')
-                ind2 = model[ind+1:].find('+')
-                hot_name = model[:ind]
-                hotspot_check(hot_name,DICT_VECTOR,'p')
-                hot_name_s = model[ind+1:]
-                hotspot_check(hot_name_s,DICT_VECTOR,'s')
-                hot_name_t = model[ind+1:][ind2+1:]
-                hotspot_check(hot_name_t,DICT_VECTOR,'t')
-                
-            else:
-                print ("ERROR! MODEL NOT RECOGNISED")
-                raise IpyExit
-            
-        elif ('+' in model) or ('-' in model):
+        if (model.count('+')>1) or ('-U3' in model):
+            print ("ERROR: only models with one or two hot spots are supported")
+            raise IpyExit
+
+        if ('+' in model) or ('-' in model):
             print ("YOU ARE USING A 2 HOT SPOT MODEL")
             if ('-S' in model):
                 ind = model.find('-')
@@ -355,34 +332,35 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             hotspot_check(hot_name,DICT_VECTOR,'p')
 
             
-        return hot_name,hot_name_s,hot_name_t
+        return hot_name,hot_name_s
         
         
     def fillVECTORS(HStag, hot_name, flagUa = False):
-        """
-        GOAL: filling vectors describing geometries and temperature of hot spots and labels for plots
-        ##### INPUTS #####
-        HStag: Hot Spot tag, "p" for primary hot spot (also for single hot spot models); "s" for secondary hot spot; "t" for tertiary hot spot
-        hot_name: name (according to our naming convention) of the hot spot
-        ##### OUTPUTS #####
-        phiA: phases of hot spot components [cycle]
-        thetaA: colatitudes of hot spot components [rad]
-        zetaA: angular radii of hot spot components [rad]
-        TA: log10 temperatures/1K describing components of the hot spot
-        labels: labels for each hot spont component (list of strings)
-        flagUa: flag True if model "-Ua" (bool)
+        """ Fill vectors describing the geometries and temperatures of the hot
+        spots, and labels for the plots.
+
+        :param HStag: Hot spot tag, ``"p"`` for the primary hot spot (also for
+            single hot spot models) or ``"s"`` for the secondary hot spot.
+        :param hot_name: Name (according to our naming convention) of the hot
+            spot.
+        :param bool flagUa: True if the model is ``"-Ua"``.
+
+        :returns:
+            ``(phiA, thetaA, zetaA, TA, labels)``, where ``phiA`` are the phases
+            of the hot spot components [cycle], ``thetaA`` their colatitudes
+            [rad], ``zetaA`` their angular radii [rad], ``TA`` their log10
+            temperatures [log10(T/K)], and ``labels`` the label strings for each
+            component.
         """
 
-        if (HStag!='p') and (HStag!='s') and (HStag!='t'):
-            print ("ERROR: invalid Key argument (only 'p', 's' and 't' allowed), not ",HStag)
+        if (HStag!='p') and (HStag!='s'):
+            print ("ERROR: invalid Key argument (only 'p' and 's' allowed), not ",HStag)
             raise IpyExit
 
         if HStag == 'p':
             Mlab = Plab
         elif HStag == 's':
             Mlab = Slab
-        elif HStag == 't':
-            Mlab = Tlab
 
         labels = [Mlab]
     
@@ -470,16 +448,20 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     def SYMMETRIC(phiA,thetaA,labels):
-        """
-        GOALS: setting phases and colatitude for antipodal configuration of secondary hot spot
-        ##### INPUTS #####
-        phiA: array of phases for components of primary hot spot [cycle]
-        thetaA: array of colatitudes for components of primary hot spot [rad]
-        labels: array of labels for components of primary hot spot
-        ##### OUTPUTS #####
-        phiA_s: array of phases for components of secondary (derived) hot spot [cycle]
-        thetaA_s: array of colatitudes for components of secondary (derived) hot spot [rad]
-        labels_s: array of labels for components of secondary hot spot
+        """ Set the phases and colatitudes for the antipodal configuration of
+        the secondary hot spot.
+
+        :param phiA: Array of phases for the components of the primary hot spot
+            [cycle].
+        :param thetaA: Array of colatitudes for the components of the primary
+            hot spot [rad].
+        :param labels: Array of labels for the components of the primary hot
+            spot.
+
+        :returns:
+            ``(phiA_s, thetaA_s, labels_s)``, the phases [cycle], colatitudes
+            [rad] and labels for the components of the secondary (derived) hot
+            spot.
         """
         phiA_s = np.zeros(len(phiA))
         thetaA_s = np.zeros(len(thetaA))
@@ -493,7 +475,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         return phiA_s,thetaA_s,labels_s
 
     # run model check
-    HSname_p, HSname_s, HSname_t =  check_model_param_names()
+    HSname_p, HSname_s =  check_model_param_names()
     
     # Defining phases, colatitudes, angular radii, temperatures and labels for primary hot spot
     phiA_p,thetaA_p,zetaA_p,TA_p,labels_p = fillVECTORS('p',HSname_p)
@@ -555,30 +537,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             else:
                 CAall=[mycolors0[nColors-1],'black',mycolors0[nColors-1],'black']
     
-    # Define phases, colatitudes, angular radii, temperatures and labels for tertiary hot spot (if any)
-    phiA_t = []
-    thetaA_t = []
-    zetaA_t = []
-    TA_t = []
-    labels_t =[]
-
-    if ((model.count('+')==2) or ('U3' in model)):
-        phiA_t,thetaA_t,zetaA_t,TA_t,labels_t = fillVECTORS('t',HSname_t)
-        TAall = TA_p+TA_s+TA_t
-        LABall = labels_p +labels_s+labels_t
-        ind = [1,2,4,5]
-
-        argT = np.argsort(TAall)
-        j = 0
-        for i in range(len(LABall)):
-            if (OMIlab in LABall[i]):
-                coli = 'black'
-            else:
-                ind_i = ind[argT[j]]
-                coli = mycolors0[ind_i]
-                j = j+1
-            CAall.append(coli)
-
     if antipodal:
             
         phiA_anti,thetaA_anti,labels_anti = SYMMETRIC(phiA_p,thetaA_p,labels_p)
@@ -610,9 +568,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         VA.append(Vi)
     for i in range(len(zetaA_s)):
         Vi  = [np.cos(x2)*np.sin(zetaA_s[i]),np.sin(x2)*np.sin(zetaA_s[i]),np.cos(zetaA_s[i])*np.ones(len(x2))]
-        VA.append(Vi)
-    for i in range(len(zetaA_t)):
-        Vi  = [np.cos(x2)*np.sin(zetaA_t[i]),np.sin(x2)*np.sin(zetaA_t[i]),np.cos(zetaA_t[i])*np.ones(len(x2))]
         VA.append(Vi)
 
     theta_sub = 0.0
@@ -671,8 +626,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                     theta_sub = dictVp['s'+REF['OC']]
             else:
                 ii = [i for i, s in enumerate(labels_s) if OMIlab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondaryOmission"
 
         elif POV=="SE":
@@ -688,8 +643,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                     phi_sub = phi_s
             else:
                 ii = [i for i, s in enumerate(labels_s) if EMIlab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondaryEmission"
 
         elif POV=="S":
@@ -707,8 +662,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 phi_sub = dictVp['s'+REF['PS']] +0.5 if antiphase else dictVp['s'+REF['PS']]
             else:
                 ii = [i for i, s in enumerate(labels_s) if SUPERlab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondarySuper"
 
         elif POV=="SC":
@@ -725,8 +680,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 phi_sub = phi_c
             else:
                 ii = [i for i, s in enumerate(labels_s) if CEDElab in s]
-                theta_sub = thetaA_s[ii]
-                phi_sub   = phiA_s[ii]
+                theta_sub = thetaA_s[ii[0]]
+                phi_sub   = phiA_s[ii[0]]
             labPOV ="SecondaryCede"
 
         elif POV=="P":
@@ -771,13 +726,12 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             theta_sub = np.arccos(cosi)
             labPOV ="Earth"
         elif not(isinstance(POV, str)):
-            a = np.matrix(POV)*np.transpose(np.matrix([0,0.,1.]))
-            cosT = a[0,0]
+            cosT = np.dot(np.asarray(POV, dtype=float), [0., 0., 1.])
             theta_sub = np.arccos(cosT)
 
             phi_sub = 0.0
             if np.abs(np.sin(theta_sub))>1e-16:
-                a0 = POV[0]/np.sin(theta_sub)
+                a0 = np.clip(POV[0]/np.sin(theta_sub), -1., 1.)
                 phi_sub = np.arccos(a0) if POV[1]>=0. else np.arccos(a0)+np.pi
                 phi_sub = phi_sub/(2.*np.pi)
 
@@ -795,22 +749,26 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     label_plot  = ''
 
     def transform_plot(t,p,V,MS,signFlag,symb,col,FlagLeg=False,L1="",L2="",cL ="gray"):
-        """
-        GOAL: plot a specific point on the sphere (mock neutron star) surface
-        ##### INPUTS #####
-        t: target colatitude of the point of interest
-        p: target phase of the point of interest
-        V: initial origin (usually North pole - rarely South pole); shape: [x,y,z]
-        MS: marker size to plot the point of interest
-        signFlag: True if plot hot spot centers, False otherwise
-        symb: symbol plotted (unless signFlag is True and hot spot is visible: in that case marker is set as 'x')
-        col: color of marker to plot the point of interest
-        FlagLeg: True if we want to add the legend relative to the marker of interest to the plot
-        L1: label for legend if point of interest on the hemisphere phasing observer
-        L2: label for legend if point of interest on the hemisphere opposite to the observer
-        cL: color of marker for hot spot center in legend (only used of for this type of point different legend are used depending if the hemisphere is facing or opposite to the observer)
-        ##### OUTPUTS #####
-        -
+        """ Plot a specific point on the sphere (mock neutron star) surface.
+
+        :param t: Target colatitude of the point of interest.
+        :param p: Target phase of the point of interest.
+        :param V: Initial origin (usually the North pole, rarely the South
+            pole); shape ``[x, y, z]``.
+        :param MS: Marker size used to plot the point of interest.
+        :param signFlag: True to plot hot spot centres, False otherwise.
+        :param symb: Symbol plotted (unless ``signFlag`` is True and the hot
+            spot is visible, in which case the marker is set to ``'x'``).
+        :param col: Colour of the marker used to plot the point of interest.
+        :param FlagLeg: True to add the legend entry for the marker of interest
+            to the plot.
+        :param L1: Legend label if the point of interest is on the hemisphere
+            facing the observer.
+        :param L2: Legend label if the point of interest is on the hemisphere
+            opposite to the observer.
+        :param cL: Colour of the hot spot centre marker in the legend (only used
+            for this type of point, when different legends are used depending on
+            whether the hemisphere is facing or opposite to the observer).
         """
         sign       = 'x'
         label_plot = ''
@@ -844,13 +802,13 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     def RotateList(tryout):
-        """
-        GOAL: modifying input vector to avoid plotting lines unifying wrong points on the circles.
-        In practice it determines the optimal starting point of the vector to allow the lines of the hot spot to be correctly plotted.
-        ##### INPUTS #####
-        tryout: input list
-        ##### OUTPUTS #####
-        -
+        """ Modify the input vector to avoid plotting lines joining the wrong
+        points on the circles.
+
+        In practice it determines the optimal starting point of the vector so
+        that the lines of the hot spot are correctly plotted.
+
+        :param tryout: Input list.
         """
         # Check if the input list has only one column
         if (np.shape(tryout)[1]==1):
@@ -895,19 +853,16 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     def transform_plot_lines(TA,PA,VA,color_plot,NO_POLE_FLAGt,style_plot = '-',lw_plot = 1, LG = ""):
-        """
-        GOAL: plot lines defining the hot spots
-        ##### INPUTS #####
-        TA: array of colatitudes of points describing the hot pots
-        PA: array of phases of points
-        VA: initial vector
-        color_plot: color of the line
-        NO_POLE_FLAGt: flag True for specified point of view
-        style_plot: line style of hot spot to be plotted
-        lw_plot: line width of the spot to be plotted
-        LG: Legend hot spot
-        ##### OUTPUTS #####
-        -
+        """ Plot the lines defining the hot spots.
+
+        :param TA: Array of colatitudes of the points describing the hot spots.
+        :param PA: Array of phases of the points.
+        :param VA: Initial vector.
+        :param color_plot: Colour of the line.
+        :param NO_POLE_FLAGt: Flag, True for a specified point of view.
+        :param style_plot: Line style of the hot spot to be plotted.
+        :param lw_plot: Line width of the spot to be plotted.
+        :param LG: Legend label for the hot spot.
         """
         tryout = transform(useT(TA),useP(PA),VA)
 
@@ -962,10 +917,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     #rotating and plotting edges of hot regions
-    THETAall = list(thetaA_p)+list(thetaA_s)+list(thetaA_t)
-    PHIall = list(phiA_p)+list(phiA_s)+list(phiA_t)
-    LABall = list(labels_p)+list(labels_s)+list(labels_t)
-    TAall = list(TA_p)+list(TA_s)+list(TA_t)
+    THETAall = list(thetaA_p)+list(thetaA_s)
+    PHIall = list(phiA_p)+list(phiA_s)
+    LABall = list(labels_p)+list(labels_s)
+    TAall = list(TA_p)+list(TA_s)
 
 
     for i in range(len(VA)):

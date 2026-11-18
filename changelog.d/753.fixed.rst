@@ -1,0 +1,1 @@
+PileupModule.py: Fixed a bug in Pileup where the ARF would change when applying effective area scaling factor
