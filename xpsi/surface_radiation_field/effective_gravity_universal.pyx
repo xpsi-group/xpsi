@@ -329,7 +329,7 @@ cdef double oblateness_func_o2(double x, int obl_surfgrav_ind) noexcept nogil:
         # Eq. (21): o2 = o20 + o21 x   (overall Ω̄^2 factor is applied elsewhere)
         return -0.788 + 1.030 * x
     elif obl_surfgrav_ind == 1:
-        return 1.
+        return 0.0
     elif obl_surfgrav_ind == 5:
         # Computed by Yves (Kini et al. in prep)
         return -0.37562887294361336 - 4.605853993313363*x + 21.39216085992957*x*x - 24.252054038949396*x*x*x
