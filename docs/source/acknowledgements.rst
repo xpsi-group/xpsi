@@ -20,23 +20,25 @@ Those involved in maintenance and development (technical and scientific).
 
 **Current active members**
 
-* Devarshi Choudhury (d.choudhury[at]uva.nl), University of Amsterdam
-* Bas Dorsman (b.dorsman[at]uva.nl), University of Amsterdam
-* Denis Gonzalez-Caniulef (dgonzalez-ca[at]irap.omp.eu), IRAP
-* Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP
+* Denis Gonzalez-Caniulef (dgonzalez-ca[at]irap.omp.eu), IRAP/University of Toulouse
+* Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP/University of Toulouse
 * Mariska Hoogkamer (m.m.hoogkamer[at]uva.nl), University of Amsterdam
+* Mattéo Sautron (matteo.sautron[at]utoulouse.fr), IRAP/University of Toulouse
 * Daniela Huppenkothen (d.huppenkothen[at]uva.nl), University of Amsterdam
-* Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP
+* Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP/University of Toulouse
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
-* Yinghan Mao (maoyh[at]smail.nju.edu.cn), Nanjing University
-* Lucien Mauviard-Haag (lucien.mauviard-haag[at]irap.omp.eu), IRAP
+* Ying-Han Mao (maoyh[at]smail.nju.edu.cn), Nanjing University
+* Lucien Mauviard-Haag (lucien.mauviard-haag[at]irap.omp.eu), IRAP/University of Toulouse
 * Tuomo Salmi (tuomo.salmi[at]helsinki.fi), University of Helsinki
-* Pierre Stammler (pstammler[at]irap.omp.eu), IRAP
+* Pierre Stammler (pstammler[at]irap.omp.eu), IRAP/University of Toulouse
+* Lami Suleiman, DESY
 * Anna Watts (a.l.watts[at]uva.nl), University of Amsterdam
 
 **Past members**
 
-* Thomas E. Riley (t.riley.phd[at]gmail.com), the Initial Creator of X-PSI
+* Devarshi Choudhury
+* Bas Dorsman
+* Thomas E. Riley, the Initial Creator of X-PSI
 * Serena Vinciguerra
 
 .. _community:
@@ -48,25 +50,7 @@ Folks who have used X-PSI in their research or engaged with the team during
 development and science analysis, thereby prompting fixes or
 improvements.
 
-* Matteo Bacchetti
-* Anna Bilous
-* Erik Bootsma
-* Johannes Buchner
-* Yuri Cavecchi
-* Frank Chambers
-* Alex Chen
-* Pushpita Das
-* Julia Deneva
-* Siem Fenne
-* Gwénaël Loyer
-* Geert Raaijmakers
-* Paul Ray
-* Evert Rol
-* Rahul Silié
-* Lami Suleiman
-* Emma van der Wateren
-* Bob de Witte
-* The NICER collaboration
+Matteo Bacchetti, Anna Bilous, Erik Bootsma, Johannes Buchner, Yuri Cavecchi, Frank Chambers, Alex Chen, Pushpita Das, Julia Deneva, Siem Fenne, Chun Huang, Gwénaël Loyer, Geert Raaijmakers, Paul Ray, Evert Rol, Rahul Silié, Emma van der Wateren, Bob de Witte, The NICER collaboration
 
 **Miscellaneous**
 
@@ -89,7 +73,7 @@ Literature
 This project is built upon the work of many researchers in many fields. For
 citations to (astro)physics and (astro)statistics literature, please see the
 technical documents pointed to in the :ref:`citation` section. Moreover, we
-point to the bibliograpy of `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ as the first published application of
+point to the bibliograpy of `Riley et al. 2019 <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_ as the first published application of
 the X-PSI package, and to the `ApJL Focus Issue <https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State>`_
 of which this article is a member. For other scientific papers that have used 
 X-PSI see :ref:`applications`.
@@ -100,6 +84,4 @@ X-PSI see :ref:`applications`.
 Funding
 ~~~~~~~
 
-Development of X-PSI has been funded by ERC Starting Grant No. 639217 CSINEUTRONSTAR, ERC Consolidator 
-Grant No. 865768 AEONS, and NWO ENW-XL grant OCENW.XL21.XL21.038 *Probing the phase diagram of Quantum Chromodynamics* (all PI Anna Watts). The IRAP team acknowledges the support of
-the CNES in the development of X-PSI.
+Development of X-PSI in the Netherlands has been funded by ERC Starting Grant No. 639217 CSINEUTRONSTAR, ERC Consolidator Grant No. 865768 AEONS, and NWO ENW-XL grant OCENW.XL21.XL21.038 *Probing the phase diagram of Quantum Chromodynamics*. In France, the IRAP team acknowledges the support of the CNES and the ANR (Agence Nationale de la Recherche) via grant number ANR-25-CE31-7901-01 (ANR DENSER). X-PSI development in Finland is supported by the Research Council of Finland via grant No. 368807. 

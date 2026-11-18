@@ -72,7 +72,9 @@ jobs:
       shell: bash -l {0}
       env:
         CC:   gcc
-
+    - name: Show key package versions
+      run: |
+        python -c "import sys, numpy, scipy, matplotlib, fgivenx; print(sys.version); print('numpy', numpy.__version__, 'scipy', scipy.__version__, 'matplotlib', matplotlib.__version__, 'fgivenx', fgivenx.__version__)"
     - name: Test with pytest
       run: |
         pytest

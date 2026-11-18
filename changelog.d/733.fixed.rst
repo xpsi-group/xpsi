@@ -1,0 +1,1 @@
+Added ``pandas`` to ``environment.yml``, since it is needed when importing X-PSI.

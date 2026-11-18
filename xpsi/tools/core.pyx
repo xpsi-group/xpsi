@@ -5,7 +5,7 @@ likelihood functions, and for developers who wish to contribute to the source
 code.
 
 """
-from ..global_imports import _six, xpsiError
+from ..global_imports import xpsiError
 
 from .phase_integrator import phase_integrator
 from .phase_interpolator import phase_interpolator
@@ -43,7 +43,7 @@ def set_phase_interpolant(interpolant):
     global __phase_interpolant__
     global __interpolants__
 
-    if not isinstance(interpolant, _six.string_types):
+    if not isinstance(interpolant, str):
         raise TypeError('Interpolant declaration must be a string.')
 
     if interpolant not in __interpolants__.keys():
@@ -73,7 +73,7 @@ def set_energy_interpolant(interpolant):
     global __energy_interpolant__
     global __interpolants__
 
-    if not isinstance(interpolant, _six.string_types):
+    if not isinstance(interpolant, str):
         raise TypeError('Interpolant declaration must be a string.')
 
     if interpolant not in __interpolants__.keys():

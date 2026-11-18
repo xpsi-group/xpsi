@@ -6,8 +6,9 @@ dependencies:
         - python >= 3.10.0
         - numpy
         - cython~= 3.0.11
-        - matplotlib  # STRICT REQUIREMENT FROM FGIVENX
+        - matplotlib
         - scipy
+        - pandas # reading tabulated temperature maps
         - wrapt
         - setuptools>=61
         - gsl # GNU Science library
@@ -16,7 +17,9 @@ dependencies:
         - tqdm   # progress bar package
         - h5py  # storage of X-ray signals computed from posterior samples
         - nestcheck  # posterior error analysis, plotting, run combination, etc.
-        - fgivenx  # conditional posterior plotting; also required by nestcheck
+        - pip:
+          - fgivenx>=2.5.1   # >=2.5.1 needed for numpy 2.x / newer matplotlib
         - astropy # reading FITS files
         - emcee  # MCMC sammpler
         - cmap # For PostProcessing colormaps
+        - lxml # For PostProcessing corner plots (PDF format)

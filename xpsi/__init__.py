@@ -4,7 +4,7 @@ An open-source package for neutron star astrostatistics.
 
 """
 
-__version__ = "3.3.0"
+__version__ = "3.5.0b1"
 __author__ = "The X-PSI Core Team"
 
 try:
@@ -80,10 +80,9 @@ if not __XPSI_SETUP__:
     from xpsi.Sample import nested
     from xpsi.Prior import Prior
     try:
-        from xpsi.SBI_wrapper import Custom_SBI_Likelihood
+        from xpsi.WrapperSBI import CustomLikelihoodSBI, SynthesiseData, SBIWrapper
     except ImportError:
-        _warning('Cannot import torch and test SBI_wrapper.')
-        
+        _warning('Cannot import torch and test WrapperSBI.')
 
     if global_imports._size == 1:
         try:

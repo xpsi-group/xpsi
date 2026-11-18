@@ -1,1 +1,0 @@
-Fixed the Signal.synthesize method when using data_BKG, which previously resulted in overestimated background contribution.

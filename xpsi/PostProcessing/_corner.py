@@ -376,7 +376,11 @@ class CornerPlotter(PostProcessor):
             names.
 
         :param bool labels_2D:
-            Display parameter labels on 2D panels?
+            Display parameter labels on the off-diagonal 2D panels? The
+            annotations use the ``short_labels`` (e.g., labels without units)
+            passed to :meth:`~.Runs.load_runs`, so that they fit within the
+            panels. Parameters without a short label default to their full
+            label from ``labels``, and a message is printed listing them.
 
         :param bool crosshairs:
             Display parameter truth crosshairs?
@@ -540,7 +544,7 @@ class CornerPlotter(PostProcessor):
                 if isinstance(value, float) or isinstance(value, int):
                     setattr(plotter.settings, key,
                             getattr(plotter.settings, key) * value)
-                elif isinstance(value, _six.string_types):
+                elif isinstance(value, str):
                     if hasattr(plotter.settings, value):
                         setattr(plotter.settings, key,
                                 getattr(plotter.settings, value))
@@ -585,12 +589,18 @@ class CornerPlotter(PostProcessor):
             plotter.legend.set_frame_on(legend_frameon)
 
         params = self.params
+        if labels_2D and params.short_labels_defaulted:
+            _warning('labels_2D=True: no short_labels given for parameter(s) '
+                     '%s; using their full labels, which may overflow the 2D '
+                     'panels. Pass short_labels={name: label} to '
+                     'Runs.load_runs() to set shorter labels.'
+                     % ', '.join(params.short_labels_defaulted))
         for j in range(len(params.names)):
                 for i in range(j,len(params.names)):
                     ax = plotter.subplots[i,j]
                     ax.xaxis.set_minor_locator(AutoMinorLocator())
                     if (i != j) and labels_2D:
-                        ax.text(0.05, 0.95, fr'${params.labels[i]}$ - ${params.labels[j]}$', transform=ax.transAxes, ha='left', va='top')
+                        ax.text(0.05, 0.95, fr'${params.short_labels[i]}$ - ${params.short_labels[j]}$', transform=ax.transAxes, ha='left', va='top')
                 for i in range(j):
                     ax = plotter.subplots[j,i]
                     ax.yaxis.set_minor_locator(AutoMinorLocator())
@@ -1066,23 +1076,25 @@ class CornerPlotter(PostProcessor):
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
                         y_pos = 1.05 + self.ci_gap * (self.r+self.sub_set)
-                        ax.text(x_pos, y_pos, title,
-                                color=color,
-                                horizontalalignment="center",
-                                alpha=1.,
-                                fontsize=fontsize,
-                                transform=ax.transAxes)
+                        self._register_extra_artist(plotter,
+                            ax.text(x_pos, y_pos, title,
+                                    color=color,
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes))
 
 
                         if self.tot0 == self.tot1:
                             y_pos = 1.05 + self.ci_gap * (1+self.r+self.sub_set)
                             title_param_name = r'${}$'.format(param_name)
-                            ax.text(x_pos, y_pos, title_param_name,
-                                    color='black',
-                                    horizontalalignment="center",
-                                    alpha=1.,
-                                    fontsize=fontsize,
-                                    transform=ax.transAxes)
+                            self._register_extra_artist(plotter,
+                                ax.text(x_pos, y_pos, title_param_name,
+                                        color='black',
+                                        horizontalalignment="center",
+                                        alpha=1.,
+                                        fontsize=fontsize,
+                                        transform=ax.transAxes))
 
                     elif self.tot1==1:
                         ax.set_title(title, color=color,
@@ -1090,12 +1102,13 @@ class CornerPlotter(PostProcessor):
                         title_param_name = r'${}$'.format(param_name)
                         x_pos = 0.5
                         y_pos = 1.05 + (self.ci_gap-0.02) * (len(title.split('\n')))
-                        ax.text(x_pos, y_pos, title_param_name,
-                                color='black',
-                                horizontalalignment="center",
-                                alpha=1.,
-                                fontsize=fontsize,
-                                transform=ax.transAxes)
+                        self._register_extra_artist(plotter,
+                            ax.text(x_pos, y_pos, title_param_name,
+                                    color='black',
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes))
 
 
 
@@ -1166,33 +1179,36 @@ class CornerPlotter(PostProcessor):
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
                         y_pos = 1.05 + self.ci_gap * (self.r+self.sub_set)
-                        ax.text(x_pos, y_pos, title,
-                                color=color,
-                                horizontalalignment="center",
-                                alpha=1.,
-                                fontsize=fontsize,
-                                transform=ax.transAxes)
-                        if self.tot0 == self.tot1:
-                            y_pos = 1.05 + self.ci_gap * (1+self.r+self.sub_set)
-                            title_param_name = r'${}$'.format(param_name)
-                            ax.text(x_pos, y_pos, title_param_name,
-                                    color='black',
+                        self._register_extra_artist(plotter,
+                            ax.text(x_pos, y_pos, title,
+                                    color=color,
                                     horizontalalignment="center",
                                     alpha=1.,
                                     fontsize=fontsize,
-                                    transform=ax.transAxes)
+                                    transform=ax.transAxes))
+                        if self.tot0 == self.tot1:
+                            y_pos = 1.05 + self.ci_gap * (1+self.r+self.sub_set)
+                            title_param_name = r'${}$'.format(param_name)
+                            self._register_extra_artist(plotter,
+                                ax.text(x_pos, y_pos, title_param_name,
+                                        color='black',
+                                        horizontalalignment="center",
+                                        alpha=1.,
+                                        fontsize=fontsize,
+                                        transform=ax.transAxes))
                     elif self.tot1==1:
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
                         x_pos = 0.5
                         y_pos = 1.05 + (self.ci_gap-0.02) * (len(title.split('\n')))
-                        ax.text(x_pos, y_pos, title_param_name,
-                                color='black',
-                                horizontalalignment="center",
-                                alpha=1.,
-                                fontsize=fontsize,
-                                transform=ax.transAxes)
+                        self._register_extra_artist(plotter,
+                            ax.text(x_pos, y_pos, title_param_name,
+                                    color='black',
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes))
 
 
                 if compute_all_intervals:
@@ -1213,6 +1229,20 @@ class CornerPlotter(PostProcessor):
         if annotate:
             self.val_cred=np_.stack(self.val_cred,axis=0)
         yield None
+
+    @staticmethod
+    def _register_extra_artist(plotter, artist):
+        """ Register an artist so that ``bbox_inches='tight'`` keeps it.
+
+        getdist exports with ``bbox_extra_artists=plotter.extra_artists``, in
+        which case matplotlib ignores free text added with ``ax.text`` when
+        computing the tight bounding box, so labels above the top row of the
+        triangle plot would be cropped from the saved figure.
+        """
+        if getattr(plotter, 'extra_artists', None) is None:
+            plotter.extra_artists = []
+        plotter.extra_artists.append(artist)
+        return artist
 
     @staticmethod
     @make_verbose('Adding parameter truth crosshairs',

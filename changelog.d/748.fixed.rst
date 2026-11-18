@@ -1,0 +1,1 @@
+Fixed ``plot_projection_general`` in ``xpsi/utilities/ProjectionTool.py``, which crashed for symmetric (``-S``) models when centred on the secondary (``POV`` = ``"SE"``, ``"SO"``, ``"SS"`` or ``"SC"``), and drew no hot regions for some unit vectors given as ``POV`` (e.g. ``[0.6, 0, 0.8]``) because of a rounding error in an ``arccos``.

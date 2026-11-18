@@ -16,8 +16,20 @@ class Metadata(object):
         :obj:`names` list. For the purpose of density estimation plots these
         bounds can be viewing bounds.
 
-    :param list labels:
-        An ordered list of (LaTeX compatible) ``str`` literal parameter labels.
+    :param dict labels:
+        A dictionary of (LaTeX compatible) ``str`` literal parameter labels.
+        The keys must match the :obj:`names` list. If ``None``, the parameter
+        names are used as labels.
+
+    :param dict short_labels:
+        Optional dictionary of shorter (LaTeX compatible) ``str`` literal
+        parameter labels, e.g., the labels without units. These are only used
+        to annotate the off-diagonal 2D panels of corner plots when
+        ``labels_2D=True`` (see :meth:`~.CornerPlotter.plot`), where the
+        concatenation of two full labels may not fit in the panel. The keys
+        must be a subset of the :obj:`names` list: any parameter without a
+        short label defaults to its full label from :obj:`labels`. If
+        ``None`` (default), all short labels default to the full labels.
 
     :param str implementation:
         Sampling software applied to generate the samples. Known options are
@@ -34,7 +46,8 @@ class Metadata(object):
     """
 
     def __init__(self, ID, names, bounds=None, labels=None,
-                 implementation=None, kde_settings=None, truths=None, precisions=None):
+                 implementation=None, kde_settings=None, truths=None, precisions=None,
+                 short_labels=None):
 
         self.ID = ID
         self.names = names
@@ -46,6 +59,9 @@ class Metadata(object):
             self._labels = dict(zip(self.names, self.names))
         else:
             self.labels = labels
+
+        # must be set after the labels, to which short labels default
+        self.short_labels = short_labels
 
         if implementation is not None:
             self.implementation = implementation
@@ -74,7 +90,7 @@ class Metadata(object):
     def ID(self, obj):
         """ Set the identification ``str`` of the sample set. """
 
-        if not isinstance(obj, _six.string_types):
+        if not isinstance(obj, str):
             raise TypeError('Invalid sample set ID specification. '
                             'See the docstring.')
         self._ID = obj
@@ -94,7 +110,7 @@ class Metadata(object):
 
     @parent_ID.setter
     def parent_ID(self, ID):
-        if not isinstance(ID, _six.string_types):
+        if not isinstance(ID, str):
             raise TypeError('Invalid parent ID specification.')
         self._parent_ID = ID
 
@@ -110,7 +126,7 @@ class Metadata(object):
 
         try:
             for name in obj:
-                if not isinstance(name, _six.string_types):
+                if not isinstance(name, str):
                     raise TypeError
         except TypeError:
             print('Invalid parameter name specification. See the docstring.')
@@ -167,10 +183,50 @@ class Metadata(object):
                 if not isinstance(obj[key], str):
                     raise TypeError
         except TypeError:
-            print('Invalid parameter name specification. See the docstring.')
+            print('Invalid parameter label specification. See the docstring.')
             raise
 
         self._labels =  obj
+
+    @property
+    def short_labels(self):
+        """ Get the short parameter labels.
+
+        Parameters without a user-specified short label default to their
+        full label.
+
+        """
+        short_labels = self._short_labels if self._short_labels else {}
+        return {name: short_labels.get(name, self.labels[name])
+                for name in self.names}
+
+    @short_labels.setter
+    def short_labels(self, obj):
+        """ Set the short parameter labels (may be a partial dictionary). """
+
+        if obj is not None:
+            try:
+                if not isinstance(obj, dict):
+                    raise TypeError
+                for key in obj:
+                    if key not in self.names:
+                        raise TypeError
+                    if not isinstance(obj[key], str):
+                        raise TypeError
+            except TypeError:
+                print('Invalid parameter short label specification. '
+                      'See the docstring.')
+                raise
+
+        self._short_labels = obj
+
+    @property
+    def short_labels_defaulted(self):
+        """ Names of the parameters whose short label defaults to the full
+            label because no short label was specified. """
+
+        short_labels = self._short_labels if self._short_labels else {}
+        return [name for name in self.names if name not in short_labels]
 
     @property
     def implementation(self):

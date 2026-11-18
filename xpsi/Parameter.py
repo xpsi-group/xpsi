@@ -222,7 +222,7 @@ class Parameter(object):
 
     @name.setter
     def name(self, name):
-        if isinstance(name, _six.string_types):
+        if isinstance(name, str):
             self._name = name
         else:
             raise TypeError('Name must be a string.')
@@ -256,7 +256,7 @@ class Parameter(object):
 
     @doc.setter
     def doc(self, doc):
-        if isinstance(doc, _six.string_types):
+        if isinstance(doc, str):
             lines = [line.strip() for line in doc.splitlines()]
             doc = "\n".join([line for line in lines if line])
             if doc[-1] != '.': doc += '.'
@@ -290,7 +290,7 @@ class Parameter(object):
 
     @symbol.setter
     def symbol(self, symbol):
-        if isinstance(symbol, _six.string_types):
+        if isinstance(symbol, str):
             self._tex = symbol
         elif symbol is not None:
             raise TypeError('Invalid type for tex-compatible symbol string.')

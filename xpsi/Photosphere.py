@@ -485,8 +485,8 @@ class Photosphere(ParameterSubspace):
 
         if self._hot is not None:
             for hot in self._hot.objects:
-                if hot.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
-
+                # Skip if the atmosphere is not loaded; HotRegion.integrate then raises AtmosError.
+                if hot.atm_ext == 2 and self._hot_atmosphere: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
                     T_low, T_high = self._hot_atmosphere[0][0], self._hot_atmosphere[0][len(self._hot_atmosphere[0])-1]
                     g_low, g_high = self._hot_atmosphere[1][0], self._hot_atmosphere[1][len(self._hot_atmosphere[1])-1]
 
@@ -507,11 +507,15 @@ class Photosphere(ParameterSubspace):
                             raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
 
         if self._elsewhere is not None:
-            if self._elsewhere.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+            # Skip if the atmosphere is not loaded; Elsewhere.integrate then raises AtmosError.
+            if self._elsewhere.atm_ext == 2 and self._elsewhere_atmosphere: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
                 T_low, T_high = self._elsewhere_atmosphere[0][0], self._elsewhere_atmosphere[0][len(self._elsewhere_atmosphere[0])-1]
                 g_low, g_high = self._elsewhere_atmosphere[1][0], self._elsewhere_atmosphere[1][len(self._elsewhere_atmosphere[1])-1]
 
-                temperature = self._elsewhere[0]
+                # Use vector[0] (free, fixed and derived parameters) to match
+                # Elsewhere._compute_cellParamVecs; integer indexing only
+                # sees free parameters and fails if the temperature is fixed.
+                temperature = self._elsewhere.vector[0]
 
                 if not T_low <= temperature <= T_high:
                     raise Exception(" Elsewhere temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
@@ -527,6 +531,29 @@ class Photosphere(ParameterSubspace):
                         raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
 
         #TBD: Similar check for Everywhere.
+        if self._everywhere is not None:
+            # Skip if the atmosphere is not loaded; Everywhere.integrate then raises AtmosError.
+            if self._everywhere.atm_ext == 2 and self._everywhere_atmosphere: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+                T_low, T_high = self._everywhere_atmosphere[0][0], self._everywhere_atmosphere[0][len(self._everywhere_atmosphere[0])-1]
+                g_low, g_high = self._everywhere_atmosphere[1][0], self._everywhere_atmosphere[1][len(self._everywhere_atmosphere[1])-1]
+
+                # Use vector[0] (free, fixed and derived parameters) to match
+                # Everywhere._compute_cellParamVecs; integer indexing only
+                # sees free parameters and fails if the temperature is fixed.
+                temperature = self._everywhere.vector[0]
+
+                if not T_low <= temperature <= T_high:
+                    raise Exception(" Everywhere temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
+
+                ref = self._spacetime
+                grav = effective_gravity(_np.array([1.0, 0.0]),
+                                        _np.array([ref.R] * 2 ),
+                                        _np.array([ref.zeta] * 2),
+                                        _np.array([ref.epsilon] * 2))
+
+                for g in grav:
+                    if not g_low <= g <= g_high:
+                        raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
 
         if self._everywhere is not None:
             if self._stokes:

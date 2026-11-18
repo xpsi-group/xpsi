@@ -1,3 +1,39 @@
+[v3.4] - 2026-11-13
+~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+- This minor release adds optional 2D energy and channel edges, with filtering by data quality and channel grouping, and fixes the background contribution in synthetic data. See details below.
+
+Fixed
+^^^^^
+
+- Fixed the ``Signal.synthesise`` method when using ``data_BKG``, which previously resulted in overestimated background contribution. (`#709 <https://github.com/xpsi-group/xpsi/pull/709>`__)
+
+
+Added
+^^^^^
+
+- Added a .zenodo.json file to once again trigger automatic updates of the xpsi zenodo repository on new releases. (`#703 <https://github.com/xpsi-group/xpsi/pull/703>`__)
+
+
+Changed
+^^^^^^^
+
+- Energy and channel edges can now optionally be given in a 2D structure (the default 1D structure still works), and data can optionally use statistical errors and be filtered by data quality and/or channel grouping. (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+
+
+Attribution
+^^^^^^^^^^^
+
+- Pierre Stammler (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+- Tuomo Salmi (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+- Sebastien Guillot (`#691 <https://github.com/xpsi-group/xpsi/pull/691>`__)
+- Anna Watts (`#703 <https://github.com/xpsi-group/xpsi/pull/703>`__)
+- Lucien Mauviard (`#709 <https://github.com/xpsi-group/xpsi/pull/709>`__)
+
+
 [v3.3] - 2026-03-19
 ~~~~~~~~~~~~~~~~~~~
 
@@ -1454,7 +1490,7 @@ Added
 
 * An extension module for calculating hot region local variables from global
   variables for hot region configurations under the umbrella of the PST-U model
-  introduced in `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_.
+  introduced in `Riley et al. (2019) <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_.
 
 Attribution
 ^^^^^^^^^^^
@@ -1916,7 +1952,7 @@ Summary
   complex plotting routines can thus be developed, as demonstrated in the
   concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`. The plot
   classes have been used to reproduce (with improved functionality and
-  performance) the relevant signal plots from `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, as demonstrated
+  performance) the relevant signal plots from `Riley et al. (2019) <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_, as demonstrated
   in the post-processing tutorial notebook and embedded in the class docstrings
   for reference.
 * Development of online documentation pages, including project organisation
