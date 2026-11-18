@@ -18,6 +18,7 @@
 
    code_of_conduct
    contributing
+   ai_policy
    history
    todo
    acknowledgements
