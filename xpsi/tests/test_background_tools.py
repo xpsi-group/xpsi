@@ -85,7 +85,8 @@ def test_background_plot_channel_selection_and_residuals(make_data):
         expected_sigma = np.sqrt((data.errors[:n_used]**2).sum(axis=1))
     else:
         expected_sigma = np.sqrt(np.where(expected_data > 0, expected_data, 1.0))
-    model_counts = signal.expected_counts.sum(axis=1) + signal.background_signal_given_support
+    # signal.expected_counts already includes the (max-likelihood) background
+    model_counts = signal.expected_counts.sum(axis=1)
     expected_residuals = (expected_data - model_counts) / expected_sigma
 
     data_line = ax.containers[0].lines[0]

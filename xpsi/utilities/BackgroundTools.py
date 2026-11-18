@@ -309,7 +309,7 @@ def plotBackgroundSpectrum( XPSI_model,
 
     # Residuals panel
     if plot_residuals:
-        # Full model: expected source counts plus the conditional max-likelihood background
+        # Full model: expected counts already include the conditional max-likelihood background
         Residuals = (Data_Spectrum - Expected_Spectrum) / Data_Errors
         ax_res.grid(linestyle="-.", color='grey',linewidth=0.7)
         ax_res.axhline(0.0, color='k', lw=1)
