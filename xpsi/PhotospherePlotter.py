@@ -628,6 +628,13 @@ class PhotospherePlotter( Photosphere ):
                 _ray_map = None
                 yield 'Commencing ray tracing and imaging'
 
+            if ref.obl_surfgrav in ref.STAR_OBLATENESS_SURFGRAV_NO_SPIN_QUADRUPOLE:
+                raise NotImplementedError(
+                    f"Imaging is not available for the oblateness and "
+                    f"surface-gravity relation '{ref.obl_surfgrav}', because "
+                    f"its moment of inertia and quadrupole coefficient are "
+                    f"not implemented yet.")
+
             images = _integrate(threads,
                                 ref.r_s,
                                 ref.R,

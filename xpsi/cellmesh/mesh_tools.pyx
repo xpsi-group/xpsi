@@ -45,11 +45,9 @@ cdef double radiusNormalised(double mu,
         Current conventions are:
           - 0 : Universal oblate relation (AlGendy & Morsink 2014)
           - 1 : Spherical star
-          - 2 : PSR J0030+0451–calibrated relation
-          - 3 : PSR J0740+6620–calibrated relation
-          - 4 : PSR J0437−4715–calibrated relation
           - 5 : PSR J1231−1411–calibrated relation
-          - 6 : PSR J0614−3329–calibrated relation
+          - 7 : PSR J1614−2230–calibrated relation
+          - 2, 3, 4, 6 : reserved (not implemented yet)
 
     :return:
             The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
@@ -87,11 +85,9 @@ cdef double f_theta(double mu,
         Current conventions are:
           - 0 : Universal oblate relation (AlGendy & Morsink 2014)
           - 1 : Spherical star
-          - 2 : PSR J0030+0451–calibrated relation
-          - 3 : PSR J0740+6620–calibrated relation
-          - 4 : PSR J0437−4715–calibrated relation
           - 5 : PSR J1231−1411–calibrated relation
-          - 6 : PSR J0614−3329–calibrated relation
+          - 7 : PSR J1614−2230–calibrated relation
+          - 2, 3, 4, 6 : reserved (not implemented yet)
 
     :return:
             The normalized radius, defined as R(theta)/R_eq, which represents the radial distance

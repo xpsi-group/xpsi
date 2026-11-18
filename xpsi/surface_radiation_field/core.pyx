@@ -386,12 +386,9 @@ def intensity_from_globals(double[::1] energies,
         surface gravity prescription. The available options are:
             0: Universal relation (AlGendy & Morsink 2014)
             1: Spherical star
-            2: PSR J0030+0451
-            3: PSR J0740+6620
-            4: PSR J0437-4715
             5: PSR J1231-1411
-            6: PSR J0614-3329
             7: PSR J1614-2230
+            2, 3, 4, 6: reserved (not implemented yet)
         See :attr:`~xpsi.Spacetime.Spacetime.obl_surfgrav_ind`.
 
     :param tuple atmosphere:
@@ -565,12 +562,9 @@ def effective_gravity(double[::1] cos_colatitude,
         surface gravity prescription:
             0: Universal relation (AlGendy & Morsink 2014)
             1: Spherical star
-            2: PSR J0030+0451
-            3: PSR J0740+6620
-            4: PSR J0437-4715
             5: PSR J1231-1411
-            6: PSR J0614-3329
             7: PSR J1614-2230
+            2, 3, 4, 6: reserved (not implemented yet)
         See :attr:`~xpsi.Spacetime.Spacetime.obl_surfgrav_ind`.
     :returns:
         A 1D :class:`numpy.ndarray` of the logarithms (base 10) of the

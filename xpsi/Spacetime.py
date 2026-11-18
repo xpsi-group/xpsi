@@ -58,6 +58,20 @@ class Spacetime(ParameterSubspace):
         "psr j0614-3329": 6,
         "psr j1614-2230": 7,}
 
+    # Reserved for relations whose coefficients are not implemented yet.
+    STAR_OBLATENESS_SURFGRAV_NOT_IMPLEMENTED = (
+        "psr j0030+0451",
+        "psr j0740+6620",
+        "psr j0437-4715",
+        "psr j0614-3329",)
+
+    # Relations without a moment of inertia and quadrupole coefficient, so
+    # the spin (a) and quadrupole (q) needed by the PhotospherePlotter are
+    # not available.
+    STAR_OBLATENESS_SURFGRAV_NO_SPIN_QUADRUPOLE = (
+        "psr j1231-1411",
+        "psr j1614-2230",)
+
     # Aliases -> canonical key
     STAR_OBLATENESS_SURFGRAV_ALIASES = {
         # universal/AGM-type synonyms
@@ -135,19 +149,27 @@ class Spacetime(ParameterSubspace):
         key = _normalise_key(name)
         key = cls.STAR_OBLATENESS_SURFGRAV_ALIASES.get(key, key)
 
+        allowed = _format_allowed(cls.available_obl_surfgrav())
+
         try:
             ind = cls.STAR_OBLATENESS_SURFGRAV_CANONICAL[key]
         except KeyError as e:
-            allowed = _format_allowed(cls.STAR_OBLATENESS_SURFGRAV_CANONICAL.keys())
             raise ValueError(
                 f"Unknown oblateness and surface gravity for '{name}'. "
                 f"Allowed canonical keys: {allowed}") from e
+
+        if key in cls.STAR_OBLATENESS_SURFGRAV_NOT_IMPLEMENTED:
+            raise NotImplementedError(
+                f"The oblateness and surface-gravity relation for '{key}' "
+                f"is not implemented yet. Available: {allowed}")
 
         return key, int(ind)
 
     @classmethod
     def available_obl_surfgrav(cls):
-        return tuple(sorted(cls.STAR_OBLATENESS_SURFGRAV_CANONICAL.keys()))
+        """ Get the names of the implemented prescriptions. """
+        return tuple(sorted(k for k in cls.STAR_OBLATENESS_SURFGRAV_CANONICAL
+                            if k not in cls.STAR_OBLATENESS_SURFGRAV_NOT_IMPLEMENTED))
 
     def _set_obl_surfgrav(self, name):
         """ Set the oblateness and surface-gravity prescription.

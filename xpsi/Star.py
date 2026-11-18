@@ -19,12 +19,13 @@ class Star(ParameterSubspace):
 
     :param str name:
         The prescription for the stellar oblateness and effective surface
-        gravity. Options include
-        ``'universal'`` (AlGendy & Morsink 2014; the default, also used when
-        ``None``), ``'sphere'``, and pulsar-specific relations
-        (see :attr:`~.Spacetime.Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL`
-        and the aliases in
+        gravity. Options are ``'universal'`` (AlGendy & Morsink 2014; the
+        default, also used when ``None``), ``'sphere'``, and the
+        pulsar-specific relations ``'psr j1231-1411'`` and
+        ``'psr j1614-2230'`` (see also the aliases in
         :attr:`~.Spacetime.Spacetime.STAR_OBLATENESS_SURFGRAV_ALIASES`).
+        The pulsar-specific relations cannot yet be used with
+        :class:`~.PhotospherePlotter.PhotospherePlotter`.
         The selected prescription is stored in the spacetime and can be read
         from :attr:`~.Spacetime.Spacetime.obl_surfgrav`.
 
