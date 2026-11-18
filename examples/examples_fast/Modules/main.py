@@ -160,11 +160,11 @@ if __name__ == '__main__':
     start = time.time()
     runtime_params = {'resume': False,
                       'root_dir': '../Outputs/',           # output directory
-                      'root': 'ST_ptemcee',                # output file-root
+                      'root': 'ST_ptemcee_full_prior',                # output file-root
                       'nwalkers': 1000,                      # walkers per temperature
                       'ntemps': 2,                         # temperatures in the ladder
-                      'nsteps': 1000,                       # iterations
-                      'burn_in':100,
+                      'nsteps': 2000,                       # iterations
+                      'burn_in':500,
                       'adapt': True,                       # adapt the temperature ladder
                       'checkpoint': 50,                    # flush output every 50 iterations
                       'walker_dist_moments': None,

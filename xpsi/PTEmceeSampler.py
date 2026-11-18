@@ -588,10 +588,17 @@ class PTEmceeSampler(_PTSampler):
         print('\nSampling complete.')
 
     def _assemble(self):
-        """ Return the full-ladder arrays, concatenated with resumed samples. """
-        chain = self.chain
-        loglike = self.loglikelihood
-        logprob = self.logprobability
+        """ Return the full-ladder arrays, concatenated with resumed samples.
+
+        ptemcee preallocates its arrays with zeros for all ``nsteps`` at the
+        start of a run, so they are cut to the iterations completed so far;
+        otherwise a checkpoint written mid-run contains zero-filled samples.
+
+        """
+        n = self.time # iterations completed by this sampler instance
+        chain = self.chain[:, :, :n, :]
+        loglike = self.loglikelihood[:, :, :n]
+        logprob = self.logprobability[:, :, :n]
 
         if self._resume_data is not None:
             chain = _np.concatenate((self._resume_data['chain'], chain), axis=2)
