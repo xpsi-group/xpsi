@@ -18,24 +18,24 @@ class Star(ParameterSubspace):
                               :class:`~.Photosphere`.
 
     :param str name:
-        Name of the stellar for the oblateness and effective surface-gravity.
-         Defaults to ``"universal"`` when ``None``.
-        The selected prescription is stored in
-                             :attr:`~.Spacetime.Spacetime.obl_surfgrav`.
-
+        The prescription for the stellar oblateness and effective surface
+        gravity. Options include
+        ``'universal'`` (AlGendy & Morsink 2014; the default, also used when
+        ``None``), ``'sphere'``, and pulsar-specific relations
+        (see :attr:`~.Spacetime.Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL`
+        and the aliases in
+        :attr:`~.Spacetime.Spacetime.STAR_OBLATENESS_SURFGRAV_ALIASES`).
+        The selected prescription is stored in the spacetime and can be read
+        from :attr:`~.Spacetime.Spacetime.obl_surfgrav`.
 
     """
-    def __init__(self, spacetime, photospheres, name=None):
+    def __init__(self, spacetime, photospheres, name='universal'):
         if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
 
         self._spacetime = spacetime
 
-        if name is None:
-            # Choose default model here
-            self._spacetime.obl_surfgrav = "universal"
-        else:
-            self._spacetime.obl_surfgrav = name
+        self._spacetime._set_obl_surfgrav('universal' if name is None else name)
 
         try:
             assert isinstance(photospheres, list)

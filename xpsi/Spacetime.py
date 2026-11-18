@@ -36,15 +36,11 @@ class Spacetime(ParameterSubspace):
         no entry for a default parameter, no initial value will be specified,
         but an exception will be raised if there is also no bound specified.
 
-    :param str obl_surfgrav:
-        A string specifying the prescription used for stellar oblateness
-        and effective surface gravity. Options include 'universal'
-        (AlGendy & Morsink 2014), 'sphere', and pulsar-specific relations:
-        'psr j0030+0451', 'psr j0740+6620', 'psr j0437-4715',
-        'psr j1231-1411', 'psr j0614-3329', and 'psr j1614-2230'.
-        Aliases such as 'AGM_14' and shortened pulsar names are also
-        supported.
-        
+    The prescription used for stellar oblateness and effective surface
+    gravity is set with the ``name`` argument of :class:`~.Star.Star`, and
+    can be read from :attr:`obl_surfgrav`. It is ``'universal'``
+    (AlGendy & Morsink 2014) until a :class:`~.Star.Star` sets it.
+
     We define a property for parameters and combinations of parameters to
     shortcut access, given that this subspace is passed to other subspaces
     for model computation. We would like to access the values with fewer
@@ -85,9 +81,10 @@ class Spacetime(ParameterSubspace):
                       'distance',
                       'cos_inclination']
 
-    def __init__(self, bounds, values, obl_surfgrav='universal'):
+    def __init__(self, bounds, values):
 
-        self.obl_surfgrav = obl_surfgrav
+        # Default until a Star sets it (see Star.__init__).
+        self._set_obl_surfgrav('universal')
 
         if not isinstance(bounds, dict) or not isinstance(values, dict):
              raise TypeError("Both bounds and values need to be dictionaries.")
@@ -152,21 +149,29 @@ class Spacetime(ParameterSubspace):
     def available_obl_surfgrav(cls):
         return tuple(sorted(cls.STAR_OBLATENESS_SURFGRAV_CANONICAL.keys()))
 
-    @property
-    def obl_surfgrav(self):
-        return self._obl_surfgrav
+    def _set_obl_surfgrav(self, name):
+        """ Set the oblateness and surface-gravity prescription.
 
-    @obl_surfgrav.setter
-    def obl_surfgrav(self, name):
+        Only meant to be called by :class:`~.Star.Star`, which is where users
+        choose the prescription.
+
+        """
         key, ind = self.resolve_obl_surfgrav(name)
         self._obl_surfgrav = key
         self._obl_surfgrav_ind = ind
 
     @property
+    def obl_surfgrav(self):
+        """ Get the oblateness and surface-gravity prescription (read-only).
+
+        Set it with the ``name`` argument of :class:`~.Star.Star`.
+
+        """
+        return self._obl_surfgrav
+
+    @property
     def obl_surfgrav_ind(self):
-        if self._obl_surfgrav_ind is None:
-            raise RuntimeError(
-                "obl_surfgrav was not set. Set it via Star(name=...) or spacetime.obl_surfgrav=...")
+        """ Get the backend index of :attr:`obl_surfgrav` (read-only). """
         return self._obl_surfgrav_ind
 
     @property
