@@ -9,6 +9,8 @@ from matplotlib.patches import Patch as Patch
 from matplotlib.lines import Line2D as Line2D
 import matplotlib as _mpl
 from matplotlib.colors import LinearSegmentedColormap as _LinearSegmentedColormap
+from matplotlib.colors import BoundaryNorm as _BoundaryNorm
+from matplotlib.ticker import NullLocator as _NullLocator
 
 # Sequential (non-diverging) colormap with the look of matplotlib's 'PuOr':
 # light orange -> dark orange -> purple -> dark purple, built from PuOr's own
@@ -82,6 +84,11 @@ class ResidualPlot(SignalPlot):
 
     # do not change at runtime (see base class comments):
     __caching_targets__ = ['expected_counts']
+
+    # When the largest cluster is smaller than this, the cluster-size colour
+    # bar is discrete with one colour for each size from 1 to this - 1;
+    # otherwise it is continuous
+    __discrete_cluster_sizes_below__ = 7
 
     __rows__          = 3
     __columns__       = 1
@@ -489,13 +496,55 @@ class ResidualPlot(SignalPlot):
         each labelled cluster (``self._clustarea``, index 0 being the
         background) and the per-pixel size of the cluster each pixel
         belongs to (``self._affectedarea``, 0 outside clusters).
+
+        Rotational phase is periodic, so clusters touching across the
+        phase boundary (last and first phase bins of the same channel) are
+        merged into a single cluster.
         """
         if not hasattr(self, '_residuals'):
             self._compute_residuals()
         self._clusteresid = _np.abs( self._residuals ) >= self._threshlim
-        self._lw, self._num = _ndi_label(self._clusteresid)
+        self._lw, self._num = self._wrap_phase_labels(
+            self._clusteresid, *_ndi_label(self._clusteresid))
         self._clustarea = _ndi_sum_labels(self._clusteresid, self._lw, index=_np.arange(self._lw.max() + 1))
         self._affectedarea = self._clustarea[self._lw]
+
+    @staticmethod
+    def _wrap_phase_labels(mask, labels, num):
+        """ Merge cluster labels across the periodic phase boundary.
+
+        :param mask: 2-D boolean array (channel x phase) of flagged pixels.
+        :param labels: 2-D integer array of cluster labels for ``mask``
+            (0 for the background), e.g. from :func:`scipy.ndimage.label`.
+        :param int num: Number of clusters in ``labels``.
+        :returns: ``(labels, num)`` after merging every pair of clusters
+            that occupy the last and first phase bins of the same channel,
+            relabelled consecutively from 1 (0 remains the background).
+        """
+        # Clusters facing each other across phase = 1 -> 0, channel by channel
+        rows = _np.nonzero(mask[:, 0] & mask[:, -1])[0]
+        if rows.size == 0:
+            return labels, num
+
+        # Union-find over labels; a cluster can wrap on several channels
+        # and so be linked to more than one cluster on the other side
+        parent = _np.arange(num + 1)
+
+        def _root(k):
+            while parent[k] != k:
+                parent[k] = parent[parent[k]]
+                k = parent[k]
+            return k
+
+        for i in rows:
+            a, b = _root(labels[i, 0]), _root(labels[i, -1])
+            if a != b:
+                parent[max(a, b)] = min(a, b)
+
+        roots = _np.array([_root(k) for k in range(num + 1)])
+        # np.unique sorts, so the background root 0 keeps index 0
+        _, relabel = _np.unique(roots, return_inverse=True)
+        return relabel[labels], int(relabel.max())
 
     def _set_vminmax(self):
         """ Compute minimum and maximum for data and model colorbars. """
@@ -747,14 +796,27 @@ class ResidualPlot(SignalPlot):
         # as in the |residuals| panel, and map sizes from 1 (single pixel)
         # to the largest cluster.  max(..., 1) keeps vmin <= vmax when there
         # is no cluster at all.
+        nsizes = int(max(vmaxarea, 1))
+        # Small clusters only: a fixed discrete scale with one colour per
+        # integer size from 1 to __discrete_cluster_sizes_below__ - 1
+        # (whatever the largest size actually present), with bin edges at
+        # half-integers so each colour is centred on its size
+        clust_discrete = nsizes < self.__discrete_cluster_sizes_below__
+        if clust_discrete:
+            nsizes = self.__discrete_cluster_sizes_below__ - 1
+            clust_cmap = plt.get_cmap(self._clusters_cmap).resampled(nsizes)
+            clust_scale = dict(norm = _BoundaryNorm(
+                                   _np.arange(0.5, nsizes + 1.0), nsizes))
+        else:
+            clust_cmap = plt.get_cmap(self._clusters_cmap)
+            clust_scale = dict(vmin = 1, vmax = nsizes)
         clust2 = self._ax_clres.pcolormesh(self._signal.data.phases + 1.0,
                                       channel_edges,
                                       _np.ma.masked_equal(self._affectedarea, 0),
-                                      cmap = plt.get_cmap(self._clusters_cmap),
-                                      vmin = 1,
-                                      vmax = max(vmaxarea, 1),
+                                      cmap = clust_cmap,
                                       linewidth = 0,
-                                      rasterized = self._rasterized)
+                                      rasterized = self._rasterized,
+                                      **clust_scale)
         clust2.set_edgecolor('face')
 
         self._ax_clres.axvline(1.0, lw=self._tick_width, color='k')
@@ -768,14 +830,19 @@ class ResidualPlot(SignalPlot):
                                       ticks=AutoLocator())
         self._clust_cb = self._fig.colorbar(clust2, cax = self._ax_clust_cb,
                                       orientation='horizontal',
-                                      ticks=AutoLocator())
+                                      ticks=(_np.arange(1, nsizes + 1)
+                                             if clust_discrete
+                                             else AutoLocator()))
         for cb, label in ((self._clres_cb,
                            # mathtext braces clash with str.format: concatenate
                            r'Residuals $\left|(c_{ik}-d_{ik})/\sqrt{c_{ik}}\right|$ > '
                            + f'{self._threshlim}'),
                           (self._clust_cb, 'Cluster sizes')):
             cb.ax.set_frame_on(True)
-            cb.ax.xaxis.set_minor_locator(AutoMinorLocator())
+            if cb is self._clust_cb and clust_discrete:
+                cb.ax.xaxis.set_minor_locator(_NullLocator())
+            else:
+                cb.ax.xaxis.set_minor_locator(AutoMinorLocator())
             cb.ax.xaxis.set_ticks_position('top')
             cb.ax.xaxis.set_label_position('top')
             cb.set_label(label=label, labelpad=8)
