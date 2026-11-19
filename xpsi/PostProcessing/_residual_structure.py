@@ -47,13 +47,19 @@ class ResidualStructurePlot(SignalPlot):
     per-test results are stored in :attr:`residual_structure_results` and
     the verdict in :attr:`residual_structure_verdict`.
 
-    The figure contains six panels:
+    The figure contains:
 
-        * the standardised residuals over phase and channel;
-        * tests 1 to 4: the 2D power spectrum, the normalised variogram, the
-          2D ACF map with the strongest lag marked, and a normal Q-Q plot;
-        * a summary of all six tests (including tests 5 and 6, which have no
-          panel) and the verdict.
+        * in the first two columns, one panel per test for tests 1 to 4: the
+          2D power spectrum and the normalised variogram (top row), the 2D
+          ACF map with the strongest lag marked and a normal Q-Q plot
+          (bottom row);
+        * in the third column, a summary of all six tests (including tests 5
+          and 6, which have no panel): for each test, a short description
+          of what it looks for and how to read its panel, and the values
+          and threshold that decide its verdict; then the combined verdict.
+
+    The residual map itself is shown by
+    :class:`~xpsi.PostProcessing.ResidualPlot`.
 
     This plot is independent of :class:`~xpsi.PostProcessing.ResidualPlot`.
     Both use the posterior-expected counts, so they can be passed together
@@ -69,10 +75,6 @@ class ResidualStructurePlot(SignalPlot):
     Each instance draws one figure: create a new instance for each call of
     :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that
     has already been plotted raises a ``RuntimeError``).
-
-    :param str residual_cmap:
-         Colormap name from :mod:`matplotlib` to use for the residual
-         map panel. A diverging colormap is recommended.
 
     :param list parameters_vector:
          If given, the residuals are computed for this single vector of model
@@ -120,9 +122,7 @@ class ResidualStructurePlot(SignalPlot):
 
     :param kwargs:
          Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,
-         ``fig_dir``, ``root_filename``), and ``yscale``
-         (``'log'`` by default) for the channel axis of the residual
-         map panel.
+         ``fig_dir``, ``root_filename``).
 
     """
 
@@ -131,19 +131,23 @@ class ResidualStructurePlot(SignalPlot):
     # do not change at runtime (see base class comments):
     __caching_targets__ = ['expected_counts']
 
-    __rows__          = 2.25
+    __rows__          = 3
     __columns__       = 2.5
     __ax_rows__       = 2
-    __ax_columns__    = 3
+    # Three columns of panels separated by two empty spacer columns, so the
+    # two gaps can be sized independently (wspace is then 0): the second
+    # gap holds the y-axis labels of the middle column, which are on the
+    # right of its panels.  The third column, for the summary, is wider.
+    __ax_columns__    = 5
     __height_ratios__ = [1]*2
-    __width_ratios__  = [1]*3
-    __wspace__        = 0.5
+    # wider third column for the summary text
+    __width_ratios__  = [1, 0.25, 1, 0.25, 1.6]
+    __wspace__        = 0.0
     __hspace__        = 0.42
 
     @make_verbose('Instantiating a residual structure plotter for posterior checking',
                   'Residual structure plotter instantiated')
     def __init__(self,
-                 residual_cmap='PuOr',
                  parameters_vector=None,
                  structure_power_n_null=1000,
                  structure_power_alpha=0.05,
@@ -161,7 +165,6 @@ class ResidualStructurePlot(SignalPlot):
         """
         super(ResidualStructurePlot, self).__init__(**kwargs)
 
-        self._residual_cmap = residual_cmap
         self._structure_power_n_null = structure_power_n_null
         self._structure_power_alpha = structure_power_alpha
         self._structure_power_low_k_fraction = structure_power_low_k_fraction
@@ -173,8 +176,6 @@ class ResidualStructurePlot(SignalPlot):
         self._structure_acf2d_max_lag = structure_acf2d_max_lag
         if not parameters_vector is None:
             self.parameters_vector = parameters_vector
-
-        self.yscale = kwargs.get("yscale", "log")
 
         self._get_figure()
 
@@ -248,19 +249,6 @@ class ResidualStructurePlot(SignalPlot):
         self._residuals = ((self.expected_counts - self._signal.data.counts)
                            / _np.sqrt(self.expected_counts))
         return self._residuals
-
-    def _get_channel_edges(self):
-        """Compute channel bin edges by averaging adjacent channel centres.
-
-        Same construction as used by the channel-phase panels of
-        :class:`~xpsi.PostProcessing.ResidualPlot`.
-        """
-        channels = self._signal.data.channels
-        channel_edges = _np.zeros(len(channels) + 1)
-        channel_edges[1:len(channels)] = (channels[:-1] + channels[1:]) / 2.0
-        channel_edges[0] = channels[0] - (channels[1] - channels[0]) / 2.0
-        channel_edges[-1] = channels[-1] + (channels[-1] - channels[-2]) / 2.0
-        return channel_edges
 
     def _run_structure_analysis(self):
         """Run all 2-D structure tests on ``self._residuals`` and print a
@@ -774,7 +762,7 @@ class ResidualStructurePlot(SignalPlot):
                       '(pip install statsmodels to enable)')
 
         return {
-            'test': 'KS normality + Ljung-Box autocorrelation',
+            'test': 'KS normality + Ljung-Box autocorr.',
             'ks_stat': ks_stat,
             'ks_pvalue': ks_p,
             'ljungbox_min_pvalue': lb_min_p,
@@ -788,14 +776,13 @@ class ResidualStructurePlot(SignalPlot):
     # -- Diagnostic figure --------------------------------------------------
 
     def _draw_diagnostics(self):
-        """Draw the six-panel diagnostic figure of the structure tests.
+        """Draw the diagnostic figure of the structure tests.
 
-        Called automatically from :meth:`finalize`, after the tests.  The
-        panels follow the numbering of the printed report:
+        Called automatically from :meth:`finalize`, after the tests.  Tests
+        1 to 4 occupy the first two columns (tests 1 and 2 on the top row,
+        tests 3 and 4 on the bottom row), and the summary the full third
+        column.  The panels follow the numbering of the printed report:
 
-        * **Residual map** - standardised residuals over the phase
-          [cycles] x channel grid, with the same axes as the residual panel
-          of :class:`~xpsi.PostProcessing.ResidualPlot`.
         * **Test 1** - 2-D power spectrum (log scale).
         * **Test 2** - normalised empirical variogram with a dashed
           pure-nugget reference line.
@@ -819,35 +806,14 @@ class ResidualStructurePlot(SignalPlot):
         fig = self._fig
         fig.suptitle(
             f'XPSI Residual Structure Analysis - Verdict: {verdict}',
-            fontsize=16, fontweight='bold',
+            fontsize=20, fontweight='bold',
             color=colour_map.get(verdict, 'black'))
         gs = self._gs
 
         residuals = self._residuals
 
-        # -- Panel (0,0): residual map on the ACTUAL phase-channel grid ----
-        ax1 = fig.add_subplot(gs[0, 0])
-        vmax = _np.percentile(_np.abs(residuals), 98)
-        channel_edges = self._get_channel_edges()
-        pcm = ax1.pcolormesh(self._signal.data.phases,
-                             channel_edges,
-                             residuals,
-                             cmap=plt.get_cmap(self._residual_cmap),
-                             vmin=-vmax, vmax=vmax,
-                             linewidth=0,
-                             rasterized=self._rasterized)
-        pcm.set_edgecolor('face')
-        fig.colorbar(pcm, ax=ax1, fraction=0.046, pad=0.04)
-        ax1.set_ylim([_np.max([channel_edges[0], 0.001]), channel_edges[-1]])
-        ax1.set_yscale(self.yscale)
-        ax1.set_title('Standardised Residuals')
-        ax1.set_xlabel(r'$\phi$ [cycles]')
-        ax1.set_ylabel('channel')
-        ax1.xaxis.set_major_locator(MultipleLocator(0.2))
-        ax1.xaxis.set_minor_locator(MultipleLocator(0.05))
-
-        # -- Panel (0,1): Test 1 - 2-D power spectrum ----------------------
-        ax2 = fig.add_subplot(gs[0, 1])
+        # -- Panel (0,0): Test 1 - 2-D power spectrum ----------------------
+        ax2 = fig.add_subplot(gs[0, 0])
         ps_t = results_map.get('2D Power Spectrum (MC-calibrated)', {})
         if 'power_map' in ps_t:
             ax2.imshow(_np.log1p(ps_t['power_map']),
@@ -863,7 +829,7 @@ class ResidualStructurePlot(SignalPlot):
         ax2.set_xlabel(r'$k_\phi$')
         ax2.set_ylabel(r'$k_\mathrm{ch}$')
 
-        # -- Panel (0,2): Test 2 - variogram (normalised) ------------------
+        # -- Panel (0,1): Test 2 - variogram (normalised) ------------------
         ax3 = fig.add_subplot(gs[0, 2])
         vg_t = results_map.get('Variogram (MC-calibrated)', {})
         if 'lags' in vg_t:
@@ -882,6 +848,7 @@ class ResidualStructurePlot(SignalPlot):
         ax3.set_xlabel('Lag (pixels)')
         ax3.set_ylabel('Normalised semivariance')
         ax3.legend(fontsize=9, loc='best')
+        self._y_axis_right(ax3)
 
         # -- Panel (1,0): Test 3 - 2D ACF scan ------------------------------
         ax4 = fig.add_subplot(gs[1, 0])
@@ -909,24 +876,164 @@ class ResidualStructurePlot(SignalPlot):
             ax4.set_title('Test 3: 2D ACF scan')
 
         # -- Panel (1,1): Test 4 - Q-Q plot --------------------------------
-        ax5 = fig.add_subplot(gs[1, 1])
+        ax5 = fig.add_subplot(gs[1, 2])
         flat = residuals.ravel()
         (osm, osr), (slope, intercept, _) = _stats.probplot(flat, dist='norm')
         ax5.plot(osm, osr, '.', ms=1, alpha=0.4, color='#1f77b4')
         ax5.plot(osm, slope * _np.array(osm) + intercept,
                  'r-', lw=1.5, label='normal reference')
-        ks_t = results_map.get('KS normality + Ljung-Box autocorrelation', {})
+        ks_t = results_map.get('KS normality + Ljung-Box autocorr.', {})
         ks_p = ks_t.get('ks_pvalue', float('nan'))
         ax5.set_title(f'Test 4: Normal Q-Q  (KS p = {ks_p:.4f})')
         ax5.set_xlabel('Theoretical quantiles')
         ax5.set_ylabel('Sample quantiles')
         ax5.legend(fontsize=9)
+        self._y_axis_right(ax5)
 
-        # -- Panel (1,2): summary of ALL tests in report order -------------
-        ax6 = fig.add_subplot(gs[1, 2])
+        # -- Right column: summary of ALL tests in report order ------------
+        ax6 = fig.add_subplot(gs[:, 4])
         ax6.axis('off')
         ax6.set_title('Summary (report order)')
-        y = 0.95
+        self._draw_summary(ax6, results, verdict,
+                           colour_map.get(verdict, 'black'))
+
+    @staticmethod
+    def _y_axis_right(ax):
+        """ Put the y ticks, tick labels and axis label on the right. """
+        ax.yaxis.tick_right()
+        ax.yaxis.set_label_position('right')
+
+    # Plain-language description of each test, shown in grey in the summary
+    # column (keyed by the 'test' name returned by each test).  For the
+    # tests with a panel, the description says how to read the panel.
+    _TEST_DESCRIPTIONS = {
+        '2D Power Spectrum (MC-calibrated)': (
+            'Splits the residual map into spatial frequencies (k_\u03c6 and '
+            'k_ch); bins with zero frequency at the centre; '
+            'colour = log of the power. Noise spreads power evenly over the '
+            'map. A repeating pattern gives isolated bright spots, and smooth '
+            'blobs a bright centre.'),
+        'Variogram (MC-calibrated)': (
+            'Compares how different two residuals are, as a function of '
+            'their distance. Distance between pixels (lag) as a function '
+            'of mean squared difference divided by its noise value '
+            '(normalised semi-variance). For noise, the curve stays on the '
+            'dashed line at 1 at every distance. Structure makes nearby '
+            'residuals more alike, so the curve drops below 1 at small lags.'),
+        '2D ACF scan (all orientations & lags)': (
+            'Correlates the residual map with copies of itself shifted in '
+            'phase and channel. Panel: x = shift in phase bins, y = shift in '
+            'channel bins; colour = correlation r (red positive, blue '
+            'negative); \u00d7 = strongest shift. Noise gives r \u2248 0 '
+            'everywhere. Structure gives a red patch around the origin, '
+            'elongated in the direction of the structure.'),
+        'KS normality + Ljung-Box autocorr.': (
+            'KS compares the shape of the residual distribution with a normal '
+            'distribution of the same mean and width. Panel (Q-Q plot): '
+            'x = values expected for a normal distribution (theoretical '
+            'quantiles), y = sorted residuals (sample quantiles). If the shape '
+            'is normal, the points follow the red line; tails bending away '
+            'from it mean too many or too few large residuals. Ljung-Box (no '
+            'panel) checks whether consecutive residuals along phase are '
+            'correlated.'),
+        "Moran's I (spatial autocorrelation)": (
+            'Checks whether each residual resembles its 8 neighbours. '
+            'I \u2248 0 for noise; I > 0 when similar residuals sit together.'),
+        'Runs test (per row & column)': (
+            'Along each channel and each phase bin, counts the runs of '
+            'residuals above or below the median. Noise switches side often; '
+            'too few runs means neighbouring residuals are correlated.'),
+    }
+
+    @staticmethod
+    def _format_p(p, n_null=None):
+        """ Format a p-value for the summary. With a Monte-Carlo p-value
+        at its smallest possible value ``1/(n_null+1)``, show an upper
+        bound. """
+        if n_null is not None and p <= 1.0 / (n_null + 1.0) * (1 + 1e-9):
+            return f'p \u2264 {p:.2g}'
+        if p == 0.0:
+            return 'p < 1e-300'
+        if p < 1e-3:
+            return f'p = {p:.1e}'
+        return f'p = {p:.3f}'
+
+    @classmethod
+    def _summary_quantification(cls, t):
+        """ Values of a test and the threshold that decides its verdict,
+        as shown in the summary column. """
+        name = t['test']
+        fp = cls._format_p
+        if name.startswith('2D Power Spectrum'):
+            n = t['n_null']
+            return ('Strongest single frequency: {}. Low-frequency power: '
+                    '{:.0%} (95% of noise: \u2264 {:.0%}), {}. Structured if '
+                    'either p < {:.3g}.'.format(
+                        fp(t['p_periodic'], n), t['f_lowk'], t['f_null_q95'],
+                        fp(t['p_smooth'], n), t['alpha_bonferroni']))
+        if name.startswith('Variogram'):
+            n = t['n_null']
+            return ('Value at lag 1: {:.2f} ({}). Largest departure from 1 '
+                    'over lags 1\u2013{}: {:.2f} ({}). Structured if either '
+                    'p < {:.3g}.'.format(
+                        1.0 - t['nugget_deficit'], fp(t['p_nugget'], n),
+                        len(t['lags']), t['max_abs_dev'], fp(t['p_maxdev'], n),
+                        t['alpha_bonferroni']))
+        if name.startswith('2D ACF'):
+            dy, dx = t['best_lag']
+            bins = lambda n, axis: '{} {} bin{}'.format(
+                n, axis, '' if abs(n) == 1 else 's')
+            return ('Strongest correlation: r = {:+.2f} for a shift of {} and '
+                    '{}, {}. Structured if p < {:.1e} (0.05 divided by the {} '
+                    'shifts tested).'.format(
+                        t['best_r'], bins(dx, 'phase'), bins(dy, 'channel'),
+                        fp(t['min_p']), t['alpha_bonferroni'],
+                        t['n_lags_tested']))
+        if name.startswith('KS normality'):
+            lb = t['ljungbox_min_pvalue']
+            lb_str = ('Ljung-Box: smallest {} over lags 1\u201320 (structured '
+                      'if < 0.05).'.format(fp(lb)) if lb is not None else
+                      'Ljung-Box: skipped (install statsmodels).')
+            return 'KS: {} (structured if < 0.01). {}'.format(
+                fp(t['ks_pvalue']), lb_str)
+        if name.startswith("Moran"):
+            if t['structured'] is None:
+                return 'Skipped: install esda and libpysal.'
+            return ('I = {:.2f}, {}, from 999 random reshufflings of the map. '
+                    'Structured if p < 0.05.'.format(
+                        t['I'], fp(t['p_value'], 999)))
+        if name.startswith('Runs test'):
+            return ('{:.0%} of channels and {:.0%} of phase bins have too few '
+                    'runs (about 5% expected by chance). Structured if either '
+                    'exceeds {:.0%}.'.format(
+                        t['frac_rows_significant'], t['frac_cols_significant'],
+                        t['threshold']))
+        return t.get('interpretation', '')
+
+    def _draw_summary(self, ax, results, verdict, verdict_colour):
+        """ Write the summary of the tests in the (axis-less) column ``ax``.
+
+        For each test: its number, name and verdict (font size 11), a
+        plain-language description (grey, size 9) and the values that
+        decide the verdict (size 9); then the combined verdict.  Text is
+        laid out from the top of the column with line heights in physical
+        units, so it keeps its size whatever the column height.
+        """
+        fig = self._fig
+        w_in, h_in = fig.get_size_inches()
+        pos = ax.get_position()
+        ax_w_pt = pos.width * w_in * 72.0
+        ax_h_pt = pos.height * h_in * 72.0
+
+        def line_h(fs):                       # line height, axes fraction
+            return 1.18 * fs / ax_h_pt
+
+        def n_chars(fs, frac=0.96):           # characters per line
+            return max(20, int(frac * ax_w_pt / (0.55 * fs)))
+
+        x0 = 0.02
+        y = 1.0 - 0.5 * line_h(11)
+
         for i, t in enumerate(results, start=1):
             if t['structured'] is True:
                 mark, col = 'STRUCTURED', '#d62728'
@@ -934,18 +1041,34 @@ class ResidualStructurePlot(SignalPlot):
                 mark, col = 'Random', '#2ca02c'
             else:
                 mark, col = 'skipped', 'gray'
-            # Short label: first part of the test name, wrapped over up
-            # to two lines so long names never collide with the verdict
+
+            # Name followed by the verdict, the whole title in the colour of
+            # the verdict
             label = t['test'].split(' (')[0]
-            wrapped = _textwrap.wrap(f'Test {i}: {label}', width=24)[:2]
-            for j, line in enumerate(wrapped):
-                ax6.text(0.02, y - j * 0.055, line,
-                         transform=ax6.transAxes, fontsize=11, va='top')
-            ax6.text(0.98, y, mark, transform=ax6.transAxes,
-                     fontsize=11, va='top', ha='right',
-                     color=col, fontweight='bold')
-            y -= 0.11 + 0.055 * (len(wrapped) - 1)
-        ax6.text(0.02, y - 0.02,
-                 f'VERDICT: {verdict}',
-                 transform=ax6.transAxes, fontsize=11, va='top',
-                 fontweight='bold', color=colour_map.get(verdict, 'black'))
+            for line in _textwrap.wrap(f'Test {i}: {label} - {mark}',
+                                       width=n_chars(11)):
+                ax.text(x0, y, line, transform=ax.transAxes, fontsize=11,
+                        va='top', color=col)
+                y -= line_h(11)
+
+            for text, colour in ((self._TEST_DESCRIPTIONS.get(t['test'], ''),
+                                  '0.45'),
+                                 (self._summary_quantification(t), 'black')):
+                for line in _textwrap.wrap(text, width=n_chars(9)):
+                    ax.text(x0, y, line, transform=ax.transAxes, fontsize=9,
+                            va='top', color=colour)
+                    y -= line_h(9)
+            y -= 0.4 * line_h(11)
+
+        definitive = [t for t in results if t['structured'] is not None]
+        n_structured = len([t for t in definitive if t['structured']])
+        ax.text(x0, y, f'VERDICT: {verdict}', transform=ax.transAxes,
+                fontsize=11, va='top', fontweight='bold', color=verdict_colour)
+        y -= line_h(11)
+        rule = ('{} of {} tests flagged structure. STRUCTURED if \u2265 3, '
+                'RANDOM if 0, otherwise INCONCLUSIVE.'.format(
+                    n_structured, len(definitive)))
+        for line in _textwrap.wrap(rule, width=n_chars(9)):
+            ax.text(x0, y, line, transform=ax.transAxes, fontsize=9,
+                    va='top')
+            y -= line_h(9)
