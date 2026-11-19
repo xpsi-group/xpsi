@@ -23,6 +23,8 @@ The typical usage pattern is to use the following classes:
       distribution to be processed, where these native classes are
 
         + :class:`~xpsi.PostProcessing.ResidualPlot`
+        + :class:`~xpsi.PostProcessing.Residual1DPlot`
+        + :class:`~xpsi.PostProcessing.ResidualStructurePlot`
         + :class:`~xpsi.PostProcessing.PulsePlot`
         + :class:`~xpsi.PostProcessing.SpectrumPlot`
 
@@ -31,27 +33,38 @@ The typical usage pattern is to use the following classes:
 Statistical residual diagnostics
 --------------------------------
 
-The :class:`~xpsi.PostProcessing.ResidualPlot` class can optionally
-quantify whether the standardised (data minus posterior-expected)
-residuals exhibit 2D structure over the joint phase-channel intervals,
-or are instead consistent with random noise. Pass
-``analyse_residual_structure=True`` at instantiation to run a suite of
-six complementary statistical tests after plot finalisation:
+The :class:`~xpsi.PostProcessing.ResidualPlot` class can optionally add
+(``plot_clusters=True``) a map of the clusters of large standardised
+residuals, the residual distribution compared with a normal distribution
+(with a Kolmogorov-Smirnov test), and the distribution of cluster sizes
+compared with the range expected from counting noise alone (with a p-value
+for the largest cluster). The :class:`~xpsi.PostProcessing.Residual1DPlot`
+class shows the residual distribution and its Kolmogorov-Smirnov test on
+its own.
 
-    * a 2D power spectrum (FFT) test for periodic patterns;
-    * Moran's I global spatial autocorrelation (optional dependencies
-      ``esda`` and ``libpysal``);
-    * an empirical variogram test for distance-dependent correlation;
-    * a Wald-Wolfowitz runs test applied per row and per column;
-    * a 2D autocorrelation-function scan over all lag vectors, sensitive
-      to clustered residuals at any orientation (including diagonal);
-    * a Kolmogorov-Smirnov normality test combined with a Ljung-Box
-      autocorrelation test (optional dependency ``statsmodels``).
+The :class:`~xpsi.PostProcessing.ResidualStructurePlot` class quantifies
+whether the standardised (data minus posterior-expected) residuals exhibit
+2D structure over the joint phase-channel intervals, or are instead
+consistent with random noise. It runs a suite of six complementary
+statistical tests:
+
+    1. a 2D power spectrum (FFT) test for periodic and smooth patterns;
+    2. an empirical variogram test for distance-dependent correlation;
+    3. a 2D autocorrelation-function scan over all lag vectors, sensitive
+       to clustered residuals at any orientation (including diagonal);
+    4. a Kolmogorov-Smirnov normality test combined with a Ljung-Box
+       autocorrelation test (optional dependency ``statsmodels``);
+    5. Moran's I global spatial autocorrelation (optional dependencies
+       ``esda`` and ``libpysal``);
+    6. a Wald-Wolfowitz runs test applied per channel and per phase bin.
 
 A combined verdict (``STRUCTURED``, ``RANDOM``, or ``INCONCLUSIVE``) is
-printed and stored on the instance, and a companion diagnostic figure
-can be produced with
-:meth:`~xpsi.PostProcessing.ResidualPlot.plot_structure_diagnostics`.
+printed and stored on the instance, and its figure shows tests 1 to 4 and a
+summary of all six tests. It is a separate plot class, which can be passed
+to :class:`~xpsi.PostProcessing.SignalPlotter` together with
+:class:`~xpsi.PostProcessing.ResidualPlot` for the same posterior, e.g.,
+``plots = {'ST': [ResidualPlot(plot_clusters=True), ResidualStructurePlot()]}``;
+the posterior-expected counts are then computed only once for both plots.
 
 Customization
 -------------
@@ -88,12 +101,14 @@ else:
                "PulsePlot",
                "SpectrumPlot",
                "ResidualPlot",
-               "Residual1DPlot"]
+               "Residual1DPlot",
+               "ResidualStructurePlot"]
 
     from ._runs import Runs
     from ._signalplotter import SignalPlotter
     from ._residual import ResidualPlot
     from ._1d_residual import Residual1DPlot
+    from ._residual_structure import ResidualStructurePlot
     from ._pulse import PulsePlot
     from ._spectrum import SpectrumPlot
     from ._backends import NestedBackend
