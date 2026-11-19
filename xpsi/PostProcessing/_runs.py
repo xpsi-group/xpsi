@@ -107,6 +107,12 @@ class Runs(Metadata):
 
         The kwargs will be shared by nested sampling runs. The args must be
         lists that will be zipped to instantiate a set of run backends.
+        The kwargs include the metadata of the runs (see :class:`~.Metadata`),
+        e.g., ``names``, ``bounds``, ``labels`` and ``short_labels``. The
+        optional ``short_labels`` dictionary specifies shorter labels (e.g.,
+        without units) for the off-diagonal 2D panel annotations of corner
+        plots when ``labels_2D=True``; parameters without a short label
+        default to their full label from ``labels``.
 
         """
         # if there is a transform method available, try to wrap it
@@ -294,6 +300,7 @@ class Runs(Metadata):
                   'names': self.names,
                   'bounds': self.bounds,
                   'labels': self.labels,
+                  'short_labels': self._short_labels,
                   'truths': self.truths,
                   'precisions': self.precisions}
 
