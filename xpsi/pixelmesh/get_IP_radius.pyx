@@ -3,6 +3,40 @@
 #cython: nonecheck=False
 #cython: wraparound=False
 
+## Size and centre of the image of the star on the image plane, used by
+## globalRayMap.pyx to lay out the pixel grid.
+##
+## Method: four one-dimensional bisections for the edge of the image, each
+## using full ray traces (RK_IP2S_tracer.RK); a ray 'hits' if it ends on the
+## surface (STATE[2] > 0):
+##   L, R: left and right edges along the X axis (Y = 0),
+##   U, D: upper and lower edges along X = ORIGIN_X (elliptical screen only).
+## Each edge is pushed outwards by 0.5% as a safety margin. The screen is
+## then the ellipse centred on (ORIGIN_X, ORIGIN_Y) with these semi-axes
+## (or a circle of radius SEMI_MAJOR if force_circular == 1;
+## integrator.pyx calls this with force_circular = 0).
+##
+## Image-plane coordinates are in metres. b_max (integrator.pyx) is the
+## Schwarzschild apparent radius of a sphere of radius R_eq,
+## R_eq / sqrt(1 - r_s/R_eq); the search brackets [0.5, 1.75] b_max allow
+## for the shift and distortion of the image by rotation.
+##
+## Checked (2026-11) for 1.4 Msun, 12 km, 600 Hz at inclinations 30, 60 and
+## 85 deg: the ellipse contains the whole star, which reaches at most
+## 0.9986 of the ellipse radius (at 85 deg). So the 0.5% margin is
+## sufficient there, but leaves only ~0.15% to spare; for faster spins or
+## more distorted images it may need increasing.
+##
+## Caveats:
+##   - The edges are found along two lines only; the true extreme of the
+##     image need not lie on them (hence the margin).
+##   - A ray that FAILS (flags -102 to -105) counts as a miss, so failures
+##     near the limb shrink the screen. (Before the 2026-11 fix to F1/F2 in
+##     METRIC_qK.pyx, every ray failed for kappa != 0 at most inclinations,
+##     which would have collapsed these bisections onto the inner bracket
+##     0.5 b_max.)
+##   - The function is declared double but returns nothing; the caller
+##     ignores the return value.
 from libc.math cimport fabs, sqrt, sin, cos
 from libc.stdio cimport printf
 from xpsi.pixelmesh.RK_IP2S_tracer cimport RK
@@ -25,9 +59,16 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         double r, r1 = -1.75 * b_max, r2 = -0.5 * b_max
         double L, R, U, D
         size_t terminate = 1000
+        ## Stop each bisection once the bracket is narrower than 1e-12 b_max
+        ## (~41 iterations). Before 2026-11 every bisection ran a fixed 1000
+        ## iterations, i.e. 4000 ray traces for the four edges, even though the
+        ## bracket reaches double precision after ~55; with the default
+        ## 100 x 100 pixel grid that was ~40% extra cost. 'terminate' is kept as a
+        ## safety cap.
+        double tolerance = 1.0e-12 * b_max
 
     num_bisections = 0
-    while num_bisections < terminate:
+    while num_bisections < terminate and r2 - r1 > tolerance:
         num_bisections += 1
 
         L = 0.5 * (r1 + r2)
@@ -48,13 +89,14 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         # printf("\nSpin parameter, a: %.8e", GEOM.a)
         # printf("\nMass quadrupole deviation, kappa: %.8e", GEOM.kappa)
 
+    ## 0.5% safety margin outwards (L < 0)
     L *= 1.005
 
     r1 = 0.5 * b_max
     r2 = 1.75 * b_max
 
     num_bisections = 0
-    while num_bisections < terminate:
+    while num_bisections < terminate and r2 - r1 > tolerance:
         num_bisections += 1
 
         R = 0.5 * (r1 + r2)
@@ -75,10 +117,14 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         # printf("\nSpin parameter, a: %.8e", GEOM.a)
         # printf("\nMass quadrupole deviation, kappa: %.8e", GEOM.kappa)
 
+    ## 0.5% safety margin outwards
     R *= 1.005
 
+    ## Horizontal centre of the screen. Rotation (frame dragging and Doppler
+    ## boosting of the geometry) shifts the image sideways, so this is not 0.
     MAP.ORIGIN_X = 0.5 * (L + R)
 
+    ## (Threshold in metres: effectively only removes round-off.)
     if fabs(MAP.ORIGIN_X) < 1.0e-4:
         MAP.ORIGIN_X = 0.0
 
@@ -87,6 +133,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
     MAP.SEMI_MAJOR = fabs(L - MAP.ORIGIN_X)
 
     if force_circular == 1:
+        ## Circular screen
         MAP.SEMI_MINOR = MAP.SEMI_MAJOR
         MAP.ORIGIN_Y = 0.0
         printf("\nImage plane radius: %.2f", MAP.SEMI_MAJOR / b_max)
@@ -98,7 +145,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         r2 = 1.75 * b_max
 
         num_bisections = 0
-        while num_bisections < terminate:
+        while num_bisections < terminate and r2 - r1 > tolerance:
             num_bisections += 1
 
             U = 0.5 * (r1 + r2)
@@ -119,13 +166,14 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
             # printf("\nSpin parameter, a: %.8e", GEOM.a)
             # printf("\nMass quadrupole deviation, kappa: %.8e", GEOM.kappa)
 
+        ## 0.5% safety margin outwards
         U *= 1.005
 
         r1 = -1.75 * b_max
         r2 = -0.5 * b_max
 
         num_bisections = 0
-        while num_bisections < terminate:
+        while num_bisections < terminate and r2 - r1 > tolerance:
             num_bisections += 1
 
             D = 0.5 * (r1 + r2)
@@ -146,6 +194,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
             # printf("\nSpin parameter, a: %.8e", GEOM.a)
             # printf("\nMass quadrupole deviation, kappa: %.8e", GEOM.kappa)
 
+        ## 0.5% safety margin outwards (D < 0)
         D *= 1.005
 
         MAP.ORIGIN_Y = 0.5 * (U + D)

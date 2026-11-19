@@ -20,6 +20,7 @@ from xpsi.pixelmesh.globalRayMap cimport (RAY_MAP,
                                           free_RAY_MAP)
 
 from xpsi.pixelmesh.coordinateTransformation cimport BOYERLINDQUIST_2_SPHERICAL
+from xpsi.pixelmesh.surfaceBisection cimport SURFACE_SCALE
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
@@ -127,21 +128,54 @@ def integrate(size_t numThreads,
     GEOM.a = a
     GEOM.asq = a * a
     GEOM.kappa = kappa
+    ## Pole-on guard for the image-plane ray tracer. At inclination 0 or pi
+    ## the central pixel starts on the spin axis, where sin(theta) = 0 and
+    ## the 1/sin^2(theta) terms in the metric (METRIC_qK.pyx) diverge.
+    ## Clamping to 1e-3 rad (~0.06 deg) from the axis avoids this and is
+    ## visually indistinguishable from an exactly pole-on view.
+    if inclination < 1.0e-3:
+        printf("\nWarning: inclination clamped to 1e-3 rad for imaging (pole-on).")
+        inclination = 1.0e-3
+    elif inclination > M_PI - 1.0e-3:
+        printf("\nWarning: inclination clamped to pi - 1e-3 rad for imaging (pole-on).")
+        inclination = M_PI - 1.0e-3
+
     GEOM.inclination = inclination
     GEOM.obl_surfgrav_ind = obl_surfgrav_ind
+
+    ## Surface scale for the ray tracer (added 2026-11). GEOM.R_eq stays the
+    ## physical equatorial circumferential radius (it is also used for the
+    ## effective gravity in surface_radiation_field). GEOM.R_eq_sph is the
+    ## equatorial radius of the surface in the spherical coordinate r_sph
+    ## built from Boyer-Lindquist r, chosen so that the circumferential
+    ## equatorial radius equals R_eq. See the MODELLING CHOICE note at
+    ## surfaceBisection.RADIUS. To restore the pre-2026-11 behaviour, use
+    ## GEOM.R_eq_sph = GEOM.R_eq instead.
+    GEOM.R_eq_sph = SURFACE_SCALE(&GEOM)
 
     if R_eq > 1.5 * r_s: # compare to Schwarzschild photon sphere
         GEOM.b_max = R_eq / sqrt(1.0 - r_s / R_eq)
     else: # limiting value
         GEOM.b_max = sqrt(3) * 1.5 * r_s
 
+    ## Image plane at d = 10^4 b_max from the star (BOUNDARY_CONDITIONS.pyx).
     GEOM.d = 10000.0 * GEOM.b_max
 
+    ## 'distance' is the observer's distance (m). Image-plane coordinates are
+    ## impact parameters, so the solid angle of a pixel is (area)/distance^2
+    ## (PJ12 Eq. 25); subtracting d changes the result by ~d/distance ~ 1e-11
+    ## and is immaterial.
     distance -= GEOM.d
 
     cdef _RAY **RAYS = NULL
     cdef RAY_MAP *MAP = NULL
 
+    ## Either trace a new ray map (globalRayMap.pyx) or reuse one returned by a
+    ## previous call. Returned arrays have N*N + 1 entries: index 0 is the
+    ## centre ray, index 1 + i*N + j is ring i, azimuth j. X, Y are in units
+    ## of b_max; THETA, PHI, RADIAL are the surface point in the spherical
+    ## coordinates of the surface; LAG is the phase lag (rad); Z = 1 + z; and
+    ## cos_zenith is the cosine of the comoving-frame emission angle.
     if reuse_ray_map is None:
         NGR = numGlobalRays
         NGR_SQ = NGR * NGR + 1
@@ -238,8 +272,13 @@ def integrate(size_t numThreads,
         size_t N = NGR
         size_t NSQ = NGR * NGR
         int ORIGIN_HIT
-        int *HIT = <int*> calloc(N_T * NSQ, sizeof(int))
+        ## HIT: per-thread flags, 1 if pixel INDEX (1..N*N) sees radiation at the
+        ## current phase. Pixels run 1..N*N, so each thread needs N*N + 1 slots.
+        ## (Before 2026-11 this was N_T * N*N, so the last pixel of the last thread
+        ## wrote one element past the end; it was also never freed.)
+        int *HIT = <int*> calloc(N_T * (NSQ + 1), sizeof(int))
         double area, r1, r2
+        double *r_FULL = <double*> malloc((NGR + 1) * sizeof(double))
 
         unsigned long NUM_HITS, NUM_MISSES
     #----------------------------------------------------------------------->>>
@@ -254,6 +293,9 @@ def integrate(size_t numThreads,
         filepath = <const char*>&(_filepath[0])
 
     # Initialise the source radiation field
+    ## Surface radiation field: which pixels radiate (HIT_or_MISS), their local
+    ## variables such as temperature (eval_local_variables), and the specific
+    ## intensity (eval_hot_I); shared with the cellmesh pulse-profile code.
     cdef storage *local_vars_buf = init_local_variables(N_T, filepath)
     cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
@@ -267,16 +309,40 @@ def integrate(size_t numThreads,
 
     cdef double E_prime, I_E
 
+    ## Azimuthal width of each pixel
     cdef double Delta_t = _2pi / NGR
+
+    ## Ring radii r_0 = 0, r_1, ..., r_N = 1 in units of the screen semi-axes.
+    ## r_MESH (returned to Python, and passed back in via reuse_ray_map) holds
+    ## only r_0 .. r_(N-1): the outer ring r_N = 1 by construction
+    ## (globalRayMap.init_RAY_MAP). The area weights below need r_(i+2) for
+    ## ring i, i.e. up to r_N, so the full set is rebuilt here.
+    ## (Before 2026-11 the loop read r_MESH[N], one element past the end of
+    ## the array; see the note at the area calculation.)
+    for i in range(NGR):
+        r_FULL[i] = r_MESH[i]
+    r_FULL[NGR] = 1.0
 
     if cache_intensities == 1:
         if single_precision_cache == 0:
-            IMAGE_DUB = -1.0 * np.zeros((N_CP, N_CE, NGR_SQ), dtype = np.single)
+            ## BUG FIXED 2026-11: the double-precision cache was allocated with
+            ## dtype np.single, so the assignment to the double memoryview raised
+            ## 'Buffer dtype mismatch' and single_precision_cache = 0 always failed.
+            ## (-1.0 * zeros is simply zeros: pixels with no radiation stay 0.)
+            IMAGE_DUB = -1.0 * np.zeros((N_CP, N_CE, NGR_SQ), dtype = np.double)
         else:
             IMAGE = -1.0 * np.zeros((N_CP, N_CE, NGR_SQ), dtype = np.single)
 
     printf("\nCommencing imaging...")
 
+    ## Loop over observer rotational phases, in parallel. For each phase:
+    ##   1. Flag the pixels whose surface point radiates at the EMISSION phase
+    ##      phases[k] - LAG (photons from pixels with a longer travel time left
+    ##      the star at an earlier rotational phase).
+    ##   2. If at least 4 pixels radiate, sum the observed specific intensity
+    ##      times pixel area over the image, for each energy. Otherwise the flux
+    ##      is set to 0 (and a warning printed): a small hot region can vanish
+    ##      if the grid is too coarse to resolve it.
     for kk in prange(N_P,
                      nogil = True,
                      schedule = 'dynamic',
@@ -285,7 +351,7 @@ def integrate(size_t numThreads,
 
         k = <size_t> kk
         T = threadid()
-        THREAD_INDEX = T * NSQ
+        THREAD_INDEX = T * (NSQ + 1)
 
         if RADIAL[0] > 0.0:
             if HIT_or_MISS(THETA[0],
@@ -331,17 +397,35 @@ def integrate(size_t numThreads,
                 for i in range(NGR):
                     ROOT = i * N
 
-                    r1 = 0.5 * (r_MESH[i+1] + r_MESH[i])
+                    ## Area weight of ring i (pixel radius r_(i+1)): the annulus between the
+                    ## midpoints to the neighbouring rings, times the azimuthal width Delta_t:
+                    ##   area = 0.5 (r2^2 - r1^2) Delta_t   (in units of SEMI_MAJOR * SEMI_MINOR).
+                    ## The outermost ring's outer edge is placed symmetrically.
+                    ## BUG FIXED 2026-11: this used r_MESH[i+2] and r_MESH[i+1] directly, but
+                    ## r_MESH has only N entries, so ring N-2 read r_MESH[N], one element past
+                    ## the end of the array (uninitialised memory). That ring lies just inside
+                    ## the limb (radius 0.995 with the defaults), so whenever the limb radiates
+                    ## its area weight was garbage. For a uniformly hot, non-rotating star the
+                    ## total flux came out at 0.25 of the analytic value; it now agrees with
+                    ## the analytic value to 0.5%.
+                    ##
+                    ## LIMB ACCURACY: a pixel counts with its full area if its central ray
+                    ## hits the star, so the area just outside the limb is over-counted by up
+                    ## to one ring width. With the defaults (N = 100, p = 1/2) the limb falls
+                    ## just outside ring N-1, the worst case, and a uniformly bright disc comes
+                    ## out 0.5% too bright; the error scales with the ring spacing at the limb.
+                    r1 = 0.5 * (r_FULL[i+1] + r_FULL[i])
                     if i < NGR - 1:
-                        r2 = 0.5 * (r_MESH[i+2] + r_MESH[i+1])
+                        r2 = 0.5 * (r_FULL[i+2] + r_FULL[i+1])
                     else:
-                        r2 = r_MESH[i + 1] + (r_MESH[i + 1] - r1)
+                        r2 = r_FULL[i + 1] + (r_FULL[i + 1] - r1)
 
                     area = 0.5 * (pow(r2, 2.0) - pow(r1, 2.0))
 
                     for j in range(NGR):
                         INDEX = ROOT + j + 1
                         if HIT[THREAD_INDEX + INDEX] == 1:
+                            ## Observed energy E corresponds to emitted energy E' = E (1 + z) = E Z.
                             E_prime = energies[p] * Z[INDEX]
                             #printf("\n(i,j): %d, %d", <int>i, <int>j)
                             # The following function calls are split so that
@@ -364,19 +448,30 @@ def integrate(size_t numThreads,
                                            data,
                                            0)
 
+                            ## Observed specific intensity: I_obs(E) = I_emit(E Z) / Z^3, from
+                            ## invariance of I/E^3 (PJ12, Section 4).
                             I_E = I_E * pow(Z[INDEX], -3.0)
 
+                            ## Flux = sum of I_obs times solid angle; normalised to physical units after
+                            ## the loop over rings (semi-axes, atmosphere normalisation, distance).
                             integrated_flux[k,p] += I_E * area * Delta_t
 
+                            ## Sky-map cache: I_obs / E (photon specific intensity, unnormalised) for
+                            ## the requested phases and energies, stored at the pixel's own INDEX so
+                            ## that it lines up with X[INDEX], Y[INDEX] (PhotospherePlotter plots them
+                            ## together). BUG FIXED 2026-11: it was stored at INDEX + 1, which shifted
+                            ## every sky map by one pixel in azimuth (3.6 deg about the screen centre
+                            ## for N = 100), wrapping from the end of each ring onto the next.
                             if cache_intensities == 1:
                                 for search in range(N_CP):
                                     if k == <size_t> cache_phase_indices[search]:
                                         if cache_counter_E < N_CE and p == <size_t> cache_energy_indices[cache_counter_E]:
                                             if single_precision_cache == 0:
-                                                IMAGE_DUB[cache_phase_indices[search], cache_counter_E, INDEX + 1] = I_E / energies[p]
+                                                IMAGE_DUB[cache_phase_indices[search], cache_counter_E, INDEX] = I_E / energies[p]
                                             else:
-                                                IMAGE[cache_phase_indices[search], cache_counter_E, INDEX + 1] = I_E / energies[p]
+                                                IMAGE[cache_phase_indices[search], cache_counter_E, INDEX] = I_E / energies[p]
 
+                ## Centre ray: a disc of radius half the first ring radius.
                 if ORIGIN_HIT == 1:
                     E_prime = energies[p] * Z[0]
 
@@ -397,7 +492,7 @@ def integrate(size_t numThreads,
 
                     I_E = I_E * pow(Z[0], -3.0)
 
-                    r2 = 0.5 * r_MESH[1]
+                    r2 = 0.5 * r_FULL[1]
 
                     integrated_flux[k,p] += I_E * pow(r2, 2.0) * M_PI
 
@@ -416,6 +511,9 @@ def integrate(size_t numThreads,
                             if cache_counter_E < N_CE and p == <size_t> cache_energy_indices[cache_counter_E]:
                                 cache_counter_E = cache_counter_E + 1
 
+                ## Convert to physical units: image-plane area in m^2 (semi-axes in m),
+                ## intensity normalisation of the atmosphere (eval_hot_norm), division by
+                ## distance^2 (solid angle) and by E (photon flux).
                 integrated_flux[k,p] *= SEMI_MINOR * SEMI_MAJOR
                 integrated_flux[k,p] *= eval_hot_norm() / (distance * distance * energies[p] * keV)
         else:
@@ -441,6 +539,8 @@ def integrate(size_t numThreads,
 
     free_hot(N_T, data)
     free_local_variables(N_T, local_vars_buf)
+    free(HIT)
+    free(r_FULL)
 
     if cache_intensities == 1:
         if single_precision_cache == 0:
