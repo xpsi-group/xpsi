@@ -435,12 +435,36 @@ class ResidualPlot(SignalPlot):
         self._add_expected_counts()
         self._add_residuals()
         if self._plot_clusters:
+            self._compute_clusters()
             self._reveal_clusters()
             self._disp_distributions()
         if self._plot_pulse:
             self.add_pulses()
         if self._analyse_residual_structure:
             self._run_structure_analysis()
+
+    def _compute_residuals(self):
+        """ Compute and store the standardised residuals
+        :math:`(c_{ik}-d_{ik})/\\sqrt{c_{ik}}` in ``self._residuals``. """
+        self._residuals = ((self.expected_counts - self._signal.data.counts)
+                           / _np.sqrt(self.expected_counts))
+        return self._residuals
+
+    def _compute_clusters(self):
+        """ Identify clusters of residuals with ``|residual| >= threshlim``.
+
+        Stores the threshold mask (``self._clusteresid``), the cluster
+        labels and their number (``self._lw``, ``self._num``), the size of
+        each labelled cluster (``self._clustarea``, index 0 being the
+        background) and the per-pixel size of the cluster each pixel
+        belongs to (``self._affectedarea``, 0 outside clusters).
+        """
+        if not hasattr(self, '_residuals'):
+            self._compute_residuals()
+        self._clusteresid = _np.abs( self._residuals ) >= self._threshlim
+        self._lw, self._num = measurements.label(self._clusteresid)
+        self._clustarea = measurements.sum(self._clusteresid, self._lw, index=arange(self._lw.max() + 1))
+        self._affectedarea = self._clustarea[self._lw]
 
     def _set_vminmax(self):
         """ Compute minimum and maximum for data and model colorbars. """
@@ -516,14 +540,7 @@ class ResidualPlot(SignalPlot):
         except AttributeError:
             self._set_vminmax()
 
-        #Calculate channel edges by averaging:
-        channels = self._signal.data.channels
-        channel_edges = _np.zeros((len(self._signal.data.channels)+1))
-        channel_edges[1:len(channels)] = (channels[:len(channels)-1]+channels[1:])/2.0
-        chandiff1 = (channels[1]-channels[0])/2.0
-        chandiff2 = (channels[len(channels)-1]-channels[len(channels)-2])/2.0
-        channel_edges[0] = channels[0]-chandiff1
-        channel_edges[len(channels)] = channels[len(channels)-1]+chandiff2
+        channel_edges = self._get_channel_edges()
 
         data = self._ax_data.pcolormesh(self._signal.data.phases,
                                         channel_edges,
@@ -564,14 +581,7 @@ class ResidualPlot(SignalPlot):
         except AttributeError:
             self._set_vminmax()
 
-        #Calculate channel edges by averaging:
-        channels = self._signal.data.channels
-        channel_edges = _np.zeros((len(self._signal.data.channels)+1))
-        channel_edges[1:len(channels)] = (channels[:len(channels)-1]+channels[1:])/2.0
-        chandiff1 = (channels[1]-channels[0])/2.0
-        chandiff2 = (channels[len(channels)-1]-channels[len(channels)-2])/2.0
-        channel_edges[0] = channels[0]-chandiff1
-        channel_edges[len(channels)] = channels[len(channels)-1]+chandiff2
+        channel_edges = self._get_channel_edges()
 
         model = self._ax_model.pcolormesh(self._signal.data.phases,
                                           channel_edges,
@@ -608,19 +618,11 @@ class ResidualPlot(SignalPlot):
     def _add_residuals(self):
         """ Display the residuals in the third panel. """
 
-        self._residuals = self.expected_counts - self._signal.data.counts
-        self._residuals /= _np.sqrt(self.expected_counts)
+        self._compute_residuals()
 
         vmax =  _np.max( _np.abs( self._residuals ) )
 
-        #Calculate channel edges by averaging:
-        channels = self._signal.data.channels
-        channel_edges = _np.zeros((len(self._signal.data.channels)+1))
-        channel_edges[1:len(channels)] = (channels[:len(channels)-1]+channels[1:])/2.0
-        chandiff1 = (channels[1]-channels[0])/2.0
-        chandiff2 = (channels[len(channels)-1]-channels[len(channels)-2])/2.0
-        channel_edges[0] = channels[0]-chandiff1
-        channel_edges[len(channels)] = channels[len(channels)-1]+chandiff2
+        channel_edges = self._get_channel_edges()
 
         # Plot
         if not self._blur_residuals:
@@ -689,24 +691,16 @@ class ResidualPlot(SignalPlot):
                                  labelpad=15)
 
     def _reveal_clusters(self):
-        """ Display clusters from residuals in the fourth panel. """
-        self._residuals = self.expected_counts - self._signal.data.counts
-        self._residuals /= _np.sqrt(self.expected_counts)
-        self._clusteresid = _np.abs( self._residuals ) >= self._threshlim
-        self._lw, self._num = measurements.label(self._clusteresid)
-        self._clustarea = measurements.sum(self._clusteresid, self._lw, index=arange(self._lw.max() + 1))
-        self._affectedarea = self._clustarea[self._lw]
+        """ Display clusters from residuals in the fourth panel.
+
+        Calls :meth:`_compute_clusters` if the clusters have not been
+        computed yet. """
+        if not hasattr(self, '_affectedarea'):
+            self._compute_clusters()
         vmaxresid =  _np.max( _np.abs( self._residuals ) )
         vmaxarea =  _np.max( self._affectedarea )
 
-        #Calculate channel edges by averaging:
-        channels = self._signal.data.channels
-        channel_edges = _np.zeros((len(self._signal.data.channels)+1))
-        channel_edges[1:len(channels)] = (channels[:len(channels)-1]+channels[1:])/2.0
-        chandiff1 = (channels[1]-channels[0])/2.0
-        chandiff2 = (channels[len(channels)-1]-channels[len(channels)-2])/2.0
-        channel_edges[0] = channels[0]-chandiff1
-        channel_edges[len(channels)] = channels[len(channels)-1]+chandiff2
+        channel_edges = self._get_channel_edges()
         
         clust1 = self._ax_clres.pcolormesh(self._signal.data.phases,
                                       channel_edges,
@@ -743,14 +737,12 @@ class ResidualPlot(SignalPlot):
                                  labelpad=15)
         
     def _disp_distributions(self):
-        """ Display residual and cluster distributions in the fifth panel. """
-        self._residuals = self.expected_counts - self._signal.data.counts
-        self._residuals /= _np.sqrt(self.expected_counts)
-        self._clusteresid = _np.abs( self._residuals ) >= self._threshlim
-        self._lw, self._num = measurements.label(self._clusteresid)
-        self._clustarea = measurements.sum(self._clusteresid, self._lw, index=arange(self._lw.max() + 1))
-        self._affectedarea = self._clustarea[self._lw]
-        vmaxresid =  _np.max( _np.abs( self._residuals ) )
+        """ Display residual and cluster distributions in the fifth panel.
+
+        Calls :meth:`_compute_clusters` if the clusters have not been
+        computed yet. """
+        if not hasattr(self, '_affectedarea'):
+            self._compute_clusters()
         vmaxarea =  _np.max( self._affectedarea )
         
         # Residual distribution, on a density scale (independent of the
@@ -830,11 +822,9 @@ class ResidualPlot(SignalPlot):
         ``analyse_residual_structure=True``.
         """
         if not hasattr(self, '_residuals'):
-            # Recompute the standardised residuals in case finalize has not
+            # Compute the standardised residuals in case finalize has not
             # stored them yet (should not normally happen, but be defensive).
-            self._residuals = (self.expected_counts -
-                               self._signal.data.counts) / _np.sqrt(
-                self.expected_counts)
+            self._compute_residuals()
 
         # NOTE: the order of this list defines the test numbering used in
         # the printed report AND in plot_structure_diagnostics(): tests
