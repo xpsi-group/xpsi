@@ -239,7 +239,9 @@ class Data(object):
             -1 will use the last channel.
         """
         
-         # Make the table of required channels
+        # Make the table of required channels
+        assert isinstance(min_channel, int) and isinstance(max_channel, int)
+        assert min_channel < max_channel
         assert min_channel >= self.channels[0] 
         assert max_channel <= self.channels[-1]
         if max_channel == -1:

@@ -152,7 +152,29 @@ class TestImmutableObjects( object ):
 ### Check the trimming is done well ###
 #######################################
 class TestTrimming( object ):
-    pass
+
+    @pytest.mark.parametrize('bad', [56.2 , True , 'hello'])
+    def test_non_int_channels( self , data, bad ):
+        with pytest.raises( AssertionError ):
+            data.trim_data( min_channel=bad, max_channel=32 )
+            data.trim_data( min_channel=30, max_channel=bad )
+
+    def test_min_greater_than_max( self , data ):
+        with pytest.raises( AssertionError ):
+            data.trim_data( min_channel=32, max_channel=30 )
+
+    def test_size( self , data ):
+        data.trim_data( min_channel=31, max_channel=32 )
+        assert data.counts.shape == (2,2)
+        assert data.channels.shape == (2,)
+
+    def test_resulting_channels( self , data ):
+        data.trim_data( min_channel=31, max_channel=32 )
+        np.testing.assert_array_equal( data.channels , np.array([31, 32]) )
+
+    def test_resulting_counts( self , data ):
+        data.trim_data( min_channel=31, max_channel=32 )
+        np.testing.assert_array_equal( data.counts , COUNTS[1:,:] )
 
 ##############################################
 ### Check the spectrum support computation ###
@@ -183,4 +205,4 @@ class TestSpectrumSupport( object ):
         assert (spectra_support >= 0.0).all()
 
     def test_computed_values( self , spectra_support ):
-        assert np.allclose( spectra_support, SUPORT_EXPECTED_VALUES )
+        np.testing.assert_array_equal( spectra_support, SUPORT_EXPECTED_VALUES )
