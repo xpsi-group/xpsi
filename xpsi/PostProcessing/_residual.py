@@ -115,7 +115,6 @@ class ResidualPlot(SignalPlot):
                  plot_clusters=False,
                  threshlim=2.0,
                  clusters_cmap='PuOr_seq',
-                 clustdist_cmap='PuOr',
                  mu=0.0,
                  sigma=1.0,
                  nbins=50,
@@ -178,9 +177,6 @@ class ResidualPlot(SignalPlot):
              clusters to dark purple for large ones), registered with
              :mod:`matplotlib` by this module. Pixels outside any cluster are
              left blank.
-
-        :param str clustdist_cmap:
-             Colormap name from :mod:`matplotlib` to use for cluster sizes distribution.
 
         :param float mu:
              Mean of the reference normal distribution (dashed line) drawn over
@@ -335,21 +331,27 @@ class ResidualPlot(SignalPlot):
             
             # Add more columns/rows
             cls = type(self)
-            # Two panel rows plus an (almost) empty spacer row before the
-            # cluster row: the spacer adds one extra inter-row gap there,
-            # leaving room for the horizontal colour bars above the panel.
-            # hspace is a fraction of the AVERAGE row height, which the
-            # spacer lowers, so it is rescaled to keep the other gaps at
-            # 0.35 panel heights.
-            n_panel_rows          = self._resid_row + 3
-            spacer                = 0.001
+            # Two panel rows (clusters, distributions), each preceded by an
+            # empty spacer row.  All rows are separated by the same small gap
+            # as without clusters (panels without x labels above them); the
+            # spacers add room only where it is needed: for the residual
+            # panel's x labels and the colour bars above the cluster panel,
+            # and for the cluster panel's x labels and the titles of the
+            # distribution panels.  Gaps and spacers are in panel heights.
+            gap                   = 0.05
+            spacer_colourbars     = 0.45
+            spacer_titles         = 0.10
+            ratios = ([1] * (self._resid_row + 1)
+                      + [spacer_colourbars, 1, spacer_titles, 1])
             cls.__rows__          += 2
-            cls.__ax_rows__       += 3
+            cls.__ax_rows__       = len(ratios)
             cls.__ax_columns__    += 3
-            cls.__height_ratios__ = [1] * (self._resid_row + 1) + [spacer, 1, 1]
+            cls.__height_ratios__ = ratios
             cls.__width_ratios__  = [50, 1, 50, 1, 1] # second column for colorbars
             cls.__wspace__        = 0.1
-            cls.__hspace__        = 0.35 * (n_panel_rows + 1) / (n_panel_rows + spacer)
+            # hspace is a fraction of the AVERAGE row height, which the
+            # spacers lower: rescale it so the gap is `gap` panel heights
+            cls.__hspace__        = gap * len(ratios) / sum(ratios)
 
             # Add parameters to plots
             self._threshlim = threshlim
@@ -357,14 +359,13 @@ class ResidualPlot(SignalPlot):
             self._sigma=sigma
             self._nbins=nbins
             self._clusters_cmap = clusters_cmap
-            self._clustdist_cmap = clustdist_cmap
             self._cluster_null_n = cluster_null_n
             self._cluster_null_random_seed = cluster_null_random_seed
             self._cluster_connectivity = cluster_connectivity
 
             # Get the rows
             self._cluster_row = self._resid_row + 2
-            self._clustdist_row = self._resid_row + 3
+            self._clustdist_row = self._resid_row + 4
 
         # Generate the axes for plotting
         self._get_figure()
@@ -412,12 +413,9 @@ class ResidualPlot(SignalPlot):
             self._ax_rdist = self._fig.add_subplot(self._gs[self._clustdist_row, :2])
             self._ax_cdist = self._fig.add_subplot(self._gs[self._clustdist_row, 2:-1])
             
-            # Prettify
-            for ax in (self._ax_data, self._ax_model, self._ax_clres):
-                ax.set_xlabel(r'$\phi$ [cycles]')
-
-            for ax in (self._ax_data, self._ax_model):
-                ax.tick_params(axis='x', labelbottom=True)
+            # Prettify (the data and model panels keep sharing the phase
+            # axis labelled below the residual panel)
+            self._ax_clres.set_xlabel(r'$\phi$ [cycles]')
 
             self._ax_clres.set_ylabel('channel')
             self._ax_clres.xaxis.set_major_locator(MultipleLocator(0.2))
@@ -425,8 +423,9 @@ class ResidualPlot(SignalPlot):
             self._ax_clres.set_xlim([0.0,2.0])
             
             self._ax_rdist.set_title('Residual distribution')  
-            self._ax_rdist.xaxis.set_major_locator(MultipleLocator(1.0))
-            self._ax_rdist.xaxis.set_minor_locator(MultipleLocator(0.5))
+            # At most ~8 "nice" ticks, whatever the residual range
+            self._ax_rdist.xaxis.set_major_locator(MaxNLocator(nbins=8, steps=[1, 2, 2.5, 5, 10]))
+            self._ax_rdist.xaxis.set_minor_locator(AutoMinorLocator())
             self._ax_rdist.set_xlabel('Residuals')
 
             self._ax_cdist.set_title(r'Distribution of cluster size $s$')
@@ -882,7 +881,11 @@ class ResidualPlot(SignalPlot):
         
         clust1 = self._ax_clres.pcolormesh(self._signal.data.phases,
                                       channel_edges,
-                                      _np.where(self._clusteresid, self._residuals, 0),
+                                      # mask pixels below the threshold so
+                                      # they are left blank, like the
+                                      # cluster-size half
+                                      _np.ma.masked_where(~self._clusteresid,
+                                                          self._residuals),
                                       cmap = plt.get_cmap(self._residual_cmap),
                                       vmin = -vmaxresid,
                                       vmax = vmaxresid,
