@@ -1,0 +1,1 @@
+Clusters in ``ResidualPlot`` now include pixels touching at a corner by default (``cluster_connectivity=8``), and clusters crossing the phase boundary (between phase 1 and phase 0) are counted as a single cluster.
