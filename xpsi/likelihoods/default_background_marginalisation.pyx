@@ -393,8 +393,8 @@ cdef int channelwise_background_marginalization(args a,
                 if a.star[j] < 0.0 and av_DATA - a.star[j] > B_high:
                     B_high = av_DATA - a.star[j]
 
-            # Start from the midpoint if the initial guess is not usable
-            if B < B_low or B >= B_high or (B <= B_low and not isfinite(g)):
+            # Start from the midpoint if the initial guess is outside the bracket
+            if B < B_low or B >= B_high:
                 B = 0.5 * (B_low + B_high)
 
             dB = delta(B, &a)
