@@ -1,7 +1,8 @@
 from ._global_imports import *
 from scipy import stats as _stats
 from ._signalplot import SignalPlot
-import textwrap as _textwrap
+from matplotlib.font_manager import FontProperties as _FontProperties
+from matplotlib.textpath import TextToPath as _TextToPath
 
 # Optional heavy dependency for Moran's I – graceful fallback if absent
 try:
@@ -131,7 +132,7 @@ class ResidualStructurePlot(SignalPlot):
     # do not change at runtime (see base class comments):
     __caching_targets__ = ['expected_counts']
 
-    __rows__          = 3
+    __rows__          = 3.25
     __columns__       = 2.5
     __ax_rows__       = 2
     # Three columns of panels separated by two empty spacer columns, so the
@@ -141,7 +142,7 @@ class ResidualStructurePlot(SignalPlot):
     __ax_columns__    = 5
     __height_ratios__ = [1]*2
     # wider third column for the summary text
-    __width_ratios__  = [1, 0.25, 1, 0.25, 1.6]
+    __width_ratios__  = [1, 0.25, 1, 0.25, 1.0]
     __wspace__        = 0.0
     __hspace__        = 0.42
 
@@ -178,6 +179,9 @@ class ResidualStructurePlot(SignalPlot):
             self.parameters_vector = parameters_vector
 
         self._get_figure()
+        # Extend the grid towards the right edge of the figure (matplotlib's
+        # default leaves 10% of the width empty there), for the summary
+        self._gs.update(right=0.98)
 
         plt.close()
 
@@ -893,7 +897,7 @@ class ResidualStructurePlot(SignalPlot):
         # -- Right column: summary of ALL tests in report order ------------
         ax6 = fig.add_subplot(gs[:, 4])
         ax6.axis('off')
-        ax6.set_title('Summary (report order)')
+        ax6.set_title('Summary')
         self._draw_summary(ax6, results, verdict,
                            colour_map.get(verdict, 'black'))
 
@@ -966,15 +970,15 @@ class ResidualStructurePlot(SignalPlot):
         fp = cls._format_p
         if name.startswith('2D Power Spectrum'):
             n = t['n_null']
-            return ('Strongest single frequency: {}. Low-frequency power: '
-                    '{:.0%} (95% of noise: \u2264 {:.0%}), {}. Structured if '
+            return ('Strongest single frequency: {}.\n Low-frequency power: '
+                    '{:.0%} (95% of noise: \u2264 {:.0%}), {}.\n Structured if '
                     'either p < {:.3g}.'.format(
                         fp(t['p_periodic'], n), t['f_lowk'], t['f_null_q95'],
                         fp(t['p_smooth'], n), t['alpha_bonferroni']))
         if name.startswith('Variogram'):
             n = t['n_null']
-            return ('Value at lag 1: {:.2f} ({}). Largest departure from 1 '
-                    'over lags 1\u2013{}: {:.2f} ({}). Structured if either '
+            return ('Value at lag 1: {:.2f} ({}).\n Largest departure from 1 '
+                    'over lags 1\u2013{}: {:.2f} ({}).\n Structured if either '
                     'p < {:.3g}.'.format(
                         1.0 - t['nugget_deficit'], fp(t['p_nugget'], n),
                         len(t['lags']), t['max_abs_dev'], fp(t['p_maxdev'], n),
@@ -983,8 +987,8 @@ class ResidualStructurePlot(SignalPlot):
             dy, dx = t['best_lag']
             bins = lambda n, axis: '{} {} bin{}'.format(
                 n, axis, '' if abs(n) == 1 else 's')
-            return ('Strongest correlation: r = {:+.2f} for a shift of {} and '
-                    '{}, {}. Structured if p < {:.1e} (0.05 divided by the {} '
+            return ('Strongest correlation: r = {:+.2f} for a shift of {} \n and '
+                    '{}, {}.\n Structured if p < {:.1e} (0.05 divided by the {} '
                     'shifts tested).'.format(
                         t['best_r'], bins(dx, 'phase'), bins(dy, 'channel'),
                         fp(t['min_p']), t['alpha_bonferroni'],
@@ -993,31 +997,67 @@ class ResidualStructurePlot(SignalPlot):
             lb = t['ljungbox_min_pvalue']
             lb_str = ('Ljung-Box: smallest {} over lags 1\u201320 (structured '
                       'if < 0.05).'.format(fp(lb)) if lb is not None else
-                      'Ljung-Box: skipped (install statsmodels).')
+                      '\n Ljung-Box: skipped (install statsmodels).')
             return 'KS: {} (structured if < 0.01). {}'.format(
                 fp(t['ks_pvalue']), lb_str)
         if name.startswith("Moran"):
             if t['structured'] is None:
                 return 'Skipped: install esda and libpysal.'
-            return ('I = {:.2f}, {}, from 999 random reshufflings of the map. '
+            return ('I = {:.2f}, {}, from 999 random reshufflings of the map.\n '
                     'Structured if p < 0.05.'.format(
                         t['I'], fp(t['p_value'], 999)))
         if name.startswith('Runs test'):
             return ('{:.0%} of channels and {:.0%} of phase bins have too few '
-                    'runs (about 5% expected by chance). Structured if either '
+                    'runs\n (about 5% expected by chance).\n Structured if either '
                     'exceeds {:.0%}.'.format(
                         t['frac_rows_significant'], t['frac_cols_significant'],
                         t['threshold']))
         return t.get('interpretation', '')
 
+    @staticmethod
+    def _wrap(text, max_width_pt, fontsize):
+        """ Wrap ``text`` into lines no wider than ``max_width_pt`` points
+        when drawn at ``fontsize``, keeping explicit line breaks.
+
+        The width of each candidate line is measured with the actual font
+        (the default font of :mod:`matplotlib`), so the lines use the
+        available width.  Each line of ``text`` (split on ``\\n``) is wrapped
+        separately, without the spaces around the line break, and an empty
+        line gives a blank line.  A single word wider than the limit is put
+        on its own line.
+        """
+        prop = _FontProperties(size=fontsize)
+        measure = _TextToPath()
+
+        def width(s):
+            return measure.get_text_width_height_descent(s, prop,
+                                                         ismath=False)[0]
+
+        lines = []
+        for paragraph in text.split('\n'):
+            words = paragraph.split()
+            if not words:
+                lines.append('')
+                continue
+            line = words[0]
+            for word in words[1:]:
+                if width(line + ' ' + word) <= max_width_pt:
+                    line += ' ' + word
+                else:
+                    lines.append(line)
+                    line = word
+            lines.append(line)
+        return lines
+
     def _draw_summary(self, ax, results, verdict, verdict_colour):
         """ Write the summary of the tests in the (axis-less) column ``ax``.
 
         For each test: its number, name and verdict (font size 11), a
-        plain-language description (grey, size 9) and the values that
-        decide the verdict (size 9); then the combined verdict.  Text is
+        plain-language description (grey, size ``fs_text``) and the
+        values that decide the verdict (size ``fs_text``); then the combined verdict.  Text is
         laid out from the top of the column with line heights in physical
-        units, so it keeps its size whatever the column height.
+        units, so it keeps its size whatever the column height.  Explicit
+        line breaks (``\\n``) in the texts are kept (see :meth:`_wrap`).
         """
         fig = self._fig
         w_in, h_in = fig.get_size_inches()
@@ -1028,25 +1068,28 @@ class ResidualStructurePlot(SignalPlot):
         def line_h(fs):                       # line height, axes fraction
             return 1.18 * fs / ax_h_pt
 
-        def n_chars(fs, frac=0.96):           # characters per line
-            return max(20, int(frac * ax_w_pt / (0.55 * fs)))
 
         x0 = 0.02
+        fs_text = 10                          # descriptions and values
+        # full width of the column, less 2% because the measured width
+        # slightly underestimates the drawn one
+        max_width = 0.98 * (1.0 - x0) * ax_w_pt
         y = 1.0 - 0.5 * line_h(11)
 
         for i, t in enumerate(results, start=1):
             if t['structured'] is True:
                 mark, col = 'STRUCTURED', '#d62728'
             elif t['structured'] is False:
-                mark, col = 'Random', '#2ca02c'
+                mark, col = 'RANDOM', '#2ca02c'
             else:
                 mark, col = 'skipped', 'gray'
 
-            # Name followed by the verdict, the whole title in the colour of
-            # the verdict
+            # Extra space before each test, then its name followed by the
+            # verdict, the whole title in the colour of the verdict
+            y -= 0.5 * line_h(11)
             label = t['test'].split(' (')[0]
-            for line in _textwrap.wrap(f'Test {i}: {label} - {mark}',
-                                       width=n_chars(11)):
+            for line in self._wrap(f'Test {i}: {label} - {mark}',
+                                   max_width, 11):
                 ax.text(x0, y, line, transform=ax.transAxes, fontsize=11,
                         va='top', color=col)
                 y -= line_h(11)
@@ -1054,21 +1097,22 @@ class ResidualStructurePlot(SignalPlot):
             for text, colour in ((self._TEST_DESCRIPTIONS.get(t['test'], ''),
                                   '0.45'),
                                  (self._summary_quantification(t), 'black')):
-                for line in _textwrap.wrap(text, width=n_chars(9)):
-                    ax.text(x0, y, line, transform=ax.transAxes, fontsize=9,
+                for line in self._wrap(text, max_width, fs_text):
+                    ax.text(x0, y, line, transform=ax.transAxes, fontsize=fs_text,
                             va='top', color=colour)
-                    y -= line_h(9)
+                    y -= line_h(fs_text)
             y -= 0.4 * line_h(11)
 
         definitive = [t for t in results if t['structured'] is not None]
         n_structured = len([t for t in definitive if t['structured']])
+        y -= 0.5 * line_h(11)               # extra space
         ax.text(x0, y, f'VERDICT: {verdict}', transform=ax.transAxes,
                 fontsize=11, va='top', fontweight='bold', color=verdict_colour)
         y -= line_h(11)
-        rule = ('{} of {} tests flagged structure. STRUCTURED if \u2265 3, '
+        rule = ('{} of {} tests flagged structure. \n STRUCTURED if \u2265 3, '
                 'RANDOM if 0, otherwise INCONCLUSIVE.'.format(
                     n_structured, len(definitive)))
-        for line in _textwrap.wrap(rule, width=n_chars(9)):
-            ax.text(x0, y, line, transform=ax.transAxes, fontsize=9,
+        for line in self._wrap(rule, max_width, fs_text):
+            ax.text(x0, y, line, transform=ax.transAxes, fontsize=fs_text,
                     va='top')
-            y -= line_h(9)
+            y -= line_h(fs_text)
