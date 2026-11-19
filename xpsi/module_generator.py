@@ -205,7 +205,7 @@ parser.add_argument('--frequency',
                     required=True,
                     help='The coordinate spin frequency of the star (Hz).',
                     empty_lines_below=2)
-                    
+
 parser.add_argument('--use-fits-format',
                     action='store_true',
                     help='Are the source and instrumental files stored in FITS format?',
@@ -669,7 +669,7 @@ parser.add_argument('--{0}-arf-path', type=str, help='{1} {0} ARF file.',
 
 parser.add_argument('--{0}-rmf-path', type=str, help='{1} {0} RMF file.',
                     )
-                    
+
 parser.add_argument('--{0}-datafolder', type=str, help='Absolute or relative path to the folder where the {1} {0} files, in FITS format, are stored.',
                     )
 
@@ -725,7 +725,7 @@ parser.add_argument('--{0}-phase-shift-value',
 
 parser.add_argument('--{0}-background-path', type=str, help='Absolute or relative path to {1} {0} background PHA spectrum file.',
                     comment=True)
-                    
+
 parser.add_argument('--{0}-background-prior-support-half-width', type=float, help='{0} background prior support half-width (for imaging telescope). The half-width is in units of standard deviation of background count number per instrument channel.',
                     comment=True,
                     empty_lines_below=3)
@@ -1692,8 +1692,8 @@ elif hasattr ({0}.data, 'backfile'):
     bkgpath = os.path.join(args.{0}_datafolder, {0}.data.backfile)
 else:
     bkgpath = None
-    
-if isinstance(bkgpath, str): 
+
+if isinstance(bkgpath, str):
     spectrum = xpsi.Data.load(bkgpath,
                        n_phases= args.{0}_number_phase_bins,
                        channels={0}.instrument.channels)
@@ -1706,7 +1706,7 @@ else:
                args.instrument,
                'energy_independent_effective_area_scaling_factor')
     )
-    else:    
+    else:
         module += (
     '''
 {0} = namespace()
@@ -2196,7 +2196,7 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 prefix='{1}')
         '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
         )
-    
+
     else:
         module += (
         '''
@@ -2216,7 +2216,7 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 atm_ext="BB",
                                 prefix='{1}')
         '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
-        )        
+        )
 
     module += (
     '''
@@ -2254,7 +2254,7 @@ elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = parse_bounds(args
                                     image_order_limit=args.image_order_limit,
                                     atm_ext="BB")
         '''
-        )        
+        )
 else:
     module += (
     '''
@@ -2433,7 +2433,7 @@ import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
     """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
-    
+
     def convert_arg_line_to_args(self, arg_line):
         """ Convert a line from a configuration file to a list of arguments.
 
@@ -2885,6 +2885,7 @@ from xpsi.global_imports import _2pi, gravradius, _dpr
 from xpsi import Parameter
 
 from xpsi.cellmesh.mesh_tools import eval_cedeCentreCoords as eval_coords_under_rotation
+from xpsi.surface_radiation_field.effective_gravity_universal import (py_oblateness_func_o2 as oblateness_func_o2)
 from scipy.interpolate import Akima1DInterpolator
 
 if args.prior_import_statements is not None:
@@ -2970,11 +2971,11 @@ module += (
             return -np.inf
 
         # limit polar radius to be just outside the Schwarzschild photon sphere
-        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        R_p = 1.0 + ref.epsilon * oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind)
         if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
-        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
+        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind)))
         # 2-surface cross-section have a single maximum in |z|
         # i.e., an elliptical surface; minor effect on support, if any,
         # only for high spin frequencies
@@ -2986,7 +2987,8 @@ module += (
         grav = xpsi.surface_radiation_field.effective_gravity(np.array([1.0, 0.0]),
                                                               np.array([ref.R] * 2 ),
                                                               np.array([ref.zeta] * 2),
-                                                              np.array([ref.epsilon] * 2))
+                                                              np.array([ref.epsilon] * 2),
+                                                              ref._obl_surfgrav_ind)
 '''
 )
 
@@ -3703,9 +3705,58 @@ class CustomInterstellar(xpsi.Interstellar):
 
         self._interpolator = Akima1DInterpolator(self._lkp_energies,
                                                  self._lkp_attenuation)
+        self._cache = {{}}
         self._interpolator.extrapolate = True
 
         super(CustomInterstellar, self).__init__(N_H)
+
+    def _get_entry(self, energies):
+        """
+        Per-energy-grid cache keyed by object identity (a few grids).
+        Useful when multiple instruments are fitted together.
+
+        If first time with the energy grid, compute the interpolated attenuation.
+        """
+
+        # Search the cache for the same energy grid
+        entry = self._cache.get(id(energies))
+
+        # If not present, compute it
+        if entry is None:
+            grid = np.asarray(energies, dtype=np.double)
+            att = self._interpolate(grid)
+
+            # Check for division by zero
+            with np.errstate(divide='ignore'):
+                log_att = np.log(att)                  # att == 0 -> -inf, exp(-inf) = 0
+            
+            # Check if not too many entries, ptherwise likely an error
+            if len(self._cache) >= 20:                  # safety against unbounded growth
+                self._cache.clear()
+            
+            # Keep a reference to `energies` so its id cannot be reused by another object
+            entry = (energies, log_att, np.empty_like(log_att))
+            self._cache[id(energies)] = entry
+
+        return entry
+
+    def _compute(self, energies, out=None):
+        """ Compute the attenuation using the cached values if needed. """
+
+        # Get the attenuation reference
+        _, log_att, buf = self._get_entry(energies)
+        if out is None:
+            out = buf
+
+        # Apply the power of the neutral hydrogen column density
+        nh = self['neutral_hydrogen_column_density']
+        if nh == 0.0:                                  # att**0 == 1, avoids 0 * -inf = nan
+            out.fill(1.0)
+        else:
+            np.multiply(log_att, nh, out=out)
+            np.exp(out, out=out)
+            
+        return out
 
     def attenuation(self, energies):
         """ Interpolate the attenuation coefficients.
@@ -3713,7 +3764,8 @@ class CustomInterstellar(xpsi.Interstellar):
         Useful for post-processing.
 
         """
-        return self._interpolate(energies)**(self['neutral_hydrogen_column_density'])
+        # Public API: return a fresh array, so callers can keep or modify it safely
+        return self._compute(energies, out=np.empty_like(self._get_entry(energies)[1]))
 
     def _interpolate(self, energies):
         """ Helper. """
@@ -3809,20 +3861,20 @@ if args.use_fits_format:
               values=dict(),
               datafolder=None,
               **kwargs):
-        
+
         """ Load any instrument response matrix. """
 
         if datafolder:
             ARF_path = os.path.join( datafolder, ARF_path )
             RMF_path = os.path.join( datafolder, RMF_path )
 
-        # Open useful values in ARF/RMF    
+        # Open useful values in ARF/RMF
         with fits.open( ARF_path ) as ARF_hdul:
             ARF_instr = ARF_hdul['SPECRESP'].header['INSTRUME']
-            
+
         with fits.open( RMF_path ) as RMF_hdul:
             RMF_header = RMF_hdul['MATRIX'].header
-        RMF_instr = RMF_header['INSTRUME'] 
+        RMF_instr = RMF_header['INSTRUME']
         DETCHANS = RMF_header['DETCHANS']
         NUMGRP = RMF_header['NAXIS2']
         if 'TLMIN4' in RMF_header:
@@ -3866,7 +3918,7 @@ if args.use_fits_format:
                 N_CHAN = [N_CHAN]
 
             # Add the values to the RMF
-            n_skip = 0 
+            n_skip = 0
             for f_chan, n_chan in zip(F_CHAN,N_CHAN):
 
                 if n_chan == 0:
@@ -3912,7 +3964,7 @@ if args.use_fits_format:
                          channels,
                          channel_energy_edges,
                          alpha, **kwargs)
-        
+
         # Add ARF and RMF for plotting
         Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
         Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]

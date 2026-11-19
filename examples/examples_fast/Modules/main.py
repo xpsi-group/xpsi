@@ -101,11 +101,7 @@ bounds = dict(distance = (0.5,2),
 
 spacetime = xpsi.Spacetime(bounds,
                            values=dict(frequency = 314.0),
-                           #star_shape="AGM_14"
                            )
-#Default star shape is an oblate spheroid from AlGendy & Morsink (2014, AGM_14)
-#But also a spherical star can be used with:
-#spacetime.star_shape = "sphere"
 
 # # Hot-spot
 bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),
@@ -136,7 +132,10 @@ photosphere = CustomPhotosphere(hot = hot_spot, elsewhere = None,
 
 
 # # Star
-star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+star = xpsi.Star(spacetime = spacetime, photospheres = photosphere, name='algendy')
+# Default star shape is an oblate spheroid from AlGendy & Morsink (2014, algendy)
+# But also a spherical star can be used with name='sphere'
+# Other tested and published universal relations are available, with e.g. name='j1614'
 
 # # Prior
 prior = CustomPrior()

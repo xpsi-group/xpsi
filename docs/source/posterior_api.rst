@@ -8,5 +8,5 @@ Posterior API
    posterior
    sample
    postprocessing
-   SBI_wrapper
+   WrapperSBI
    
