@@ -11,6 +11,8 @@ import matplotlib as _mpl
 from matplotlib.colors import LinearSegmentedColormap as _LinearSegmentedColormap
 from matplotlib.colors import BoundaryNorm as _BoundaryNorm
 from matplotlib.ticker import NullLocator as _NullLocator
+from matplotlib.ticker import NullFormatter as _NullFormatter
+from matplotlib.ticker import FuncFormatter as _FuncFormatter
 
 # Sequential (non-diverging) colormap with the look of matplotlib's 'PuOr':
 # light orange -> dark orange -> purple -> dark purple, built from PuOr's own
@@ -117,13 +119,15 @@ class ResidualPlot(SignalPlot):
                  mu=0.0,
                  sigma=1.0,
                  nbins=50,
+                 cluster_null_n=1000,
+                 cluster_null_random_seed=0,
                  analyse_residual_structure=False,
-                 structure_power_n_null=500,
+                 structure_power_n_null=1000,
                  structure_power_alpha=0.05,
                  structure_power_low_k_fraction=0.15,
                  structure_power_random_seed=0,
                  structure_variogram_max_lag=20,
-                 structure_variogram_n_null=500,
+                 structure_variogram_n_null=1000,
                  structure_variogram_alpha=0.05,
                  structure_variogram_random_seed=0,
                  structure_acf2d_max_lag=8,
@@ -191,6 +195,17 @@ class ResidualPlot(SignalPlot):
         :param float sigma:
              Standard deviation of the reference normal distribution (dashed
              line). Default 1, as expected for standardised residuals.
+
+        :param int cluster_null_n:
+             Number of Poisson realisations of the posterior-expected counts
+             used to build the noise-only reference of the cluster-size
+             distribution panel (``plot_clusters=True``).  Each realisation
+             is standardised and clustered exactly like the data.  Default
+             500; the smallest reportable p-value for the largest cluster is
+             ``1/(cluster_null_n+1)``.
+
+        :param int cluster_null_random_seed:
+             Seed for the cluster-size noise realisations (reproducibility).
 
         :param bool analyse_residual_structure:
              If ``True``, run six complementary 2D structure tests on the
@@ -325,6 +340,8 @@ class ResidualPlot(SignalPlot):
             self._nbins=nbins
             self._clusters_cmap = clusters_cmap
             self._clustdist_cmap = clustdist_cmap
+            self._cluster_null_n = cluster_null_n
+            self._cluster_null_random_seed = cluster_null_random_seed
 
             # Get the rows
             self._cluster_row = self._resid_row + 2
@@ -393,9 +410,13 @@ class ResidualPlot(SignalPlot):
             self._ax_rdist.xaxis.set_minor_locator(MultipleLocator(0.5))
             self._ax_rdist.set_xlabel('Residuals')
 
-            self._ax_cdist.set_title('Cluster sizes distribution')
-            self._ax_cdist.set_xlabel('Cluster sizes')
-            self._ax_cdist.tick_params(axis='y', labelright=True, labelleft=False)
+            self._ax_cdist.set_title(r'Distribution of cluster size $s$')
+            self._ax_cdist.set_xlabel(r'Cluster size $s$ [pixels]')
+            self._ax_cdist.set_ylabel(r'Number of clusters with size $\geq s$')
+            self._ax_cdist.yaxis.set_label_position('right')
+            self._ax_cdist.tick_params(axis='y', which='both',
+                                       labelright=True, labelleft=False,
+                                       right=True, left=False)
 
         if "yscale" in kwargs:
             self.yscale = kwargs.get("yscale")
@@ -503,11 +524,44 @@ class ResidualPlot(SignalPlot):
         """
         if not hasattr(self, '_residuals'):
             self._compute_residuals()
-        self._clusteresid = _np.abs( self._residuals ) >= self._threshlim
-        self._lw, self._num = self._wrap_phase_labels(
-            self._clusteresid, *_ndi_label(self._clusteresid))
+        self._clusteresid, self._lw, self._num = self._label_clusters(
+            self._residuals, self._threshlim)
         self._clustarea = _ndi_sum_labels(self._clusteresid, self._lw, index=_np.arange(self._lw.max() + 1))
         self._affectedarea = self._clustarea[self._lw]
+
+    @classmethod
+    def _label_clusters(cls, residuals, threshlim):
+        """ Label clusters of pixels with ``|residual| >= threshlim``.
+
+        Neighbours share an edge (4-connectivity); clusters touching across
+        the periodic phase boundary are merged
+        (:meth:`_wrap_phase_labels`).
+
+        :returns: ``(mask, labels, num)``: the boolean threshold mask, the
+            integer label of each pixel (0 for the background) and the
+            number of clusters.
+        """
+        mask = _np.abs(residuals) >= threshlim
+        labels, num = cls._wrap_phase_labels(mask, *_ndi_label(mask))
+        return mask, labels, num
+
+    def _compute_cluster_size_null(self):
+        """ Cluster sizes expected from counting noise alone.
+
+        Draws ``cluster_null_n`` Poisson realisations of the
+        posterior-expected counts, standardises each one like the data
+        (:meth:`_compute_residuals`) and clusters it like the data
+        (:meth:`_label_clusters`).  Stores the list of cluster-size arrays,
+        one per realisation, in ``self._cluster_null_sizes``.
+        """
+        rng = _np.random.default_rng(self._cluster_null_random_seed)
+        model = self.expected_counts
+        sqrt_model = _np.sqrt(model)
+        self._cluster_null_sizes = []
+        for _ in range(self._cluster_null_n):
+            resid = (model - rng.poisson(model)) / sqrt_model
+            _, labels, _ = self._label_clusters(resid, self._threshlim)
+            self._cluster_null_sizes.append(_np.bincount(labels.ravel())[1:])
 
     @staticmethod
     def _wrap_phase_labels(mask, labels, num):
@@ -837,7 +891,7 @@ class ResidualPlot(SignalPlot):
                            # mathtext braces clash with str.format: concatenate
                            r'Residuals $\left|(c_{ik}-d_{ik})/\sqrt{c_{ik}}\right|$ > '
                            + f'{self._threshlim}'),
-                          (self._clust_cb, 'Cluster sizes')):
+                          (self._clust_cb, r'Cluster size $s$')):
             cb.ax.set_frame_on(True)
             if cb is self._clust_cb and clust_discrete:
                 cb.ax.xaxis.set_minor_locator(_NullLocator())
@@ -854,8 +908,7 @@ class ResidualPlot(SignalPlot):
         computed yet. """
         if not hasattr(self, '_affectedarea'):
             self._compute_clusters()
-        vmaxarea =  _np.max( self._affectedarea )
-        
+
         # Residual distribution, on a density scale (independent of the
         # number of channel-phase pixels), over a range symmetric about 0
         flat = self._residuals.ravel()
@@ -903,14 +956,57 @@ class ResidualPlot(SignalPlot):
         self._ax_rdist.set_ylabel('Density')
         self._ax_rdist.legend(fontsize='x-small', frameon=False, loc='upper left')
 
-        totar = self._clustarea.flatten()
-        totar = totar.astype(int)
-        count_arr = _np.bincount(totar)
+        # Cluster-size distribution: cumulative number of clusters with size
+        # >= s, compared with the band expected from counting noise alone
+        if not hasattr(self, '_cluster_null_sizes'):
+            self._compute_cluster_size_null()
+        null_sizes = self._cluster_null_sizes
+        obs_sizes = self._clustarea[1:].astype(int)   # index 0 = background
+        obs_max = int(obs_sizes.max()) if obs_sizes.size else 0
+        null_max = _np.array([z.max() if z.size else 0 for z in null_sizes])
 
-        cdist = self._ax_cdist.step(np.linspace(0, vmaxarea.astype(int), len(count_arr)),
-                                      count_arr,
-                                      where='mid',
-                                      )
+        s_grid = _np.arange(1, max(obs_max, int(null_max.max()), 1) + 2)
+        def _ccdf(sizes):
+            return _np.count_nonzero(sizes[None, :] >= s_grid[:, None], axis=1)
+        null_ccdf = _np.array([_ccdf(z) for z in null_sizes])
+        q = _np.percentile(null_ccdf, [2.5, 16, 50, 84, 97.5], axis=0)
+
+        # One-sided p-value of the largest cluster (add-one corrected)
+        n_ge = int(_np.count_nonzero(null_max >= obs_max))
+        p_max = (n_ge + 1.0) / (len(null_sizes) + 1.0)
+        self.cluster_max_size = obs_max
+        self.cluster_max_pvalue = float(p_max)
+
+        ax = self._ax_cdist
+        ax.fill_between(s_grid, q[0], q[4], step='post', color='0.85',
+                        linewidth=0, label='noise 95%')
+        ax.fill_between(s_grid, q[1], q[3], step='post', color='0.65',
+                        linewidth=0, label='noise 68%')
+        ax.step(s_grid, q[2], where='post', color='0.3', linestyle='--',
+                linewidth=1, label='noise median')
+        ax.step(s_grid, _ccdf(obs_sizes), where='post', color=PuOr_seq(0.95),
+                linewidth=2, label='data')
+        if obs_max > 0:
+            p_str = (r'$\leq$' if n_ge == 0 else '= ') + f'{p_max:.2g}'
+            ax.axvline(obs_max, color=PuOr_seq(0.2), linestyle=':',
+                       linewidth=1.5,
+                       label=f'largest = {obs_max} (p {p_str})')
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+        ax.set_xlim(0.9, 1.3 * s_grid[-1])
+        # Plain-number size ticks; label minor ticks (2, 3, ...) only when
+        # the size range is narrow, where there are no other ticks
+        _int_ticks = _FuncFormatter(
+            lambda v, _: f'{v:g}' if (v >= 1 and float(v).is_integer()) else '')
+        ax.xaxis.set_major_formatter(_int_ticks)
+        ax.xaxis.set_minor_formatter(
+            _int_ticks if s_grid[-1] < 10 else _NullFormatter())
+        # Keep the curves in the lower ~55% of the (log) axis, leaving room
+        # for the legend above them
+        ybottom = 0.5
+        ycurves = max(q[4].max(), _ccdf(obs_sizes).max(), 1)
+        ax.set_ylim(ybottom, ybottom * (ycurves / ybottom) ** (1.0 / 0.55))
+        ax.legend(fontsize='x-small', frameon=False, loc='upper right')
 
     # -----------------------------------------------------------------------
     # 2-D residual structure analysis
