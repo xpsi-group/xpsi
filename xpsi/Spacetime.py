@@ -5,6 +5,20 @@ from xpsi.utils import make_verbose
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
+from xpsi.surface_radiation_field.effective_gravity_universal import (py_dimless_moment_of_inertia_i as dimless_moment_of_inertia_i,
+                                                             py_oblateness_func_o2 as oblateness_func_o2,
+                                                             py_beta1_coeff as beta1_coeff)
+
+
+def _normalise_key(name):
+    """Normalise user input for robust key matching."""
+    return " ".join(name.strip().lower().split())
+
+
+def _format_allowed(keys):
+    return ", ".join(sorted(keys))
+
+
 class Spacetime(ParameterSubspace):
     """ The ambient Schwarzschild spacetime and Earth coordinates.
 
@@ -22,10 +36,10 @@ class Spacetime(ParameterSubspace):
         no entry for a default parameter, no initial value will be specified,
         but an exception will be raised if there is also no bound specified.
 
-    :param string star_shape:
-        A string specifying the assumed shape of the star. Options 'AGM_14'
-        (an oblate spheroid from Algendy & Morsink 2014) or 'sphere' are
-        currently allowed.
+    The prescription used for stellar oblateness and effective surface
+    gravity is set with the ``name`` argument of :class:`~.Star.Star`, and
+    can be read from :attr:`obl_surfgrav`. It is ``'universal'``
+    (AlGendy & Morsink 2014) until a :class:`~.Star.Star` sets it.
 
     We define a property for parameters and combinations of parameters to
     shortcut access, given that this subspace is passed to other subspaces
@@ -33,15 +47,59 @@ class Spacetime(ParameterSubspace):
     characters than ``self[<name>]``.
 
     """
+
+    STAR_OBLATENESS_SURFGRAV_CANONICAL = {
+        "universal": 0,
+        "sphere": 1,
+        "psr j0030+0451": 2,
+        "psr j0740+6620": 3,
+        "psr j0437-4715": 4,
+        "psr j1231-1411": 5,
+        "psr j0614-3329": 6,
+        "psr j1614-2230": 7,}
+
+    # Reserved for relations whose coefficients are not implemented yet.
+    STAR_OBLATENESS_SURFGRAV_NOT_IMPLEMENTED = (
+        "psr j0030+0451",
+        "psr j0740+6620",
+        "psr j0437-4715",
+        "psr j0614-3329",)
+
+    # Relations without a moment of inertia and quadrupole coefficient, so
+    # the spin (a) and quadrupole (q) needed by the PhotospherePlotter are
+    # not available. The spherical star is only meant for comparison
+    # calculations with the Schwarzschild + Doppler approximation.
+    STAR_OBLATENESS_SURFGRAV_NO_SPIN_QUADRUPOLE = (
+        "sphere",
+        "psr j1231-1411",
+        "psr j1614-2230",)
+
+    # Aliases -> canonical key
+    STAR_OBLATENESS_SURFGRAV_ALIASES = {
+        # universal/AGM-type synonyms
+        "default": "universal",
+        "agm_14": "universal",
+        "algendy": "universal",
+        "morsink": "universal",
+        "universal relation": "universal",
+
+        # shorthand pulsar names
+        "j0030": "psr j0030+0451",
+        "j0740": "psr j0740+6620",
+        "j0437": "psr j0437-4715",
+        "j1231": "psr j1231-1411",
+        "j1614": "psr j1614-2230",}
+
     required_names = ['frequency',
                       'mass',
                       'radius',
                       'distance',
                       'cos_inclination']
 
-    def __init__(self, bounds, values, star_shape="AGM_14"):
+    def __init__(self, bounds, values):
 
-        self.star_shape = star_shape
+        # Default until a Star sets it (see Star.__init__).
+        self._set_obl_surfgrav('universal')
 
         if not isinstance(bounds, dict) or not isinstance(values, dict):
              raise TypeError("Both bounds and values need to be dictionaries.")
@@ -63,7 +121,7 @@ class Spacetime(ParameterSubspace):
         R = Parameter('radius',
                       strict_bounds = (1.0, 20.0),
                       bounds = bounds.get('radius', None),
-                      doc = 'Coordinate equatorial radius [km]',
+                      doc = 'Circumferential equatorial radius [km]',
                       symbol = r'$R_{\rm eq}$',
                       value = values.get('radius', None))
 
@@ -83,29 +141,61 @@ class Spacetime(ParameterSubspace):
 
         super(Spacetime, self).__init__(f, M, R, D, cosi)
 
+    @classmethod
+    def resolve_obl_surfgrav(cls, name):
+        """Resolve user-provided name/alias to (canonical_key, backend_index)."""
+        if not isinstance(name, str) or not name.strip():
+            raise TypeError("obl_surfgrav must be a non-empty string.")
+
+        key = _normalise_key(name)
+        key = cls.STAR_OBLATENESS_SURFGRAV_ALIASES.get(key, key)
+
+        allowed = _format_allowed(cls.available_obl_surfgrav())
+
+        try:
+            ind = cls.STAR_OBLATENESS_SURFGRAV_CANONICAL[key]
+        except KeyError as e:
+            raise ValueError(
+                f"Unknown oblateness and surface gravity for '{name}'. "
+                f"Allowed canonical keys: {allowed}") from e
+
+        if key in cls.STAR_OBLATENESS_SURFGRAV_NOT_IMPLEMENTED:
+            raise NotImplementedError(
+                f"The oblateness and surface-gravity relation for '{key}' "
+                f"is not implemented yet. Available: {allowed}")
+
+        return key, int(ind)
+
+    @classmethod
+    def available_obl_surfgrav(cls):
+        """ Get the names of the implemented prescriptions. """
+        return tuple(sorted(k for k in cls.STAR_OBLATENESS_SURFGRAV_CANONICAL
+                            if k not in cls.STAR_OBLATENESS_SURFGRAV_NOT_IMPLEMENTED))
+
+    def _set_obl_surfgrav(self, name):
+        """ Set the oblateness and surface-gravity prescription.
+
+        Only meant to be called by :class:`~.Star.Star`, which is where users
+        choose the prescription.
+
+        """
+        key, ind = self.resolve_obl_surfgrav(name)
+        self._obl_surfgrav = key
+        self._obl_surfgrav_ind = ind
+
     @property
-    def star_shape(self):
-        """ Get the the shape of the star. """
-        return self._star_shape
+    def obl_surfgrav(self):
+        """ Get the oblateness and surface-gravity prescription (read-only).
 
-    @star_shape.setter
-    def star_shape(self,star_shape):
-        """ Set the shape of the star. """
-        allowed_models = ["AGM_14","sphere"]
-        if star_shape not in allowed_models:
-            raise TypeError("Invalid star_shape option.")
-        self._star_shape = star_shape
-        self._star_shape_ind = allowed_models.index(star_shape)
+        Set it with the ``name`` argument of :class:`~.Star.Star`.
+
+        """
+        return self._obl_surfgrav
 
     @property
-    def star_shape_ind(self):
-        """ Get the the index of shape model. """
-        return self._star_shape_ind
-
-    @star_shape_ind.setter
-    def star_shape_ind(self,star_shape_ind):
-        """ Get the the index of shape model. """
-        self._star_shape_ind = star_shape_ind
+    def obl_surfgrav_ind(self):
+        """ Get the backend index of :attr:`obl_surfgrav` (read-only). """
+        return self._obl_surfgrav_ind
 
     @property
     def M(self):
@@ -124,7 +214,7 @@ class Spacetime(ParameterSubspace):
 
     @property
     def R(self):
-        """ Get the coordinate equatorial radius in SI. """
+        """ Get the circumferential equatorial radius in SI. """
         return self['radius'] * _km
 
     @property
@@ -190,7 +280,7 @@ class Spacetime(ParameterSubspace):
     def a(self):
         """ Get the spin parameter, first order in spin.
 
-        See AlGendy & Morsink (2014).
+        See AlGendy & Morsink (2014). a=J/(Mc)
 
         """
         try:
@@ -198,7 +288,8 @@ class Spacetime(ParameterSubspace):
         except AttributeError:
             zeta = self.zeta
 
-            I_dimless = _m.sqrt(zeta) * (1.136 - 2.53 * zeta + 5.6 * zeta * zeta)
+            # The returned i(x) already includes the factor sqrt(zeta).
+            I_dimless = dimless_moment_of_inertia_i(zeta, self._obl_surfgrav_ind)
 
             a = self.R * self.R * self.Omega * I_dimless / _c
 
@@ -219,17 +310,63 @@ class Spacetime(ParameterSubspace):
 
     @property
     def q(self):
-        """ Get the dimensionless mass quadrupole, second order in spin.
+        """ Get the quadrupole deviation parameter of the quasi-Kerr metric,
+        second order in spin.
 
-        See AlGendy & Morsink (2014).
+        This is not the star's quadrupole moment. It is the parameter that
+        measures how far the quadrupole differs from the Kerr value, called
+        epsilon in Glampedakis & Babak (2006, Eq. 2.7) and in Psaltis &
+        Johannsen (2012, Eq. 6). (It is unrelated to :attr:`epsilon`
+        below.) The star's quadrupole moment is then::
+
+            Q = -M (a^2 + q M^2)
+
+        so ``q = 0`` gives the Kerr quadrupole.
+
+        The value comes from the slow-rotation fits of AlGendy & Morsink
+        (2014)::
+
+            q = -q_AM + (4/3) beta - j^2
+
+        where
+
+        - ``q_AM = q2 * Omega_bar^2 / x^2`` is their dimensionless quadrupole
+          (Eq. 17). It is not coordinate invariant, and it is negative for
+          an oblate star.
+        - ``beta = beta1 * Omega_bar^2 * x`` (Eq. 19).
+        - ``j = a / r_g`` is the dimensionless spin.
+        - ``x`` is :attr:`zeta` and ``Omega_bar^2`` is :attr:`epsilon`.
+
+        ``q_AM - (4/3) beta`` is the coordinate-invariant (Geroch-Hansen)
+        quadrupole, divided by M^3. Subtracting ``j^2`` removes the Kerr
+        part, which the metric already contains.
+
+        Note the sign of the beta term. AlGendy & Morsink (2014, Eq. 18)
+        print ``q_inv = q_AM + (4/3) beta``, and Nattila & Pihajoki (2018,
+        Eq. 6) repeat it. Their own definitions of q_AM and beta, together
+        with Pappas & Apostolatos (2012, Eq. 11), give a minus sign. The
+        exact Kerr limit (q_AM = -2j^2/3, beta = j^2/4) confirms it:
+        q_AM - (4/3) beta = -j^2, the Kerr value, whereas the plus sign gives
+        -j^2/3. Do not "correct" the sign below to match the paper.
+
+        Three different "q" conventions appear in these papers:
+
+        - AlGendy & Morsink's q_AM is negative for an oblate star.
+        - Glampedakis & Babak's own q = -Q/M^3 = j^2 + epsilon
+          (their Eqs. 2.5 and 2.7) is positive.
+        - This property is the deviation epsilon, which is neither.
 
         """
         try:
             return self._q
         except AttributeError:
-             temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
-             temp -= self.a * self.a / (self.r_g * self.r_g)
-             return temp + 0.4554 * 4.0 * self.epsilon * self.zeta / 3.0
+            # -q_AM: q2 = -0.11 (AlGendy & Morsink 2014, Table 1)
+            temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
+            # -j^2, with j = a / r_g
+            temp -= self.a * self.a / (self.r_g * self.r_g)
+            # +(4/3) beta: minus the beta term of q_inv (see docstring)
+            return temp + beta1_coeff(self._obl_surfgrav_ind)* 4.0 * self.epsilon * self.zeta / 3.0
+
 
     @q.setter
     def q(self, q):

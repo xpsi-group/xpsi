@@ -37,4 +37,4 @@ cdef _RAY* alloc_RAY(double epsabs_ray,
 cdef void free_RAY(_RAY *const RAY) noexcept nogil
 
 cdef int RK(_RAY *const RAY,
-            const _GEOM *const GEOM) noexcept nogil
+            const _GEOM *const GEOM, int obl_surfgrav_ind) noexcept nogil

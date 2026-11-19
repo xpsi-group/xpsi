@@ -110,9 +110,7 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0), star_shape="AGM_14")
-#The star shape can also set to be spherical:
-#spacetime.star_shape = "sphere"
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
 
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
@@ -259,7 +257,10 @@ print('Time taken by photosphere loading =', done_original-start_original)
 
 photosphere['mode_frequency'] == spacetime['frequency']
 
-star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+star = xpsi.Star(spacetime = spacetime, photospheres = photosphere, name="algendy")
+# Default star shape is an oblate spheroid from AlGendy & Morsink (2014, algendy)
+# But also a spherical star can be used with name='sphere'
+# Other tested and published universal relations are available, with e.g. name='j1614'
 
 print("Parameters of the star:")
 print(star.params)

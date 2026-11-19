@@ -68,7 +68,7 @@ class CustomPrior(xpsi.Prior):
                                                                np.array([ref.R] * 2 ),
                                                                np.array([ref.zeta] * 2),
                                                                np.array([ref.epsilon] * 2),
-                                                               ref.star_shape)
+                                                               ref._obl_surfgrav_ind)
 
         for g in grav:
             if not 13.7 <= g <= 15.0:
