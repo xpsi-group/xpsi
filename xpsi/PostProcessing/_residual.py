@@ -121,6 +121,7 @@ class ResidualPlot(SignalPlot):
                  nbins=50,
                  cluster_null_n=1000,
                  cluster_null_random_seed=0,
+                 cluster_connectivity=8,
                  analyse_residual_structure=False,
                  structure_power_n_null=1000,
                  structure_power_alpha=0.05,
@@ -203,6 +204,14 @@ class ResidualPlot(SignalPlot):
              is standardised and clustered exactly like the data.  Default
              500; the smallest reportable p-value for the largest cluster is
              ``1/(cluster_null_n+1)``.
+
+        :param int cluster_connectivity:
+             Pixel connectivity used to group ``|residual| >= threshlim``
+             pixels into clusters: ``8`` (default) joins pixels sharing an
+             edge or a corner, so oblique structures stay in one cluster;
+             ``4`` joins pixels sharing an edge only.  Applied identically
+             to the data and to the noise realisations, including across the
+             periodic phase boundary.
 
         :param int cluster_null_random_seed:
              Seed for the cluster-size noise realisations (reproducibility).
@@ -294,6 +303,15 @@ class ResidualPlot(SignalPlot):
         if not parameters_vector is None:
             self.parameters_vector = parameters_vector
 
+        if cluster_connectivity not in (4, 8):
+            raise ValueError('cluster_connectivity must be 4 or 8.')
+
+        # Start from the default layout: the class attributes below are
+        # modified for this instance's figure and restored at the end of
+        # __init__, but an exception raised in between (e.g. in a notebook)
+        # would otherwise leave them modified and break the next instance
+        self._reset_layout()
+
         # Choose the rows for plotting
         self._data_row = 0
         self._model_row = 1 
@@ -342,6 +360,7 @@ class ResidualPlot(SignalPlot):
             self._clustdist_cmap = clustdist_cmap
             self._cluster_null_n = cluster_null_n
             self._cluster_null_random_seed = cluster_null_random_seed
+            self._cluster_connectivity = cluster_connectivity
 
             # Get the rows
             self._cluster_row = self._resid_row + 2
@@ -424,7 +443,14 @@ class ResidualPlot(SignalPlot):
             self.yscale = "log"
 
         # Restore sizes
-        cls = type(self)
+        self._reset_layout()
+
+        plt.close()
+
+    @classmethod
+    def _reset_layout(cls):
+        """ Reset the figure-layout class attributes to their defaults
+        (data, model and residual rows only). """
         cls.__rows__          = 3
         cls.__columns__       = 1
         cls.__ax_rows__       = 3
@@ -433,8 +459,6 @@ class ResidualPlot(SignalPlot):
         cls.__width_ratios__  = [50, 1] # second column for colorbars
         cls.__wspace__        = 0.025
         cls.__hspace__        = 0.125
-
-        plt.close()
 
     @make_verbose('ResidualPlot object iterating over samples',
                   'ResidualPlot object finished iterating')
@@ -518,31 +542,41 @@ class ResidualPlot(SignalPlot):
         background) and the per-pixel size of the cluster each pixel
         belongs to (``self._affectedarea``, 0 outside clusters).
 
-        Rotational phase is periodic, so clusters touching across the
-        phase boundary (last and first phase bins of the same channel) are
-        merged into a single cluster.
+        Pixels are grouped with ``cluster_connectivity`` (8 by default) and,
+        rotational phase being periodic, clusters touching across the phase
+        boundary are merged into a single cluster (see
+        :meth:`_label_clusters`).
         """
         if not hasattr(self, '_residuals'):
             self._compute_residuals()
         self._clusteresid, self._lw, self._num = self._label_clusters(
-            self._residuals, self._threshlim)
+            self._residuals, self._threshlim, self._cluster_connectivity)
         self._clustarea = _ndi_sum_labels(self._clusteresid, self._lw, index=_np.arange(self._lw.max() + 1))
         self._affectedarea = self._clustarea[self._lw]
 
     @classmethod
-    def _label_clusters(cls, residuals, threshlim):
+    def _label_clusters(cls, residuals, threshlim, connectivity=8):
         """ Label clusters of pixels with ``|residual| >= threshlim``.
 
-        Neighbours share an edge (4-connectivity); clusters touching across
-        the periodic phase boundary are merged
-        (:meth:`_wrap_phase_labels`).
+        This is the single definition of a cluster, used for both the data
+        and the noise realisations.
 
+        :param residuals: 2-D array (channel x phase) of standardised
+            residuals.
+        :param float threshlim: Threshold on ``|residual|``.
+        :param int connectivity: ``8`` joins pixels sharing an edge or a
+            corner; ``4`` joins pixels sharing an edge only.  Clusters
+            touching across the periodic phase boundary are merged with the
+            same connectivity (:meth:`_wrap_phase_labels`).
         :returns: ``(mask, labels, num)``: the boolean threshold mask, the
             integer label of each pixel (0 for the background) and the
             number of clusters.
         """
         mask = _np.abs(residuals) >= threshlim
-        labels, num = cls._wrap_phase_labels(mask, *_ndi_label(mask))
+        structure = _np.ones((3, 3), dtype=bool) if connectivity == 8 else None
+        labels, num = cls._wrap_phase_labels(
+            mask, *_ndi_label(mask, structure=structure),
+            connectivity=connectivity)
         return mask, labels, num
 
     def _compute_cluster_size_null(self):
@@ -560,24 +594,34 @@ class ResidualPlot(SignalPlot):
         self._cluster_null_sizes = []
         for _ in range(self._cluster_null_n):
             resid = (model - rng.poisson(model)) / sqrt_model
-            _, labels, _ = self._label_clusters(resid, self._threshlim)
+            _, labels, _ = self._label_clusters(resid, self._threshlim,
+                                                self._cluster_connectivity)
             self._cluster_null_sizes.append(_np.bincount(labels.ravel())[1:])
 
     @staticmethod
-    def _wrap_phase_labels(mask, labels, num):
+    def _wrap_phase_labels(mask, labels, num, connectivity=8):
         """ Merge cluster labels across the periodic phase boundary.
 
         :param mask: 2-D boolean array (channel x phase) of flagged pixels.
         :param labels: 2-D integer array of cluster labels for ``mask``
             (0 for the background), e.g. from :func:`scipy.ndimage.label`.
         :param int num: Number of clusters in ``labels``.
+        :param int connectivity: ``4``: a pixel in the last phase bin
+            touches the first phase bin of the same channel only; ``8``:
+            also of the adjacent channels (diagonal neighbours).  The
+            channel axis is not periodic.
         :returns: ``(labels, num)`` after merging every pair of clusters
-            that occupy the last and first phase bins of the same channel,
-            relabelled consecutively from 1 (0 remains the background).
+            touching across phase = 1 -> 0, relabelled consecutively from 1
+            (0 remains the background).
         """
-        # Clusters facing each other across phase = 1 -> 0, channel by channel
-        rows = _np.nonzero(mask[:, 0] & mask[:, -1])[0]
-        if rows.size == 0:
+        # Pairs of (channel at the last phase bin, channel at the first
+        # phase bin) that are both flagged and touch across the boundary
+        last, first = mask[:, -1], mask[:, 0]
+        pairs = [(i, i) for i in _np.nonzero(last & first)[0]]
+        if connectivity == 8:
+            pairs += [(i, i + 1) for i in _np.nonzero(last[:-1] & first[1:])[0]]
+            pairs += [(i + 1, i) for i in _np.nonzero(last[1:] & first[:-1])[0]]
+        if not pairs:
             return labels, num
 
         # Union-find over labels; a cluster can wrap on several channels
@@ -590,8 +634,8 @@ class ResidualPlot(SignalPlot):
                 k = parent[k]
             return k
 
-        for i in rows:
-            a, b = _root(labels[i, 0]), _root(labels[i, -1])
+        for i, j in pairs:
+            a, b = _root(labels[i, -1]), _root(labels[j, 0])
             if a != b:
                 parent[max(a, b)] = min(a, b)
 
