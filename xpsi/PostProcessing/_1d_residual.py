@@ -1,6 +1,6 @@
 from ._global_imports import *
 from ._signalplot import SignalPlot
-from scipy.stats import norm
+from scipy.stats import norm, kstest
 
 class Residual1DPlot(SignalPlot):
     """ Plot the count data, the posterior-expected count signal, and residuals.
@@ -38,13 +38,44 @@ class Residual1DPlot(SignalPlot):
     def __init__(self,
                  nbins=20,
                  plot_fit=False,
+                 mu=0.0,
+                 sigma=1.0,
                  parameters_vector=None,
                  **kwargs):
+        """
+        Constructor method for plotting the 1D residual distribution.
+
+        :param int nbins:
+             Number of histogram bins.
+
+        :param bool plot_fit:
+             Overlay a maximum-likelihood normal fitted to the residuals?
+
+        :param float mu:
+             Mean of the reference normal distribution (dashed line) drawn
+             over the histogram.  Default 0, as expected for standardised
+             residuals.  A one-sample Kolmogorov-Smirnov test of the residuals
+             against the reference is reported in the legend; its statistic
+             and p-value are stored in :attr:`residual_ref_ks_stat` and
+             :attr:`residual_ref_ks_pvalue`.
+
+        :param float sigma:
+             Standard deviation of the reference normal distribution.
+             Default 1, as expected for standardised residuals.
+
+        :param list parameters_vector:
+             List of model parameters to plot the residuals for.
+
+        :param kwargs:
+             Keyword arguments for :class:`SignalPlot`.
+        """
         super(Residual1DPlot, self).__init__(**kwargs)
 
         # Get the input parameters
         self._nbins = int( nbins )
         self._plot_fit = plot_fit
+        self._mu = mu
+        self._sigma = sigma
         if not parameters_vector is None:
             self.parameters_vector = parameters_vector
 
@@ -109,18 +140,41 @@ class Residual1DPlot(SignalPlot):
         self._residuals = self._residuals.flatten()
 
         # Plot them
-        self._ax_1d_residuals.hist(self._residuals, bins=self._nbins, density=True, alpha=0.5)
+        rdens, _, _ = self._ax_1d_residuals.hist(self._residuals, bins=self._nbins, density=True, alpha=0.5)
+
+        xmin, xmax = _np.min( self._residuals ) , _np.max( self._residuals )
+        x = _np.linspace(xmin, xmax, 400)
+        ytop = _np.max(rdens)
 
         # Add the fit if needed
         if self._plot_fit:
 
             mean,std=norm.fit( self._residuals )
-            xmin, xmax = _np.min( self._residuals ) , _np.max( self._residuals )
-            x = _np.linspace(xmin, xmax, 100)
             y = norm.pdf(x, mean, std)
+            ytop = max(ytop, _np.max(y))
             self._ax_1d_residuals.plot( x , y , label=r'Fitted Normal $\sigma=$'+f'{std:.3f}', color='darkblue' )
             self._ax_1d_residuals.axvline(mean, color='k', linestyle='dashed', linewidth=2, label=r'$\mu=$'+f'{mean:.5f}')
-            self._ax_1d_residuals.legend()
+
+        # Reference normal expected for well-modelled standardised residuals,
+        # with a one-sample KS test of the (unbinned) residuals against it.
+        # A frozen CDF is passed because scipy maps the string 'norm' to a
+        # function that does not accept loc/scale arguments.
+        ks_stat, ks_p = kstest(self._residuals,
+                               norm(loc=self._mu, scale=self._sigma).cdf)
+        self.residual_ref_ks_stat = float(ks_stat)
+        self.residual_ref_ks_pvalue = float(ks_p)
+        ks_p_str = f'{ks_p:.3f}' if ks_p >= 1e-3 else f'{ks_p:.1e}'
+        y_ref = norm.pdf(x, self._mu, self._sigma)
+        ytop = max(ytop, _np.max(y_ref))
+        self._ax_1d_residuals.plot(x, y_ref,
+                                   color='m', linewidth=2, linestyle='--',
+                                   label=(r'Reference $\mathcal{N}$('
+                                          + f'{self._mu:g}, {self._sigma:g}), '
+                                          + f'KS test p-value = {ks_p_str}'))
+
+        # Leave headroom above the histogram and curves for the legend
+        self._ax_1d_residuals.set_ylim(0.0, 1.5 * ytop)
+        self._ax_1d_residuals.legend(fontsize='small', frameon=False, loc='upper left')
 
 
         # Do the nice plotting

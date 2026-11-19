@@ -878,6 +878,11 @@ class ResidualPlot(SignalPlot):
                                  channel_edges[-1]])
         self._ax_clres.set_yscale(self.yscale)
 
+        # Repeat the channel axis (ticks and label) on the right, next to the
+        # cluster-size half; a secondary axis follows the parent's scale
+        self._ax_clres_right = self._ax_clres.secondary_yaxis('right')
+        self._ax_clres_right.set_ylabel('channel')
+
         # Horizontal colour bars above each half, titled by their label
         self._clres_cb = self._fig.colorbar(clust1, cax = self._ax_clres_cb,
                                       orientation='horizontal',
