@@ -25,3 +25,4 @@ dependencies:
         - lxml # For PostProcessing corner plots (PDF format)
         - esda  # For PostProcessing residual plots
         - libpysal   # For PostProcessing residual plots
+        - statsmodels   # For PostProcessing residual plots
