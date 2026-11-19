@@ -407,6 +407,7 @@ class ResidualPlot(SignalPlot):
                   'ResidualPlot object finished iterating')
     def execute(self, thetas, wrapper):
         """ Loop over posterior samples. """
+        self._check_not_reused()
         self._num_samples = thetas.shape[0]
 
         wrapped = wrapper(self, 'model_sum')
@@ -454,9 +455,23 @@ class ResidualPlot(SignalPlot):
         """ Get the estimated posterior expectation of the count numbers. """
         return self._model_sum / self._num_samples
 
+    def _check_not_reused(self):
+        """ Raise if this instance has already been plotted.
+
+        The figure is created once, in the constructor, and every run draws
+        onto it, so a second run would overlay a second set of curves and
+        reuse results stored by the first run.
+        """
+        if getattr(self, '_finalized', False):
+            raise RuntimeError(
+                'ResidualPlot instance has already been plotted; create a new '
+                'ResidualPlot instance for each plotting call (e.g. instantiate the '
+                'plot in the same notebook cell as the plotting call).')
+
     @make_verbose('ResidualPlot object finalizing',
                   'ResidualPlot object finalized')
     def finalize(self):
+        self._check_not_reused()
         self._add_data()
         self._add_expected_counts()
         self._add_residuals()
@@ -466,6 +481,7 @@ class ResidualPlot(SignalPlot):
             self._disp_distributions()
         if self._plot_pulse:
             self.add_pulses()
+        self._finalized = True
 
     def _compute_residuals(self):
         """ Compute and store the standardised residuals

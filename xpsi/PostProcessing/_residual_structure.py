@@ -170,6 +170,7 @@ class ResidualStructurePlot(SignalPlot):
                   'ResidualStructurePlot object finished iterating')
     def execute(self, thetas, wrapper):
         """ Loop over posterior samples. """
+        self._check_not_reused()
         self._num_samples = thetas.shape[0]
 
         wrapped = wrapper(self, 'model_sum')
@@ -205,12 +206,27 @@ class ResidualStructurePlot(SignalPlot):
         """ Get the estimated posterior expectation of the count numbers. """
         return self._model_sum / self._num_samples
 
+    def _check_not_reused(self):
+        """ Raise if this instance has already been plotted.
+
+        The figure is created once, in the constructor, and every run draws
+        onto it, so a second run would overlay a second set of curves and
+        reuse results stored by the first run.
+        """
+        if getattr(self, '_finalized', False):
+            raise RuntimeError(
+                'ResidualStructurePlot instance has already been plotted; create a new '
+                'ResidualStructurePlot instance for each plotting call (e.g. instantiate the '
+                'plot in the same notebook cell as the plotting call).')
+
     @make_verbose('ResidualStructurePlot object finalizing',
                   'ResidualStructurePlot object finalized')
     def finalize(self):
+        self._check_not_reused()
         self._compute_residuals()
         self._run_structure_analysis()
         self._draw_diagnostics()
+        self._finalized = True
 
     def _compute_residuals(self):
         """ Compute and store the standardised residuals
