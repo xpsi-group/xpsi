@@ -1,10 +1,25 @@
 from pylab import *
 from ._global_imports import *
-from scipy.ndimage import measurements, gaussian_filter
+from scipy.ndimage import gaussian_filter
+from scipy.ndimage import label as _ndi_label
+from scipy.ndimage import sum_labels as _ndi_sum_labels
 from scipy import stats as _stats
 from ._signalplot import SignalPlot
 from matplotlib.patches import Patch as Patch
 from matplotlib.lines import Line2D as Line2D
+import matplotlib as _mpl
+from matplotlib.colors import LinearSegmentedColormap as _LinearSegmentedColormap
+
+# Sequential (non-diverging) colormap with the look of matplotlib's 'PuOr':
+# light orange -> dark orange -> purple -> dark purple, built from PuOr's own
+# colours but skipping its white centre, so lightness decreases monotonically.
+# Used by default for the cluster-size panel, whose values are non-negative.
+# Registered as 'PuOr_seq' so it can also be passed by name.
+PuOr_seq = _LinearSegmentedColormap.from_list(
+    'PuOr_seq',
+    ['#fdb863', '#e08214', '#b35806', '#8073ac', '#542788', '#2d004b'])
+if 'PuOr_seq' not in _mpl.colormaps:
+    _mpl.colormaps.register(PuOr_seq)
 
 # Optional heavy dependency for Moran's I – graceful fallback if absent
 try:
@@ -90,7 +105,7 @@ class ResidualPlot(SignalPlot):
                  blur_residuals=False,
                  plot_clusters=False,
                  threshlim=2.0,
-                 clusters_cmap='PuOr',
+                 clusters_cmap='PuOr_seq',
                  clustdist_cmap='PuOr',
                  mu=0.0,
                  sigma=1.0,
@@ -145,6 +160,12 @@ class ResidualPlot(SignalPlot):
 
         :param str clusters_cmap:
              Colormap name from :mod:`matplotlib` to use for cluster sizes.
+             Cluster sizes are non-negative, so a sequential colormap is
+             recommended. The default, ``'PuOr_seq'``, is a sequential
+             colormap with the colours of ``'PuOr'`` (light orange for small
+             clusters to dark purple for large ones), registered with
+             :mod:`matplotlib` by this module. Pixels outside any cluster are
+             left blank.
 
         :param str clustdist_cmap:
              Colormap name from :mod:`matplotlib` to use for cluster sizes distribution.
@@ -274,13 +295,21 @@ class ResidualPlot(SignalPlot):
             
             # Add more columns/rows
             cls = type(self)
+            # Two panel rows plus an (almost) empty spacer row before the
+            # cluster row: the spacer adds one extra inter-row gap there,
+            # leaving room for the horizontal colour bars above the panel.
+            # hspace is a fraction of the AVERAGE row height, which the
+            # spacer lowers, so it is rescaled to keep the other gaps at
+            # 0.35 panel heights.
+            n_panel_rows          = self._resid_row + 3
+            spacer                = 0.001
             cls.__rows__          += 2
-            cls.__ax_rows__       += 2
+            cls.__ax_rows__       += 3
             cls.__ax_columns__    += 3
-            cls.__height_ratios__ = [1] * cls.__ax_rows__
+            cls.__height_ratios__ = [1] * (self._resid_row + 1) + [spacer, 1, 1]
             cls.__width_ratios__  = [50, 1, 50, 1, 1] # second column for colorbars
             cls.__wspace__        = 0.1
-            cls.__hspace__        = 0.35
+            cls.__hspace__        = 0.35 * (n_panel_rows + 1) / (n_panel_rows + spacer)
 
             # Add parameters to plots
             self._threshlim = threshlim
@@ -291,8 +320,8 @@ class ResidualPlot(SignalPlot):
             self._clustdist_cmap = clustdist_cmap
 
             # Get the rows
-            self._cluster_row = self._resid_row + 1
-            self._clustdist_row = self._resid_row + 2 
+            self._cluster_row = self._resid_row + 2
+            self._clustdist_row = self._resid_row + 3
 
         # Generate the axes for plotting
         self._get_figure()
@@ -330,15 +359,18 @@ class ResidualPlot(SignalPlot):
         if self._plot_clusters:
 
             # Generate axes
-            self._ax_clres = self._fig.add_subplot(self._gs[self._cluster_row,:2])
-            self._ax_clust = self._fig.add_subplot(self._gs[self._cluster_row,2:-1], sharex = self._ax_clres)
-            self._ax_clust_cb = self._fig.add_subplot(self._gs[self._cluster_row,-1])
+            # A single axis spanning the same columns as the panels above:
+            # |residuals| > threshlim over phases [0, 1], cluster sizes over
+            # [1, 2].  Each half gets a horizontal colour bar above it.
+            self._ax_clres = self._fig.add_subplot(self._gs[self._cluster_row,:-1])
+            self._ax_clres_cb = self._ax_clres.inset_axes([0.05, 1.04, 0.40, 0.05])
+            self._ax_clust_cb = self._ax_clres.inset_axes([0.55, 1.04, 0.40, 0.05])
             
             self._ax_rdist = self._fig.add_subplot(self._gs[self._clustdist_row, :2])
             self._ax_cdist = self._fig.add_subplot(self._gs[self._clustdist_row, 2:-1])
             
             # Prettify
-            for ax in (self._ax_data, self._ax_model, self._ax_clres, self._ax_clust):
+            for ax in (self._ax_data, self._ax_model, self._ax_clres):
                 ax.set_xlabel(r'$\phi$ [cycles]')
 
             for ax in (self._ax_data, self._ax_model):
@@ -347,12 +379,7 @@ class ResidualPlot(SignalPlot):
             self._ax_clres.set_ylabel('channel')
             self._ax_clres.xaxis.set_major_locator(MultipleLocator(0.2))
             self._ax_clres.xaxis.set_minor_locator(MultipleLocator(0.05))
-            self._ax_clres.set_xlim([0.0,1.0])
-            self._ax_clres.set_title(r'|residuals| > {}'.format(self._threshlim))
-
-            self._ax_clust.set_title('Cluster sizes') 
-            self._ax_clust.set_yticklabels([])
-            self._ax_clust.set_yticks([])
+            self._ax_clres.set_xlim([0.0,2.0])
             
             self._ax_rdist.set_title('Residual distribution')  
             self._ax_rdist.xaxis.set_major_locator(MultipleLocator(1.0))
@@ -466,8 +493,8 @@ class ResidualPlot(SignalPlot):
         if not hasattr(self, '_residuals'):
             self._compute_residuals()
         self._clusteresid = _np.abs( self._residuals ) >= self._threshlim
-        self._lw, self._num = measurements.label(self._clusteresid)
-        self._clustarea = measurements.sum(self._clusteresid, self._lw, index=arange(self._lw.max() + 1))
+        self._lw, self._num = _ndi_label(self._clusteresid)
+        self._clustarea = _ndi_sum_labels(self._clusteresid, self._lw, index=_np.arange(self._lw.max() + 1))
         self._affectedarea = self._clustarea[self._lw]
 
     def _set_vminmax(self):
@@ -716,29 +743,42 @@ class ResidualPlot(SignalPlot):
                                       rasterized = self._rasterized)
         clust1.set_edgecolor('face')
 
-        clust2 = self._ax_clust.pcolormesh(self._signal.data.phases,
+        # Mask pixels outside any cluster (size 0) so they are left blank,
+        # as in the |residuals| panel, and map sizes from 1 (single pixel)
+        # to the largest cluster.  max(..., 1) keeps vmin <= vmax when there
+        # is no cluster at all.
+        clust2 = self._ax_clres.pcolormesh(self._signal.data.phases + 1.0,
                                       channel_edges,
-                                      self._affectedarea,
+                                      _np.ma.masked_equal(self._affectedarea, 0),
                                       cmap = plt.get_cmap(self._clusters_cmap),
-                                      vmin = 0,
-                                      vmax = vmaxarea,
+                                      vmin = 1,
+                                      vmax = max(vmaxarea, 1),
                                       linewidth = 0,
                                       rasterized = self._rasterized)
         clust2.set_edgecolor('face')
 
+        self._ax_clres.axvline(1.0, lw=self._tick_width, color='k')
         self._ax_clres.set_ylim([_np.max([channel_edges[0],0.001]),
                                  channel_edges[-1]])
         self._ax_clres.set_yscale(self.yscale)
-        self._ax_clust.set_ylim([_np.max([channel_edges[0],0.001]),
-                                 channel_edges[-1]])
 
-        self._clust_cb = self._fig.colorbar(clust2, cax = self._ax_clust_cb,
+        # Horizontal colour bars above each half, titled by their label
+        self._clres_cb = self._fig.colorbar(clust1, cax = self._ax_clres_cb,
+                                      orientation='horizontal',
                                       ticks=AutoLocator())
-        self._clust_cb.ax.set_frame_on(True)
-        self._clust_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
-
-        self._clust_cb.set_label(label=r'cluster sizes for |residuals| > {}'.format(self._threshlim),
-                                 labelpad=15)
+        self._clust_cb = self._fig.colorbar(clust2, cax = self._ax_clust_cb,
+                                      orientation='horizontal',
+                                      ticks=AutoLocator())
+        for cb, label in ((self._clres_cb,
+                           # mathtext braces clash with str.format: concatenate
+                           r'Residuals $\left|(c_{ik}-d_{ik})/\sqrt{c_{ik}}\right|$ > '
+                           + f'{self._threshlim}'),
+                          (self._clust_cb, 'Cluster sizes')):
+            cb.ax.set_frame_on(True)
+            cb.ax.xaxis.set_minor_locator(AutoMinorLocator())
+            cb.ax.xaxis.set_ticks_position('top')
+            cb.ax.xaxis.set_label_position('top')
+            cb.set_label(label=label, labelpad=8)
         
     def _disp_distributions(self):
         """ Display residual and cluster distributions in the fifth panel.
