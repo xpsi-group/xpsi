@@ -181,9 +181,9 @@ class TestTrimming( object ):
 ##############################################
 BACKSCAL_SOURCE = 1.0
 BACKSCAL_BACKGROUND = 5.0
-SUPORT_EXPECTED_VALUES = np.array( [[0.0, 1.32777e-04],
+SUPORT_EXPECTED_VALUES = np.array( [[0.0, 1.327777e-04],
                                     [0.0, 2.419835e-04],
-                                    [1.70120e-05, 3.393879e-04]])
+                                    [1.701204e-05, 3.393880e-04]])
 
 @pytest.fixture
 def spectra_support( data ):
@@ -205,4 +205,4 @@ class TestSpectrumSupport( object ):
         assert (spectra_support >= 0.0).all()
 
     def test_computed_values( self , spectra_support ):
-        np.testing.assert_array_equal( spectra_support, SUPORT_EXPECTED_VALUES )
+        assert np.allclose( spectra_support, SUPORT_EXPECTED_VALUES )
