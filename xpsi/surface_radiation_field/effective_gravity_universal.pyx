@@ -77,7 +77,7 @@ cdef double grav_sphere(double mu, double R_eq, double x, double epsilon) noexce
 cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double epsilon) noexcept nogil:
     """
     Calculate the effective surface gravity log-likelihood value based on the approximation from
-    AlGendy & Morsink (2014) (see Eq. 21 and Table 5 for coefficient values), or assuming a spherical
+    AlGendy & Morsink (2014) (see Eq. 50 and Table 4 and 5 for coefficient values), or assuming a spherical
     star.
 
     This function computes the logarithmic surface gravity (log10(g / g0)) for a rotating neutron star,
@@ -133,7 +133,7 @@ cdef double grav_j1231(double mu, double R_eq, double x, double epsilon) noexcep
     Compute the effective surface gravity for PSR J1231-1411 using
      tailored approximation.
 
-    The functional form follows AlGendy & Morsink (2014), Eq. 21, but
+    The functional form follows AlGendy & Morsink (2014), Eq. 50, but
     uses best-fit coefficients specifically calibrated for PSR J1231-1411.
     These coefficients were obtained using XXX (ask Lami).
 

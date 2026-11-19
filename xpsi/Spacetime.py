@@ -121,7 +121,7 @@ class Spacetime(ParameterSubspace):
         R = Parameter('radius',
                       strict_bounds = (1.0, 20.0),
                       bounds = bounds.get('radius', None),
-                      doc = 'Coordinate equatorial radius [km]',
+                      doc = 'Circumferential equatorial radius [km]',
                       symbol = r'$R_{\rm eq}$',
                       value = values.get('radius', None))
 
@@ -214,7 +214,7 @@ class Spacetime(ParameterSubspace):
 
     @property
     def R(self):
-        """ Get the coordinate equatorial radius in SI. """
+        """ Get the circumferential equatorial radius in SI. """
         return self['radius'] * _km
 
     @property
@@ -310,17 +310,63 @@ class Spacetime(ParameterSubspace):
 
     @property
     def q(self):
-        """ Get the dimensionless mass quadrupole, second order in spin.
+        """ Get the quadrupole deviation parameter of the quasi-Kerr metric,
+        second order in spin.
 
-        See AlGendy & Morsink (2014).
+        This is not the star's quadrupole moment. It is the parameter that
+        measures how far the quadrupole differs from the Kerr value, called
+        epsilon in Glampedakis & Babak (2006, Eq. 2.7) and in Psaltis &
+        Johannsen (2012, Eq. 6). (It is unrelated to :attr:`epsilon`
+        below.) The star's quadrupole moment is then::
+
+            Q = -M (a^2 + q M^2)
+
+        so ``q = 0`` gives the Kerr quadrupole.
+
+        The value comes from the slow-rotation fits of AlGendy & Morsink
+        (2014)::
+
+            q = -q_AM + (4/3) beta - j^2
+
+        where
+
+        - ``q_AM = q2 * Omega_bar^2 / x^2`` is their dimensionless quadrupole
+          (Eq. 17). It is not coordinate invariant, and it is negative for
+          an oblate star.
+        - ``beta = beta1 * Omega_bar^2 * x`` (Eq. 19).
+        - ``j = a / r_g`` is the dimensionless spin.
+        - ``x`` is :attr:`zeta` and ``Omega_bar^2`` is :attr:`epsilon`.
+
+        ``q_AM - (4/3) beta`` is the coordinate-invariant (Geroch-Hansen)
+        quadrupole, divided by M^3. Subtracting ``j^2`` removes the Kerr
+        part, which the metric already contains.
+
+        Note the sign of the beta term. AlGendy & Morsink (2014, Eq. 18)
+        print ``q_inv = q_AM + (4/3) beta``, and Nattila & Pihajoki (2018,
+        Eq. 6) repeat it. Their own definitions of q_AM and beta, together
+        with Pappas & Apostolatos (2012, Eq. 11), give a minus sign. The
+        exact Kerr limit (q_AM = -2j^2/3, beta = j^2/4) confirms it:
+        q_AM - (4/3) beta = -j^2, the Kerr value, whereas the plus sign gives
+        -j^2/3. Do not "correct" the sign below to match the paper.
+
+        Three different "q" conventions appear in these papers:
+
+        - AlGendy & Morsink's q_AM is negative for an oblate star.
+        - Glampedakis & Babak's own q = -Q/M^3 = j^2 + epsilon
+          (their Eqs. 2.5 and 2.7) is positive.
+        - This property is the deviation epsilon, which is neither.
 
         """
         try:
             return self._q
         except AttributeError:
-             temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
-             temp -= self.a * self.a / (self.r_g * self.r_g)
-             return temp + beta1_coeff(self._obl_surfgrav_ind)* 4.0 * self.epsilon * self.zeta / 3.0
+            # -q_AM: q2 = -0.11 (AlGendy & Morsink 2014, Table 1)
+            temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
+            # -j^2, with j = a / r_g
+            temp -= self.a * self.a / (self.r_g * self.r_g)
+            # +(4/3) beta: minus the beta term of q_inv (see docstring)
+            return temp + beta1_coeff(self._obl_surfgrav_ind)* 4.0 * self.epsilon * self.zeta / 3.0
+
 
     @q.setter
     def q(self, q):
