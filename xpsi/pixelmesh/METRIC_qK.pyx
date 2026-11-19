@@ -55,34 +55,354 @@ cdef extern from "math.h":
 ## Checked against 60-digit arithmetic: maximum relative error ~5e-16 for
 ## F1, F2 and both derivatives over 4 r_s < r < 1e6 r_s. Below 4 r_s the
 ## closed forms are kept; their double-precision error there is < 1e-12.
-## The series is evaluated in Horner form; coefficients are generated, not
-## typed by hand.
+## The series is evaluated in Horner form (as flat statements); coefficients
+## are generated, not typed by hand.
 
 cdef double _SERIES_SWITCH = 4.0
 
 cdef inline double _F1_series(double u) noexcept nogil:
-    return u*u*u*(-0.125 + u*(-0.1875 + u*(-0.22321428571428573 + u*(-0.24553571428571427 + u*(-0.2604166666666667 + u*(-0.2708333333333333 + u*(-0.2784090909090909 + u*(-0.2840909090909091 + u*(-0.28846153846153844 + u*(-0.2918956043956044 + u*(-0.29464285714285715 + u*(-0.296875 + u*(-0.29871323529411764 + u*(-0.3002450980392157 + u*(-0.30153508771929827 + u*(-0.3026315789473684 + u*(-0.30357142857142855 + u*(-0.30438311688311687 + u*(-0.3050889328063241 + u*(-0.30570652173913043 + u*(-0.30625 + u*(-0.30673076923076925 + u*(-0.3071581196581197 + u*(-0.30753968253968256 + u*(-0.3078817733990148 + u*(-0.3081896551724138 + u*(-0.3084677419354839 + u*(-0.3087197580645161 + u*(-0.30894886363636365 + u*(-0.3091577540106952 + u*(-0.30934873949579833 + u*(-0.30952380952380953 + u*(-0.3096846846846847 + u*(-0.30983285917496445 + u*(-0.3099696356275304 + u*(-0.31009615384615385 + u*(-0.31021341463414637 + u*(-0.31032229965156793))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef double p = -0.31032229965156793
+    p = -0.31021341463414637 + u*p
+    p = -0.31009615384615385 + u*p
+    p = -0.3099696356275304 + u*p
+    p = -0.30983285917496445 + u*p
+    p = -0.3096846846846847 + u*p
+    p = -0.30952380952380953 + u*p
+    p = -0.30934873949579833 + u*p
+    p = -0.3091577540106952 + u*p
+    p = -0.30894886363636365 + u*p
+    p = -0.3087197580645161 + u*p
+    p = -0.3084677419354839 + u*p
+    p = -0.3081896551724138 + u*p
+    p = -0.3078817733990148 + u*p
+    p = -0.30753968253968256 + u*p
+    p = -0.3071581196581197 + u*p
+    p = -0.30673076923076925 + u*p
+    p = -0.30625 + u*p
+    p = -0.30570652173913043 + u*p
+    p = -0.3050889328063241 + u*p
+    p = -0.30438311688311687 + u*p
+    p = -0.30357142857142855 + u*p
+    p = -0.3026315789473684 + u*p
+    p = -0.30153508771929827 + u*p
+    p = -0.3002450980392157 + u*p
+    p = -0.29871323529411764 + u*p
+    p = -0.296875 + u*p
+    p = -0.29464285714285715 + u*p
+    p = -0.2918956043956044 + u*p
+    p = -0.28846153846153844 + u*p
+    p = -0.2840909090909091 + u*p
+    p = -0.2784090909090909 + u*p
+    p = -0.2708333333333333 + u*p
+    p = -0.2604166666666667 + u*p
+    p = -0.24553571428571427 + u*p
+    p = -0.22321428571428573 + u*p
+    p = -0.1875 + u*p
+    p = -0.125 + u*p
+    return u*u*u*p
 
 cdef inline double _F2_series(double u) noexcept nogil:
-    return u*u*u*(0.125 + u*(0.15625 + u*(0.16071428571428573 + u*(0.15625 + u*(0.1488095238095238 + u*(0.140625 + u*(0.13257575757575757 + u*(0.125 + u*(0.11800699300699301 + u*(0.11160714285714286 + u*(0.10576923076923077 + u*(0.10044642857142858 + u*(0.09558823529411764 + u*(0.09114583333333333 + u*(0.08707430340557276 + u*(0.08333333333333333 + u*(0.07988721804511278 + u*(0.07670454545454546 + u*(0.07375776397515528 + u*(0.07102272727272728 + u*(0.06847826086956521 + u*(0.06610576923076923 + u*(0.06388888888888888 + u*(0.061813186813186816 + u*(0.05986590038314176 + u*(0.05803571428571429 + u*(0.05631256952169077 + u*(0.0546875 + u*(0.0531524926686217 + u*(0.05170036764705882 + u*(0.05032467532467533 + u*(0.049019607843137254 + u*(0.04777992277992278 + u*(0.046600877192982455 + u*(0.04547817047817048 + u*(0.044407894736842105 + u*(0.04338649155722327 + u*(0.04241071428571429))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef double p = 0.04241071428571429
+    p = 0.04338649155722327 + u*p
+    p = 0.044407894736842105 + u*p
+    p = 0.04547817047817048 + u*p
+    p = 0.046600877192982455 + u*p
+    p = 0.04777992277992278 + u*p
+    p = 0.049019607843137254 + u*p
+    p = 0.05032467532467533 + u*p
+    p = 0.05170036764705882 + u*p
+    p = 0.0531524926686217 + u*p
+    p = 0.0546875 + u*p
+    p = 0.05631256952169077 + u*p
+    p = 0.05803571428571429 + u*p
+    p = 0.05986590038314176 + u*p
+    p = 0.061813186813186816 + u*p
+    p = 0.06388888888888888 + u*p
+    p = 0.06610576923076923 + u*p
+    p = 0.06847826086956521 + u*p
+    p = 0.07102272727272728 + u*p
+    p = 0.07375776397515528 + u*p
+    p = 0.07670454545454546 + u*p
+    p = 0.07988721804511278 + u*p
+    p = 0.08333333333333333 + u*p
+    p = 0.08707430340557276 + u*p
+    p = 0.09114583333333333 + u*p
+    p = 0.09558823529411764 + u*p
+    p = 0.10044642857142858 + u*p
+    p = 0.10576923076923077 + u*p
+    p = 0.11160714285714286 + u*p
+    p = 0.11800699300699301 + u*p
+    p = 0.125 + u*p
+    p = 0.13257575757575757 + u*p
+    p = 0.140625 + u*p
+    p = 0.1488095238095238 + u*p
+    p = 0.15625 + u*p
+    p = 0.16071428571428573 + u*p
+    p = 0.15625 + u*p
+    p = 0.125 + u*p
+    return u*u*u*p
 
 cdef inline double _rs_dF1dr_series(double u) noexcept nogil:
-    return -u*u*u*u*(-0.375 + u*(-0.75 + u*(-1.1160714285714286 + u*(-1.4732142857142858 + u*(-1.8229166666666667 + u*(-2.1666666666666665 + u*(-2.5056818181818183 + u*(-2.840909090909091 + u*(-3.173076923076923 + u*(-3.5027472527472527 + u*(-3.830357142857143 + u*(-4.15625 + u*(-4.4806985294117645 + u*(-4.803921568627451 + u*(-5.12609649122807 + u*(-5.447368421052632 + u*(-5.767857142857143 + u*(-6.087662337662338 + u*(-6.406867588932807 + u*(-6.725543478260869 + u*(-7.04375 + u*(-7.361538461538461 + u*(-7.6789529914529915 + u*(-7.996031746031746 + u*(-8.312807881773399 + u*(-8.629310344827585 + u*(-8.945564516129032 + u*(-9.261592741935484 + u*(-9.577414772727273 + u*(-9.893048128342246 + u*(-10.208508403361344 + u*(-10.523809523809524 + u*(-10.838963963963964 + u*(-11.153982930298719 + u*(-11.468876518218623 + u*(-11.783653846153847 + u*(-12.098323170731707 + u*(-12.412891986062718))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef double p = -12.412891986062718
+    p = -12.098323170731707 + u*p
+    p = -11.783653846153847 + u*p
+    p = -11.468876518218623 + u*p
+    p = -11.153982930298719 + u*p
+    p = -10.838963963963964 + u*p
+    p = -10.523809523809524 + u*p
+    p = -10.208508403361344 + u*p
+    p = -9.893048128342246 + u*p
+    p = -9.577414772727273 + u*p
+    p = -9.261592741935484 + u*p
+    p = -8.945564516129032 + u*p
+    p = -8.629310344827585 + u*p
+    p = -8.312807881773399 + u*p
+    p = -7.996031746031746 + u*p
+    p = -7.6789529914529915 + u*p
+    p = -7.361538461538461 + u*p
+    p = -7.04375 + u*p
+    p = -6.725543478260869 + u*p
+    p = -6.406867588932807 + u*p
+    p = -6.087662337662338 + u*p
+    p = -5.767857142857143 + u*p
+    p = -5.447368421052632 + u*p
+    p = -5.12609649122807 + u*p
+    p = -4.803921568627451 + u*p
+    p = -4.4806985294117645 + u*p
+    p = -4.15625 + u*p
+    p = -3.830357142857143 + u*p
+    p = -3.5027472527472527 + u*p
+    p = -3.173076923076923 + u*p
+    p = -2.840909090909091 + u*p
+    p = -2.5056818181818183 + u*p
+    p = -2.1666666666666665 + u*p
+    p = -1.8229166666666667 + u*p
+    p = -1.4732142857142858 + u*p
+    p = -1.1160714285714286 + u*p
+    p = -0.75 + u*p
+    p = -0.375 + u*p
+    return -u*u*u*u*p
 
 cdef inline double _rs_dF2dr_series(double u) noexcept nogil:
-    return -u*u*u*u*(0.375 + u*(0.625 + u*(0.8035714285714286 + u*(0.9375 + u*(1.0416666666666667 + u*(1.125 + u*(1.1931818181818181 + u*(1.25 + u*(1.2980769230769231 + u*(1.3392857142857142 + u*(1.375 + u*(1.40625 + u*(1.4338235294117647 + u*(1.4583333333333333 + u*(1.480263157894737 + u*(1.5 + u*(1.5178571428571428 + u*(1.5340909090909092 + u*(1.548913043478261 + u*(1.5625 + u*(1.575 + u*(1.5865384615384615 + u*(1.5972222222222223 + u*(1.6071428571428572 + u*(1.6163793103448276 + u*(1.625 + u*(1.6330645161290323 + u*(1.640625 + u*(1.6477272727272727 + u*(1.6544117647058822 + u*(1.6607142857142858 + u*(1.6666666666666667 + u*(1.6722972972972974 + u*(1.6776315789473684 + u*(1.6826923076923077 + u*(1.6875 + u*(1.6920731707317074 + u*(1.6964285714285714))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef double p = 1.6964285714285714
+    p = 1.6920731707317074 + u*p
+    p = 1.6875 + u*p
+    p = 1.6826923076923077 + u*p
+    p = 1.6776315789473684 + u*p
+    p = 1.6722972972972974 + u*p
+    p = 1.6666666666666667 + u*p
+    p = 1.6607142857142858 + u*p
+    p = 1.6544117647058822 + u*p
+    p = 1.6477272727272727 + u*p
+    p = 1.640625 + u*p
+    p = 1.6330645161290323 + u*p
+    p = 1.625 + u*p
+    p = 1.6163793103448276 + u*p
+    p = 1.6071428571428572 + u*p
+    p = 1.5972222222222223 + u*p
+    p = 1.5865384615384615 + u*p
+    p = 1.575 + u*p
+    p = 1.5625 + u*p
+    p = 1.548913043478261 + u*p
+    p = 1.5340909090909092 + u*p
+    p = 1.5178571428571428 + u*p
+    p = 1.5 + u*p
+    p = 1.480263157894737 + u*p
+    p = 1.4583333333333333 + u*p
+    p = 1.4338235294117647 + u*p
+    p = 1.40625 + u*p
+    p = 1.375 + u*p
+    p = 1.3392857142857142 + u*p
+    p = 1.2980769230769231 + u*p
+    p = 1.25 + u*p
+    p = 1.1931818181818181 + u*p
+    p = 1.125 + u*p
+    p = 1.0416666666666667 + u*p
+    p = 0.9375 + u*p
+    p = 0.8035714285714286 + u*p
+    p = 0.625 + u*p
+    p = 0.375 + u*p
+    return -u*u*u*u*p
 
 cdef inline long double _F1_series_l(long double u) noexcept nogil:
-    return u*u*u*((<long double>-1/<long double>8) + u*((<long double>-3/<long double>16) + u*((<long double>-25/<long double>112) + u*((<long double>-55/<long double>224) + u*((<long double>-25/<long double>96) + u*((<long double>-13/<long double>48) + u*((<long double>-49/<long double>176) + u*((<long double>-25/<long double>88) + u*((<long double>-15/<long double>52) + u*((<long double>-425/<long double>1456) + u*((<long double>-33/<long double>112) + u*((<long double>-19/<long double>64) + u*((<long double>-325/<long double>1088) + u*((<long double>-245/<long double>816) + u*((<long double>-275/<long double>912) + u*((<long double>-23/<long double>76) + u*((<long double>-17/<long double>56) + u*((<long double>-375/<long double>1232) + u*((<long double>-1235/<long double>4048) + u*((<long double>-225/<long double>736) + u*((<long double>-49/<long double>160) + u*((<long double>-319/<long double>1040) + u*((<long double>-575/<long double>1872) + u*((<long double>-155/<long double>504) + u*((<long double>-125/<long double>406) + u*((<long double>-143/<long double>464) + u*((<long double>-153/<long double>496) + u*((<long double>-1225/<long double>3968) + u*((<long double>-435/<long double>1408) + u*((<long double>-925/<long double>2992) + u*((<long double>-589/<long double>1904) + u*((<long double>-13/<long double>42) + u*((<long double>-275/<long double>888) + u*((<long double>-3485/<long double>11248) + u*((<long double>-1225/<long double>3952) + u*((<long double>-129/<long double>416) + u*((<long double>-407/<long double>1312) + u*((<long double>-1425/<long double>4592)))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef long double p = (<long double>-1425/<long double>4592)
+    p = (<long double>-407/<long double>1312) + u*p
+    p = (<long double>-129/<long double>416) + u*p
+    p = (<long double>-1225/<long double>3952) + u*p
+    p = (<long double>-3485/<long double>11248) + u*p
+    p = (<long double>-275/<long double>888) + u*p
+    p = (<long double>-13/<long double>42) + u*p
+    p = (<long double>-589/<long double>1904) + u*p
+    p = (<long double>-925/<long double>2992) + u*p
+    p = (<long double>-435/<long double>1408) + u*p
+    p = (<long double>-1225/<long double>3968) + u*p
+    p = (<long double>-153/<long double>496) + u*p
+    p = (<long double>-143/<long double>464) + u*p
+    p = (<long double>-125/<long double>406) + u*p
+    p = (<long double>-155/<long double>504) + u*p
+    p = (<long double>-575/<long double>1872) + u*p
+    p = (<long double>-319/<long double>1040) + u*p
+    p = (<long double>-49/<long double>160) + u*p
+    p = (<long double>-225/<long double>736) + u*p
+    p = (<long double>-1235/<long double>4048) + u*p
+    p = (<long double>-375/<long double>1232) + u*p
+    p = (<long double>-17/<long double>56) + u*p
+    p = (<long double>-23/<long double>76) + u*p
+    p = (<long double>-275/<long double>912) + u*p
+    p = (<long double>-245/<long double>816) + u*p
+    p = (<long double>-325/<long double>1088) + u*p
+    p = (<long double>-19/<long double>64) + u*p
+    p = (<long double>-33/<long double>112) + u*p
+    p = (<long double>-425/<long double>1456) + u*p
+    p = (<long double>-15/<long double>52) + u*p
+    p = (<long double>-25/<long double>88) + u*p
+    p = (<long double>-49/<long double>176) + u*p
+    p = (<long double>-13/<long double>48) + u*p
+    p = (<long double>-25/<long double>96) + u*p
+    p = (<long double>-55/<long double>224) + u*p
+    p = (<long double>-25/<long double>112) + u*p
+    p = (<long double>-3/<long double>16) + u*p
+    p = (<long double>-1/<long double>8) + u*p
+    return u*u*u*p
 
 cdef inline long double _F2_series_l(long double u) noexcept nogil:
-    return u*u*u*((<long double>1/<long double>8) + u*((<long double>5/<long double>32) + u*((<long double>9/<long double>56) + u*((<long double>5/<long double>32) + u*((<long double>25/<long double>168) + u*((<long double>9/<long double>64) + u*((<long double>35/<long double>264) + u*((<long double>1/<long double>8) + u*((<long double>135/<long double>1144) + u*((<long double>25/<long double>224) + u*((<long double>11/<long double>104) + u*((<long double>45/<long double>448) + u*((<long double>13/<long double>136) + u*((<long double>35/<long double>384) + u*((<long double>225/<long double>2584) + u*((<long double>1/<long double>12) + u*((<long double>85/<long double>1064) + u*((<long double>27/<long double>352) + u*((<long double>95/<long double>1288) + u*((<long double>25/<long double>352) + u*((<long double>63/<long double>920) + u*((<long double>55/<long double>832) + u*((<long double>23/<long double>360) + u*((<long double>45/<long double>728) + u*((<long double>125/<long double>2088) + u*((<long double>13/<long double>224) + u*((<long double>405/<long double>7192) + u*((<long double>7/<long double>128) + u*((<long double>145/<long double>2728) + u*((<long double>225/<long double>4352) + u*((<long double>31/<long double>616) + u*((<long double>5/<long double>102) + u*((<long double>99/<long double>2072) + u*((<long double>85/<long double>1824) + u*((<long double>175/<long double>3848) + u*((<long double>27/<long double>608) + u*((<long double>185/<long double>4264) + u*((<long double>19/<long double>448)))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef long double p = (<long double>19/<long double>448)
+    p = (<long double>185/<long double>4264) + u*p
+    p = (<long double>27/<long double>608) + u*p
+    p = (<long double>175/<long double>3848) + u*p
+    p = (<long double>85/<long double>1824) + u*p
+    p = (<long double>99/<long double>2072) + u*p
+    p = (<long double>5/<long double>102) + u*p
+    p = (<long double>31/<long double>616) + u*p
+    p = (<long double>225/<long double>4352) + u*p
+    p = (<long double>145/<long double>2728) + u*p
+    p = (<long double>7/<long double>128) + u*p
+    p = (<long double>405/<long double>7192) + u*p
+    p = (<long double>13/<long double>224) + u*p
+    p = (<long double>125/<long double>2088) + u*p
+    p = (<long double>45/<long double>728) + u*p
+    p = (<long double>23/<long double>360) + u*p
+    p = (<long double>55/<long double>832) + u*p
+    p = (<long double>63/<long double>920) + u*p
+    p = (<long double>25/<long double>352) + u*p
+    p = (<long double>95/<long double>1288) + u*p
+    p = (<long double>27/<long double>352) + u*p
+    p = (<long double>85/<long double>1064) + u*p
+    p = (<long double>1/<long double>12) + u*p
+    p = (<long double>225/<long double>2584) + u*p
+    p = (<long double>35/<long double>384) + u*p
+    p = (<long double>13/<long double>136) + u*p
+    p = (<long double>45/<long double>448) + u*p
+    p = (<long double>11/<long double>104) + u*p
+    p = (<long double>25/<long double>224) + u*p
+    p = (<long double>135/<long double>1144) + u*p
+    p = (<long double>1/<long double>8) + u*p
+    p = (<long double>35/<long double>264) + u*p
+    p = (<long double>9/<long double>64) + u*p
+    p = (<long double>25/<long double>168) + u*p
+    p = (<long double>5/<long double>32) + u*p
+    p = (<long double>9/<long double>56) + u*p
+    p = (<long double>5/<long double>32) + u*p
+    p = (<long double>1/<long double>8) + u*p
+    return u*u*u*p
 
 cdef inline long double _rs_dF1dr_series_l(long double u) noexcept nogil:
-    return -u*u*u*u*((<long double>-3/<long double>8) + u*((<long double>-3/<long double>4) + u*((<long double>-125/<long double>112) + u*((<long double>-165/<long double>112) + u*((<long double>-175/<long double>96) + u*((<long double>-13/<long double>6) + u*((<long double>-441/<long double>176) + u*((<long double>-125/<long double>44) + u*((<long double>-165/<long double>52) + u*((<long double>-1275/<long double>364) + u*((<long double>-429/<long double>112) + u*((<long double>-133/<long double>32) + u*((<long double>-4875/<long double>1088) + u*((<long double>-245/<long double>51) + u*((<long double>-4675/<long double>912) + u*((<long double>-207/<long double>38) + u*((<long double>-323/<long double>56) + u*((<long double>-1875/<long double>308) + u*((<long double>-25935/<long double>4048) + u*((<long double>-2475/<long double>368) + u*((<long double>-1127/<long double>160) + u*((<long double>-957/<long double>130) + u*((<long double>-14375/<long double>1872) + u*((<long double>-2015/<long double>252) + u*((<long double>-3375/<long double>406) + u*((<long double>-1001/<long double>116) + u*((<long double>-4437/<long double>496) + u*((<long double>-18375/<long double>1984) + u*((<long double>-13485/<long double>1408) + u*((<long double>-1850/<long double>187) + u*((<long double>-19437/<long double>1904) + u*((<long double>-221/<long double>21) + u*((<long double>-9625/<long double>888) + u*((<long double>-31365/<long double>2812) + u*((<long double>-45325/<long double>3952) + u*((<long double>-2451/<long double>208) + u*((<long double>-15873/<long double>1312) + u*((<long double>-7125/<long double>574)))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef long double p = (<long double>-7125/<long double>574)
+    p = (<long double>-15873/<long double>1312) + u*p
+    p = (<long double>-2451/<long double>208) + u*p
+    p = (<long double>-45325/<long double>3952) + u*p
+    p = (<long double>-31365/<long double>2812) + u*p
+    p = (<long double>-9625/<long double>888) + u*p
+    p = (<long double>-221/<long double>21) + u*p
+    p = (<long double>-19437/<long double>1904) + u*p
+    p = (<long double>-1850/<long double>187) + u*p
+    p = (<long double>-13485/<long double>1408) + u*p
+    p = (<long double>-18375/<long double>1984) + u*p
+    p = (<long double>-4437/<long double>496) + u*p
+    p = (<long double>-1001/<long double>116) + u*p
+    p = (<long double>-3375/<long double>406) + u*p
+    p = (<long double>-2015/<long double>252) + u*p
+    p = (<long double>-14375/<long double>1872) + u*p
+    p = (<long double>-957/<long double>130) + u*p
+    p = (<long double>-1127/<long double>160) + u*p
+    p = (<long double>-2475/<long double>368) + u*p
+    p = (<long double>-25935/<long double>4048) + u*p
+    p = (<long double>-1875/<long double>308) + u*p
+    p = (<long double>-323/<long double>56) + u*p
+    p = (<long double>-207/<long double>38) + u*p
+    p = (<long double>-4675/<long double>912) + u*p
+    p = (<long double>-245/<long double>51) + u*p
+    p = (<long double>-4875/<long double>1088) + u*p
+    p = (<long double>-133/<long double>32) + u*p
+    p = (<long double>-429/<long double>112) + u*p
+    p = (<long double>-1275/<long double>364) + u*p
+    p = (<long double>-165/<long double>52) + u*p
+    p = (<long double>-125/<long double>44) + u*p
+    p = (<long double>-441/<long double>176) + u*p
+    p = (<long double>-13/<long double>6) + u*p
+    p = (<long double>-175/<long double>96) + u*p
+    p = (<long double>-165/<long double>112) + u*p
+    p = (<long double>-125/<long double>112) + u*p
+    p = (<long double>-3/<long double>4) + u*p
+    p = (<long double>-3/<long double>8) + u*p
+    return -u*u*u*u*p
 
 cdef inline long double _rs_dF2dr_series_l(long double u) noexcept nogil:
-    return -u*u*u*u*((<long double>3/<long double>8) + u*((<long double>5/<long double>8) + u*((<long double>45/<long double>56) + u*((<long double>15/<long double>16) + u*((<long double>25/<long double>24) + u*((<long double>9/<long double>8) + u*((<long double>105/<long double>88) + u*((<long double>5/<long double>4) + u*((<long double>135/<long double>104) + u*((<long double>75/<long double>56) + u*((<long double>11/<long double>8) + u*((<long double>45/<long double>32) + u*((<long double>195/<long double>136) + u*((<long double>35/<long double>24) + u*((<long double>225/<long double>152) + u*((<long double>3/<long double>2) + u*((<long double>85/<long double>56) + u*((<long double>135/<long double>88) + u*((<long double>285/<long double>184) + u*((<long double>25/<long double>16) + u*((<long double>63/<long double>40) + u*((<long double>165/<long double>104) + u*((<long double>115/<long double>72) + u*((<long double>45/<long double>28) + u*((<long double>375/<long double>232) + u*((<long double>13/<long double>8) + u*((<long double>405/<long double>248) + u*((<long double>105/<long double>64) + u*((<long double>145/<long double>88) + u*((<long double>225/<long double>136) + u*((<long double>93/<long double>56) + u*((<long double>5/<long double>3) + u*((<long double>495/<long double>296) + u*((<long double>255/<long double>152) + u*((<long double>175/<long double>104) + u*((<long double>27/<long double>16) + u*((<long double>555/<long double>328) + u*((<long double>95/<long double>56)))))))))))))))))))))))))))))))))))))))
+    ## Horner evaluation, written as flat statements (deeply nested
+    ## parentheses exceed the Cython parser's recursion limit on Python 3.14).
+    cdef long double p = (<long double>95/<long double>56)
+    p = (<long double>555/<long double>328) + u*p
+    p = (<long double>27/<long double>16) + u*p
+    p = (<long double>175/<long double>104) + u*p
+    p = (<long double>255/<long double>152) + u*p
+    p = (<long double>495/<long double>296) + u*p
+    p = (<long double>5/<long double>3) + u*p
+    p = (<long double>93/<long double>56) + u*p
+    p = (<long double>225/<long double>136) + u*p
+    p = (<long double>145/<long double>88) + u*p
+    p = (<long double>105/<long double>64) + u*p
+    p = (<long double>405/<long double>248) + u*p
+    p = (<long double>13/<long double>8) + u*p
+    p = (<long double>375/<long double>232) + u*p
+    p = (<long double>45/<long double>28) + u*p
+    p = (<long double>115/<long double>72) + u*p
+    p = (<long double>165/<long double>104) + u*p
+    p = (<long double>63/<long double>40) + u*p
+    p = (<long double>25/<long double>16) + u*p
+    p = (<long double>285/<long double>184) + u*p
+    p = (<long double>135/<long double>88) + u*p
+    p = (<long double>85/<long double>56) + u*p
+    p = (<long double>3/<long double>2) + u*p
+    p = (<long double>225/<long double>152) + u*p
+    p = (<long double>35/<long double>24) + u*p
+    p = (<long double>195/<long double>136) + u*p
+    p = (<long double>45/<long double>32) + u*p
+    p = (<long double>11/<long double>8) + u*p
+    p = (<long double>75/<long double>56) + u*p
+    p = (<long double>135/<long double>104) + u*p
+    p = (<long double>5/<long double>4) + u*p
+    p = (<long double>105/<long double>88) + u*p
+    p = (<long double>9/<long double>8) + u*p
+    p = (<long double>25/<long double>24) + u*p
+    p = (<long double>15/<long double>16) + u*p
+    p = (<long double>45/<long double>56) + u*p
+    p = (<long double>5/<long double>8) + u*p
+    p = (<long double>3/<long double>8) + u*p
+    return -u*u*u*u*p
 
 # Quadrupole moment correction F(r) functions
 
