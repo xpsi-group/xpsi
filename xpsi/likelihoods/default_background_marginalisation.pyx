@@ -399,7 +399,9 @@ cdef int channelwise_background_marginalization(args a,
 
             dB = delta(B, &a)
             counter = 0
-            while not fabs(dB) <= epsilon*a.std and counter < 100:
+            # The limit on the number of iterations is only a safety limit: the
+            # search normally converges within a few iterations
+            while not fabs(dB) <= epsilon*a.std and counter < 1000:
 
                 # Update the bracket using the sign of the derivative at B
                 g = dlogL_dB(B, &a)
@@ -467,10 +469,10 @@ cdef int channelwise_background_marginalization(args a,
         # Locate the maximum within the integration limits: the log-likelihood
         # is concave in B, so if it still increases at the upper limit (or
         # already decreases at the lower limit), the maximum within the
-        # integration limits is at that limit. Evaluating A there keeps the
-        # integrand at most 1 (also if the Newton scheme did not converge),
-        # which avoids overflow in the GSL cquad error estimate (otherwise the
-        # integration may never finish).
+        # integration limits is at that limit. Otherwise, the maximum is inside
+        # the limits, at the best-fit B found above. Evaluating A at the maximum
+        # keeps the integrand at most 1, which avoids overflow in the GSL cquad
+        # error estimate (otherwise the integration may never finish).
         if dlogL_dB(upper, &a) >= 0.0:
             B_for_integrand = upper
         elif dlogL_dB(lower, &a) <= 0.0:
@@ -553,6 +555,12 @@ def eval_marginal_likelihood(double exposure_time,
 
     The references across the code are to Riley 2019 PhD thesis:
     https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a
+
+    The marginalisation follows Appendix B of the thesis. In addition, in the
+    search for the best-fit background count rate, the Newton iterations are
+    kept within an interval known to contain the maximum (and replaced by
+    bisection steps if they would leave it), which handles Newton steps that
+    overshoot below the lower limit of the background.
 
     :param double exposure_time:
         Exposure time in seconds by which to scale the expected count rate
