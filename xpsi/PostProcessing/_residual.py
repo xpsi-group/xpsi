@@ -69,18 +69,125 @@ class ResidualPlot(SignalPlot):
 
     .. image:: _static/_residualplot.png
 
+    Each instance draws one figure: create a new instance for each call of
+    :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that
+    has already been plotted raises a ``RuntimeError``).
+
     :param str data_cmap:
-         Colormap name from :mod:`matplotlib` to use for the data count numbers
-         over joint channel-phase intervals.
+         Colormap name from :mod:`matplotlib` to use for the data count
+         numbers over joint channel-phase intervals.
 
     :param str model_cmap:
-         Colormap name from :mod:`matplotlib` to use for the posterior-expected
-         count numbers over joint channel-phase intervals.
+         Colormap name from :mod:`matplotlib` to use for the
+         posterior-expected count numbers over joint channel-phase intervals.
 
     :param str residual_cmap:
-         Colormap name from :mod:`matplotlib` to use for the residuals between
-         the data and posterior-expected count numbers over joint
-         channel-phase intervals. A diverging colormap is recommended.
+         Colormap name from :mod:`matplotlib` to use for the standardised
+         residuals (residual panel and, with ``plot_clusters=True``, the
+         residuals above ``threshlim``). A diverging colormap is recommended.
+
+    :param list parameters_vector:
+         If given, the plot is made for this single vector of model parameter
+         values (in the order of the likelihood parameters) instead of for
+         posterior samples. :class:`~xpsi.PostProcessing.SignalPlotter` only
+         looks at the first plot passed for a posterior, so this then applies
+         to all plots passed together.
+
+    :param bool plot_pulse:
+         Add a top panel with the pulse profile (counts summed over channels)
+         of the data and of the posterior-expected signal, with a
+         posterior-predictive band (see ``n_realisation_per_sample``)?
+
+    :param tuple legend_pulse_coords:
+         Position of the legend of the pulse panel, passed to
+         :mod:`matplotlib` as ``bbox_to_anchor``. If not given, the best
+         location is chosen automatically.
+
+    :param int n_realisation_per_sample:
+         Number of Poisson realisations drawn from the pulse profile of each
+         posterior sample, to build the posterior-predictive band (16th to
+         84th percentiles) of the pulse panel (``plot_pulse=True``). If fewer
+         than 100 realisations are available in total (number of posterior
+         samples times this number), the band is instead the
+         posterior-expected pulse plus or minus its square root (Poisson
+         error).
+         Default 1.
+
+    :param bool blur_residuals:
+         Smooth the displayed residual map with a Gaussian filter? This only
+         affects the display; clusters and statistics use the unsmoothed
+         residuals.
+
+    :param bool plot_clusters:
+         Add the cluster panel and the distribution panels (residual
+         distribution and cluster-size distribution) described above? The
+         parameters ``threshlim``, ``clusters_cmap``, ``mu``, ``sigma``,
+         ``nbins``, ``cluster_null_n``, ``cluster_null_random_seed`` and
+         ``cluster_connectivity`` are only used if ``True``.
+
+    :param float threshlim:
+         Threshold on the absolute value of the standardised residuals:
+         pixels with ``|residual| >= threshlim`` are grouped into clusters.
+         Default 2.0.
+
+    :param str clusters_cmap:
+         Colormap name from :mod:`matplotlib` to use for the cluster sizes.
+         Cluster sizes are non-negative, so a sequential colormap is
+         recommended. The default, ``'PuOr_seq'``, is a sequential colormap
+         with the colours of ``'PuOr'`` (light orange for small clusters to
+         dark purple for large ones), registered with :mod:`matplotlib` by
+         this module. When all clusters are smaller than 7 pixels, the colour
+         bar is discrete, with one colour for each size from 1 to 6. Pixels
+         outside any cluster are left blank.
+
+    :param str clustdist_cmap:
+         Deprecated and ignored: the cluster-size distribution panel has no
+         colormap. Passing it issues a ``FutureWarning``; it will be removed
+         in a future release.
+
+    :param float mu:
+         Mean of the reference normal distribution (dashed line) drawn over
+         the residual distribution. Default 0, as expected for standardised
+         residuals. A maximum-likelihood normal fitted to the residuals is
+         always drawn as well (solid line); its parameters are stored in
+         :attr:`residual_fit_mu` and :attr:`residual_fit_sigma`. A one-sample
+         Kolmogorov-Smirnov test of the residuals against the reference
+         distribution is reported in the legend; its statistic and p-value are
+         stored in :attr:`residual_ref_ks_stat` and
+         :attr:`residual_ref_ks_pvalue`.
+
+    :param float sigma:
+         Standard deviation of the reference normal distribution (dashed
+         line). Default 1, as expected for standardised residuals.
+
+    :param int nbins:
+         Number of bins of the residual distribution histogram. The bins span
+         a range symmetric about zero. Default 50.
+
+    :param int cluster_null_n:
+         Number of Poisson realisations of the posterior-expected counts used
+         to build the noise-only reference of the cluster-size distribution
+         panel. Each realisation is standardised and clustered exactly like
+         the data. Default 1000; the smallest reportable p-value for the
+         largest cluster is ``1/(cluster_null_n+1)``. The size of the largest
+         cluster and its p-value are stored in :attr:`cluster_max_size` and
+         :attr:`cluster_max_pvalue`.
+
+    :param int cluster_null_random_seed:
+         Seed for the cluster-size noise realisations (reproducibility).
+
+    :param int cluster_connectivity:
+         Pixel connectivity used to group ``|residual| >= threshlim`` pixels
+         into clusters: ``8`` (default) joins pixels sharing an edge or a
+         corner, so oblique structures stay in one cluster; ``4`` joins
+         pixels sharing an edge only. Applied identically to the data and to
+         the noise realisations, including across the periodic phase
+         boundary.
+
+    :param kwargs:
+         Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,
+         ``fig_dir``, ``root_filename``), and ``yscale`` (``'log'`` by
+         default) for the channel axis of the channel-phase panels.
 
     """
 
@@ -125,93 +232,9 @@ class ResidualPlot(SignalPlot):
                  cluster_null_random_seed=0,
                  cluster_connectivity=8,
                  **kwargs):
-        """
-        Constructor method for plotting residuals.
+        """ Constructor method for plotting residuals.
 
-        :param str data_cmap:
-             Colormap name from :mod:`matplotlib` to use for the data count numbers
-             over joint channel-phase intervals.
-
-        :param str model_cmap:
-             Colormap name from :mod:`matplotlib` to use for the posterior-expected
-             count numbers over joint channel-phase intervals.
-
-        :param str residual_cmap:
-             Colormap name from :mod:`matplotlib` to use for the residuals between
-             the data and posterior-expected count numbers over joint
-             channel-phase intervals. A diverging colormap is recommended.
-
-        :param list parameters_vector:
-             List of model parameters to plot the residuals for.
-
-        :param bool plot_pulse:
-             Plot the pulse profile?
-
-        :param int n_realisation_per_sample:
-             Number of realisations to use to get the errorbars of the posterior predictive.
-
-        :param tuple legend_pulse_coords:
-             Coordinates for the legend of the pulse if plotted. If not given, will just use the best location.
-
-        :param bool blur_residuals:
-             Blur the residuals?
-
-        :param bool plot_clusters:
-             Plot cluster sizes and residual distribution?
-
-        :param float threshlim:
-             Threshold above which residuals are classified as clusters.
-
-        :param str clusters_cmap:
-             Colormap name from :mod:`matplotlib` to use for cluster sizes.
-             Cluster sizes are non-negative, so a sequential colormap is
-             recommended. The default, ``'PuOr_seq'``, is a sequential
-             colormap with the colours of ``'PuOr'`` (light orange for small
-             clusters to dark purple for large ones), registered with
-             :mod:`matplotlib` by this module. Pixels outside any cluster are
-             left blank.
-
-        :param str clustdist_cmap:
-             Deprecated and ignored: the cluster-size distribution panel has
-             no colormap.  Passing it issues a ``FutureWarning``; it will be
-             removed in a future release.
-
-        :param float mu:
-             Mean of the reference normal distribution (dashed line) drawn over
-             the residual distribution. Default 0, as expected for standardised
-             residuals. A maximum-likelihood normal fitted to the residuals is
-             always drawn as well (solid line); its parameters are stored in
-             :attr:`residual_fit_mu` and :attr:`residual_fit_sigma`. A
-             one-sample Kolmogorov-Smirnov test of the residuals against the
-             reference distribution is reported in the legend; its statistic
-             and p-value are stored in :attr:`residual_ref_ks_stat` and
-             :attr:`residual_ref_ks_pvalue`.
-
-        :param float sigma:
-             Standard deviation of the reference normal distribution (dashed
-             line). Default 1, as expected for standardised residuals.
-
-        :param int cluster_null_n:
-             Number of Poisson realisations of the posterior-expected counts
-             used to build the noise-only reference of the cluster-size
-             distribution panel (``plot_clusters=True``).  Each realisation
-             is standardised and clustered exactly like the data.  Default
-             1000; the smallest reportable p-value for the largest cluster is
-             ``1/(cluster_null_n+1)``.
-
-        :param int cluster_connectivity:
-             Pixel connectivity used to group ``|residual| >= threshlim``
-             pixels into clusters: ``8`` (default) joins pixels sharing an
-             edge or a corner, so oblique structures stay in one cluster;
-             ``4`` joins pixels sharing an edge only.  Applied identically
-             to the data and to the noise realisations, including across the
-             periodic phase boundary.
-
-        :param int cluster_null_random_seed:
-             Seed for the cluster-size noise realisations (reproducibility).
-
-        :param kwargs:
-             Keyword arguments for :class:`SignalPlot`.
+        See the class docstring for the parameters.
         """
         # The 2D structure tests moved to their own plot class; SignalPlot
         # silently ignores unknown keyword arguments, so fail loudly instead

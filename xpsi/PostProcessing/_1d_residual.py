@@ -3,19 +3,49 @@ from ._signalplot import SignalPlot
 from scipy.stats import norm, kstest
 
 class Residual1DPlot(SignalPlot):
-    """ Plot the count data, the posterior-expected count signal, and residuals.
+    """ Plot the distribution of the standardised residuals.
 
-    The figure contain one panel :
+    The figure contains one panel: the histogram (density) of the
+    standardised residuals :math:`(c_{ik}-d_{ik})/\\sqrt{c_{ik}}` between the
+    posterior-expected count signal :math:`c_{ik}` and the data :math:`d_{ik}`
+    over all joint channel-phase intervals, with a reference normal
+    distribution (by default N(0,1), dashed line) and the p-value of a
+    one-sample Kolmogorov-Smirnov test of the residuals against it, and
+    optionally a normal distribution fitted to the residuals.
 
-        * histogram of the standardised residuals between the
-          data and posterior-expected count signal over joint channel-phase
-          intervals.
+    Each instance draws one figure: create a new instance for each call of
+    :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that
+    has already been plotted raises a ``RuntimeError``).
 
-    The following example is (improved) from `Riley et al. 2019 <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_:
+    :param int nbins:
+         Number of histogram bins, spanning the range of the residuals.
+         Default 20.
 
-    .. image:: _static/_1d_residualplot.png
+    :param bool plot_fit:
+         Overlay a maximum-likelihood normal distribution fitted to the
+         residuals (solid line), with a dashed vertical line at its mean?
 
-    :param ... Todo
+    :param float mu:
+         Mean of the reference normal distribution (dashed line). Default 0,
+         as expected for standardised residuals. A one-sample
+         Kolmogorov-Smirnov test of the residuals against the reference is
+         reported in the legend; its statistic and p-value are stored in
+         :attr:`residual_ref_ks_stat` and :attr:`residual_ref_ks_pvalue`.
+
+    :param float sigma:
+         Standard deviation of the reference normal distribution. Default 1,
+         as expected for standardised residuals.
+
+    :param list parameters_vector:
+         If given, the plot is made for this single vector of model parameter
+         values (in the order of the likelihood parameters) instead of for
+         posterior samples. :class:`~xpsi.PostProcessing.SignalPlotter` only
+         looks at the first plot passed for a posterior, so this then applies
+         to all plots passed together.
+
+    :param kwargs:
+         Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,
+         ``fig_dir``, ``root_filename``).
 
     """
 
@@ -42,32 +72,9 @@ class Residual1DPlot(SignalPlot):
                  sigma=1.0,
                  parameters_vector=None,
                  **kwargs):
-        """
-        Constructor method for plotting the 1D residual distribution.
+        """ Constructor method for plotting the 1D residual distribution.
 
-        :param int nbins:
-             Number of histogram bins.
-
-        :param bool plot_fit:
-             Overlay a maximum-likelihood normal fitted to the residuals?
-
-        :param float mu:
-             Mean of the reference normal distribution (dashed line) drawn
-             over the histogram.  Default 0, as expected for standardised
-             residuals.  A one-sample Kolmogorov-Smirnov test of the residuals
-             against the reference is reported in the legend; its statistic
-             and p-value are stored in :attr:`residual_ref_ks_stat` and
-             :attr:`residual_ref_ks_pvalue`.
-
-        :param float sigma:
-             Standard deviation of the reference normal distribution.
-             Default 1, as expected for standardised residuals.
-
-        :param list parameters_vector:
-             List of model parameters to plot the residuals for.
-
-        :param kwargs:
-             Keyword arguments for :class:`SignalPlot`.
+        See the class docstring for the parameters.
         """
         super(Residual1DPlot, self).__init__(**kwargs)
 

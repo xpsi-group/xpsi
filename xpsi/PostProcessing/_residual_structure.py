@@ -56,11 +56,73 @@ class ResidualStructurePlot(SignalPlot):
           panel) and the verdict.
 
     This plot is independent of :class:`~xpsi.PostProcessing.ResidualPlot`.
-    Both use the posterior-expected counts, so passing them together for
-    the same posterior evaluates the model only once, e.g.::
+    Both use the posterior-expected counts, so they can be passed together
+    for the same posterior, e.g.::
 
         plots = {'ST': [xpsi.ResidualPlot(plot_clusters=True),
                         xpsi.ResidualStructurePlot()]}
+
+    They then use the same posterior samples, and with caching (the default
+    of :meth:`~xpsi.PostProcessing.SignalPlotter.plot`) the model is
+    evaluated only once for both.
+
+    Each instance draws one figure: create a new instance for each call of
+    :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that
+    has already been plotted raises a ``RuntimeError``).
+
+    :param str residual_cmap:
+         Colormap name from :mod:`matplotlib` to use for the residual
+         map panel. A diverging colormap is recommended.
+
+    :param list parameters_vector:
+         If given, the residuals are computed for this single vector of model
+         parameter values (in the order of the likelihood parameters) instead
+         of for posterior samples. :class:`~xpsi.PostProcessing.SignalPlotter`
+         only looks at the first plot passed for a posterior, so this then
+         applies to all plots passed together.
+
+    :param int structure_power_n_null:
+         Number of white-noise simulations used to calibrate the null
+         distribution of the 2D power spectrum test (test 1).  Default
+         1000; the smallest reportable p-value is ``1/(n_null+1)``.
+
+    :param float structure_power_alpha:
+         Significance level of the 2D power spectrum test, before the
+         internal Bonferroni factor of 2 over its two statistics.
+         Default 0.05.
+
+    :param float structure_power_low_k_fraction:
+         Radial-frequency cut (as a fraction of the Nyquist radius)
+         defining the low-k region for the smooth-structure statistic
+         of the 2D power spectrum test.  Default 0.15.
+
+    :param int structure_power_random_seed:
+         Seed for the power spectrum null simulations (reproducibility).
+
+    :param int structure_variogram_max_lag:
+         Maximum pixel lag used for the variogram test (test 2).
+         Default 20.
+
+    :param int structure_variogram_n_null:
+         Number of white-noise simulations used to calibrate the null
+         distribution of the variogram test.  Default 1000.
+
+    :param float structure_variogram_alpha:
+         Significance level of the variogram test, before the internal
+         Bonferroni factor of 2 over its two statistics.  Default 0.05.
+
+    :param int structure_variogram_random_seed:
+         Seed for the variogram null simulations (reproducibility).
+
+    :param int structure_acf2d_max_lag:
+         Maximum pixel lag along each axis for the 2D ACF scan (test 3).
+         Default 8.
+
+    :param kwargs:
+         Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,
+         ``fig_dir``, ``root_filename``), and ``yscale``
+         (``'log'`` by default) for the channel axis of the residual
+         map panel.
 
     """
 
@@ -93,57 +155,9 @@ class ResidualStructurePlot(SignalPlot):
                  structure_variogram_random_seed=0,
                  structure_acf2d_max_lag=8,
                  **kwargs):
-        """
-        Constructor method for the residual structure tests and their plot.
+        """ Constructor method for the residual structure tests and their plot.
 
-        :param str residual_cmap:
-             Colormap name from :mod:`matplotlib` to use for the residual
-             map panel. A diverging colormap is recommended.
-
-        :param list parameters_vector:
-             List of model parameters to compute the residuals for.
-
-        :param int structure_power_n_null:
-             Number of white-noise simulations used to calibrate the null
-             distribution of the 2D power spectrum test (test 1).  Default
-             1000; the smallest reportable p-value is ``1/(n_null+1)``.
-
-        :param float structure_power_alpha:
-             Significance level of the 2D power spectrum test, before the
-             internal Bonferroni factor of 2 over its two statistics.
-             Default 0.05.
-
-        :param float structure_power_low_k_fraction:
-             Radial-frequency cut (as a fraction of the Nyquist radius)
-             defining the low-k region for the smooth-structure statistic
-             of the 2D power spectrum test.  Default 0.15.
-
-        :param int structure_power_random_seed:
-             Seed for the power spectrum null simulations (reproducibility).
-
-        :param int structure_variogram_max_lag:
-             Maximum pixel lag used for the variogram test (test 2).
-             Default 20.
-
-        :param int structure_variogram_n_null:
-             Number of white-noise simulations used to calibrate the null
-             distribution of the variogram test.  Default 1000.
-
-        :param float structure_variogram_alpha:
-             Significance level of the variogram test, before the internal
-             Bonferroni factor of 2 over its two statistics.  Default 0.05.
-
-        :param int structure_variogram_random_seed:
-             Seed for the variogram null simulations (reproducibility).
-
-        :param int structure_acf2d_max_lag:
-             Maximum pixel lag along each axis for the 2D ACF scan (test 3).
-             Default 8.
-
-        :param kwargs:
-             Keyword arguments for :class:`SignalPlot`, and ``yscale``
-             (``'log'`` by default) for the channel axis of the residual
-             map panel.
+        See the class docstring for the parameters.
         """
         super(ResidualStructurePlot, self).__init__(**kwargs)
 
