@@ -17,12 +17,26 @@ class Star(ParameterSubspace):
     :param list photospheres: Each element must be an instance of
                               :class:`~.Photosphere`.
 
+    :param str name:
+        The prescription for the stellar oblateness and effective surface
+        gravity. Options are ``'universal'`` (AlGendy & Morsink 2014; the
+        default, also used when ``None``), ``'sphere'``, and the
+        pulsar-specific relations ``'psr j1231-1411'`` and
+        ``'psr j1614-2230'`` (see also the aliases in
+        :attr:`~.Spacetime.Spacetime.STAR_OBLATENESS_SURFGRAV_ALIASES`).
+        Only ``'universal'`` can be used with
+        :class:`~.PhotospherePlotter.PhotospherePlotter`.
+        The selected prescription is stored in the spacetime and can be read
+        from :attr:`~.Spacetime.Spacetime.obl_surfgrav`.
+
     """
-    def __init__(self, spacetime, photospheres):
+    def __init__(self, spacetime, photospheres, name='universal'):
         if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
 
         self._spacetime = spacetime
+
+        self._spacetime._set_obl_surfgrav('universal' if name is None else name)
 
         try:
             assert isinstance(photospheres, list)
