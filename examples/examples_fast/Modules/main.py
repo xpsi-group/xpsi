@@ -164,9 +164,9 @@ if __name__ == '__main__':
                       'nwalkers': 1000,                      # walkers per temperature
                       'ntemps': 2,                         # temperatures in the ladder
                       'nsteps': 2000,                       # iterations
-                      'burn_in':500,
+                      'burn_in':1000,
                       'adapt': True,                       # adapt the temperature ladder
-                      'checkpoint': 50,                    # flush output every 50 iterations
+                      'checkpoint': 100,                    # flush output every 50 iterations
                       'walker_dist_moments': None,
                       "init_mode": 'prior',
                       #"init_samples": '../Outputs/ST_live_1000_eff_0.3_seed0.txt',

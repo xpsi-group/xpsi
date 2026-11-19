@@ -5,7 +5,7 @@ from xpsi import _verbose
 try:
     import numpy as _numpy
     # ptemcee 1.0.0 still uses a couple of numpy names that are deprecated,
-    # so restore them (when absent) before importing ptemcee. 
+    # so restore them (when absent) before importing ptemcee.
     if not hasattr(_numpy, 'float'):
         _numpy.float = float
     if not hasattr(_numpy, 'trapz') and hasattr(_numpy, 'trapezoid'):
@@ -81,12 +81,16 @@ class PTEmceeSampler(_PTSampler):
 
     :param str root:
         File-root basename for output files, written as
-        ``<root_dir>/<root>.txt``, ``<root_dir>/<root>.npy`` (the
-        post-processable cold chain) and ``<root_dir>/<root>_ptemcee.npz``
+        ``<root_dir>/<root>.txt`` (the post-processable cold chain) and
+        ``<root_dir>/<root>_fullchain.npz``
         (the full temperature ladder, also used to resume).
 
     :param int checkpoint:
-        Flush output to disk every ``checkpoint`` iterations. Default is 100.
+        Flush output to disk every ``checkpoint`` iterations. At each
+        checkpoint the cold-chain posterior files hold all samples so far
+        (after burn-in and thinning), and ``<root>_current_walkers.npz``/``.txt``
+        are replaced with where every walker is at that iteration, at all
+        temperatures (``ntemps * nwalkers`` rows in the ``.txt``).
 
     :param bool progress:
         Display a :mod:`tqdm` progress bar over the iterations? Default is
@@ -118,8 +122,8 @@ class PTEmceeSampler(_PTSampler):
 
     :param init_samples:
         Posterior samples to initialise from, for ``init_mode='samples'``.
-        Either a path to a text (``.txt``/``.dat``) or ``.npy`` file, or an
-        array. Accepted layouts:
+        Either a path to a text (``.txt``/``.dat``), ``.npy`` or walkers
+        ``.npz`` file, or an array. Accepted layouts:
 
             * ``(nsamples, ndims + 2)``: X-PSI/MultiNest format, i.e. columns
               of sample weight, minus-two-log-likelihood, then the physical
@@ -127,8 +131,8 @@ class PTEmceeSampler(_PTSampler):
             * ``(nsamples, ndims)``: equally weighted parameter vectors (e.g.
               ``post_equal_weights.dat`` with its last column removed);
             * ``(ntemps, nwalkers, ndims)``: exact walker positions, e.g. a
-              ``<root>_initial_walkers.npy`` file saved by an earlier run, used
-              as is.
+              ``<root>_initial_walkers.npz`` or ``<root>_current_walkers.npz``
+              file saved by an earlier run, used as is.
 
         Parameter columns must be in the order of the likelihood parameters.
         Samples are drawn in proportion to their weights, without replacement
@@ -141,9 +145,10 @@ class PTEmceeSampler(_PTSampler):
         prior support. Default is ``0.0`` (start exactly on the samples).
 
     :param bool save_init:
-        Save the initial walker positions to ``<root_dir>/<root>_initial_walkers.npy``
-        (shape ``(ntemps, nwalkers, ndims)``, can be passed back as
-        ``init_samples``) and a readable ``<root_dir>/<root>_initial_walkers.txt``?
+        Save the initial walker positions to ``<root_dir>/<root>_initial_walkers.npz``
+        (array ``walkers`` of shape ``(ntemps, nwalkers, ndims)``, can be passed
+        back as ``init_samples``) and a readable
+        ``<root_dir>/<root>_initial_walkers.txt``?
         Default is ``False``.
 
     :param obj _posterior:
@@ -320,7 +325,15 @@ class PTEmceeSampler(_PTSampler):
             if not _os.path.isfile(samples):
                 raise IOError('Initial samples file ``%s`` not found.'
                               % samples)
-            if samples.endswith('.npy'):
+            if samples.endswith('.npz'):
+                with _np.load(samples) as data:
+                    if 'walkers' not in data.files:
+                        raise ValueError('``%s`` holds no ``walkers`` array: '
+                                         'pass a ``_initial_walkers.npz`` or '
+                                         '``_current_walkers.npz`` file.'
+                                         % samples)
+                    samples = data['walkers']
+            elif samples.endswith('.npy'):
                 samples = _np.load(samples)
             else:
                 samples = _np.loadtxt(samples)
@@ -408,43 +421,71 @@ class PTEmceeSampler(_PTSampler):
 
         return p0.reshape(shape)
 
+    def _walkers_path(self, which, ext):
+        """ Path to saved walker positions (``initial`` or ``current``). """
+        return self._root_dir + self._root + '_%s_walkers' % which + ext
+
     def _init_path(self, ext):
         """ Path to the saved initial walker positions. """
-        return self._root_dir + self._root + '_initial_walkers' + ext
+        return self._walkers_path('initial', ext)
 
-    def _save_initial(self):
-        """ Save the initial walker positions. """
-        self._atomic_write(self._init_path('.npy'),
-                           lambda f: _np.save(f, self._p0))
+    def _save_walkers(self, which, p, betas, label, iteration):
+        """ Save walker positions of shape ``(ntemps, nwalkers, ndims)``.
 
-        t, w = _np.meshgrid(_np.arange(self._ntemps),
-                            _np.arange(self._nwalkers), indexing = 'ij')
-        table = _np.column_stack((t.ravel(), w.ravel(),
-                                  self._p0.reshape(-1, self._ndims)))
+        Writes ``<root>_<which>_walkers.npz`` (arrays ``walkers``, ``betas``
+        and ``iteration``; usable as ``init_samples``) and a readable
+        ``<root>_<which>_walkers.txt`` with one row per walker: temperature
+        index (0 is the cold chain), walker index, then the parameters.
+
+        """
+        self._atomic_write(self._walkers_path(which, '.npz'),
+                           lambda f: _np.savez(f, walkers = p,
+                                               betas = _np.asarray(betas),
+                                               iteration = iteration))
+
+        ntemps, nwalkers, ndims = p.shape
+        t, w = _np.meshgrid(_np.arange(ntemps), _np.arange(nwalkers),
+                            indexing = 'ij')
+        table = _np.column_stack((t.ravel(), w.ravel(), p.reshape(-1, ndims)))
         try:
             names = ' '.join(self._likelihood.names)
         except Exception:
-            names = ' '.join('p%i' % i for i in range(self._ndims))
-        header = ('Initial walker positions, shape (ntemps=%i, nwalkers=%i, '
-                  'ndims=%i); betas: %s\ntemp_index walker_index %s'
-                  % (self._ntemps, self._nwalkers, self._ndims,
-                     ' '.join('%.6g' % b for b in self.betas), names))
-        fmt = ['%d', '%d'] + ['%.16e'] * self._ndims
-        self._atomic_write(self._init_path('.txt'),
+            names = ' '.join('p%i' % i for i in range(ndims))
+        header = ('%s, shape (ntemps=%i, nwalkers=%i, ndims=%i); betas: %s'
+                  '\ntemp_index walker_index %s'
+                  % (label, ntemps, nwalkers, ndims,
+                     ' '.join('%.6g' % b for b in betas), names))
+        fmt = ['%d', '%d'] + ['%.16e'] * ndims
+        self._atomic_write(self._walkers_path(which, '.txt'),
             lambda f: _np.savetxt(f, table, fmt = fmt, header = header))
 
+    def _save_initial(self):
+        """ Save the initial walker positions. """
+        self._save_walkers('initial', self._p0, self.betas,
+                           'Initial walker positions', 0)
         print('Initial walker positions saved to ``%s`` and ``%s``.'
-              % (self._init_path('.npy'), self._init_path('.txt')))
+              % (self._init_path('.npz'), self._init_path('.txt')))
 
     def _resume_path(self):
         """ Path to the full-ladder resume/diagnostics file. """
-        return self._root_dir + self._root + '_ptemcee.npz'
+        return self._root_dir + self._root + '_fullchain.npz'
+
+    # names of the full-chain file written by earlier versions
+    _legacy_fullchain = ('_ptemcee.npz', '_.npz')
 
     def _load_resume(self):
         """ Load the stored temperature ladder to resume from. """
         path = self._resume_path()
         if not _os.path.isfile(path):
-            raise RuntimeError('Cannot resume: no ``%s`` file found.' % path)
+            for ext in self._legacy_fullchain: # runs of earlier versions
+                old = self._root_dir + self._root + ext
+                if _os.path.isfile(old):
+                    print('Resuming from ``%s`` (earlier file name).' % old)
+                    path = old
+                    break
+            else:
+                raise RuntimeError('Cannot resume: no ``%s`` file found.'
+                                   % path)
 
         with _np.load(path) as _f:
             data = {key: _f[key] for key in _f.files}
@@ -453,7 +494,10 @@ class PTEmceeSampler(_PTSampler):
 
     def _archive_existing(self):
         """ Move any existing output for this root to a subdirectory. """
-        if not _os.path.isfile(self._resume_path()):
+        fullchain = ((self._resume_path(),) +
+                     tuple(self._root_dir + self._root + ext
+                           for ext in self._legacy_fullchain))
+        if not any(_os.path.isfile(f) for f in fullchain):
             return
 
         print('\nWarning: output for root ``%s`` exists '
@@ -472,8 +516,14 @@ class PTEmceeSampler(_PTSampler):
                                                        obj.minute,
                                                        obj.second)
 
-            for ext in ('_ptemcee.npz', '.txt', '.npy',
-                        '_initial_walkers.npy', '_initial_walkers.txt'):
+            # .npy entries and the earlier full-chain names: files written by
+            # earlier versions; archived so that, e.g., a stale <root>.npy is
+            # not picked up by post-processing
+            for ext in (('_fullchain.npz',) + self._legacy_fullchain +
+                        ('.txt', '.npy',
+                        '_initial_walkers.npz', '_initial_walkers.txt',
+                        '_current_walkers.npz', '_current_walkers.txt',
+                        '_initial_walkers.npy', '_current_walkers.npy')):
                 src = self._root_dir + self._root + ext
                 if _os.path.isfile(src):
                     _os.rename(src, (self._root_dir +
@@ -636,7 +686,7 @@ class PTEmceeSampler(_PTSampler):
         """ Write via a temporary file and atomically replace the target.
 
         The ``writer`` receives an open binary file handle (not a path) so
-        :func:`numpy.save` does not append a spurious ``.npy`` to the temporary
+        :func:`numpy.savez` does not append a spurious ``.npz`` to the temporary
         name and the replacement is seen by readers as a single atomic update.
 
         """
@@ -648,6 +698,12 @@ class PTEmceeSampler(_PTSampler):
     def _flush(self):
         """ Write the current state to disk (checkpoint). """
         chain, loglike, logprob = self._assemble()
+
+        # where every walker is now (all temperatures), replaced each time
+        if chain.shape[2] > 0:
+            self._save_walkers('current', chain[:, :, -1, :], self.betas,
+                               'Walker positions after iteration %i'
+                               % chain.shape[2], chain.shape[2])
 
         # full temperature ladder, for resuming and diagnostics
         self._atomic_write(self._resume_path(),
@@ -664,8 +720,6 @@ class PTEmceeSampler(_PTSampler):
         out = self._build_posterior_array(chain, loglike)
         self._atomic_write(self._root_dir + self._root + '.txt',
                            lambda f: _np.savetxt(f, out))
-        self._atomic_write(self._root_dir + self._root + '.npy',
-                           lambda f: _np.save(f, out))
 
     @property
     def posterior(self):
