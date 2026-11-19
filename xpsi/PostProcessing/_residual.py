@@ -154,7 +154,11 @@ class ResidualPlot(SignalPlot):
              the residual distribution. Default 0, as expected for standardised
              residuals. A maximum-likelihood normal fitted to the residuals is
              always drawn as well (solid line); its parameters are stored in
-             :attr:`residual_fit_mu` and :attr:`residual_fit_sigma`.
+             :attr:`residual_fit_mu` and :attr:`residual_fit_sigma`. A
+             one-sample Kolmogorov-Smirnov test of the residuals against the
+             reference distribution is reported in the legend; its statistic
+             and p-value are stored in :attr:`residual_ref_ks_stat` and
+             :attr:`residual_ref_ks_pvalue`.
 
         :param float sigma:
              Standard deviation of the reference normal distribution (dashed
@@ -768,11 +772,20 @@ class ResidualPlot(SignalPlot):
                             label=(r'Fitted normal ($\mu$=' + f'{fit_mu:.3f}, '
                                    + r'$\sigma$=' + f'{fit_sigma:.3f})'))
 
-        # Reference normal expected for well-modelled standardised residuals
+        # Reference normal expected for well-modelled standardised residuals,
+        # with a one-sample KS test of the (unbinned) residuals against it.
+        # A frozen CDF is passed because scipy maps the string 'norm' to a
+        # function that does not accept loc/scale arguments.
+        ks_stat, ks_p = _stats.kstest(
+            flat, _stats.norm(loc=self._mu, scale=self._sigma).cdf)
+        self.residual_ref_ks_stat = float(ks_stat)
+        self.residual_ref_ks_pvalue = float(ks_p)
+        ks_p_str = f'{ks_p:.3f}' if ks_p >= 1e-3 else f'{ks_p:.1e}'
         self._ax_rdist.plot(x, _stats.norm.pdf(x, self._mu, self._sigma),
                             color='m', linewidth=2, linestyle='--',
                             label=(r'Reference $\mathcal{N}$('
-                                   + f'{self._mu:g}, {self._sigma:g})'))
+                                   + f'{self._mu:g}, {self._sigma:g}), '
+                                   + f'KS test p-value = {ks_p_str}'))
 
         # Leave headroom above the histogram and curves for the legend
         ytop = max(_np.max(rdens),
@@ -781,7 +794,7 @@ class ResidualPlot(SignalPlot):
         self._ax_rdist.set_ylim(0.0, 1.5 * ytop)
 
         self._ax_rdist.set_ylabel('Density')
-        self._ax_rdist.legend(fontsize='small', frameon=False, loc='upper left')
+        self._ax_rdist.legend(fontsize='x-small', frameon=False, loc='upper left')
 
         totar = self._clustarea.flatten()
         totar = totar.astype(int)
