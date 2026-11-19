@@ -40,7 +40,8 @@ class ResidualPlot(SignalPlot):
           threshold, and the one on the right present the estimated cluster sizes from
           these residuals.
         * the second panel displays two figures: the one on the left is the residual distribution
-          compared with an optimal gaussian one, and the one on the right shows a distribution of
+          (density) with a fitted normal distribution and a reference normal distribution
+          (by default N(0,1)), and the one on the right shows a distribution of
           cluster sizes from residuals which have absolute values above the chosen threshold
 
     The following example is (improved) from `Riley et al. 2019 <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_:
@@ -149,10 +150,15 @@ class ResidualPlot(SignalPlot):
              Colormap name from :mod:`matplotlib` to use for cluster sizes distribution.
 
         :param float mu:
-             Mean for the optimal gaussian distribution to compare with the residuals.
+             Mean of the reference normal distribution (dashed line) drawn over
+             the residual distribution. Default 0, as expected for standardised
+             residuals. A maximum-likelihood normal fitted to the residuals is
+             always drawn as well (solid line); its parameters are stored in
+             :attr:`residual_fit_mu` and :attr:`residual_fit_sigma`.
 
         :param float sigma:
-             Standard deviation for the optimal gaussian distribution to compare with the residuals.
+             Standard deviation of the reference normal distribution (dashed
+             line). Default 1, as expected for standardised residuals.
 
         :param bool analyse_residual_structure:
              If ``True``, run six complementary 2D structure tests on the
@@ -747,26 +753,48 @@ class ResidualPlot(SignalPlot):
         vmaxresid =  _np.max( _np.abs( self._residuals ) )
         vmaxarea =  _np.max( self._affectedarea )
         
-        if _np.abs(_np.amin(self._residuals))< _np.abs(_np.amax(self._residuals)):
-            minabsresid=(-1.0)*_np.amax(self._residuals)
-            maxabsresid=_np.amax(self._residuals)
-        else:
-            minabsresid=_np.amin(self._residuals)
-            maxabsresid=(-1.0)*_np.amin(self._residuals)
-        
-        residhist, binhist =  _np.histogram(self._residuals, bins=self._nbins, range=[minabsresid, maxabsresid])
-        centphase = (binhist[:-1] + binhist[1:]) / 2
-        binsize = (maxabsresid-minabsresid)/(self._nbins)
-        scale=binsize*8640.0
-        f = 1/(self._sigma * _np.sqrt(2 * _np.pi)) * _np.exp( - (centphase - self._mu)**2 / (2 * self._sigma**2) )
+        # Residual distribution, on a density scale (independent of the
+        # number of channel-phase pixels), over a range symmetric about 0
+        flat = self._residuals.ravel()
+        amax = _np.max(_np.abs(flat))
+        rdens, _, _ = self._ax_rdist.hist(flat,
+                            bins=self._nbins,
+                            range=(-amax, amax),
+                            density=True,
+                            histtype='stepfilled',
+                            alpha=0.5,
+                            color='steelblue',
+                            label='Residuals')
+
+        # Maximum-likelihood normal fitted to the residuals
+        x = _np.linspace(-amax, amax, 400)
+        fit_mu, fit_sigma = _stats.norm.fit(flat)
+        self.residual_fit_mu = float(fit_mu)
+        self.residual_fit_sigma = float(fit_sigma)
+        self._ax_rdist.plot(x, _stats.norm.pdf(x, fit_mu, fit_sigma),
+                            color='darkblue', linewidth=2,
+                            label=(r'Fitted normal ($\mu$=' + f'{fit_mu:.3f}, '
+                                   + r'$\sigma$=' + f'{fit_sigma:.3f})'))
+
+        # Reference normal expected for well-modelled standardised residuals
+        self._ax_rdist.plot(x, _stats.norm.pdf(x, self._mu, self._sigma),
+                            color='m', linewidth=2, linestyle='--',
+                            label=(r'Reference $\mathcal{N}$('
+                                   + f'{self._mu:g}, {self._sigma:g})'))
+
+        # Leave headroom above the histogram and curves for the legend
+        ytop = max(_np.max(rdens),
+                   _np.max(_stats.norm.pdf(x, fit_mu, fit_sigma)),
+                   _np.max(_stats.norm.pdf(x, self._mu, self._sigma)))
+        self._ax_rdist.set_ylim(0.0, 1.5 * ytop)
+
+        self._ax_rdist.set_ylabel('Density')
+        self._ax_rdist.legend(fontsize='small', frameon=False, loc='upper left')
 
         totar = self._clustarea.flatten()
         totar = totar.astype(int)
         count_arr = _np.bincount(totar)
-        
-        rdist1 = self._ax_rdist.step(centphase, residhist)
-        rdist2 = self._ax_rdist.plot(centphase, f*scale, linewidth=2, color='m')
-        
+
         cdist = self._ax_cdist.step(np.linspace(0, vmaxarea.astype(int), len(count_arr)),
                                       count_arr,
                                       where='mid',
