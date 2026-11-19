@@ -389,13 +389,13 @@ class ResidualPlot(SignalPlot):
             self._ax_clres.xaxis.set_minor_locator(MultipleLocator(0.05))
             self._ax_clres.set_xlim([0.0,2.0])
             
-            self._ax_rdist.set_title('Residual distribution')  
+            # self._ax_rdist.set_title('Residual distribution')
             # At most ~8 "nice" ticks, whatever the residual range
             self._ax_rdist.xaxis.set_major_locator(MaxNLocator(nbins=8, steps=[1, 2, 2.5, 5, 10]))
             self._ax_rdist.xaxis.set_minor_locator(AutoMinorLocator())
             self._ax_rdist.set_xlabel('Residuals')
 
-            self._ax_cdist.set_title(r'Distribution of cluster size $s$')
+            # self._ax_cdist.set_title(r'Distribution of cluster size $s$')
             self._ax_cdist.set_xlabel(r'Cluster size $s$ [pixels]')
             self._ax_cdist.set_ylabel(r'Number of clusters with size $\geq s$')
             self._ax_cdist.yaxis.set_label_position('right')
@@ -978,6 +978,7 @@ class ResidualPlot(SignalPlot):
                             color='m', linewidth=2, linestyle='--',
                             label=(r'Reference $\mathcal{N}$('
                                    + f'{self._mu:g}, {self._sigma:g}), '
+                                   + '\n'
                                    + f'KS test p-value = {ks_p_str}'))
 
         # Leave headroom above the histogram and curves for the legend
