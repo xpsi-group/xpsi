@@ -159,7 +159,10 @@ cdef double delta(double B, void *params) noexcept nogil:
     # Loop over the phases to compute the first and second order derivative of likelihood with respect to background count rate
     # x is the second order derivative of likelihood with respect to background count rate (equation B.13)
     # y is the first order derivative of likelihood with respect to background count rate (equation B.12)
-    # Phase bins without observed counts do not contribute (and could otherwise give 0/0)
+    # Phase bins without observed counts are skipped: their data[j] / (star[j] + B)
+    # and data[j] / (star[j] + B)^2 terms are zero, but could give 0/0 if
+    # star[j] + B = 0. (The first derivative also has a -SCALE term from every phase
+    # bin, including these; together they give the T_exp term below.)
     for j in range(a.n):
         if a.data[j] > 0.0:
             y += a.data[j] / (a.star[j] + B)
@@ -191,7 +194,9 @@ cdef double dlogL_dB(double B, args *a) noexcept nogil:
 
     :returns:
         A `double` with the derivative. Phase bins without observed counts are
-        skipped, since they do not contribute (and could otherwise give 0/0).
+        skipped, since their data[j] / (star[j] + B) terms are zero (and could
+        otherwise give 0/0). The -SCALE terms of all phase bins, including
+        these, add up to the -T_exp term.
         If the expected count rate is not positive in a phase bin with observed
         counts, the likelihood increases towards larger B, and positive
         infinity is returned.
@@ -417,7 +422,8 @@ cdef int channelwise_background_marginalization(args a,
 
         # Compute the standard deviation assuming the likelihood is Gaussian
         # with respect to the background (see equation B.24 and B.13)
-        # Phase bins without observed counts do not contribute (and could otherwise give 0/0)
+        # Phase bins without observed counts are skipped: their
+        # data[j] / (star[j] + B)^2 terms are zero, but could give 0/0 if star[j] + B = 0
         std_est = 0.0
         for j in range(a.n):
             if a.data[j] > 0.0:
