@@ -18,18 +18,6 @@ class Params(object):
     def labels(self):
         return self._labels
 
-    @property
-    def short_labels(self):
-        """ Short labels (e.g., without units) for 2D panel annotations,
-            defaulting to the full labels where not specified. """
-        return self._short_labels
-
-    @property
-    def short_labels_defaulted(self):
-        """ Names of parameters whose short label defaulted to the full
-            label in at least one of the posteriors. """
-        return self._short_labels_defaulted
-
     def __len__(self):
         return len(self._names)
 
@@ -288,16 +276,9 @@ class PostProcessor(object):
 
         try:
             self._check_params('labels')
-            self._check_params('short_labels')
         except Exception:
             self._params = None
             raise
-
-        defaulted = set()
-        for posterior in self._subset:
-            defaulted.update(posterior.short_labels_defaulted)
-        self._params._short_labels_defaulted = [name for name in names
-                                                if name in defaulted]
 
     def _check_params(self, attrs):
         """ Check consistency of parameter information across posteriors. """

@@ -1,1 +1,0 @@
-Added optional ``plot_data_errors`` and ``plot_residuals`` arguments to ``plotBackgroundSpectrum`` in ``xpsi.utilities.BackgroundTools``, to show error bars on the data spectrum and a residuals panel. Errors are taken from ``data.errors`` when available and are otherwise Poissonian. Residuals are computed against the expected signal plus the background.
