@@ -1,0 +1,1 @@
+Added pulsar-specific relations for the stellar oblateness and effective surface gravity of PSR J1231-1411 and PSR J1614-2230, which can be chosen with the new ``name`` argument of ``Star`` (e.g. ``Star(..., name='j1614')``). These relations cannot yet be used with ``PhotospherePlotter``.
