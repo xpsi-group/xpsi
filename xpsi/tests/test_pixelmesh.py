@@ -138,13 +138,29 @@ def test_flux_equals_sum_of_cached_sky_map(uniform_image):
     assert np.array_equal(hit, cached)
 
 
+# Self-contained, so that it does not depend on xpsi.tests being importable.
 _QUADRUPOLE_SCRIPT = textwrap.dedent("""
     import numpy as np
     import xpsi
-    from xpsi.tests.test_pixelmesh import _star, _UniformStarPlotter
-    spacetime, photosphere = _star(frequency=600.0, cos_inclination=0.5)
+    spacetime = xpsi.Spacetime(bounds={}, values=dict(frequency=600.0, mass=1.4,
+                               radius=12.0, distance=0.2, cos_inclination=0.5))
+    everywhere = xpsi.Everywhere(time_invariant=True, bounds={},
+                                 values=dict(temperature=6.5),
+                                 sqrt_num_cells=32, num_rays=128)
+    photosphere = xpsi.Photosphere(hot=None, elsewhere=None, everywhere=everywhere,
+                                   values=dict(mode_frequency=600.0))
+    xpsi.Star(spacetime, photosphere).update()
     assert spacetime.q > 0.3  # AlGendy & Morsink quadrupole, about 0.40 here
-    plotter = _UniformStarPlotter(photosphere)
+
+    class Plotter(xpsi.PhotospherePlotter):
+        @property
+        def global_variables(self):
+            gv = np.zeros(16)
+            gv[2] = np.pi
+            gv[12] = 6.5
+            return gv
+
+    plotter = Plotter(photosphere)
     plotter.image(reimage=True, energies=np.array([1.0]),
                   phases=np.array([0.0]), sqrt_num_rays=200, threads=2,
                   max_steps=100000, epsrel_ray=1.0e-12)
@@ -154,15 +170,23 @@ _QUADRUPOLE_SCRIPT = textwrap.dedent("""
 """)
 
 
-def test_imaging_with_quadrupole_finishes():
+def test_imaging_with_quadrupole_finishes(tmp_path):
     """ A 600 Hz star (a = 651 m, q = 0.40) at i = 60 deg with 200 rays per
     ring: before the large-r series in METRIC_qK.pyx, one ray of this image
-    never finished. Takes about 10-20 s. """
+    never finished. Takes about 10-20 s.
+
+    The subprocess must import the same (compiled) xpsi as this process, not
+    the uncompiled source tree that would be found first if it ran in the
+    repository root. So it runs in a temporary directory, with the directory
+    containing this process's xpsi package put first on its path. """
     env = dict(os.environ)
+    xpsi_parent = os.path.dirname(os.path.dirname(os.path.abspath(xpsi.__file__)))
+    env["PYTHONPATH"] = os.pathsep.join(
+        [xpsi_parent] + [p for p in env.get("PYTHONPATH", "").split(os.pathsep) if p])
     try:
         proc = subprocess.run([sys.executable, "-c", _QUADRUPOLE_SCRIPT],
                               capture_output=True, text=True, timeout=300,
-                              env=env)
+                              env=env, cwd=tmp_path)
     except subprocess.TimeoutExpired:
         pytest.fail("Imaging a 600 Hz star with a quadrupole did not finish "
                     "within 300 s (see METRIC_qK.pyx, large-r series).")
