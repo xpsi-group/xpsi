@@ -376,7 +376,11 @@ class CornerPlotter(PostProcessor):
             names.
 
         :param bool labels_2D:
-            Display parameter labels on 2D panels?
+            Display parameter labels on the off-diagonal 2D panels? The
+            annotations use the ``short_labels`` (e.g., labels without units)
+            passed to :meth:`~.Runs.load_runs`, so that they fit within the
+            panels. Parameters without a short label default to their full
+            label from ``labels``, and a message is printed listing them.
 
         :param bool crosshairs:
             Display parameter truth crosshairs?
@@ -585,12 +589,18 @@ class CornerPlotter(PostProcessor):
             plotter.legend.set_frame_on(legend_frameon)
 
         params = self.params
+        if labels_2D and params.short_labels_defaulted:
+            _warning('labels_2D=True: no short_labels given for parameter(s) '
+                     '%s; using their full labels, which may overflow the 2D '
+                     'panels. Pass short_labels={name: label} to '
+                     'Runs.load_runs() to set shorter labels.'
+                     % ', '.join(params.short_labels_defaulted))
         for j in range(len(params.names)):
                 for i in range(j,len(params.names)):
                     ax = plotter.subplots[i,j]
                     ax.xaxis.set_minor_locator(AutoMinorLocator())
                     if (i != j) and labels_2D:
-                        ax.text(0.05, 0.95, fr'${params.labels[i]}$ - ${params.labels[j]}$', transform=ax.transAxes, ha='left', va='top')
+                        ax.text(0.05, 0.95, fr'${params.short_labels[i]}$ - ${params.short_labels[j]}$', transform=ax.transAxes, ha='left', va='top')
                 for i in range(j):
                     ax = plotter.subplots[j,i]
                     ax.yaxis.set_minor_locator(AutoMinorLocator())

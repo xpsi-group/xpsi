@@ -1,1 +1,0 @@
-The "Post-processing", "Modeling" and "XPSI 101" tutorials now show the hot-region geometry with ``plot_projection_filled`` from ``xpsi/utilities/ProjectionToolFilled.py`` (hot regions coloured by temperature) instead of the outline-only ``plot_projection_general``. The "Modeling" tutorial now shows both of its hot regions; previously only the primary was drawn.
