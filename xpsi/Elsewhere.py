@@ -273,7 +273,9 @@ class Elsewhere(ParameterSubspace):
                                                      st.R,
                                                      st.zeta,
                                                      st.epsilon,
-                                                     st.obl_surfgrav_ind)
+                                                     st.obl_surfgrav_ind,
+                                                     st.oblateness_scale,
+                                                     st.surfgrav_scale)
 
     def _compute_rays(self, st, threads):
         """ Trace (integrate) a set of rays.

@@ -132,7 +132,11 @@ photosphere = CustomPhotosphere(hot = hot_spot, elsewhere = None,
 
 
 # # Star
-star = xpsi.Star(spacetime = spacetime, photospheres = photosphere, name='algendy')
+star = xpsi.Star(spacetime = spacetime,
+                 photospheres = photosphere,
+                 name='algendy',
+                 oblateness_scale=1.0,
+                 surfgrav_scale=10.0)
 # Default star shape is an oblate spheroid from AlGendy & Morsink (2014, algendy)
 # But also a spherical star can be used with name='sphere'
 # Other tested and published universal relations are available, with e.g. name='j1614'
@@ -154,6 +158,15 @@ p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
 likelihood.check(None, [-3.2552616905e+04], 1.0e-5, physical_points=[p])
 
+for s in (0.0, 1.0, 10.0):
+    star = xpsi.Star(spacetime=spacetime, photospheres=photosphere,
+                     name='algendy', oblateness_scale=1.0, surfgrav_scale=s)
+    star.update(force_update=True)
+    g = hot_spot._super_effGrav          # log10 g (cgs) per cell colatitude
+    print(s, np.round([g.min(), g.max()], 4))
+#likelihood.check(None, [-3.2552616905e+04], 1.0e-5, physical_points=[p])
+
+pkl
 if __name__ == '__main__':
 
     start = time.time()

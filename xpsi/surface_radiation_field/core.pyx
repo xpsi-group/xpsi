@@ -323,6 +323,7 @@ def intensity_from_globals(double[::1] energies,
                            double zeta,
                            double epsilon,
                            int obl_surfgrav_ind,
+                           double surfgrav_scale,
                            atmosphere = None,
                            atmos_extension = "BB",
                            size_t numTHREADS = 1):
@@ -443,6 +444,8 @@ def intensity_from_globals(double[::1] energies,
     GEOM.epsilon = epsilon
     GEOM.zeta = zeta
     GEOM.obl_surfgrav_ind = obl_surfgrav_ind
+    #GEOM.oblateness_scale = oblateness_scale
+    GEOM.surfgrav_scale = surfgrav_scale
     cdef fptr_init init_ptr = init_hot
     cdef fptr_free free_ptr = free_hot
     cdef fptr_eval eval_ptr = eval_hot_I
@@ -528,7 +531,8 @@ def effective_gravity(double[::1] cos_colatitude,
                       double[::1] R_eq,
                       double[::1] zeta,
                       double[::1] epsilon,
-                      int obl_surfgrav_ind):
+                      int obl_surfgrav_ind,
+                      double surfgrav_scale):
     """Approximate the local effective surface gravity of a neutron star.
 
     The surface gravity is computed using the selected prescription,
@@ -566,6 +570,12 @@ def effective_gravity(double[::1] cos_colatitude,
             7: PSR J1614-2230
             2, 3, 4, 6: reserved (not implemented yet)
         See :attr:`~xpsi.Spacetime.Spacetime.obl_surfgrav_ind`.
+
+    :param double surfgrav_scale:
+        Factor multiplying the rotational correction to the gravity,
+        g/g0 -> 1 + surfgrav_scale * (g/g0 - 1). See ``surfgrav_scale`` in
+        :class:`~xpsi.Star.Star`.
+
     :returns:
         A 1D :class:`numpy.ndarray` of the logarithms (base 10) of the
         effective gravities in units of cm/s^2.
@@ -582,6 +592,7 @@ def effective_gravity(double[::1] cos_colatitude,
                                       R_eq[i],
                                       zeta[i],
                                       epsilon[i],
-                                      obl_surfgrav_ind)
+                                      obl_surfgrav_ind,
+                                      surfgrav_scale)
 
     return np.asarray(gravity, dtype = np.double, order = 'C')

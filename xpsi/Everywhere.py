@@ -468,7 +468,9 @@ class Everywhere(ParameterSubspace):
                                                      st.R,
                                                      st.zeta,
                                                      st.epsilon,
-                                                     st.obl_surfgrav_ind)
+                                                     st.obl_surfgrav_ind,
+                                                     st.oblateness_scale,
+                                                     st.surfgrav_scale)
 
     def _calibrate_lag(self, st, photosphere):
         """ Calibrate lag for cell mesh and normalise by pulse period. """

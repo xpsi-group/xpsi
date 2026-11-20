@@ -29,6 +29,8 @@ def construct_spot_cellMesh(size_t numThreads,
                             double zeta,
                             double epsilon,
                             int obl_surfgrav_ind,
+                            double oblateness_scale,
+                            double surfgrav_scale,
                             double cedeRadius,
                             double cedeColatitude,
                             double superRadius,
@@ -66,6 +68,7 @@ def construct_spot_cellMesh(size_t numThreads,
                               epsilon,
                               zeta,
                               obl_surfgrav_ind,
+                              oblateness_scale,
                               0,
                               w[0])
 
@@ -105,6 +108,7 @@ def construct_spot_cellMesh(size_t numThreads,
                                            epsilon,
                                            zeta,
                                            obl_surfgrav_ind,
+                                           oblateness_scale,
                                            0,
                                            w[thread])
 
@@ -212,15 +216,16 @@ def construct_spot_cellMesh(size_t numThreads,
                                            epsilon,
                                            zeta,
                                            obl_surfgrav_ind,
+                                           oblateness_scale,
                                            1,
                                            w[thread]) / eta
 
         mu = cos(cellColatitudes[i])
-        radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
+        radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
         cellRadialCoord[i] = radius * R_eq
         #r_s_over_r = r_s / cellRadialCoord[i]
-        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, obl_surfgrav_ind)
-        f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
+        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, obl_surfgrav_ind, surfgrav_scale)
+        f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
         cos_gamma[i] = 1.0 / sqrt(1.0 + f * f)
         maxEmissionAngle[i] = _hpi + acos(cos_gamma[i])
 
@@ -266,6 +271,7 @@ def construct_spot_cellMesh(size_t numThreads,
                                                epsilon,
                                                zeta,
                                                obl_surfgrav_ind,
+                                               oblateness_scale,
                                                cedeColatitude,
                                                cedeRadius,
                                                superRadius,
@@ -305,6 +311,7 @@ def construct_spot_cellMesh(size_t numThreads,
                                                    epsilon,
                                                    zeta,
                                                    obl_surfgrav_ind,
+                                                   oblateness_scale,
                                                    cedeColatitude,
                                                    cedeRadius,
                                                    superRadius,

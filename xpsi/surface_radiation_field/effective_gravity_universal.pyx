@@ -74,7 +74,7 @@ cdef double grav_sphere(double mu, double R_eq, double x, double epsilon) noexce
 
     return log10(g0(R_eq, x)) + 2.0
 
-cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double epsilon) noexcept nogil:
+cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double epsilon, double surfgrav_scale) noexcept nogil:
     """
     Calculate the effective surface gravity log-likelihood value based on the approximation from
     AlGendy & Morsink (2014) (see Eq. 50 and Table 4 and 5 for coefficient values), or assuming a spherical
@@ -98,6 +98,12 @@ cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double e
     :param double epsilon:
         The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or
         Eq. 10 from Morsink et al. (2007)).
+
+    :param double surfgrav_scale:
+        Factor multiplying the rotational correction to the gravity,
+        g/g0 -> 1 + surfgrav_scale * (g/g0 - 1). ``1.0`` gives the
+        prescription as is; ``0.0`` gives the Schwarzschild gravity g0.
+        See ``surfgrav_scale`` in :class:`~xpsi.Star.Star`.
 
     :return:
         The effective surface gravities in log10(g*g0). The result is scaled to centimeters (conversion
@@ -124,10 +130,12 @@ cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double e
     g += (c_p + d_p + f_p - d_60) * esq * mu * mu
     g += d_60 * esq * fabs(mu)
 
+    g = 1.0 + surfgrav_scale * (g - 1.0)
+
     return log10(g * g_0) + 2.0
 
 
-cdef double grav_j1231(double mu, double R_eq, double x, double epsilon) noexcept nogil:
+cdef double grav_j1231(double mu, double R_eq, double x, double epsilon, double surfgrav_scale) noexcept nogil:
 
     """
     Compute the effective surface gravity for PSR J1231-1411 using
@@ -153,6 +161,12 @@ cdef double grav_j1231(double mu, double R_eq, double x, double epsilon) noexcep
         Dimensionless squared angular velocity,
         Omega² R_eq³ / (GM).
 
+    surfgrav_scale : double
+        Factor multiplying the rotational correction to the gravity,
+        g/g0 -> 1 + surfgrav_scale * (g/g0 - 1). ``1.0`` gives the
+        prescription as is; ``0.0`` gives the Schwarzschild gravity g0.
+        See ``surfgrav_scale`` in :class:`~xpsi.Star.Star`.
+
     Returns
     -------
     double
@@ -163,7 +177,7 @@ cdef double grav_j1231(double mu, double R_eq, double x, double epsilon) noexcep
     -----
     The effective surface gravity is calculated as
 
-        g_eff = g0 * [1 + rotational corrections],
+        g_eff = g0 * [1 + surfgrav_scale * (rotational corrections)],
 
     where g0 is the Schwarzschild surface gravity. The rotational
     corrections depend on compactness, colatitude, and powers of epsilon.
@@ -214,10 +228,12 @@ cdef double grav_j1231(double mu, double R_eq, double x, double epsilon) noexcep
     g += (c_p + d_p + f_p - d_60) * esq * (mu * mu)         # cos²θ term
     g += d_60 * esq * fabs(mu)                              # cosθ term (symmetrized)
 
+    g = 1.0 + surfgrav_scale * (g - 1.0)
+
     return log10(g * g_0) + 2.0
 
 
-cdef double grav_j1614(double mu, double R_eq, double x, double epsilon) noexcept nogil:
+cdef double grav_j1614(double mu, double R_eq, double x, double epsilon, double surfgrav_scale) noexcept nogil:
     """
     Compute the effective surface gravity for PSR J1614-2230 using
     tailored approximation.
@@ -241,6 +257,13 @@ cdef double grav_j1614(double mu, double R_eq, double x, double epsilon) noexcep
         Dimensionless squared angular velocity,
         Omega² R_eq³ / (GM).
 
+    surfgrav_scale : double
+        Factor multiplying the rotational correction to the gravity,
+        g/g0 -> 1 + surfgrav_scale * (g/g0 - 1). ``1.0`` gives the
+        prescription as is; ``0.0`` gives the Schwarzschild gravity g0.
+        See ``surfgrav_scale`` in :class:`~xpsi.Star.Star`.
+
+
     Returns
     -------
     double
@@ -251,7 +274,8 @@ cdef double grav_j1614(double mu, double R_eq, double x, double epsilon) noexcep
     -----
     The effective surface gravity is calculated as
 
-        g_eff = g0 * [0.9985 + epsilon * (-0.5454 + (1.504 + 0.2422*x)*mu² - 0.6679*x*mu⁴)],
+        g = 0.9985 + epsilon * (-0.5454 + (1.504 + 0.2422*x)*mu² - 0.6679*x*mu⁴)
+        g_eff = g0 * [1 + surfgrav_scale * (g - 1)],
 
     where g0 is the Schwarzschild surface gravity. The conversion from
     SI to cgs units introduces an additive factor of 2 in log10(g_eff).
@@ -261,6 +285,9 @@ cdef double grav_j1614(double mu, double R_eq, double x, double epsilon) noexcep
         double g_0 = g0(R_eq, x)
         double mu2 = mu * mu
         double g = 0.9985 + epsilon * (-0.5454 + (1.504 + 0.2422 * x) * mu2 - 0.6679 * x * mu2 * mu2)
+
+    g = 1.0 + surfgrav_scale * (g - 1.0)
+
     return log10(g * g_0) + 2.0
 
 
@@ -268,54 +295,64 @@ cdef inline double effectiveGravity(double mu,
                                     double R_eq,
                                     double x,
                                     double epsilon,
-                                    int obl_surfgrav_ind) noexcept nogil:
+                                    int obl_surfgrav_ind,
+                                    double surfgrav_scale) noexcept nogil:
 
 
     if obl_surfgrav_ind ==0 :
-        return grav_algendy_morsink_2014(mu, R_eq, x, epsilon)
+        return grav_algendy_morsink_2014(mu, R_eq, x, epsilon, surfgrav_scale)
     elif obl_surfgrav_ind == 1:
         return grav_sphere(mu, R_eq, x, epsilon)
     elif obl_surfgrav_ind == 5:
-        return grav_j1231(mu, R_eq, x, epsilon)
+        return grav_j1231(mu, R_eq, x, epsilon, surfgrav_scale)
     elif obl_surfgrav_ind == 7:
-        return grav_j1614(mu, R_eq, x, epsilon)
+        return grav_j1614(mu, R_eq, x, epsilon, surfgrav_scale)
     else:
         raise ValueError("Unknown gravity model_id")
 
 
 
 
-cdef double oblateness_func_o2(double x, int obl_surfgrav_ind) noexcept nogil:
-    """
-    Oblateness coefficient o2(x) entering the surface shape expansion:
+cdef double oblateness_func_o2(double x, int obl_surfgrav_ind, double oblateness_scale) noexcept nogil:
 
-        R(θ) = Re * [1 + o2(x) * cos^2(θ)]
+    """
+    Oblateness coefficient o2(x), multiplied by ``oblateness_scale``,
+    entering the surface shape expansion:
+
+        R(θ) = Re * [1 + oblateness_scale * o2(x) * epsilon * cos^2(θ)]
 
     Parameters
     ----------
     x : double
         Compactness ratio x = M / Re.
-    model : obl_surfgrav
+    obl_surfgrav_ind : int
         0 : AlGendy & Morsink (2014) slow-rotation universal fit
-        5   : Empirical fit from LORENE + CUTTER
+        1 : sphere (o2 = 0)
+        5 : PSR J1231-1411, empirical fit from LORENE + CUTTER
+        7 : PSR J1614-2230 (https://arxiv.org/pdf/2609.00172)
+    oblateness_scale : double
+        Factor multiplying o2. ``1.0`` gives the prescription as is;
+        ``0.0`` gives a spherical surface. See ``oblateness_scale`` in
+        :class:`~xpsi.Star.Star`.
 
     Returns
     -------
     double
-        o2(x) coefficient (dimensionless).
+        oblateness_scale * o2(x) (dimensionless).
     """
+    
     cdef double c1, c2, c3
     if obl_surfgrav_ind == 0:
         # Eq. (21): o2 = o20 + o21 x   (overall Ω̄^2 factor is applied elsewhere)
-        return -0.788 + 1.030 * x
+        return oblateness_scale*(-0.788 + 1.030 * x)
     elif obl_surfgrav_ind == 1:
         return 0.0
     elif obl_surfgrav_ind == 5:
         # Computed by Yves (Kini et al. in prep)
-        return -0.37562887294361336 - 4.605853993313363*x + 21.39216085992957*x*x - 24.252054038949396*x*x*x
+        return oblateness_scale*(-0.37562887294361336 - 4.605853993313363*x + 21.39216085992957*x*x - 24.252054038949396*x*x*x)
     elif obl_surfgrav_ind == 7:
         # Computed by Lucien (https://arxiv.org/pdf/2609.00172)
-        return 0.615 -2.0*x-0.0539/(x*x)+0.00079/(x*x*x*x)
+        return oblateness_scale*(0.615 -2.0*x-0.0539/(x*x)+0.00079/(x*x*x*x))
 
 
 cdef double dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind) noexcept nogil:
@@ -380,8 +417,8 @@ cdef double beta1_coeff(int obl_surfgrav_ind) noexcept nogil:
 cpdef double py_dimless_moment_of_inertia_i(double x, int obl_surfgrav_ind):
     return dimless_moment_of_inertia_i(x, obl_surfgrav_ind)
 
-cpdef double py_oblateness_func_o2(double x, int obl_surfgrav_ind):
-    return oblateness_func_o2(x, obl_surfgrav_ind)
+cpdef double py_oblateness_func_o2(double x, int obl_surfgrav_ind, double oblateness_scale):
+    return oblateness_func_o2(x, obl_surfgrav_ind, oblateness_scale)
 
 cpdef double py_beta1_coeff(int obl_surfgrav_ind):
     return beta1_coeff(obl_surfgrav_ind)

@@ -6,6 +6,7 @@ from scipy.stats import truncnorm
 
 import xpsi
 from xpsi.global_imports import gravradius
+from xpsi.surface_radiation_field.effective_gravity_universal import py_oblateness_func_o2 as oblateness_func_o2
 
 class CustomPrior(xpsi.Prior):
     """ A custom (joint) prior distribution.
@@ -52,18 +53,22 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters.star.spacetime # shortcut
 
-        # Compactness limit
-        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        # Compactness limit; o2 from the prescription chosen in Star (name),
+        # scaled by its oblateness_scale
+        o2 = oblateness_func_o2(ref.zeta, ref.obl_surfgrav_ind, ref.oblateness_scale)
+        R_p = 1.0 + ref.epsilon * o2
         if R_p < 1.505 / ref.R_r_s:
             return -np.inf
-
-        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
 
         # 2-surface cross-section have a single maximum in |z|
         # i.e., an elliptical surface; minor effect on support, if any,
         # for high spin frequenies
-        if mu < 1.0:
-            return -np.inf
+        # (no condition for a spherical surface, o2 = 0, e.g. the 'sphere'
+        # prescription or oblateness_scale = 0)
+        if o2 < 0.0:
+            mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * o2))
+            if mu < 1.0:
+                return -np.inf
 
         ref = self.parameters
 

@@ -68,6 +68,8 @@ def integrate(size_t numThreads,
               int[::1] cache_phase_indices,
               int single_precision_cache,
               int obl_surfgrav_ind,
+              int oblateness_scale,
+              double surfgrav_scale,
               reuse_ray_map = None,
               global_to_local_file = None,
               atmosphere = None,
@@ -129,6 +131,8 @@ def integrate(size_t numThreads,
     GEOM.kappa = kappa
     GEOM.inclination = inclination
     GEOM.obl_surfgrav_ind = obl_surfgrav_ind
+    GEOM.oblateness_scale = oblateness_scale
+    GEOM.surfgrav_scale = surfgrav_scale
 
     if R_eq > 1.5 * r_s: # compare to Schwarzschild photon sphere
         GEOM.b_max = R_eq / sqrt(1.0 - r_s / R_eq)
@@ -175,7 +179,8 @@ def integrate(size_t numThreads,
                              MAP,
                              RAYS,
                              0,
-                             obl_surfgrav_ind)
+                             obl_surfgrav_ind,
+                             oblateness_scale)
 
         printf("\n\nGlobal ray map computed.")
 
