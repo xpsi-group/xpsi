@@ -258,10 +258,11 @@ class TestCustomInterstellar:
         with pytest.raises(StrictBoundsError):
             ism_nh(100.0)
 
-    def increase_nh_absorbs_more( self ):
-        sig1 = np.ones( 5 , 2 )
-        sig2 = np.ones( 5 , 2 )
-        ism_nh(10.0)(np.ones(5), sig1)
-        ism_nh(20.0)(np.ones(5), sig2)
+    def test_increase_nh_absorbs_more( self ):
+        energies = np.linspace(0.3, 2.0, 5)
+        sig1 = np.ones( (5 , 2) )
+        sig2 = np.ones( (5 , 2) )
+        ism_nh(10.0)(energies, sig1)
+        ism_nh(20.0)(energies, sig2)
         assert (sig2 < sig1).all()
         
