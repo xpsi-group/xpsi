@@ -9,7 +9,7 @@ cimport numpy as np
 from libc.stdlib cimport malloc, free, rand, RAND_MAX
 from libc.stdio cimport printf
 
-from libc.math cimport exp, pow, log, sqrt, fabs
+from libc.math cimport exp, pow, log, sqrt, fabs, isfinite, INFINITY
 
 from ..tools.core cimport are_equal
 
@@ -159,9 +159,14 @@ cdef double delta(double B, void *params) noexcept nogil:
     # Loop over the phases to compute the first and second order derivative of likelihood with respect to background count rate
     # x is the second order derivative of likelihood with respect to background count rate (equation B.13)
     # y is the first order derivative of likelihood with respect to background count rate (equation B.12)
+    # Phase bins without observed counts are skipped: their data[j] / (star[j] + B)
+    # and data[j] / (star[j] + B)^2 terms are zero, but could give 0/0 if
+    # star[j] + B = 0. (The first derivative also has a -SCALE term from every phase
+    # bin, including these; together they give the T_exp term below.)
     for j in range(a.n):
-        y += a.data[j] / (a.star[j] + B)
-        x += a.data[j] / pow(a.star[j] + B, 2.0)
+        if a.data[j] > 0.0:
+            y += a.data[j] / (a.star[j] + B)
+            x += a.data[j] / pow(a.star[j] + B, 2.0)
 
     y = 2.0 * a.T_exp - 2.0 * y
     x *= 2.0
@@ -171,6 +176,43 @@ cdef double delta(double B, void *params) noexcept nogil:
 
     # Compute delta using B.25
     return -1.0 * y / x
+
+cdef double dlogL_dB(double B, args *a) noexcept nogil:
+    """ Compute the first derivative of the conditional log-likelihood with
+    respect to the background count rate (equation B.12 divided by -2).
+
+    Used to locate the maximum of the conditional likelihood within the
+    integration limits. Because the log-likelihood is concave in the background
+    count rate, the sign of this derivative at the integration limits tells
+    whether the maximum lies at one of the limits.
+
+    :param double B:
+        Background count rate at which to evaluate the derivative.
+
+    :param args *a:
+        Structure holding "n", "data", "star" and "T_exp".
+
+    :returns:
+        A `double` with the derivative. Phase bins without observed counts are
+        skipped, since their data[j] / (star[j] + B) terms are zero (and could
+        otherwise give 0/0). The -SCALE terms of all phase bins, including
+        these, add up to the -T_exp term.
+        If the expected count rate is not positive in a phase bin with observed
+        counts, the likelihood increases towards larger B, and positive
+        infinity is returned.
+    """
+
+    cdef size_t j
+    cdef double x = 0.0
+
+    for j in range(a.n):
+        if a.data[j] > 0.0:
+            if a.star[j] + B > 0.0:
+                x += a.data[j] / (a.star[j] + B)
+            else:
+                return INFINITY
+
+    return x - a.T_exp
 
 
 cdef int channelwise_background_marginalization(args a,
@@ -275,6 +317,7 @@ cdef int channelwise_background_marginalization(args a,
     cdef double result, abserr, upper, lower, std_est
     cdef size_t nevals
     cdef double B, B_for_integrand, dB, B_min, min_counts, limit
+    cdef double g, B_low, B_high, B_new
     cdef int counter
     cdef double exposure_time = a.T_exp
     cdef int i = a.i
@@ -332,30 +375,61 @@ cdef int channelwise_background_marginalization(args a,
                 B = B_min
 
         # Newton scheme to approximate the best fit background count rate
-        # See page 242 equations B.22 to B.26
-        dB = delta(B, &a)
-        counter = 0
-        while fabs(dB) > epsilon*a.std and counter < 2:
+        # See pages 242-243, equations B.22 to B.26.
+        # The log-likelihood is concave in B, so its derivative decreases
+        # monotonically. If the derivative is not positive at B_min, the maximum
+        # (for B >= B_min) is at B_min (see p243). Otherwise, the maximum lies
+        # between B_min and B_high = av_DATA - min(0, min_j star_j), where the
+        # derivative is guaranteed to be non-positive. The Newton steps are kept
+        # within this bracket, and replaced by bisection steps if they would
+        # leave it (e.g., if a step overshoots to below B_min).
+        g = dlogL_dB(B_min, &a)
+        if g <= 0.0:
+            B = B_min
+        else:
+            B_low = B_min
+            B_high = av_DATA
+            for j in range(a.n):
+                if a.star[j] < 0.0 and av_DATA - a.star[j] > B_high:
+                    B_high = av_DATA - a.star[j]
 
-            # Apply correction
-            B += dB
+            # Start from the midpoint if the initial guess is outside the bracket
+            if B < B_low or B >= B_high:
+                B = 0.5 * (B_low + B_high)
 
-            # Clip to Bmin, stop the iterations if this happens 2 times or if B_min<0
-            if B < B_min:
-                if B_min > 0.0:
-                    counter += 1
-                else:
-                    counter = 2
-                B = B_min
-
-            # Compute the step for Newton scheme
             dB = delta(B, &a)
+            counter = 0
+            # The limit on the number of iterations is only a safety limit: the
+            # search normally converges within a few iterations
+            while not fabs(dB) <= epsilon*a.std and counter < 1000:
+
+                # Update the bracket using the sign of the derivative at B
+                g = dlogL_dB(B, &a)
+                if g > 0.0:
+                    B_low = B
+                elif g < 0.0:
+                    B_high = B
+                else:
+                    break
+
+                # Apply the Newton correction, or bisect if it would leave the bracket
+                B_new = B + dB
+                if not (B_low < B_new < B_high):
+                    B_new = 0.5 * (B_low + B_high)
+                B = B_new
+
+                # Compute the step for Newton scheme
+                dB = delta(B, &a)
+                counter += 1
 
         # Compute the standard deviation assuming the likelihood is Gaussian
         # with respect to the background (see equation B.24 and B.13)
+        # Phase bins without observed counts are skipped: their
+        # data[j] / (star[j] + B)^2 terms are zero, but could give 0/0 if star[j] + B = 0
         std_est = 0.0
         for j in range(a.n):
-            std_est += a.data[j] / pow(a.star[j] + B, 2.0)
+            if a.data[j] > 0.0:
+                std_est += a.data[j] / pow(a.star[j] + B, 2.0)
         if std_est > 0.0:
             std_est = sqrt(1.0 / std_est)
         else:
@@ -392,6 +466,18 @@ cdef int channelwise_background_marginalization(args a,
         elif B_for_integrand > upper:
             B_for_integrand = upper
 
+        # Locate the maximum within the integration limits: the log-likelihood
+        # is concave in B, so if it still increases at the upper limit (or
+        # already decreases at the lower limit), the maximum within the
+        # integration limits is at that limit. Otherwise, the maximum is inside
+        # the limits, at the best-fit B found above. Evaluating A at the maximum
+        # keeps the integrand at most 1, which avoids overflow in the GSL cquad
+        # error estimate (otherwise the integration may never finish).
+        if dlogL_dB(upper, &a) >= 0.0:
+            B_for_integrand = upper
+        elif dlogL_dB(lower, &a) <= 0.0:
+            B_for_integrand = lower
+
         # Compute A, which is the non-constant term outside the 
         # integral in equation B.19 and a part of the integrand
         a.A = 0.0
@@ -420,9 +506,10 @@ cdef int channelwise_background_marginalization(args a,
 
         # If the integration worked, compute the likelihoods by summing the
         # 3 terms from equation B.19 (constant, non-constant, integral)
-        if result > 0.0:
+        if result > 0.0 and isfinite(result):
             LOGLIKE[0] += log(result) + a.A + a.precomp[a.i]
-        # If the integration failed, return failure code 0 with inifinte likelihood
+        # If the integration failed (zero or non-finite result), return failure
+        # code 0 with a likelihood close to llzero
         else:
             # To use gil and be faster, I use C random number generator
             LOGLIKE[0] = llzero * (0.1 + 0.9 * rand() / <double>RAND_MAX)
@@ -468,6 +555,12 @@ def eval_marginal_likelihood(double exposure_time,
 
     The references across the code are to Riley 2019 PhD thesis:
     https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a
+
+    The marginalisation follows Appendix B of the thesis. In addition, in the
+    search for the best-fit background count rate, the Newton iterations are
+    kept within an interval known to contain the maximum (and replaced by
+    bisection steps if they would leave it), which handles Newton steps that
+    overshoot below the lower limit of the background.
 
     :param double exposure_time:
         Exposure time in seconds by which to scale the expected count rate
