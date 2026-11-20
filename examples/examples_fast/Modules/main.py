@@ -157,46 +157,27 @@ likelihood.check(None, [-3.2552616905e+04], 1.0e-5, physical_points=[p])
 if __name__ == '__main__':
 
     start = time.time()
-    runtime_params = {'resume': False,
-                      'root_dir': '../Outputs/',           # output directory
-                      'root': 'ST_ptemcee_full_prior',                # output file-root
-                      'nwalkers': 1000,                      # walkers per temperature
-                      'ntemps': 2,                         # temperatures in the ladder
-                      'nsteps': 2000,                       # iterations
-                      'burn_in':1000,
-                      'adapt': True,                       # adapt the temperature ladder
-                      'checkpoint': 100,                    # flush output every 50 iterations
-                      'walker_dist_moments': None,
-                      "init_mode": 'prior',
-                      #"init_samples": '../Outputs/ST_live_1000_eff_0.3_seed0.txt',
-                      #"init_scatter":1.0,
-                      "save_init":True
-                      }         # initialise via inverse sampling
+    wrapped_params = [0] * len(likelihood)
+    wrapped_params[likelihood.index('p__phase_shift')] = 1
 
-    xpsi.Sample.run_ptemcee(likelihood, prior, MPI=True, **runtime_params)
+    #The original (more accurate) run settings shown as commented.
+    runtime_params = {'resume': False,
+                      'importance_nested_sampling': False,
+                      'multimodal': False,
+                      'n_clustering_params': None,
+                      'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
+                      'n_iter_before_update': 50, #100,
+                      'n_live_points': 50, #1000,
+                      'sampling_efficiency': 0.3,
+                      'const_efficiency_mode': False,
+                      'wrapped_params': wrapped_params,
+                      'evidence_tolerance': 0.1,
+                      'max_iter': 100, #-1,
+                      'seed' : 0, # Fixing the seed
+                      'LHS_seed': 42, # Fixing the LHS seed for hypercube fraction estimation
+                      'verbose': True}
+
+
+    xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)
 
     print('Sampling took', (time.time()-start)/60, 'minutes')
-    # wrapped_params = [0] * len(likelihood)
-    # wrapped_params[likelihood.index('p__phase_shift')] = 1
-    #
-    # #The original (more accurate) run settings shown as commented.
-    # runtime_params = {'resume': False,
-    #                   'importance_nested_sampling': False,
-    #                   'multimodal': False,
-    #                   'n_clustering_params': None,
-    #                   'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
-    #                   'n_iter_before_update': 50, #100,
-    #                   'n_live_points': 50, #1000,
-    #                   'sampling_efficiency': 0.3,
-    #                   'const_efficiency_mode': False,
-    #                   'wrapped_params': wrapped_params,
-    #                   'evidence_tolerance': 0.1,
-    #                   'max_iter': 100, #-1,
-    #                   'seed' : 0, # Fixing the seed
-    #                   'LHS_seed': 42, # Fixing the LHS seed for hypercube fraction estimation
-    #                   'verbose': True}
-    #
-    #
-    # xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)
-
-    #print('Sampling took', (time.time()-start)/60, 'minutes')
