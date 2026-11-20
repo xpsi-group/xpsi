@@ -1,0 +1,1 @@
+Updated ``pyproject.toml`` to the PEP 639 license format (``license = "GPL-3.0-or-later"`` plus ``license-files``) and removed the license classifier, which fixes the ``SetuptoolsDeprecationWarning`` about ``project.license`` as a TOML table. This requires ``setuptools>=77`` at build time.
