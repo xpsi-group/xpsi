@@ -1,4 +1,4 @@
-__all__ = ["run_multinest", "run_emcee", "run_ultranest", "run_nautilus"]
+__all__ = ["run_multinest", "run_emcee", "run_ptemcee", "run_ultranest", "run_nautilus"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
