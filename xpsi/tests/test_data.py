@@ -23,8 +23,13 @@ def data():
 def compare_data( data1, data2, phase_resolved_vs_averaged=False ):
 
     assert np.array_equal( data1.channels, data2.channels )
-    assert data1._first - data1._last == data2._first - data2._last
     assert data1.exposure_time == data2.exposure_time
+
+    # The absolute index range may differ (loaders always start at 0), but
+    # each must span exactly the rows of its counts matrix
+    for d in ( data1, data2 ):
+        start, stop = d.index_range
+        assert stop - start == d.counts.shape[0]
 
     if not phase_resolved_vs_averaged:
         assert np.array_equal( data1.counts, data2.counts )
@@ -32,6 +37,7 @@ def compare_data( data1, data2, phase_resolved_vs_averaged=False ):
     else:
         phase_averaged_counts = data1.counts.sum(axis=1).reshape(-1,1)
         assert np.array_equal( phase_averaged_counts, data2.counts )
+        assert np.array_equal( data2.phases, np.array([0.0, 1.0]) )
 
 ############################################################
 ### Make some test for loading data in different formats ###
@@ -70,6 +76,7 @@ class TestDataLoading( object ):
             channels=CHANNELS
             )
         compare_data( data, data_evt )
+        assert data_evt.index_range == (0, 3)
 
     # Load a phase-averaged spectrum corresponding to data()
     def test_pha( self , data ):
@@ -78,6 +85,7 @@ class TestDataLoading( object ):
             channels=CHANNELS
         )
         compare_data( data, data_pha, phase_resolved_vs_averaged=True )
+        assert data_pha.index_range == (0, 3)
 
 
 ################################################
@@ -130,7 +138,7 @@ class TestWrongInput( object ):
                  first=FIRST, last=LAST, exposure_time=-EXPOSURE)
 
 #############################################
-### Check some objects can not be changed ###
+### Check some objects cannot be changed ###
 #############################################
 
 class TestImmutableObjects( object ):
@@ -153,10 +161,16 @@ class TestImmutableObjects( object ):
 #######################################
 class TestTrimming( object ):
 
-    @pytest.mark.parametrize('bad', [56.2 , True , 'hello'])
-    def test_non_int_channels( self , data, bad ):
+    # Values are within the channel range so only the type check can fail.
+    # Note: booleans are not tested, since ``isinstance(True, int)`` is True.
+    @pytest.mark.parametrize('bad', [31.0 , '31' , None , [31]])
+    def test_non_int_min_channel( self , data, bad ):
         with pytest.raises( AssertionError ):
             data.trim_data( min_channel=bad, max_channel=32 )
+
+    @pytest.mark.parametrize('bad', [31.0 , '31' , None , [31]])
+    def test_non_int_max_channel( self , data, bad ):
+        with pytest.raises( AssertionError ):
             data.trim_data( min_channel=30, max_channel=bad )
 
     def test_min_greater_than_max( self , data ):
