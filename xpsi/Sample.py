@@ -104,6 +104,7 @@ def run_emcee(likelihood, prior, MPI = True, **kwargs):
         sampler()
 
     return sampler.backend
+
 def run_multinest(likelihood, prior, check_kwargs={}, **kwargs):
     """ Initialise MultiNest and integrate.
 
@@ -408,7 +409,8 @@ def run_nautilus(
     prior,
     sampler_build_kwargs={},
     runtime_params={},
-    MPI=True,
+    MPI=False,
+    pool=None,
     out_filename="weighted_post_nautilus_xpsi"
 ):
     """  Wrapper for the nautilus-sampler (https://nautilus-sampler.readthedocs.io/en/latest/)
@@ -433,18 +435,30 @@ def run_nautilus(
 
     # initialise the sampler
     if MPI :
-        from mpi4py.futures import MPIPoolExecutor
-        
-        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool=MPIPoolExecutor())
+        raise NotImplementedError(" MPI is not available yet for the Nautilus sampler. You need to use only one node, assign 1 task-per-node and put pool as the number of CPUs.")
+        # print('Parallelization')
+        # try:
+        #     from schwimmbad import MPIPool
+        # except ImportError:
+        #     raise ImportError('Check your schwimmbad package installation.')
+            
+        # # Initialize the MPI-based pool used for parallelisation.
+        # with MPIPool() as pool_MPI:
+        #     if not pool_MPI.is_master():
+        #         # Wait for instructions from the master process.
+        #         pool_MPI.wait()
+        #         _sys.exit(0)
 
-        # start sampling
-        sampler(runtime_params)
-
-        # store output
-        sampler.write_results(out_filename)
+        #     # Initialise sampler
+        #     sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool = (pool_MPI, pool), filepath=out_filename+'.hdf5')
+        #     # start sampling
+        #     sampler(runtime_params)
+        # # store output
+        # sampler.write_results(out_filename)
 
     else:
-        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs)
+        # Initialise sampler
+        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool=pool, filepath=out_filename+'.hdf5')
 
         # start sampling
         sampler(runtime_params)
