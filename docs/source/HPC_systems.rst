@@ -119,7 +119,9 @@ It is normal that it runs once, but prints parameter values and evidences twice!
 
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
-    packages ``emcee`` and ``schwimmbad``. If ``UltraNest`` is desired, you 
+    packages ``emcee`` and ``schwimmbad``. For parallel-tempered ensemble-MCMC
+    with ``ptemcee``, additionally install the ``ptemcee`` package. If
+    ``UltraNest`` is desired, you
     need to install the Python package ``ultranest``. We assume the user 
     can infer how to do this using the information above and on the 
     :ref:`install` page.
