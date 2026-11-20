@@ -286,9 +286,14 @@ class TestCustomInterstellar:
                                np.linspace(0.1, 0.9, 9),
                                bounds={'neutral_hydrogen_column_density': (0.0, 50.0)})
 
-    def test_parameter_limits(self):
+    @pytest.mark.parametrize('nh', [-1.0, -1e-6, 50.1, 100.0])
+    def test_parameter_limits(self, nh):
         with pytest.raises(StrictBoundsError):
-            ism_nh(100.0)
+            ism_nh(nh)
+
+    @pytest.mark.parametrize('nh', [0.0, 50.0])
+    def test_parameter_limits_are_inclusive(self, nh):
+        assert ism_nh(nh)['neutral_hydrogen_column_density'] == nh
 
     def test_increase_nh_absorbs_more( self ):
         energies = np.linspace(0.3, 2.0, 5)
