@@ -49,6 +49,16 @@ class TestBaseClassCall:
     def test_is_subclass_of_parameter_subspace(self):
         assert issubclass(xpsi.Interstellar, xpsi.ParameterSubspace)
 
+    def test_base_class_is_abstract(self):
+        with pytest.raises(TypeError):
+            xpsi.Interstellar()
+
+    def test_subclass_without_attenuation_is_abstract(self):
+        class NoAttenuation(xpsi.Interstellar):
+            pass
+        with pytest.raises(TypeError):
+            NoAttenuation()
+
     def test_concrete_subclass_instantiates(self):
         assert isinstance(ConcreteInterstellar(), xpsi.Interstellar)
 
