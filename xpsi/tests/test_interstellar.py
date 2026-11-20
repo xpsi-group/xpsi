@@ -348,3 +348,58 @@ class TestCustomInterstellar:
         att = ism_nh(1.0).attenuation(np.array([0.09]))
         assert np.isfinite(att[0])
         assert 0.0 < att[0] < 1.0
+
+    ### Per-energy-grid cache ###
+    def test_same_grid_reuses_cache_entry(self):
+        ism = ism_nh(1.0)
+        energies = np.linspace(0.5, 5.0, 10)
+        ism.attenuation(energies)
+        entry = ism._cache[id(energies)]
+        ism.attenuation(energies)
+        assert len(ism._cache) == 1
+        assert ism._cache[id(energies)] is entry
+
+    def test_changing_nh_updates_result_with_cached_grid(self):
+        energies, table = self._table()
+        ism = ism_nh(1.0)
+        np.testing.assert_allclose(ism.attenuation(energies), table, rtol=1e-12)
+        ism['neutral_hydrogen_column_density'] = 3.0
+        np.testing.assert_allclose(ism.attenuation(energies), table**3,
+                                   rtol=1e-10)
+        assert len(ism._cache) == 1
+
+    def test_different_grids_get_separate_entries(self):
+        ism = ism_nh(1.0)
+        e1 = np.linspace(0.5, 5.0, 10)
+        e2 = np.linspace(0.3, 8.0, 7)
+        a1 = ism.attenuation(e1)
+        a2 = ism.attenuation(e2)
+        assert len(ism._cache) == 2
+        assert a1.shape == (10,) and a2.shape == (7,)
+        np.testing.assert_allclose(a1, ism._interpolate(e1), rtol=1e-12)
+        np.testing.assert_allclose(a2, ism._interpolate(e2), rtol=1e-12)
+
+    def test_cache_cleared_after_twenty_grids(self):
+        ism = ism_nh(1.0)
+        grids = [np.linspace(0.5, 5.0, 10) for _ in range(20)]
+        for g in grids:
+            ism.attenuation(g)
+        assert len(ism._cache) == 20
+        extra = np.linspace(0.5, 5.0, 10)
+        ism.attenuation(extra)
+        assert len(ism._cache) == 1
+        assert id(extra) in ism._cache
+
+    def test_attenuation_returns_new_array_not_shared_buffer(self):
+        ism = ism_nh(1.0)
+        energies = np.linspace(0.5, 5.0, 10)
+        first = ism.attenuation(energies)
+        kept = first.copy()
+        buf = ism._cache[id(energies)][2]
+        assert first is not buf
+
+        ism['neutral_hydrogen_column_density'] = 5.0
+        second = ism.attenuation(energies)
+        assert second is not first
+        # The earlier result must not be overwritten by the later call.
+        np.testing.assert_array_equal(first, kept)
