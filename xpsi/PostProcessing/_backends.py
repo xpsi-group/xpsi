@@ -78,7 +78,15 @@ class NestedBackend(Run):
                              names=self.names,
                              ranges=self.bounds,
                              labels=[self.labels[name] for name in self.names])
-            self._gd_bcknd.readChains(getdist.chains.chainFiles(filerootpath))
+            if filetype == '.npy':
+                # getdist only finds and reads text chain files, so hand it
+                # the columns: weight, -2logL (as getdist's "like"), params
+                _samples = loader(filerootpath + filetype)
+                self._gd_bcknd.readChains([_samples[:,2:]],
+                                          weights=[_samples[:,0]],
+                                          loglikes=[_samples[:,1]])
+            else:
+                self._gd_bcknd.readChains(getdist.chains.chainFiles(filerootpath))
 
         self.use_nestcheck = use_nestcheck
 

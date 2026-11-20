@@ -6,7 +6,6 @@ from xpsi.utils import make_verbose
 from xpsi import Likelihood
 from xpsi.Posterior import Posterior
 
-
 posterior = None
 
 # Function defined on the module-level for function and module name pickling
@@ -15,6 +14,16 @@ posterior = None
 def func(p):
     global posterior
     return posterior(p)
+
+# Module-level, picklable log-likelihood and log-prior wrappers for ptemcee,
+# which requires the two functions separately.
+def logl_func(p):
+    global posterior
+    return posterior.loglikelihood(p)
+
+def logp_func(p):
+    global posterior
+    return posterior.logprior(p)
 
 
 def run_emcee(likelihood, prior, MPI = True, **kwargs):
@@ -47,6 +56,12 @@ def run_emcee(likelihood, prior, MPI = True, **kwargs):
     :return: An instance of :class:`emcee.backends.HDFBackend`.
 
     """
+    try:
+        from xpsi.EmceeSampler import EmceeSampler
+    except ImportError as e:
+        raise ImportError('Check your installation of emcee to use '
+                          'run_emcee.') from e
+
     # use the globally scoped variable
     global posterior
     # Callable instance of the posterior
@@ -88,6 +103,111 @@ def run_emcee(likelihood, prior, MPI = True, **kwargs):
 
     return sampler.backend
 
+def run_ptemcee(likelihood, prior, MPI = True, **kwargs):
+    """ Initialise `ptemcee <https://github.com/willvousden/ptemcee>`_ and sample.
+
+    Parallel-tempered ensemble MCMC. The cold chain (:math:`\\beta=1`) provides
+    the posterior samples, written in the same format as the other X-PSI
+    samplers so the output is read directly by :mod:`xpsi.PostProcessing` (with
+    ``use_nestcheck=False``); the full temperature ladder additionally yields a
+    thermodynamic-integration estimate of the evidence.
+
+    :param likelihood:
+        An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior:
+        An instance of :class:`~.Prior.Prior`.
+
+    :param bool MPI:
+        Parallelise with MPI? If calling script not lauched with an MPI
+        directive, sampling will not commence because there is only one
+        process. Default is ``True`` since only in testing is it justifiable to
+        use a single process.
+
+    :param kwargs:
+        Passed to initialisers of appropriate classes:
+
+            * boolean to resume, under keyword :obj:`resume`;
+            * number of steps, under keyword :obj:`nsteps`;
+            * number of walkers per temperature, under keyword :obj:`nwalkers`;
+            * number of temperatures, under keyword :obj:`ntemps` (can be
+              ``None`` to let ``ptemcee`` choose);
+            * maximum temperature, under keyword :obj:`Tmax` (can be ``None``);
+            * explicit inverse-temperature ladder, under keyword :obj:`betas`
+              (can be ``None``);
+            * adapt the temperature ladder, under keyword :obj:`adapt`;
+            * moments of initial walker multivariate Gaussian distribution,
+              under keyword :obj:`walker_dist_moments` (can be ``None``);
+            * walker initialisation mode (``'prior'``, ``'gaussian'`` or
+              ``'samples'``), under keyword :obj:`init_mode` (``None`` to
+              choose from the other arguments);
+            * posterior samples (path or array, e.g. a MultiNest ``.txt``
+              output) to initialise from, under keyword :obj:`init_samples`;
+            * scatter around those samples in units of the posterior standard
+              deviation, under keyword :obj:`init_scatter`;
+            * save the initial walker positions, under keyword
+              :obj:`save_init`;
+            * root directory for output, under keyword :obj:`root_dir`;
+            * output file-root basename, under keyword :obj:`root`;
+            * checkpoint interval in iterations, under keyword :obj:`checkpoint`;
+            * burn-in and thinning of the written cold chain, under keywords
+              :obj:`burn_in` and :obj:`thin`.
+
+    The above objects are used to instantiate :class:`~.Posterior.Posterior`.
+
+    :return: An instance of :class:`~.PTEmceeSampler.PTEmceeSampler`.
+
+    """
+    try:
+        from xpsi.PTEmceeSampler import PTEmceeSampler
+    except ImportError as e:
+        raise ImportError('Check your installation of ptemcee to use '
+                          'run_ptemcee.') from e
+
+    # use the globally scoped variable
+    global posterior
+    # Callable instance of the posterior
+    posterior = Posterior(likelihood,
+                          prior,
+                          **kwargs)
+
+    if MPI or _size > 1:
+        try:
+            from schwimmbad import MPIPool
+        except ImportError:
+            raise ImportError('Check your schwimmbad package installation.')
+
+        # Initialize the MPI-based pool used for parallelisation.
+        with MPIPool() as pool:
+            if not pool.is_master():
+                # Wait for instructions from the master process.
+                pool.wait()
+                _sys.exit(0)
+
+            # Initialise ptemcee sampler
+            sampler = PTEmceeSampler(ndims = len(likelihood),
+                                     loglikelihood = logl_func,
+                                     logprior = logp_func,
+                                     pool = pool,
+                                     _posterior = posterior,
+                                     **kwargs)
+
+            # Commence ptemcee sampling process
+            sampler()
+    else:
+        # Initialise ptemcee sampler
+        sampler = PTEmceeSampler(ndims = len(likelihood),
+                                 loglikelihood = posterior.loglikelihood,
+                                 logprior = posterior.logprior,
+                                 pool = None,
+                                 _posterior = posterior,
+                                 **kwargs)
+
+        # Commence ptemcee sampling process
+        sampler()
+
+    return sampler
+
 def run_multinest(likelihood, prior, check_kwargs={}, **kwargs):
     """ Initialise MultiNest and integrate.
 
@@ -106,6 +226,11 @@ def run_multinest(likelihood, prior, check_kwargs={}, **kwargs):
     :param kwargs: Keyword arguments for PyMultiNest.
 
     """
+    try:
+        from xpsi.MultinestSampler import MultinestSampler
+    except Exception as e:
+        raise ImportError('Check your installation of PyMultiNest to use '
+                          'run_multinest.') from e
 
     if check_kwargs:
         likelihood.check(**check_kwargs)
@@ -148,6 +273,11 @@ def run_ultranest(likelihood,
     :returns: An instance of :class:`~.UltranestSampler`
 
     """
+    try:
+        from xpsi.UltranestSampler import UltranestSampler
+    except ImportError as e:
+        raise ImportError('Check your installation of UltraNest to use '
+                          'run_ultranest.') from e
 
     # initialise the sampler
     sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)

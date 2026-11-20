@@ -109,7 +109,7 @@ cdef void free_RAY(_RAY *const RAY) noexcept nogil:
     free(<_RAY*> RAY)
 
 cdef int RK(_RAY *const RAY,
-            const _GEOM *const GEOM) noexcept nogil:
+            const _GEOM *const GEOM, int obl_surfgrav_ind) noexcept nogil:
 
     reset_RAY(RAY, GEOM)
 
@@ -243,7 +243,7 @@ cdef int RK(_RAY *const RAY,
 
                 #printf("\nx: %.8e; y: %.8e", X_IP, Y_IP)
 
-                if r_sph / GEOM.R_eq <= RADIUS(cos_theta_sph, GEOM.epsilon, GEOM.zeta):
+                if r_sph / GEOM.R_eq <= RADIUS(cos_theta_sph, GEOM.epsilon, GEOM.zeta, obl_surfgrav_ind):
                     RAY.EVOLVE = 0
                     status = BISECT(RAY.PREVIOUS,
                                     RAY.STATE,
@@ -253,7 +253,8 @@ cdef int RK(_RAY *const RAY,
                                     GEOM.a,
                                     GEOM.R_eq,
                                     GEOM.epsilon,
-                                    GEOM.zeta)
+                                    GEOM.zeta,
+                                    obl_surfgrav_ind)
                     RAY.STATE[0] = RAY.BISECT_STATE[0]
                     RAY.STATE[1] = RAY.BISECT_STATE[1]
                     RAY.STATE[2] = RAY.BISECT_STATE[2]

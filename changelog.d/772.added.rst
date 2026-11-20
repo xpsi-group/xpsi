@@ -1,0 +1,1 @@
+Added the sampler PT-emcee for parallel-tempered ensemble-MCMC. 

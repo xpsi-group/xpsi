@@ -112,7 +112,7 @@ cdef int compute_globalRayMap(size_t numThreads,
                               const _GEOM *const GEOM,
                               RAY_MAP *const MAP,
                               _RAY **RAYS,
-                              int force_circular) noexcept nogil:
+                              int force_circular, int obl_surfgrav_ind) noexcept nogil:
 
     cdef:
         signed int ii
@@ -121,14 +121,14 @@ cdef int compute_globalRayMap(size_t numThreads,
         size_t N = MAP.numRays
         size_t ROOT, INDEX
 
-    compute_imagePlane_radius(GEOM, RAYS[0], MAP, force_circular)
+    compute_imagePlane_radius(GEOM, RAYS[0], MAP, force_circular, obl_surfgrav_ind)
 
     init_RAY_MAP(MAP, radialIncrementExponent)
 
     RAYS[0].X_IP = MAP.ORIGIN_X
     RAYS[0].Y_IP = MAP.ORIGIN_Y
     # Compute centre ray; (X,Y)=(0,0) shifted
-    status = RK(RAYS[0], GEOM)
+    status = RK(RAYS[0], GEOM, obl_surfgrav_ind)
 
     MAP.ORIGIN[0] = -1.0 * RAYS[0].STATE[0] / c
     MAP.ORIGIN[1] = RAYS[0].STATE[1]
@@ -139,7 +139,8 @@ cdef int compute_globalRayMap(size_t numThreads,
          RAYS[0].STATE,
          RAYS[0].IMPACT,
          MAP.ORIGIN + 4,
-         MAP.ORIGIN + 5)
+         MAP.ORIGIN + 5,
+         obl_surfgrav_ind)
 
     #printf("\nOrigin (Z, ABB): (%.8e, %.8e)", MAP.ORIGIN[4], MAP.ORIGIN[5])
 
@@ -168,7 +169,7 @@ cdef int compute_globalRayMap(size_t numThreads,
             RAYS[T].X_IP = MAP.X_MODDED[INDEX]
             RAYS[T].Y_IP = MAP.Y_MESH[INDEX]
 
-            status = RK(RAYS[T], GEOM)
+            status = RK(RAYS[T], GEOM, obl_surfgrav_ind)
 
             MAP.LAG[INDEX] = -1.0 * RAYS[T].STATE[0] / c
             MAP.PHI[INDEX] = RAYS[T].STATE[1]
@@ -180,7 +181,7 @@ cdef int compute_globalRayMap(size_t numThreads,
                      RAYS[T].STATE,
                      RAYS[T].IMPACT,
                      MAP.Z + INDEX,
-                     MAP.ABB + INDEX)
+                     MAP.ABB + INDEX, obl_surfgrav_ind)
             else:
                 (MAP.Z + INDEX)[0] = -1.0
                 (MAP.ABB + INDEX)[0] = -2.0

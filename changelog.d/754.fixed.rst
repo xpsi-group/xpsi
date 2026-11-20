@@ -1,0 +1,1 @@
+Fixed a typo in the coefficient of the quadrupole term of the AlGendy & Morsink (2014) relation (0.4554 to 0.4454), which affects only the images computed with ``PhotospherePlotter``.
