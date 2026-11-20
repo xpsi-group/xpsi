@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Use of generative AI in contributions &mdash; x-psi 3.5.0b1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=97082fbc"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History" href="history.html" />
+    <link rel="prev" title="Contributing" href="contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Use of generative AI in contributions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#human-responsibility">Human responsibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#disclosure">Disclosure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#licensing-and-copyright">Licensing and copyright</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automated-contributions-and-bots">Automated contributions and bots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-by-the-x-psi-team">Use by the X-PSI team</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enforcement">Enforcement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Other_Emission_Models.html">Other emission models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Synthetic_data.html">Synthetic data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Use of generative AI in contributions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ai_policy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="use-of-generative-ai-in-contributions">
+<span id="ai-policy"></span><h1>Use of generative AI in contributions<a class="headerlink" href="#use-of-generative-ai-in-contributions" title="Link to this heading"></a></h1>
+<p>This page sets out how we handle contributions to X-PSI that were developed
+with the help of generative AI tools, such as large language models (LLMs) and
+AI coding assistants. It applies to everything submitted to the X-PSI
+repositories: code, tests, documentation, tutorials and notebooks, issues,
+pull requests and review comments.</p>
+<p>We do not ban the use of AI tools. Many of us use them, and they can be
+genuinely useful for exploring code, debugging, and drafting tests or
+documentation. However, reviewing a contribution takes the time of the X-PSI
+team, and X-PSI is used for published scientific results. We therefore ask
+that every contribution is worth more to the project than the effort needed to
+review it, and that it is clear how it was produced.</p>
+<section id="human-responsibility">
+<h2>Human responsibility<a class="headerlink" href="#human-responsibility" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>You are responsible for everything you submit, whether you wrote it yourself
+or an AI tool generated some or all of it.</p></li>
+<li><p>You must have read, understood and tested all of it before asking anyone to
+review it, and you must be able to explain any part of it during review.</p></li>
+<li><p>Respond to reviewers yourself. Passing reviewer comments to an AI tool and
+posting its answers back does not count as engaging with the review.</p></li>
+<li><p>Write pull request descriptions, issues and review comments yourself, so that
+they reflect your own understanding. Using tools to translate or to correct
+grammar and spelling is fine.</p></li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Disclosure<a class="headerlink" href="#disclosure" title="Link to this heading"></a></h2>
+<p>The description of every pull request must include an <strong>AI disclosure</strong>,
+including pull requests where no AI tools were used. If AI tools were used,
+state:</p>
+<ul class="simple">
+<li><p><strong>which tool(s) and model(s)</strong>, including the <strong>version</strong> where it is
+available (for example “Claude Code with Claude Opus 5.5”);</p></li>
+<li><p><strong>how</strong> they were used (for example: writing new code, writing tests,
+writing documentation, debugging, refactoring, or understanding existing
+code); and</p></li>
+<li><p><strong>which parts</strong> of the code or text were generated by AI, and how you checked
+them.</p></li>
+</ul>
+<p>You can copy the following into your pull request description and fill it in:</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gu">## AI disclosure</span>
+
+<span class="k">-</span><span class="w"> </span>AI tools used: &lt;none | tool(s) and model(s), with version&gt;
+<span class="k">-</span><span class="w"> </span>Used for: &lt;e.g. writing code, writing tests, documentation, debugging,
+  understanding the code base&gt;
+<span class="k">-</span><span class="w"> </span>AI-generated parts and how I checked them: &lt;files/sections, and how you
+  reviewed and tested them&gt;
+<span class="k">-</span><span class="w"> </span>I have read, understood and tested all AI-generated content, and I opened
+  this pull request myself.
+</pre></div>
+</div>
+<p>You may also record AI assistance in your commit messages with a trailer such
+as <code class="docutils literal notranslate"><span class="pre">Assisted-by:</span> <span class="pre">&lt;tool&gt;:&lt;model&gt;</span></code>. Please do not list an AI tool as a
+co-author (<code class="docutils literal notranslate"><span class="pre">Co-authored-by:</span></code>): authorship and responsibility for a
+contribution rest with its human contributors. Some tools add a
+<code class="docutils literal notranslate"><span class="pre">Co-authored-by:</span></code> line to commit messages automatically, so please check
+your commits and replace it with <code class="docutils literal notranslate"><span class="pre">Assisted-by:</span></code>. An automatic check on every
+pull request flags commits that list an AI tool as co-author or author, and
+explains how to fix them.</p>
+<p>Disclosure is not held against you. It helps reviewers decide where to look
+most carefully, keeps a record of how X-PSI was developed, and helps people who
+use X-PSI in publications to meet the disclosure requirements of journals and
+funders.</p>
+</section>
+<section id="licensing-and-copyright">
+<h2>Licensing and copyright<a class="headerlink" href="#licensing-and-copyright" title="Link to this heading"></a></h2>
+<p>X-PSI is distributed under the GNU General Public License v3. By submitting a
+contribution you confirm that you have the right to contribute it under that
+licence. AI tools can reproduce existing code or text, so it is your
+responsibility to make sure that AI-generated material does not infringe
+anyone else’s copyright or licence terms.</p>
+</section>
+<section id="automated-contributions-and-bots">
+<h2>Automated contributions and bots<a class="headerlink" href="#automated-contributions-and-bots" title="Link to this heading"></a></h2>
+<p>Every contribution must come from a human who has reviewed it and takes
+responsibility for it.</p>
+<ul class="simple">
+<li><p>We do not accept issues, pull requests or review comments created
+autonomously by AI agents or other automated tools. Such submissions will be
+closed without review, and accounts that repeatedly submit them may be
+blocked.</p></li>
+<li><p>The only exceptions are automated workflows that the X-PSI team has set up
+itself. These are listed below; any new ones will be added to this list.</p></li>
+</ul>
+<p>Automated workflows currently enabled by the X-PSI team:</p>
+<ul class="simple">
+<li><p><strong>GitHub Actions</strong> (acting as <code class="docutils literal notranslate"><span class="pre">github-actions[bot]</span></code>), configured in
+<code class="docutils literal notranslate"><span class="pre">.github/workflows/</span></code>. It runs the test suite on every pull request and on
+<code class="docutils literal notranslate"><span class="pre">main</span></code>, and checks that each pull request has a changelog fragment and
+that none of its commits lists an AI tool as co-author or author. It also
+writes to the repository in two cases: it commits the updated
+<code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> to a pull request’s branch when a maintainer adds the
+<code class="docutils literal notranslate"><span class="pre">ready-for-changelog</span></code> label, and it deploys the documentation to the
+<code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch after each change to <code class="docutils literal notranslate"><span class="pre">main</span></code>. It does not open issues
+or pull requests.</p></li>
+</ul>
+</section>
+<section id="use-by-the-x-psi-team">
+<h2>Use by the X-PSI team<a class="headerlink" href="#use-by-the-x-psi-team" title="Link to this heading"></a></h2>
+<p>The same rules apply to X-PSI team members. Maintainers may also use AI tools
+to help with triage or review, but decisions on contributions are always made
+by people.</p>
+</section>
+<section id="enforcement">
+<h2>Enforcement<a class="headerlink" href="#enforcement" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Pull requests whose description does not include an AI disclosure will be
+marked as drafts and will not be reviewed until one is added.</p></li>
+<li><p>Contributions that do not follow this policy, or that we judge to be
+low-effort AI-generated content, may be closed without detailed review.</p></li>
+<li><p>Repeatedly ignoring this policy may be treated as a breach of our
+<a class="reference internal" href="code_of_conduct.html#code-of-conduct"><span class="std std-ref">Code of Conduct</span></a>.</p></li>
+</ul>
+<p>This policy will be revised as tools and community practice develop. If you are
+unsure whether or how it applies to your contribution, please ask us via the
+GitHub <a class="reference external" href="https://github.com/xpsi-group/xpsi/issues/">Issues</a> page before
+opening a pull request.</p>
+</section>
+<section id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading"></a></h2>
+<p>This policy draws on the policies of other open-source scientific software
+projects, in particular:</p>
+<ul class="simple">
+<li><p>Astropy, <a class="reference external" href="https://github.com/astropy/astropy-project/blob/main/policies/ai-policy.md">Usage of Generative AI</a>
+(human accountability, engaging with reviewers yourself, autonomous agents
+are not contributors);</p></li>
+<li><p>SunPy, <a class="reference external" href="https://docs.sunpy.org/en/latest/dev_guide/contents/ai_usage.html">AI Usage</a>
+(a mandatory disclosure section in every pull request, and how it is
+enforced);</p></li>
+<li><p>NumPy, <a class="reference external" href="https://numpy.org/devdocs/dev/ai_policy.html">AI Policy</a>, and
+SciPy, <a class="reference external" href="https://docs.scipy.org/doc/scipy/dev/conduct/ai_policy.html">AI Policy</a>
+(disclosing which tools were used, how, and for which parts);</p></li>
+<li><p>earthaccess, <a class="reference external" href="https://earthaccess.readthedocs.io/en/latest/contributor/ai-policy/">AI Policy</a>
+(disclosing tool versions, and no autonomous agent pull requests);</p></li>
+<li><p>scikit-learn, <a class="reference external" href="https://scikit-learn.org/stable/developers/contributing.html">Automated Contributions Policy</a>
+(refusing contributions generated by fully automated tools);</p></li>
+<li><p>LLVM, <a class="reference external" href="https://llvm.org/docs/AIToolPolicy.html">AI Tool Use Policy</a>
+(the principle that a contribution should be worth more to the project than
+the time it takes to review it);</p></li>
+<li><p>the <a class="reference external" href="https://scientific-python-cookie.readthedocs.io/en/latest/guides/ai">Scientific Python Development Guide</a>
+(the <code class="docutils literal notranslate"><span class="pre">Assisted-by:</span></code> commit trailer, and keeping AI tools out of
+<code class="docutils literal notranslate"><span class="pre">Co-authored-by:</span></code>).</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="history.html" class="btn btn-neutral float-right" title="History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
