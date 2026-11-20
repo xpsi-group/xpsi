@@ -1,0 +1,1 @@
+Calling twice the model loader on different models used cached dependencies of custom classes for the second model, resulting in potential failure. This has been fixed.
