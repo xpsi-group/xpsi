@@ -49,6 +49,11 @@ class Posterior(object):
 
         self._prior = prior
 
+        # single-point cache for the split log-likelihood/log-prior evaluation
+        # used by parallel-tempered sampling (see :meth:`_evaluate_split`)
+        self._split_point = None
+        self._split_values = (0.0, -_np.inf)
+
     @property
     def likelihood(self):
         """ Get the likelihood object. """
@@ -91,3 +96,85 @@ class Posterior(object):
             ll = 0.0
 
         return ll + lp
+
+    def _evaluate_split(self, p):
+        """ Evaluate the log-likelihood and log-prior together at :obj:`p`.
+
+        Parallel-tempered sampling (e.g. `ptemcee`_) requires the prior and
+        likelihood as distinct callables rather than the combined posterior in
+        :meth:`__call__`, and it evaluates a point by calling :meth:`logprior`
+        immediately followed by :meth:`loglikelihood` for the *same* ``p``.
+
+        The parameter vector must be pushed into the likelihood object only
+        *once* per point: the X-PSI likelihood detects a change by comparing a
+        parameter's value with its cached previous value, and pushing the same
+        vector a second time would make them equal again, clearing the
+        update flag and leaving the likelihood stale (returning the previously
+        computed value). This method therefore does the single update, computes
+        both quantities, and caches them so the paired call reuses the result
+        instead of updating the vector again.
+
+        .. _ptemcee: https://github.com/willvousden/ptemcee
+
+        :returns: The tuple ``(loglikelihood, logprior)``.
+
+        """
+        key = tuple(p)
+        if key == self._split_point:
+            return self._split_values
+
+        q = self._likelihood.vector # make our own cache here
+
+        try:
+            ParameterSubspace.__call__(self._likelihood, p)
+        except StrictBoundsError:
+            ParameterSubspace.__call__(self._likelihood, q)
+            self._split_point = key
+            self._split_values = (0.0, -_np.inf)
+            return self._split_values
+
+        lp = self._prior(p)
+
+        if _np.isnan(lp):
+            raise PriorError('Log-prior is not a number.')
+
+        if _np.isfinite(lp):
+            try:
+                ll = self._likelihood()
+            except LikelihoodError:
+                print('Parameter vector: ', p)
+                raise
+        else:
+            ParameterSubspace.__call__(self._likelihood, q)
+            ll = 0.0
+
+        self._split_point = key
+        self._split_values = (ll, lp)
+        return self._split_values
+
+    def logprior(self, p):
+        """ The logarithm of the prior density, evaluated at :obj:`p`.
+
+        Companion to :meth:`loglikelihood` for parallel-tempered sampling; see
+        :meth:`_evaluate_split`.
+
+        :returns:
+            The logarithm of the prior density (up to a normalising constant),
+            or minus infinity if :obj:`p` lies outside the strict parameter
+            bounds.
+
+        """
+        return self._evaluate_split(p)[1]
+
+    def loglikelihood(self, p):
+        """ The logarithm of the likelihood function, evaluated at :obj:`p`.
+
+        Companion to :meth:`logprior` for parallel-tempered sampling; see
+        :meth:`_evaluate_split`.
+
+        :returns:
+            The logarithm of the likelihood. ``ptemcee`` only requires it where
+            the log-prior is finite.
+
+        """
+        return self._evaluate_split(p)[0]

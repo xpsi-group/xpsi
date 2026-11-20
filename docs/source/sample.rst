@@ -11,4 +11,6 @@ Use these functions to run sampling/integration processes.
 
 .. autofunction:: xpsi.Sample.run_emcee
 
+.. autofunction:: xpsi.Sample.run_ptemcee
+
 .. autofunction:: xpsi.Sample.run_ultranest

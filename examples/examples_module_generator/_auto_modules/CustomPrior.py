@@ -128,6 +128,7 @@ from xpsi.global_imports import _2pi, gravradius, _dpr
 from xpsi import Parameter
 
 from xpsi.cellmesh.mesh_tools import eval_cedeCentreCoords as eval_coords_under_rotation
+from xpsi.surface_radiation_field.effective_gravity_universal import (py_oblateness_func_o2 as oblateness_func_o2)
 from scipy.interpolate import Akima1DInterpolator
 
 if args.prior_import_statements is not None:
@@ -190,11 +191,11 @@ class CustomPrior(xpsi.Prior):
             return -np.inf
 
         # limit polar radius to be just outside the Schwarzschild photon sphere
-        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        R_p = 1.0 + ref.epsilon * oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind)
         if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
-        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
+        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind)))
         # 2-surface cross-section have a single maximum in |z|
         # i.e., an elliptical surface; minor effect on support, if any,
         # only for high spin frequencies
@@ -206,7 +207,8 @@ class CustomPrior(xpsi.Prior):
         grav = xpsi.surface_radiation_field.effective_gravity(np.array([1.0, 0.0]),
                                                               np.array([ref.R] * 2 ),
                                                               np.array([ref.zeta] * 2),
-                                                              np.array([ref.epsilon] * 2))
+                                                              np.array([ref.epsilon] * 2),
+                                                              ref._obl_surfgrav_ind)
 
         for g in grav:
             if not 13.7 <= g <= 15.0: # check that these NSX effective gravity table limits are correct
