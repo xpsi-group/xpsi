@@ -1,0 +1,2 @@
+Fixing a missing argument when calling `InstrumentPileup` which now requires the ARF as a parameter.
+Fixing a missing argument in `effective_gravity` when called in the `Everywhere` checks of Photosphere (`_obl_surfgrav_ind`)
