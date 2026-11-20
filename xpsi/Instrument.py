@@ -607,6 +607,7 @@ class InstrumentPileup(Instrument):
         
         ## Compute spectrum with pileup
         piled_spectrum = self.pileup.analyze(signal,
+                                             self.ARF,
                                              alpha=self['grade_migration'],
                                              psf_frac=self['psf_fraction'])
 

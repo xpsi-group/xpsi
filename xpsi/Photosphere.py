@@ -551,7 +551,8 @@ class Photosphere(ParameterSubspace):
                 grav = effective_gravity(_np.array([1.0, 0.0]),
                                         _np.array([ref.R] * 2 ),
                                         _np.array([ref.zeta] * 2),
-                                        _np.array([ref.epsilon] * 2))
+                                        _np.array([ref.epsilon] * 2),
+                                        ref._obl_surfgrav_ind)
 
                 for g in grav:
                     if not g_low <= g <= g_high:
