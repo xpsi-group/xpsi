@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 from xpsi.Data import Data
+from xpsi.Instrument import ChannelError
 
 import pytest
 
@@ -55,6 +56,15 @@ class TestDataLoading( object ):
         assert data._first == FIRST
         assert data._last == LAST
         assert data.exposure_time == EXPOSURE
+
+    # Plain Python lists are converted to numpy arrays
+    def test_init_from_lists( self , data ):
+        data_list = Data(counts=COUNTS.tolist(), channels=CHANNELS.tolist(),
+                         phases=PHASES.tolist(), first=FIRST, last=LAST,
+                         exposure_time=EXPOSURE)
+        for attr in ( 'counts', 'channels', 'phases' ):
+            assert isinstance( getattr( data_list, attr ), np.ndarray )
+        compare_data( data, data_list )
 
     # Load a text file corresponding to data()
     def test_txt( self , data ):
@@ -140,6 +150,26 @@ class TestWrongInput( object ):
             Data(counts= np.zeros_like( COUNTS ), channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
+    def test_2d_phases( self ):
+        with pytest.raises( ValueError , match='one-dimensional' ):
+            Data(counts=COUNTS, channels=CHANNELS, phases=PHASES.reshape(1,-1),
+                 first=FIRST, last=LAST, exposure_time=EXPOSURE)
+
+    @pytest.mark.parametrize('first, last', [ (None, LAST), (FIRST, None),
+                                              ([FIRST], LAST) ],
+                             ids=['first_None', 'last_None', 'first_list'])
+    def test_non_integer_first_last( self , first, last ):
+        with pytest.raises( TypeError , match='must be integers' ):
+            Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
+                 first=first, last=last, exposure_time=EXPOSURE)
+
+    # A non-numeric string fails in ``int()`` with a ValueError, not the
+    # TypeError raised for other non-integer types
+    def test_non_numeric_string_first( self ):
+        with pytest.raises( ValueError , match='invalid literal' ):
+            Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
+                 first='a', last=LAST, exposure_time=EXPOSURE)
+
     def test_first_larger_than_last( self ):
         with pytest.raises( ValueError ):
             Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
@@ -169,6 +199,39 @@ class TestImmutableObjects( object ):
     def test_immutable_counts( self , data ):
         with pytest.raises( AttributeError ):
             data.counts = COUNTS
+
+
+##################################################
+### Check the channels are validated when set ###
+##################################################
+class TestChannels( object ):
+
+    @pytest.mark.parametrize('channels', [ -CHANNELS, CHANNELS.reshape(1,-1) ],
+                             ids=['negative', '2d'])
+    def test_invalid_channels_at_init( self , channels ):
+        with pytest.raises( ChannelError ):
+            Data(counts=COUNTS, channels=channels, phases=PHASES,
+                 first=FIRST, last=LAST, exposure_time=EXPOSURE)
+
+    @pytest.mark.parametrize('channels', [ -CHANNELS, CHANNELS.reshape(1,-1) ],
+                             ids=['negative', '2d'])
+    def test_setter_revalidates( self , data, channels ):
+        with pytest.raises( ChannelError ):
+            data.channels = channels
+        # The failed assignment leaves the channels unchanged
+        np.testing.assert_array_equal( data.channels, CHANNELS )
+
+    def test_setter_accepts_list( self , data ):
+        data.channels = [ 40, 41, 42 ]
+        assert isinstance( data.channels, np.ndarray )
+        np.testing.assert_array_equal( data.channels, [ 40, 41, 42 ] )
+
+    def test_non_contiguous_channels_warning( self , monkeypatch, capsys ):
+        # The warning is only printed when verbosity is on
+        monkeypatch.setattr( 'xpsi.utils._verbose', True )
+        Data(counts=COUNTS, channels=np.array([ 30, 32, 34 ]), phases=PHASES,
+             first=FIRST, last=LAST, exposure_time=EXPOSURE)
+        assert 'do not uniformly increment by one' in capsys.readouterr().out
 
 
 #######################################
