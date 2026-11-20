@@ -878,7 +878,26 @@ class HotRegion(ParameterSubspace):
             return (self._super_cellArea, None)
 
     def __calibrate_lag(self, st, photosphere):
-        """ Calibrate lag for cell mesh and normalise by pulse period. """
+        r""" Calibrate lag for cell mesh and normalise by pulse period.
+
+        The ray lags from :func:`~xpsi.cellmesh.rays.compute_rays` are relative
+        to a radial photon emitted from the same radius :math:`R(\theta)`
+        (Morsink et al. 2007, Eq. 38). On an oblate star that radius varies
+        with colatitude, so the lags are referred to a common reference: a
+        radial photon emitted from the equatorial radius :math:`R_{\rm eq}`.
+        The radial light-travel time from :math:`R` to :math:`R_{\rm eq}` is
+
+        .. math::
+
+            c\,\delta t = R_{\rm eq} - R
+                + r_{s}\ln\frac{R_{\rm eq} - r_{s}}{R - r_{s}},
+
+        as in Salmi, Nättilä & Poutanen (2018, A&A 618, A161, Eqs. 10-11)
+        with :math:`r_{\rm ref} = R_{\rm eq}`. The variable ``C`` below is
+        :math:`-\delta t`. The lags are then converted to phase by
+        multiplying by :math:`2\pi` times the mode frequency.
+
+        """
 
         R_i = st.R_r_s
 
