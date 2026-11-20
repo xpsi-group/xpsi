@@ -265,6 +265,21 @@ class TestCustomInterstellar:
         with pytest.raises(ValueError):
             ism(np.ones(3), np.ones((4, 2)))
 
+    def test_1d_length_mismatch_raises(self):
+        ism = ism_nh(1.0)
+        with pytest.raises(ValueError):
+            ism(np.ones(3), np.ones(4))
+
+    @pytest.mark.parametrize('shape', [(4,), (4, 2)])
+    def test_single_energy_with_several_rows_raises(self, shape):
+        # A length-1 attenuation would broadcast silently over any number
+        # of rows, so this mismatch must be caught by an explicit check.
+        ism = ism_nh(1.0)
+        sig = np.ones(shape)
+        with pytest.raises(ValueError, match='one row per energy'):
+            ism(np.ones(1), sig)
+        np.testing.assert_array_equal(sig, 1.0)   # left untouched
+
     def test_parameter_limits(self):
         with pytest.raises(StrictBoundsError):
             ism_nh(100.0)
