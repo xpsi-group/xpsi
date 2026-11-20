@@ -316,3 +316,35 @@ class TestCustomInterstellar:
         att = ism.attenuation(energies)
         assert not np.isnan(att).any()
         np.testing.assert_allclose(att, table, rtol=1e-12)
+
+    ### Clipping and extrapolation outside the tabulated range (0.1-12 keV) ###
+    def test_raw_extrapolation_leaves_unit_interval(self):
+        # Sanity check: without clipping, the Akima extrapolation of this table
+        # goes below 0 and above 1, so the clipping tests below are meaningful.
+        raw = ism_nh(1.0)._interpolator(np.array([0.01, 20.0]))
+        assert raw[0] < 0.0
+        assert raw[1] > 1.0
+
+    @pytest.mark.parametrize('nh', [0.5, 1.0, 10.0])
+    def test_attenuation_within_unit_interval_everywhere(self, nh):
+        energies = np.concatenate([np.linspace(0.001, 0.1, 50),
+                                   np.linspace(0.1, 12.0, 200),
+                                   np.linspace(12.0, 100.0, 50)])
+        att = ism_nh(nh).attenuation(energies)
+        assert np.all(np.isfinite(att))
+        assert np.all((att >= 0.0) & (att <= 1.0))
+
+    def test_below_table_clipped_to_full_absorption(self):
+        energies = np.array([0.01, 0.05])
+        np.testing.assert_array_equal(ism_nh(1.0).attenuation(energies), 0.0)
+
+    def test_above_table_clipped_to_no_absorption(self):
+        energies = np.array([20.0, 50.0, 100.0])
+        np.testing.assert_array_equal(ism_nh(1.0).attenuation(energies), 1.0)
+
+    def test_extrapolation_is_enabled_just_outside_table(self):
+        # Just below 0.1 keV the extrapolated value is still inside (0, 1):
+        # it must be returned as a finite number, not NaN or clipped.
+        att = ism_nh(1.0).attenuation(np.array([0.09]))
+        assert np.isfinite(att[0])
+        assert 0.0 < att[0] < 1.0
