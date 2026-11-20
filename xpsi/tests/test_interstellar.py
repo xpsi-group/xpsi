@@ -280,6 +280,12 @@ class TestCustomInterstellar:
             ism(np.ones(1), sig)
         np.testing.assert_array_equal(sig, 1.0)   # left untouched
 
+    def test_constructor_length_mismatch_raises(self):
+        with pytest.raises(AssertionError, match='Array length mismatch'):
+            CustomInterstellar(np.linspace(0.1, 12.0, 10),
+                               np.linspace(0.1, 0.9, 9),
+                               bounds={'neutral_hydrogen_column_density': (0.0, 50.0)})
+
     def test_parameter_limits(self):
         with pytest.raises(StrictBoundsError):
             ism_nh(100.0)
