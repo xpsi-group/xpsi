@@ -15,6 +15,9 @@ FIRST = 30
 LAST = 32
 EXPOSURE = 12345.6789
 
+# Folder containing the test data files
+DATA_DIR = os.path.join( os.path.dirname( os.path.abspath(__file__) ), 'data' )
+
 @pytest.fixture
 def data():
     return Data(counts=COUNTS, channels=CHANNELS, phases=PHASES, 
@@ -56,7 +59,7 @@ class TestDataLoading( object ):
     # Load a text file corresponding to data()
     def test_txt( self , data ):
         data_txt = Data.bin__event_list(
-            path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'data','Data.txt'),
+            path=os.path.join( DATA_DIR, 'Data.txt' ),
             channels=CHANNELS,
             phases=PHASES,
             channel_column=1,
@@ -71,7 +74,7 @@ class TestDataLoading( object ):
     # Load an event file corresponding to data()
     def test_evt( self , data ):
         data_evt = Data.load( 
-            os.path.join(os.path.dirname(os.path.abspath(__file__)),'data','Data.evt'),
+            os.path.join( DATA_DIR, 'Data.evt' ),
             n_phases=2,
             channels=CHANNELS
             )
@@ -81,7 +84,7 @@ class TestDataLoading( object ):
     # Load a phase-averaged spectrum corresponding to data()
     def test_pha( self , data ):
         data_pha = Data.load(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)),'data','Data.pha'),
+            os.path.join( DATA_DIR, 'Data.pha' ),
             channels=CHANNELS
         )
         compare_data( data, data_pha, phase_resolved_vs_averaged=True )
@@ -93,13 +96,12 @@ class TestDataLoading( object ):
 ################################################
 class TestDataProperties( object ):
 
-    def test_properties( self , data ):
-        assert data.counts.shape == (3,2)
-        assert data.channels.shape == (3,)
-        assert data.phases.shape == (3,)
-        assert data._first == FIRST
-        assert data._last == LAST
-        assert data.exposure_time == EXPOSURE
+    def test_index_range( self , data ):
+        # Upper bound is last + 1, for array slicing
+        assert data.index_range == (FIRST, LAST + 1)
+
+    def test_channel_range_is_deprecated_alias( self , data ):
+        assert data.channel_range == data.index_range
 
 
 #################################
@@ -107,9 +109,17 @@ class TestDataProperties( object ):
 #################################
 class TestWrongInput( object ):
     
-    def test_wrong_counts_shapes( self ):
-        with pytest.raises( ValueError ):
+    def test_wrong_counts_rows( self ):
+        # 2 rows, but first/last require 3
+        with pytest.raises( ValueError , match='number of rows' ):
             Data(counts=COUNTS.T, channels=CHANNELS, phases=PHASES, 
+                 first=FIRST, last=LAST, exposure_time=EXPOSURE)
+
+    def test_wrong_counts_columns( self ):
+        # 3 columns, but 3 phase edges give only 2 phase bins
+        counts = np.hstack( ( COUNTS, COUNTS[:,:1] ) )
+        with pytest.raises( ValueError , match='number of columns' ):
+            Data(counts=counts, channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
     def test_3d_counts( self ):
@@ -117,9 +127,12 @@ class TestWrongInput( object ):
             Data(counts=COUNTS.reshape(3,2,1), channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
-    def test_negative_counts( self ):
-        with pytest.raises( ValueError ):
-            d = Data(counts= -COUNTS, channels=CHANNELS, phases=PHASES, 
+    @pytest.mark.parametrize('counts', [ -COUNTS,
+                                         COUNTS * np.array([[1, 1], [1, -1], [1, 1]]) ],
+                             ids=['all_negative', 'one_negative'])
+    def test_negative_counts( self , counts ):
+        with pytest.raises( ValueError , match='Negative count' ):
+            Data(counts=counts, channels=CHANNELS, phases=PHASES, 
                  first=FIRST, last=LAST, exposure_time=EXPOSURE)
 
     def test_zero_counts( self ):
@@ -132,10 +145,12 @@ class TestWrongInput( object ):
             Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
                  first=LAST, last=FIRST, exposure_time=EXPOSURE)
 
-    def test_negative_exposure_time( self ):
-        with pytest.raises( ValueError ):
+    @pytest.mark.parametrize('exposure', [ -EXPOSURE, 0.0 ],
+                             ids=['negative', 'zero'])
+    def test_non_positive_exposure_time( self , exposure ):
+        with pytest.raises( ValueError , match='exposure time' ):
             Data(counts=COUNTS, channels=CHANNELS, phases=PHASES, 
-                 first=FIRST, last=LAST, exposure_time=-EXPOSURE)
+                 first=FIRST, last=LAST, exposure_time=exposure)
 
 #############################################
 ### Check some objects cannot be changed ###
@@ -190,25 +205,37 @@ class TestTrimming( object ):
         data.trim_data( min_channel=31, max_channel=32 )
         np.testing.assert_array_equal( data.counts , COUNTS[1:,:] )
 
+    def test_resulting_index_range( self , data ):
+        # After trimming, the index range restarts at 0 and spans the kept rows
+        data.trim_data( min_channel=31, max_channel=32 )
+        assert data.index_range == (0, 2)
+
 ##############################################
 ### Check the spectrum support computation ###
 ##############################################
 BACKSCAL_SOURCE = 1.0
 BACKSCAL_BACKGROUND = 5.0
-SUPORT_EXPECTED_VALUES = np.array( [[0.0, 1.327777e-04],
-                                    [0.0, 2.419835e-04],
-                                    [1.701204e-05, 3.393880e-04]])
+N_SIGMA = 3.0
+
+# Expected support: Poisson interval [c - n*sqrt(c), c + n*sqrt(c)] on the
+# phase-summed counts c, lower bound clipped at 0, converted to a count rate
+# and rescaled by the ratio of source to background BACKSCAL.
+# With c = [3, 7, 11], only the last lower bound is non-zero.
+_C = COUNTS.sum(axis=1).astype(float)
+SUPPORT_EXPECTED_VALUES = ( np.column_stack( ( np.clip( _C - N_SIGMA*np.sqrt(_C), 0.0, None ),
+                                               _C + N_SIGMA*np.sqrt(_C) ) )
+                            / EXPOSURE * ( BACKSCAL_SOURCE / BACKSCAL_BACKGROUND ) )
 
 @pytest.fixture
-def spectra_support( data ):
+def spectra_support():
 
-    # Set up the source and background
-    background_source = data
-    background_source.backscal = BACKSCAL_BACKGROUND
+    # Build a dedicated background Data object, with its BACKSCAL
+    background = Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
+                      first=FIRST, last=LAST, exposure_time=EXPOSURE)
+    background.backscal = BACKSCAL_BACKGROUND
 
     # Make the support
-    support = background_source.spectra_support( 3.0, BACKSCAL_SOURCE )
-    return support
+    return background.spectra_support( N_SIGMA, BACKSCAL_SOURCE )
 
 class TestSpectrumSupport( object ):
     
@@ -219,4 +246,4 @@ class TestSpectrumSupport( object ):
         assert (spectra_support >= 0.0).all()
 
     def test_computed_values( self , spectra_support ):
-        assert np.allclose( spectra_support, SUPORT_EXPECTED_VALUES )
+        assert np.allclose( spectra_support, SUPPORT_EXPECTED_VALUES )
