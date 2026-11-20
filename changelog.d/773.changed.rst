@@ -1,0 +1,1 @@
+``PhotospherePlotter.image()`` now places the stellar surface so that its circumferential equatorial radius equals the ``radius`` parameter, as in the rest of X-PSI. Previously ``radius`` was used as a coordinate radius, which made the imaged star slightly too large (by 0.2% at 600 Hz), so imaging results change slightly (by up to about 0.4% in flux in tests).
