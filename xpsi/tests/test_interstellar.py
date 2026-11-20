@@ -105,10 +105,11 @@ class TestEnergyDependentInterstellar:
 
     def test_2d_columns_treated_identically(self):
         energies = np.array([1.0, 2.0, 3.0])
-        sig = np.tile(np.array([[1.0], [2.0], [3.0]]), (1, 3))
+        sig = np.arange(1.0, 10.0).reshape(3, 3)   # distinct columns
+        original = sig.copy()
         EnergyDependentInterstellar()(energies, sig)
-        np.testing.assert_allclose(sig[:, 0], sig[:, 1])
-        np.testing.assert_allclose(sig[:, 1], sig[:, 2])
+        for col in range(3):
+            np.testing.assert_allclose(sig[:, col], original[:, col] * energies**(-1))
 
     def test_1d_energy_dependent_values(self):
         energies = np.array([0.5, 1.0, 2.0])
