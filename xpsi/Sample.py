@@ -6,23 +6,6 @@ from xpsi.utils import make_verbose
 from xpsi import Likelihood
 from xpsi.Posterior import Posterior
 
-try:
-    from xpsi.EmceeSampler import EmceeSampler
-except ImportError:
-    print("""Check your installation of emcee if using the EmceeSampler""")
-try:
-    from xpsi.MultinestSampler import MultinestSampler
-except:
-    print("""Check your installation of PyMultiNest if using the MultinestSampler""")
-try:
-    from xpsi.UltranestSampler import UltranestSampler
-except ImportError:
-    print("""Check your installation of UltraNest if using the UltranestSampler""")
-try:
-    from xpsi.NautilusSampler import NautilusSampler
-except ImportError:
-    print("""Check your installation of nautilus-sampler if using the NautilusSampler""")
-
 
 posterior = None
 
@@ -432,6 +415,11 @@ def run_nautilus(
 
     :returns: An instance of :class:`~.NautilusSampler`
     """
+
+    try:
+        from xpsi.NautilusSampler import NautilusSampler
+    except ImportError:
+        print("""Check your installation of nautilus-sampler if using the NautilusSampler""")
 
     # initialise the sampler
     if MPI :
