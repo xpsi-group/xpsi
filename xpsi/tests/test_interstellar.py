@@ -277,3 +277,42 @@ class TestCustomInterstellar:
         ism_nh(20.0)(energies, sig2)
         assert (sig2 < sig1).all()
         
+    ### Values against the tabulated model ###
+    @staticmethod
+    def _table():
+        t = np.loadtxt(os.path.join(os.path.dirname(__file__), 'data',
+                                    'interstellar_phot_frac.txt'))
+        return t[:, 0], t[:, 2]
+
+    def test_nh_one_reproduces_table(self):
+        energies, table = self._table()
+        np.testing.assert_allclose(ism_nh(1.0).attenuation(energies), table,
+                                   rtol=1e-12)
+
+    @pytest.mark.parametrize('nh', [0.5, 2.0, 7.3])
+    def test_nh_scales_as_power_of_table(self, nh):
+        energies, table = self._table()
+        np.testing.assert_allclose(ism_nh(nh).attenuation(energies), table**nh,
+                                   rtol=1e-10)
+
+    def test_nh_zero_gives_unit_attenuation(self):
+        energies, _ = self._table()
+        np.testing.assert_array_equal(ism_nh(0.0).attenuation(energies), 1.0)
+
+    def test_nh_zero_with_zero_in_table_gives_no_nan(self):
+        # Table containing an exact zero: log(0) = -inf, and 0 * -inf = nan
+        # unless the N_H = 0 case is handled separately.
+        energies = np.array([1.0, 2.0, 3.0, 4.0])
+        table = np.array([0.0, 0.2, 0.6, 0.9])
+        ism = CustomInterstellar(energies, table,
+                bounds={'neutral_hydrogen_column_density': (0.0, 50.0)},
+                values={'neutral_hydrogen_column_density': 0.0})
+        att = ism.attenuation(energies)
+        assert not np.isnan(att).any()
+        np.testing.assert_array_equal(att, 1.0)
+
+        # And with N_H > 0, the zero entry stays exactly zero.
+        ism['neutral_hydrogen_column_density'] = 1.0
+        att = ism.attenuation(energies)
+        assert not np.isnan(att).any()
+        np.testing.assert_allclose(att, table, rtol=1e-12)
