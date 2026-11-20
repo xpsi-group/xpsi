@@ -90,9 +90,9 @@ class TestMultiplicativeInterstellar:
         MultiplicativeInterstellar(1.0)(np.ones(4), sig)
         np.testing.assert_array_equal(sig, expected)
 
-############################################
-### Check the MultiplicativeInterstellar ###
-############################################
+#############################################
+### Check the EnergyDependentInterstellar ###
+#############################################
 class TestEnergyDependentInterstellar:
 
     def test_2d_rows_scaled_by_energy_dependent_factor(self):
