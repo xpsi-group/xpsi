@@ -1,21 +1,51 @@
 from ._global_imports import *
 from ._signalplot import SignalPlot
-from scipy.stats import norm
+from scipy.stats import norm, kstest
 
 class Residual1DPlot(SignalPlot):
-    """ Plot the count data, the posterior-expected count signal, and residuals.
+    """ Plot the distribution of the standardised residuals.
 
-    The figure contain one panel :
+    The figure contains one panel: the histogram (density) of the
+    standardised residuals :math:`(c_{ik}-d_{ik})/\\sqrt{c_{ik}}` between the
+    posterior-expected count signal :math:`c_{ik}` and the data :math:`d_{ik}`
+    over all joint channel-phase intervals, with a reference normal
+    distribution (by default N(0,1), dashed line) and the p-value of a
+    one-sample Kolmogorov-Smirnov test of the residuals against it, and
+    optionally a normal distribution fitted to the residuals.
 
-        * histogram of the standardised residuals between the
-          data and posterior-expected count signal over joint channel-phase
-          intervals.
+    Each instance draws one figure: create a new instance for each call of
+    :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that
+    has already been plotted raises a ``RuntimeError``).
 
-    The following example is (improved) from `Riley et al. 2019 <https://scixplorer.org/abs/2019ApJ...887L..21R/abstract>`_:
+    :param int nbins:
+         Number of histogram bins, spanning the range of the residuals.
+         Default 20.
 
-    .. image:: _static/_1d_residualplot.png
+    :param bool plot_fit:
+         Overlay a maximum-likelihood normal distribution fitted to the
+         residuals (solid line), with a dashed vertical line at its mean?
 
-    :param ... Todo
+    :param float mu:
+         Mean of the reference normal distribution (dashed line). Default 0,
+         as expected for standardised residuals. A one-sample
+         Kolmogorov-Smirnov test of the residuals against the reference is
+         reported in the legend; its statistic and p-value are stored in
+         :attr:`residual_ref_ks_stat` and :attr:`residual_ref_ks_pvalue`.
+
+    :param float sigma:
+         Standard deviation of the reference normal distribution. Default 1,
+         as expected for standardised residuals.
+
+    :param list parameters_vector:
+         If given, the plot is made for this single vector of model parameter
+         values (in the order of the likelihood parameters) instead of for
+         posterior samples. :class:`~xpsi.PostProcessing.SignalPlotter` only
+         looks at the first plot passed for a posterior, so this then applies
+         to all plots passed together.
+
+    :param kwargs:
+         Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,
+         ``fig_dir``, ``root_filename``).
 
     """
 
@@ -38,13 +68,21 @@ class Residual1DPlot(SignalPlot):
     def __init__(self,
                  nbins=20,
                  plot_fit=False,
+                 mu=0.0,
+                 sigma=1.0,
                  parameters_vector=None,
                  **kwargs):
+        """ Constructor method for plotting the 1D residual distribution.
+
+        See the class docstring for the parameters.
+        """
         super(Residual1DPlot, self).__init__(**kwargs)
 
         # Get the input parameters
         self._nbins = int( nbins )
         self._plot_fit = plot_fit
+        self._mu = mu
+        self._sigma = sigma
         if not parameters_vector is None:
             self.parameters_vector = parameters_vector
 
@@ -60,6 +98,7 @@ class Residual1DPlot(SignalPlot):
                   'Residual1DPlot object finished iterating')
     def execute(self, thetas, wrapper):
         """ Loop over posterior samples. """
+        self._check_not_reused()
         self._num_samples = thetas.shape[0]
 
         wrapped = wrapper(self, 'model_sum')
@@ -95,10 +134,25 @@ class Residual1DPlot(SignalPlot):
         """ Get the estimated posterior expectation of the count numbers. """
         return self._model_sum / self._num_samples
 
+    def _check_not_reused(self):
+        """ Raise if this instance has already been plotted.
+
+        The figure is created once, in the constructor, and every run draws
+        onto it, so a second run would overlay a second set of curves and
+        reuse results stored by the first run.
+        """
+        if getattr(self, '_finalized', False):
+            raise RuntimeError(
+                'Residual1DPlot instance has already been plotted; create a new '
+                'Residual1DPlot instance for each plotting call (e.g. instantiate the '
+                'plot in the same notebook cell as the plotting call).')
+
     @make_verbose('ResidualPlot object finalizing',
                   'ResidualPlot object finalized')
     def finalize(self):
+        self._check_not_reused()
         self._add_1d_residuals()
+        self._finalized = True
 
     def _add_1d_residuals(self):
         """ Display the residuals in the third panel. """
@@ -109,18 +163,41 @@ class Residual1DPlot(SignalPlot):
         self._residuals = self._residuals.flatten()
 
         # Plot them
-        self._ax_1d_residuals.hist(self._residuals, bins=self._nbins, density=True, alpha=0.5)
+        rdens, _, _ = self._ax_1d_residuals.hist(self._residuals, bins=self._nbins, density=True, alpha=0.5)
+
+        xmin, xmax = _np.min( self._residuals ) , _np.max( self._residuals )
+        x = _np.linspace(xmin, xmax, 400)
+        ytop = _np.max(rdens)
 
         # Add the fit if needed
         if self._plot_fit:
 
             mean,std=norm.fit( self._residuals )
-            xmin, xmax = _np.min( self._residuals ) , _np.max( self._residuals )
-            x = _np.linspace(xmin, xmax, 100)
             y = norm.pdf(x, mean, std)
+            ytop = max(ytop, _np.max(y))
             self._ax_1d_residuals.plot( x , y , label=r'Fitted Normal $\sigma=$'+f'{std:.3f}', color='darkblue' )
             self._ax_1d_residuals.axvline(mean, color='k', linestyle='dashed', linewidth=2, label=r'$\mu=$'+f'{mean:.5f}')
-            self._ax_1d_residuals.legend()
+
+        # Reference normal expected for well-modelled standardised residuals,
+        # with a one-sample KS test of the (unbinned) residuals against it.
+        # A frozen CDF is passed because scipy maps the string 'norm' to a
+        # function that does not accept loc/scale arguments.
+        ks_stat, ks_p = kstest(self._residuals,
+                               norm(loc=self._mu, scale=self._sigma).cdf)
+        self.residual_ref_ks_stat = float(ks_stat)
+        self.residual_ref_ks_pvalue = float(ks_p)
+        ks_p_str = f'{ks_p:.3f}' if ks_p >= 1e-3 else f'{ks_p:.1e}'
+        y_ref = norm.pdf(x, self._mu, self._sigma)
+        ytop = max(ytop, _np.max(y_ref))
+        self._ax_1d_residuals.plot(x, y_ref,
+                                   color='m', linewidth=2, linestyle='--',
+                                   label=(r'Reference $\mathcal{N}$('
+                                          + f'{self._mu:g}, {self._sigma:g}), '
+                                          + f'KS test p-value = {ks_p_str}'))
+
+        # Leave headroom above the histogram and curves for the legend
+        self._ax_1d_residuals.set_ylim(0.0, 1.5 * ytop)
+        self._ax_1d_residuals.legend(fontsize='small', frameon=False, loc='upper left')
 
 
         # Do the nice plotting

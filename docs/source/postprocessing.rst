@@ -11,6 +11,8 @@ PostProcessing
     xpsi.PostProcessing.CornerPlotter
     xpsi.PostProcessing.SignalPlotter
     xpsi.PostProcessing.ResidualPlot
+    xpsi.PostProcessing.Residual1DPlot
+    xpsi.PostProcessing.ResidualStructurePlot
     xpsi.PostProcessing.PulsePlot
     xpsi.PostProcessing.SpectrumPlot
 
@@ -27,6 +29,14 @@ PostProcessing
     :show-inheritance:
 
 .. autoclass:: xpsi.PostProcessing.ResidualPlot
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing.Residual1DPlot
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing.ResidualStructurePlot
     :members:
     :show-inheritance:
 

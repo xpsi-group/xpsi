@@ -1,0 +1,1 @@
+The ``clustdist_cmap`` argument of ``ResidualPlot`` has no effect and is deprecated; passing it issues a ``FutureWarning``. It will be removed in a future release.

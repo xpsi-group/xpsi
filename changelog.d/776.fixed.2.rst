@@ -1,0 +1,1 @@
+Fixed ``ResidualPlot`` failing with "Expected the given number of height ratios to match the number of rows of the grid" after a previous instance failed during its creation (e.g. in a notebook).
