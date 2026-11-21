@@ -385,6 +385,18 @@ class TestCacheFlag:
         with pytest.raises(TypeError, match='boolean'):
             make_signal(cache=bad)
 
+    # deprecated ``store`` keyword, read from **kwargs
+    def test_constructor_store_keyword(self):
+        assert make_signal(store=True).cache is True
+
+    def test_constructor_store_overrides_cache(self):
+        assert make_signal(cache=False, store=True).cache is True
+
+    @pytest.mark.parametrize('bad', [1, 'yes', None])
+    def test_constructor_store_non_bool_raises(self, bad):
+        with pytest.raises(TypeError, match='boolean'):
+            make_signal(store=bad)
+
     def test_cache_setter(self, sig):
         sig.cache = True
         assert sig.cache is True
