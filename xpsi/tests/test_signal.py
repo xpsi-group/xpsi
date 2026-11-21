@@ -949,23 +949,39 @@ class TestWriteDispatch:
     KW = dict(channels=np.arange(3), filename='f', instrument='X',
               exposure=1.0, backscale=1.0)
 
+    def _check_forwarded(self, kw, counts):
+        """All keyword arguments reach the writer unchanged."""
+        assert set(kw) == set(self.KW) | {'counts'}
+        np.testing.assert_array_equal(kw['channels'], self.KW['channels'])
+        for key in ('filename', 'instrument', 'exposure', 'backscale'):
+            assert kw[key] == self.KW[key]
+        np.testing.assert_array_equal(kw['counts'], counts)
+
     def test_txt(self, sig, recorded):
-        sig._write('TXT', counts=np.ones((3, 2)), **self.KW)
+        counts = np.arange(6.0).reshape(3, 2)
+        sig._write('TXT', counts=counts, **self.KW)
         assert [c[0] for c in recorded] == ['TXT']
+        self._check_forwarded(recorded[0][1], counts)
 
     def test_fits_phase_resolved_goes_to_evt(self, sig, recorded):
-        sig._write('FITS', counts=np.ones((3, 2)), **self.KW)
+        counts = np.arange(6.0).reshape(3, 2)
+        sig._write('FITS', counts=counts, **self.KW)
         assert [c[0] for c in recorded] == ['EVT']
+        self._check_forwarded(recorded[0][1], counts)
 
     def test_fits_single_phase_column_goes_to_pha_as_1d(self, sig, recorded):
-        sig._write('FITS', counts=np.ones((3, 1)), **self.KW)
-        name, kw = recorded[0]
-        assert name == 'PHA'
+        counts = np.arange(3.0).reshape(3, 1)
+        sig._write('FITS', counts=counts, **self.KW)
+        assert [c[0] for c in recorded] == ['PHA']
+        kw = recorded[0][1]
         assert kw['counts'].shape == (3,)
+        self._check_forwarded(kw, counts[:, 0])
 
     def test_fits_1d_goes_to_pha(self, sig, recorded):
-        sig._write('FITS', counts=np.ones(3), **self.KW)
+        counts = np.arange(3.0)
+        sig._write('FITS', counts=counts, **self.KW)
         assert [c[0] for c in recorded] == ['PHA']
+        self._check_forwarded(recorded[0][1], counts)
 
     @pytest.mark.parametrize('bad', ['fits', 'txt', 'CSV', '', None])
     def test_unknown_format_raises(self, sig, recorded, bad):
