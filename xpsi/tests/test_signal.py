@@ -4,13 +4,10 @@ Run with:  pytest -v test_signal.py
 
 In real use, ``Data`` and ``Instrument`` are usually loaded from files
 (``Data.load``, ``Instrument.from_ogip_fits``). Here no input files are
-needed: the real ``Instrument`` class is built directly from arrays, and the
-data is a ``FakeData`` (below). The writer tests only write to ``tmp_path``.
-The helpers are:
+needed: both classes are built directly from arrays (``make_data``,
+``make_instrument``). The writer tests only write to ``tmp_path``.
+The other helpers are:
 
-* ``FakeData``: a ``Data`` subclass (so the ``isinstance`` check in
-  ``Signal.__init__`` passes) that skips the ``Data`` constructor and exposes
-  only what ``Signal`` reads (counts, channels, phases, index_range);
 * ``FakeInterstellar``: an ``Interstellar`` with a constant attenuation;
 * ``ConcreteSignal``: ``Signal.__call__`` is abstract, so a trivial one is
   provided;
@@ -42,21 +39,6 @@ EDGES = np.logspace(np.log10(0.2), np.log10(3.0), N_IN + 1)
 # --------------------------------------------------------------------------
 # Fakes
 # --------------------------------------------------------------------------
-class FakeData(Data):
-    """Bypasses file loading; exposes the attributes Signal needs."""
-
-    def __init__(self, counts, channels, phases, index_range):
-        self._counts = counts
-        self._channels = channels
-        self._phases = phases
-        self._index_range = index_range
-
-    counts = property(lambda self: self._counts)
-    channels = property(lambda self: self._channels)
-    phases = property(lambda self: self._phases)
-    index_range = property(lambda self: self._index_range)
-
-
 class FakeInterstellar(Interstellar):
     def __init__(self, factor=0.5, *params):
         self.factor = factor
@@ -78,13 +60,20 @@ def default_matrix():
             .reshape(N_CHAN, N_IN) / 100.0)
 
 
-def make_data(**kw):
+def make_data(cls=Data, **kw):
+    """Real ``Data`` (or subclass ``cls``) built from arrays.
+
+    ``last`` defaults to ``first + number of counts rows - 1``, so
+    ``index_range == (first, first + rows)``.
+    """
     args = dict(counts=np.ones((N_CHAN, N_PHASE)),
                 channels=np.arange(N_CHAN),
                 phases=np.linspace(0.0, 1.0, N_PHASE + 1),
-                index_range=(0, N_CHAN))
+                first=0,
+                exposure_time=1.0)
     args.update(kw)
-    return FakeData(**args)
+    args.setdefault('last', args['first'] + len(args['counts']) - 1)
+    return cls(**args)
 
 
 def make_instrument(matrix=None, edges=None, twod_edges=False):
@@ -161,14 +150,13 @@ class TestConstructionTypes:
             make_signal(data=bad)
 
     def test_instrument_name_mismatch_raises(self):
-        class NamedData(FakeData):
+        class NamedData(Data):
             instrument = 'A'
 
         class NamedInstrument(Instrument):
             name = 'B'
 
-        d = NamedData(np.ones((N_CHAN, N_PHASE)), np.arange(N_CHAN),
-                      np.linspace(0, 1, N_PHASE + 1), (0, N_CHAN))
+        d = make_data(cls=NamedData)
         i = NamedInstrument(default_matrix(), EDGES.copy(), np.arange(N_CHAN))
         with pytest.raises(AssertionError, match='different instruments'):
             ConcreteSignal(d, i)
@@ -367,7 +355,7 @@ class TestDataAccessors:
         assert sig.original_data is not sig.data
 
     def test_original_data_unaffected_by_changes(self, sig):
-        sig.data._counts[0, 0] = 999.0
+        sig.data.counts[0, 0] = 999.0
         assert sig.original_data.counts[0, 0] == 1.0
 
     def test_data_setter_accepts_data(self, sig):
@@ -706,10 +694,15 @@ class TestRegister:
         assert sig.num_components == 1
         assert sig.signals[0].shape == (N_CHAN, N_PHASE)
 
-    def test_signals_are_positive_for_positive_flux(self, sig, energies):
+    def test_unit_flux_gives_matrix_times_bin_widths(self, sig, energies):
+        # a flux of 1 per keV integrates to the bin width over each input
+        # interval, so each phase column is the response times the widths
         sig.energies = energies
-        sig.register([[flux(energies)]])
-        assert np.all(sig.signals[0] > 0.0)
+        sig.register([[flux(energies, 1.0)]])
+        expected = default_matrix() @ np.diff(EDGES)
+        for k in range(N_PHASE):
+            np.testing.assert_allclose(sig.signals[0][:, k], expected,
+                                       rtol=1e-5)
 
     def test_two_regions_give_two_components(self, sig, energies):
         sig.energies = energies
@@ -742,10 +735,13 @@ class TestRegister:
         sig.register([[flux(energies, 3.0)]])
         np.testing.assert_allclose(sig.signals[0], 3.0 * one, rtol=1e-10)
 
-    def test_threads_argument_accepted(self, sig, energies):
+    def test_threads_give_same_result(self, sig, energies):
         sig.energies = energies
+        sig.register([[flux(energies)]], threads=1)
+        one = sig.signals[0]
         sig.register([[flux(energies)]], threads=2)
         assert sig.num_components == 1
+        np.testing.assert_allclose(sig.signals[0], one, rtol=1e-12)
 
     def test_interstellar_applied(self, energies):
         plain = make_signal()
@@ -918,6 +914,18 @@ class TestWriteEVT:
         with self._write(sig, tmp_path) as hdul:
             phases = np.unique(hdul['EVENTS'].data['PULSE_PHASE'])
             np.testing.assert_allclose(phases, [0.125, 0.375, 0.625, 0.875])
+
+    @pytest.mark.parametrize('channel, phases', [
+        (10, [0.125, 0.625, 0.625]),
+        (11, [0.375, 0.375, 0.375]),
+        (12, [0.875]),
+    ])
+    def test_phase_paired_with_channel(self, sig, tmp_path, channel, phases):
+        # each event carries the phase-bin centre of its own COUNTS entry
+        with self._write(sig, tmp_path) as hdul:
+            ev = hdul['EVENTS'].data
+            got = np.sort(ev['PULSE_PHASE'][ev['PI'] == channel])
+            np.testing.assert_allclose(got, phases)
 
     def test_header(self, sig, tmp_path):
         with self._write(sig, tmp_path) as hdul:
