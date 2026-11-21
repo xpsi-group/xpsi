@@ -276,6 +276,46 @@ class TestSupport:
 
 
 # --------------------------------------------------------------------------
+# Data channels a subset of the instrument channels
+# --------------------------------------------------------------------------
+class TestChannelSubset:
+    """Data channels 1..4 (4 rows, first=1) with instrument channels 0..5.
+
+    ``first=1`` makes the data ``index_range`` (1, 5) match the instrument
+    rows. (The ``Data`` loaders always set ``first=0``; that case is not
+    tested here.)
+    """
+
+    N_SUB = 4
+
+    def _signal(self, **kw):
+        data = make_data(counts=np.ones((self.N_SUB, N_PHASE)),
+                         channels=np.arange(1, self.N_SUB + 1), first=1)
+        return make_signal(data=data, **kw)
+
+    @staticmethod
+    def _support(n_rows):
+        # row i is [i, 10 + i], so slicing is visible in the values
+        return np.column_stack([np.arange(n_rows, dtype=float),
+                                np.arange(n_rows, dtype=float) + 10.0])
+
+    def test_instrument_index_range(self):
+        assert self._signal()._instrument_index_range_channels == (1, 5)
+
+    def test_default_support_has_data_rows(self):
+        assert self._signal()._support.shape == (self.N_SUB, 2)
+
+    def test_support_of_data_size_kept(self):
+        support = self._support(self.N_SUB)
+        assert self._signal(support=support)._support is support
+
+    def test_support_of_instrument_size_is_sliced(self):
+        support = self._support(N_CHAN)
+        np.testing.assert_array_equal(self._signal(support=support)._support,
+                                      support[1:5])
+
+
+# --------------------------------------------------------------------------
 # Interstellar integration in the constructor
 # --------------------------------------------------------------------------
 class TestInterstellarCheck:
