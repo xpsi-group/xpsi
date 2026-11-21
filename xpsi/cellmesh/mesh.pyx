@@ -220,6 +220,10 @@ def construct_spot_cellMesh(size_t numThreads,
         cellRadialCoord[i] = radius * R_eq
         #r_s_over_r = r_s / cellRadialCoord[i]
         effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, obl_surfgrav_ind)
+        # Tilt of the surface normal from the radial direction,
+        # cos(gamma) = (1 + f^2)^(-1/2) (Morsink et al. 2007, Eq. 13). Emission
+        # angles alpha up to pi/2 + gamma (initially ingoing photons) can then
+        # still leave the surface (Morsink et al. 2007, Sect. 3.1).
         f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
         cos_gamma[i] = 1.0 / sqrt(1.0 + f * f)
         maxEmissionAngle[i] = _hpi + acos(cos_gamma[i])

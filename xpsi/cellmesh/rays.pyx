@@ -50,6 +50,17 @@ cdef double c = 2.99792458e8
 
 cdef int ERROR = 1
 
+# Ray integrals in the Schwarzschild metric for the Oblate Schwarzschild +
+# Doppler approximation (Morsink et al. 2007, ApJ 663, 1244; hereafter M07).
+# For each surface radius R and emission angle alpha (from the radial
+# direction) we compute the light-bending angle psi (M07 Eqs. 19-20) and the
+# arrival-time delay relative to a radial photon from the same R (M07
+# Eq. 38). The integrands below are written in a substituted variable x in
+# [0, 1] so that they stay finite at the turning point; inDef/inLag are
+# parametrised by the turning radius r_c, outDef/outLag by sin^2(alpha) and R.
+
+# Map the primary-image deflection psi in [0, pi] to the deflection of image
+# order `order` (photons bent by more than pi; order 0 is the primary image).
 cdef double eval_image_deflection(int order, double psi) noexcept nogil:
     if order % 2 != 0:
         return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
@@ -106,12 +117,28 @@ cdef void rayIntegrator(size_t thread,
         double r_c_over_r_s, b_over_r_s, w_R, sin_alpha, sin_alpha_sq, alpha
         double deltaDeflection, deltaLag
 
+    # Returns, per thread, rayParams = [psi, error, lag in seconds, error].
     sin_alpha_sq = 1.0 - cos_alpha * cos_alpha
     sin_alpha = sqrt(sin_alpha_sq)
     alpha = acos(cos_alpha)
 
+    # Impact parameter b = R sin(alpha) / sqrt(1 - r_s/R) (M07 Eq. 19).
     b_over_r_s = sin_alpha / (r_s_over_R * sqrt(1.0 - r_s_over_R))
 
+    # Three cases:
+    # 1. b <= b_photon-sphere (3*sqrt(3)/2 r_s): outgoing photon with no
+    #    turning point; integrate M07 Eqs. 20 and 38 from R to infinity.
+    # 2. b > b_photon-sphere, alpha <= pi/2: outgoing photon. The integrals
+    #    from R to infinity are written in terms of the turning radius r_c
+    #    (< R), which keeps them well behaved as alpha -> pi/2.
+    # 3. alpha > pi/2: initially ingoing photon, possible on an oblate
+    #    surface (M07 Sect. 3.1). It moves inwards to r_c and then out, so
+    #    psi = 2 * (r_c -> infinity) - (R -> infinity), i.e.
+    #    2 Delta-psi + psi(b, R) as in M07 Eq. 44; likewise for the lag
+    #    (M07 Eq. 45). These are evaluated numerically, not with the series
+    #    approximations of M07 Eqs. 46-47.
+    # r_c is the largest root of r_c^3 - b^2 r_c + b^2 r_s = 0, i.e.
+    # r_c = b sqrt(1 - r_s/r_c) (M07 Eq. 41), from the trigonometric solution.
     if (b_over_r_s <= b_phsph_over_r_s):
 
         outParams[0] = sin_alpha_sq
@@ -239,6 +266,9 @@ cdef void rayIntegrator(size_t thread,
 
             rayParams[4 * thread + 2] = 2.0 * b_over_r_s * b_over_r_s * r_s * (2.0 * DeltaLag[1] - DeltaLag[0]) / r_c_over_r_s
 
+            # Radial light-travel time between r_c and R (in units of
+            # r_s/c), added twice so that the lag stays relative to a radial
+            # photon emitted from R.
             DeltaLagCor = 1.0/r_s_over_R - r_c_over_r_s + log((1.0/r_s_over_R - 1.0) / (r_c_over_r_s - 1.0))
 
             rayParams[4 * thread + 2] += 2.0 * r_s * DeltaLagCor
@@ -255,16 +285,27 @@ def compute_rays(size_t N_T,
     """
     Compute ray properties in the Schwarzschild spacetime.
 
+    Used by the Oblate Schwarzschild + Doppler approximation (Morsink et al.
+    2007): rays are traced in the Schwarzschild metric from each surface
+    radius :math:`R(\\theta)` of the oblate star. See
+    :ref:`spacetime_models`.
+
     :param int: Number of OpenMP threads.
     :param int: Number of :math:`u\mathrel{:=}r_{s}/R` coordinate values
+    :param float: Schwarzschild radius :math:`r_{s}` in metres.
     :param obj: 1D :class:`numpy.ndarray` :math:`u`
-    :param obj: 1D :class:`numpy.ndarray` of *maximum* :math:`\cos\\alpha`
+    :param obj: 1D :class:`numpy.ndarray` of the *maximum* emission angle
+                :math:`\\alpha` (radians) for each :math:`u`; this exceeds
+                :math:`\\pi/2` on an oblate surface, where initially ingoing
+                photons can be visible.
     :param int: Number of rays per :math:`u` value
 
     :return: Termination flag
     :return: Deflection angle as a 2D :class:`numpy.ndarray`
     :return: Cosine of local ray angle as a 2D :class:`numpy.ndarray`
-    :return: Ray lag relative to radial ray as a 2D :class:`numpy.ndarray`
+    :return: Ray lag in seconds, relative to a radial ray from the same
+             :math:`R` (Morsink et al. 2007, Eq. 38), as a 2D
+             :class:`numpy.ndarray`
     :return: Maximum deflection angle as a 1D :class:`numpy.ndarray`
 
     """

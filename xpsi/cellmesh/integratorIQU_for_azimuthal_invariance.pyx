@@ -345,6 +345,9 @@ def integrate(size_t numThreads,
         cos_theta_i = cos(theta[i,0])
         sin_theta_i = sin(theta[i,0])
         theta_i_over_pi = theta[i,0] / _pi
+        # Oblate Schwarzschild + Doppler: see the comments in integrator.pyx
+        # for the equation references (Morsink et al. 2007, M07). beta is the
+        # surface speed (M07 Eq. 34); Lorentz is 1/gamma.
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq) #inverse of Lorentz factor
@@ -445,6 +448,9 @@ def integrate(size_t numThreads,
                                 _kdx = N_L - 1 - k # switch due to symmetry
 
                             # phase asymmetric now
+                            # cos_xi is minus the cos(xi) of M07 Eq. 35, so 1 + beta*cos_xi
+                            # equals M07's 1 - v cos(xi), and eta = Lorentz/superlum is the
+                            # Doppler factor delta of M07 Eq. 33.
                             if not are_equal(psi, 0.0):
                                 cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
                                 superlum = (1.0 + beta * cos_xi)

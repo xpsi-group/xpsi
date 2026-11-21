@@ -289,6 +289,18 @@ def integrate(size_t numThreads,
         lag_ptr = &(lag[i,0])
         gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
 
+        # Oblate Schwarzschild + Doppler (OS+D) approximation. Equation
+        # numbers below refer to Morsink et al. (2007, ApJ 663, 1244;
+        # hereafter M07) unless stated otherwise. See the documentation page
+        # docs/source/spacetime_models.rst for an overview.
+        #
+        # Quantities for this parallel (colatitude theta_i, radius R(theta_i)):
+        #   Grav_z    = sqrt(1 - r_s/R) = 1/(1+z), the gravitational redshift
+        #               factor (z as defined below M07 Eq. 3).
+        #   cos_gamma = cosine of the angle between the surface normal and the
+        #               radial direction (M07 Eq. 13), from the mesh.
+        #   sin_gamma is taken positive here; the hemisphere-dependent sign
+        #               of the tilt is applied where cos(sigma) is computed.
         radius = radialCoords_of_parallels[i]
         Grav_z = sqrt(1.0 - r_s_over_r[i])
         cos_gamma = cos_gammaArray[i]
@@ -298,8 +310,11 @@ def integrate(size_t numThreads,
         cos_theta_i = cos(theta[i,0])
         sin_theta_i = sin(theta[i,0])
         theta_i_over_pi = theta[i,0] / _pi
+        # Surface speed in units of c, as measured by a static observer at
+        # the surface (M07 Eq. 34).
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
+        # NB: Lorentz = sqrt(1 - beta^2) is the INVERSE Lorentz factor, 1/gamma.
         Lorentz = sqrt(1.0 - beta_sq)
         _cos_alpha = -1.0 # lastprivate
         deriv = -1.0 # lastprivate
@@ -314,6 +329,10 @@ def integrate(size_t numThreads,
             correction_I_E = 0.0
 
             for k in range(N_L):
+                # Light-bending angle psi between the radial direction and
+                # the line of sight, at rotational phase leaves[k] (M07
+                # Eq. 15). For image order I > 0 (photons bent by more than
+                # pi) eval_image_deflection maps psi to the larger deflection.
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
@@ -342,11 +361,26 @@ def integrate(size_t numThreads,
                         terminate[T] = 1
                         break # out of phase loop
                     else:
+                        # Emission angle alpha from the radial direction,
+                        # interpolated from the Schwarzschild ray table
+                        # (M07 Eqs. 19-20; see rays.pyx).
                         if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
                             _cos_alpha = gsl_interp_eval(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
                             _cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
 
+                    # mu = cos(sigma): cosine of the angle between the photon
+                    # and the surface NORMAL, as seen by a static observer
+                    # (M07 Eq. 17):
+                    #   cos(sigma) = cos(alpha) cos(gamma)
+                    #                + sin(alpha) sin(gamma) cos(beta_M07),
+                    # where beta_M07 (cos_delta here) is the angle of the
+                    # spherical triangle in M07 Fig. 1, given by
+                    #   cos(i) = cos(theta) cos(psi) + sin(theta) sin(psi) cos(beta_M07).
+                    # The normal tilts towards the nearer pole, so sin(gamma)
+                    # changes sign at the equator; since sin_gamma >= 0 here,
+                    # the sign is applied explicitly per hemisphere.
+                    # For a sphere (gamma = 0), mu reduces to cos(alpha).
                     sin_alpha = sqrt(1.0 - _cos_alpha * _cos_alpha)
                     mu = _cos_alpha * cos_gamma
 
@@ -357,7 +391,11 @@ def integrate(size_t numThreads,
                         else:
                             mu = mu - sin_alpha * sin_gamma * cos_delta
 
+                    # Visibility condition: cos(sigma) > 0 (M07 Sect. 3;
+                    # equivalent to cos(sigma_em) > 0 since delta > 0).
                     if mu > 0.0:
+                        # deriv = |d cos(alpha) / d cos(psi)|, the lensing
+                        # factor in the solid angle (M07 Eq. 30).
                         if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
                             deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
@@ -371,6 +409,10 @@ def integrate(size_t numThreads,
                             terminate[T] = 1
                             break # out of phase loop
                         else:
+                            # Arrival-time delay (M07 Eq. 38), already
+                            # converted to a phase and referred to a radial
+                            # photon from the equator (see the lag
+                            # calibration in HotRegion.py).
                             _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
                         for ks in range(2): # phase asymmetric now
@@ -384,6 +426,13 @@ def integrate(size_t numThreads,
                                 else:
                                     _kdx = N_L - 1 - k # switch due to symmetry
 
+                                # Doppler factor eta = delta (M07 Eq. 33):
+                                #   delta = sqrt(1 - v^2) / (1 - v cos(xi)).
+                                # SIGN CONVENTION: cos_xi here is MINUS the
+                                # cos(xi) of M07 Eq. 35 (which has a leading
+                                # minus sign), so superlum = 1 + beta*cos_xi
+                                # equals M07's 1 - v cos(xi). The result for
+                                # delta is identical.
                                 if not are_equal(psi, 0.0):
                                     cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
                                     superlum = (1.0 + beta * cos_xi)
@@ -393,8 +442,33 @@ def integrate(size_t numThreads,
                                     superlum = 1.0
                                     eta = Lorentz
 
+                                # Observed / emitted photon energy,
+                                # delta / (1 + z) (M07 Eq. 32).
                                 _Z[T][_kdx] = eta * Grav_z
+                                # cos(sigma_em) = delta cos(sigma): emission
+                                # angle from the normal in the comoving frame
+                                # (aberration, M07 Eq. 36).
                                 _ABB[T][_kdx] = mu * eta
+                                # Flux weight per unit (static-frame) area,
+                                # without the 1/D^2 and area factors applied
+                                # elsewhere. Bogdanov et al. (2019, ApJL 887,
+                                # L26, Eq. 31):
+                                #   dF = (1 - r_s/R)^(1/2) delta^3 I'
+                                #        * cos(sigma_em) |d cos(alpha)/d cos(psi)|
+                                #        * dS' / D^2,
+                                # with cos(sigma_em) = delta cos(sigma) =
+                                # mu*eta, and the comoving area dS' = gamma dS
+                                # (Lo et al. 2018, ApJ 854, 187; Nattila &
+                                # Pihajoki 2018, A&A 615, A50, Eqs. 55-59).
+                                # Since eta = Lorentz/superlum and
+                                # Lorentz = 1/gamma, the gamma from dS'
+                                # cancels the 1/gamma in one Doppler factor:
+                                #   gamma * mu * eta = mu / superlum.
+                                # Hence the weight below is
+                                #   Grav_z * eta^3 * (mu / superlum) * |deriv|
+                                # = (1+z)^-1 delta^4 gamma cos(sigma) |deriv|,
+                                # i.e. M07 Eqs. 30 and 39 plus the factor gamma
+                                # that M07 omitted.
                                 _GEOM[T][_kdx] = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
                                 _PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 

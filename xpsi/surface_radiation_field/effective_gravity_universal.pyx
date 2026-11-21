@@ -76,11 +76,11 @@ cdef double grav_sphere(double mu, double R_eq, double x, double epsilon) noexce
 
 cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double epsilon) noexcept nogil:
     """
-    Calculate the effective surface gravity log-likelihood value based on the approximation from
-    AlGendy & Morsink (2014) (see Eq. 50 and Table 4 and 5 for coefficient values), or assuming a spherical
-    star.
+    Calculate the logarithm of the effective surface gravity based on the approximation from
+    AlGendy & Morsink (2014) (see Eq. 50 and Tables 4 and 5 for coefficient values). The
+    spherical case is handled by ``grav_sphere``.
 
-    This function computes the logarithmic surface gravity (log10(g / g0)) for a rotating neutron star,
+    This function computes the logarithmic surface gravity (log10 of g in cgs units) for a rotating neutron star,
     incorporating the effects of spin and compactness. The result is expressed in units compatible with
     tabulated atmosphere models.
 
@@ -100,8 +100,9 @@ cdef double grav_algendy_morsink_2014(double mu, double R_eq, double x, double e
         Eq. 10 from Morsink et al. (2007)).
 
     :return:
-        The effective surface gravities in log10(g*g0). The result is scaled to centimeters (conversion
-        factor 2.0 is applied) to match the format used in tabulated atmosphere models.
+        log10(g_eff), where g_eff = (g/g0) * g0 is the effective surface gravity and g/g0 is
+        given by Eq. 50. The result is in cgs units (cm s^-2; the SI-to-cgs conversion adds 2.0)
+        to match the format used in tabulated atmosphere models.
     :rtype: double
 
     """

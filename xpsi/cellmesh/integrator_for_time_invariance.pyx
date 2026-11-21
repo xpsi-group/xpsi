@@ -212,6 +212,9 @@ def integrate(size_t numThreads,
         cos_theta_i = cos(theta[i,0])
         sin_theta_i = sin(theta[i,0])
         theta_i_over_pi = theta[i,0] / _pi
+        # Oblate Schwarzschild + Doppler: see the comments in integrator.pyx
+        # for the equation references (Morsink et al. 2007, M07). beta is the
+        # surface speed (M07 Eq. 34); Lorentz is 1/gamma.
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
@@ -271,6 +274,9 @@ def integrate(size_t numThreads,
                             mu = mu - sin_alpha * sin_gamma * cos_delta
 
                     if mu > 0.0:
+                        # cos_xi is minus the cos(xi) of M07 Eq. 35, so 1 + beta*cos_xi
+                        # equals M07's 1 - v cos(xi), and eta = Lorentz/superlum is the
+                        # Doppler factor delta of M07 Eq. 33.
                         if not are_equal(sin_psi, 0.0):
                             cos_xi = sin_alpha * sin_i * sin(phi[i,j]) / sin_psi
                             superlum = (1.0 + beta * cos_xi)
@@ -288,6 +294,18 @@ def integrate(size_t numThreads,
 
                         _Z = eta * Grav_z
                         _ABB = mu * eta
+                        # Flux weight delta^3 here, not delta^4 * gamma as in
+                        # integrator.pyx (eta^3 / superlum): the "/ superlum"
+                        # is deliberately left out. This integrator sums the
+                        # whole surface at a single instant for emission that
+                        # does not change with time, without binning photons by
+                        # arrival time. The extra factor
+                        # 1/superlum = delta * gamma in the phase-resolved
+                        # integrators comes from that arrival-time binning of
+                        # moving emitting elements (Cadeau et al. 2007, ApJ
+                        # 654, 458, Sect. 2.7) together with the comoving-area
+                        # factor gamma (Lo et al. 2018); neither applies to a
+                        # steady, azimuthally symmetric surface.
                         _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta #/ superlum
 
                         for e in range(N_E):

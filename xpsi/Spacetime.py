@@ -250,11 +250,11 @@ class Spacetime(ParameterSubspace):
 
     @property
     def zeta(self):
-        """ Get the derived parameter ``zeta`` for universal relations.
+        r""" Get the derived parameter ``zeta`` for universal relations.
 
-        A dimensionless function of stellar properties.
-
-        See Morsink et al. (2007), and AlGendy & Morsink (2014).
+        The compactness :math:`\zeta = GM/(R_{\rm eq}c^{2})`, with
+        :math:`R_{\rm eq}` the equatorial radius: Morsink et al. (2007,
+        Eq. 9), and :math:`x` in AlGendy & Morsink (2014, Eq. 1).
 
         """
         try:
@@ -264,11 +264,12 @@ class Spacetime(ParameterSubspace):
 
     @property
     def epsilon(self):
-        """ Get the derived parameter ``epsilon`` for universal relations.
+        r""" Get the derived parameter ``epsilon`` for universal relations.
 
-        A dimensionless function of stellar properties.
-
-        See Morsink et al. (2007), and AlGendy & Morsink (2014).
+        The dimensionless squared angular velocity
+        :math:`\epsilon = \Omega^{2}R_{\rm eq}^{3}/(GM)`: Morsink et al.
+        (2007, Eq. 10), and :math:`\bar{\Omega}^{2}` in AlGendy & Morsink
+        (2014, Eq. 2).
 
         """
         try:
@@ -278,9 +279,13 @@ class Spacetime(ParameterSubspace):
 
     @property
     def a(self):
-        """ Get the spin parameter, first order in spin.
+        r""" Get the spin parameter, first order in spin.
 
-        See AlGendy & Morsink (2014). a=J/(Mc)
+        :math:`a = J/(Mc) = i\,R_{\rm eq}^{2}\Omega/c`, a length, with the
+        dimensionless moment of inertia :math:`i = I/(MR_{\rm eq}^{2})` from
+        the universal relation of AlGendy & Morsink (2014, Eqs. 13-15) or the
+        selected pulsar-specific relation. Used for imaging in the quasi-Kerr
+        metric; the Oblate Schwarzschild approximation neglects frame dragging.
 
         """
         try:
