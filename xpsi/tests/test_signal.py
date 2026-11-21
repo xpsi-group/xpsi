@@ -60,8 +60,8 @@ def default_matrix():
             .reshape(N_CHAN, N_IN) / 100.0)
 
 
-def make_data(cls=Data, **kw):
-    """Real ``Data`` (or subclass ``cls``) built from arrays.
+def make_data(**kw):
+    """Real ``Data`` built from arrays.
 
     ``last`` defaults to ``first + number of counts rows - 1``, so
     ``index_range == (first, first + rows)``.
@@ -73,7 +73,7 @@ def make_data(cls=Data, **kw):
                 exposure_time=1.0)
     args.update(kw)
     args.setdefault('last', args['first'] + len(args['counts']) - 1)
-    return cls(**args)
+    return Data(**args)
 
 
 def make_instrument(matrix=None, edges=None, twod_edges=False):
@@ -149,17 +149,33 @@ class TestConstructionTypes:
                            match='does not match the declared size'):
             make_signal(data=bad)
 
+    # Instrument names: Data.load sets ``data.instrument`` and
+    # Instrument.from_ogip_fits sets ``instrument.name`` (both per instance);
+    # they are compared only when both exist.
+    @staticmethod
+    def _named(data_name=None, instrument_name=None):
+        d, i = make_data(), make_instrument()
+        if data_name is not None:
+            d.instrument = data_name
+        if instrument_name is not None:
+            i.name = instrument_name
+        return d, i
+
     def test_instrument_name_mismatch_raises(self):
-        class NamedData(Data):
-            instrument = 'A'
-
-        class NamedInstrument(Instrument):
-            name = 'B'
-
-        d = make_data(cls=NamedData)
-        i = NamedInstrument(default_matrix(), EDGES.copy(), np.arange(N_CHAN))
+        d, i = self._named('A', 'B')
         with pytest.raises(AssertionError, match='different instruments'):
             ConcreteSignal(d, i)
+
+    def test_instrument_name_match_accepted(self):
+        d, i = self._named('A', 'A')
+        assert ConcreteSignal(d, i).instrument is i
+
+    @pytest.mark.parametrize('data_name, instrument_name',
+                             [('A', None), (None, 'B')])
+    def test_name_check_skipped_if_one_side_unnamed(self, data_name,
+                                                    instrument_name):
+        d, i = self._named(data_name, instrument_name)
+        assert ConcreteSignal(d, i).instrument is i
 
 
 # --------------------------------------------------------------------------
