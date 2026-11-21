@@ -1,0 +1,1 @@
+The `eV` option in phase_bin__event_list from the xpsi.Data module has been removed as it was no longer used and is only valid for NICER.

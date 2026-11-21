@@ -756,8 +756,6 @@ parser.add_argument('--{0}-event-file-phase-column', type=int, default=2, help='
                     comment=True)
 parser.add_argument('--{0}-event-file-skiprows', type=int, default=3, help='Number of top rows to skip when loading {0} event list file.',
                     comment=True)
-parser.add_argument('--{0}-events-in-eV', action='store_true', help='{0} event list file lists events by energy in eV?',
-                    comment=True)
 parser.add_argument('--{0}-arf-path', type=str, help='{1} {0} ARF file.',
                     comment_line_above='rule')
 parser.add_argument('--{0}-effective-area-scaling-factor', type=str, default='1.0',
@@ -1755,7 +1753,6 @@ except ValueError:
                                          phase_averaged=True if args.{0}_number_phase_bins == 1 else False,
                                          channel_edges={0}.instrument.channel_edges,
                                          skiprows=args.{0}_event_file_skiprows,
-                                         eV=True if args.{0}_events_in_eV else False,
                                          dtype=getattr(np, args.{0}_count_matrix_type),
                                          first=0,
                                          last=len({0}.instrument.channels) - 1,
