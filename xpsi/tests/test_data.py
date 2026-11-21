@@ -166,6 +166,37 @@ class TestLoadOptions( object ):
                                   phase_shift=phase_shift )
         np.testing.assert_array_equal( data_evt.counts, COUNTS[:, columns] )
 
+    def test_txt_phase_averaged( self , data ):
+        # All events go into a single phase bin; no phase column is needed
+        data_txt = Data.bin__event_list(
+            path=os.path.join( DATA_DIR, 'Data.txt' ),
+            channels=CHANNELS,
+            phases=np.array([ 0.0, 1.0 ]),
+            channel_column=1,
+            phase_averaged=True,
+            skiprows=2,
+            first=FIRST,
+            last=LAST,
+            exposure_time=EXPOSURE
+        )
+        compare_data( data, data_txt, phase_resolved_vs_averaged=True )
+
+    def test_txt_phase_shift( self ):
+        # Same events as Data.evt: a half-cycle shift swaps the two phase bins
+        data_txt = Data.bin__event_list(
+            path=os.path.join( DATA_DIR, 'Data.txt' ),
+            channels=CHANNELS,
+            phases=PHASES,
+            channel_column=1,
+            phase_column=2,
+            phase_shift=0.5,
+            skiprows=2,
+            first=FIRST,
+            last=LAST,
+            exposure_time=EXPOSURE
+        )
+        np.testing.assert_array_equal( data_txt.counts, COUNTS[:, [1, 0]] )
+
 
 ######################################
 ### Check the loading of PHA files ###
@@ -468,3 +499,51 @@ class TestSpectrumSupport( object ):
 
     def test_computed_values( self , spectra_support ):
         assert np.allclose( spectra_support, SUPPORT_EXPECTED_VALUES )
+
+    def test_channel_selection( self ):
+        # Rows are returned in the order of the requested channels
+        background = Data(counts=COUNTS, channels=CHANNELS, phases=PHASES,
+                          first=FIRST, last=LAST, exposure_time=EXPOSURE)
+        background.backscal = BACKSCAL_BACKGROUND
+        support = background.spectra_support( N_SIGMA, BACKSCAL_SOURCE,
+                                              channels=[ 32, 30 ] )
+        assert np.allclose( support, SUPPORT_EXPECTED_VALUES[[2, 0]] )
+
+    @pytest.mark.parametrize('zero_row, donor_row', [ (0, 1), (1, 2), (2, 1) ],
+                             ids=['first', 'middle', 'last'])
+    def test_zero_counts_upper_bound( self , zero_row, donor_row ):
+        # A channel with no counts would have a [0, 0] support; its upper
+        # bound is copied from the nearest channel, the next one first
+        counts = COUNTS.copy()
+        counts[zero_row] = 0
+        background = Data(counts=counts, channels=CHANNELS, phases=PHASES,
+                          first=FIRST, last=LAST, exposure_time=EXPOSURE)
+        background.backscal = BACKSCAL_BACKGROUND
+        support = background.spectra_support( N_SIGMA, BACKSCAL_SOURCE )
+        assert support[zero_row, 0] == 0.0
+        assert support[zero_row, 1] == support[donor_row, 1] > 0.0
+
+    def test_missing_backscal( self , data ):
+        with pytest.raises( IOError , match='BACKSCAL' ):
+            data.spectra_support( N_SIGMA, BACKSCAL_SOURCE )
+
+
+######################################
+### Check the plotting of the data ###
+######################################
+@pytest.fixture
+def agg_backend():
+    # Use a non-interactive backend, then restore the previous one
+    import matplotlib.pyplot as plt
+    backend = plt.get_backend()
+    plt.switch_backend( 'Agg' )
+    yield
+    plt.close( 'all' )
+    plt.switch_backend( backend )
+
+class TestPlot( object ):
+
+    def test_plot( self , data, agg_backend ):
+        fig, axs = data.plot()
+        assert axs.shape == (2, 2)
+        assert fig.get_dpi() == 200
