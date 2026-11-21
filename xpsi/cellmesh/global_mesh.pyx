@@ -26,7 +26,9 @@ def construct_closed_cellMesh(size_t numThreads,
                               double R_eq,
                               double zeta,
                               double epsilon,
-                              int obl_surfgrav_ind):
+                              int obl_surfgrav_ind,
+                              double oblateness_scale,
+                              double surfgrav_scale):
     """
     Construct a closed photospheric cell mesh.
 
@@ -57,7 +59,7 @@ def construct_closed_cellMesh(size_t numThreads,
     for k in range(numThreads):
         w[k] = gsl_integration_cquad_workspace_alloc(100)
 
-    cellArea = _2pi * integrateArea(0.0, _hpi, R_eq, epsilon, zeta, obl_surfgrav_ind, 0, w[0]) / (<double> numCell)
+    cellArea = _2pi * integrateArea(0.0, _hpi, R_eq, epsilon, zeta, obl_surfgrav_ind, oblateness_scale, 0, w[0]) / (<double> numCell)
 
     cellArea *= 2.0
 
@@ -76,6 +78,7 @@ def construct_closed_cellMesh(size_t numThreads,
                                            epsilon,
                                            zeta,
                                            obl_surfgrav_ind,
+                                           oblateness_scale,
                                            0,
                                            w[thread])
 
@@ -99,23 +102,23 @@ def construct_closed_cellMesh(size_t numThreads,
         thread = threadid()
         if (i == numCellsCompute - 1):
             cellColatitudes[i] = integrateArea(parallels[i - 1], _hpi,
-                                                R_eq, epsilon, zeta, obl_surfgrav_ind, 1,
+                                                R_eq, epsilon, zeta, obl_surfgrav_ind, oblateness_scale, 1,
                                                 w[thread]) / eta
         elif (i == 0):
             cellColatitudes[i] = integrateArea(0.0, parallels[i],
-                                                R_eq, epsilon, zeta, obl_surfgrav_ind, 1,
+                                                R_eq, epsilon, zeta, obl_surfgrav_ind, oblateness_scale, 1,
                                                 w[thread]) / eta
         else:
             cellColatitudes[i] = integrateArea(parallels[i - 1], parallels[i],
-                                                R_eq, epsilon, zeta, obl_surfgrav_ind, 1,
+                                                R_eq, epsilon, zeta, obl_surfgrav_ind, oblateness_scale, 1,
                                                 w[thread]) / eta
 
         mu = cos(cellColatitudes[i])
-        radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
+        radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
         cellRadialCoord[i] = radius * R_eq
         #r_s_over_r = r_s / cellRadialCoord[i]
-        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, obl_surfgrav_ind)
-        f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
+        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, obl_surfgrav_ind, surfgrav_scale)
+        f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
         cos_gamma[i] = 1.0 / sqrt(1.0 + f * f)
         maxEmissionAngle[i] = _hpi + acos(cos_gamma[i])
 

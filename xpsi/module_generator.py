@@ -2971,16 +2971,20 @@ module += (
             return -np.inf
 
         # limit polar radius to be just outside the Schwarzschild photon sphere
-        R_p = 1.0 + ref.epsilon * oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind)
+        o2 = oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind, ref.oblateness_scale)
+        R_p = 1.0 + ref.epsilon * o2
         if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
-        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * oblateness_func_o2(ref.zeta, ref._obl_surfgrav_ind)))
         # 2-surface cross-section have a single maximum in |z|
         # i.e., an elliptical surface; minor effect on support, if any,
         # only for high spin frequencies
-        if mu < 1.0:
-            return -np.inf
+        # (no condition for a spherical surface, o2 = 0, e.g. the 'sphere'
+        # prescription or oblateness_scale = 0)
+        if o2 < 0.0:
+            mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * o2))
+            if mu < 1.0:
+                return -np.inf
 
         # check effective gravity at pole (where it is maximum) and
         # at equator (where it is minimum) are in NSX limits
@@ -2988,7 +2992,8 @@ module += (
                                                               np.array([ref.R] * 2 ),
                                                               np.array([ref.zeta] * 2),
                                                               np.array([ref.epsilon] * 2),
-                                                              ref._obl_surfgrav_ind)
+                                                              ref._obl_surfgrav_ind,
+                                                              ref.surfgrav_scale)
 '''
 )
 

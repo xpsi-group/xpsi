@@ -100,6 +100,7 @@ class Spacetime(ParameterSubspace):
 
         # Default until a Star sets it (see Star.__init__).
         self._set_obl_surfgrav('universal')
+        self._set_scales(1.0, 1.0)
 
         if not isinstance(bounds, dict) or not isinstance(values, dict):
              raise TypeError("Both bounds and values need to be dictionaries.")
@@ -182,6 +183,25 @@ class Spacetime(ParameterSubspace):
         key, ind = self.resolve_obl_surfgrav(name)
         self._obl_surfgrav = key
         self._obl_surfgrav_ind = ind
+
+    def _set_scales(self, oblateness_scale, surfgrav_scale):
+        """ Set the oblateness and surface-gravity scale factors.
+
+        Only meant to be called by :class:`~.Star.Star`.
+
+        """
+        self._oblateness_scale = float(oblateness_scale)
+        self._surfgrav_scale = float(surfgrav_scale)
+
+    @property
+    def oblateness_scale(self):
+        """ Get the oblateness scale factor (read-only; set it in :class:`~.Star.Star`). """
+        return self._oblateness_scale
+
+    @property
+    def surfgrav_scale(self):
+        """ Get the surface-gravity scale factor (read-only; set it in :class:`~.Star.Star`). """
+        return self._surfgrav_scale
 
     @property
     def obl_surfgrav(self):

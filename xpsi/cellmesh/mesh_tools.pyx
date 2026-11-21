@@ -18,7 +18,8 @@ cdef double _h = 6.62607004e-34
 cdef double radiusNormalised(double mu,
                              double epsilon,
                              double zeta,
-                             int obl_surfgrav_ind) noexcept nogil:
+                             int obl_surfgrav_ind,
+                             double oblateness_scale) noexcept nogil:
     """
     Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy &
     Morsink (2014) (see Eq. 20 and Table 1 for coefficient values), or assuming a spherical star.
@@ -55,13 +56,14 @@ cdef double radiusNormalised(double mu,
     :rtype: double
         """
 
-    return 1.0 + epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind) * mu * mu
+    return 1.0 + epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind, oblateness_scale) * mu * mu
 
 cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
                     double zeta,
-                    int obl_surfgrav_ind) noexcept nogil:
+                    int obl_surfgrav_ind,
+                    double oblateness_scale) noexcept nogil:
     """
     Calculate f(theta) based on Equation 3 of Morsink et al. (2007), or set f=0 in case of a sphere.
 
@@ -98,7 +100,7 @@ cdef double f_theta(double mu,
 
     cdef double radiusDerivNormed
 
-    radiusDerivNormed = -2.0 * epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind) * mu * sqrt(1.0 - mu * mu)
+    radiusDerivNormed = -2.0 * epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind, oblateness_scale) * mu * sqrt(1.0 - mu * mu)
     return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
 
 cdef double integrand(double theta, void *params) noexcept nogil:
@@ -113,9 +115,10 @@ cdef double integrand(double theta, void *params) noexcept nogil:
         double zeta = (<double*> params)[1]
         int av = <int>(<double*> params)[2]
         int obl_surfgrav_ind = <int>(<double*> params)[3]
+        double oblateness_scale = (<double*> params)[4]
 
-    radius = radiusNormalised(mu, epsilon, zeta,  obl_surfgrav_ind)
-    f = f_theta(mu, radius, epsilon, zeta,  obl_surfgrav_ind)
+    radius = radiusNormalised(mu, epsilon, zeta,  obl_surfgrav_ind, oblateness_scale)
+    f = f_theta(mu, radius, epsilon, zeta,  obl_surfgrav_ind, oblateness_scale)
 
     if (av == 0):
         eval_integrand = radius * radius * sqrt(1.0 + f * f) * sin(theta)
@@ -130,10 +133,11 @@ cdef double integrateArea(double lower_lim,
                           double epsilon,
                           double zeta,
                           int obl_surfgrav_ind,
+                          double oblateness_scale,
                           int av,
                           gsl_integration_cquad_workspace *w) noexcept nogil:
 
-    cdef double params[4]
+    cdef double params[5]
     cdef double integral, error
     cdef size_t nevals
 
@@ -141,6 +145,7 @@ cdef double integrateArea(double lower_lim,
     params[1] = zeta
     params[2] = <double> av
     params[3] = <double> obl_surfgrav_ind
+    params[4] = <double> oblateness_scale
 
     cdef gsl_function F
     F.function = integrand
@@ -321,12 +326,13 @@ cdef double cell_integrand(double theta, void *params) noexcept nogil:
     cdef double phi_b = (<double**>params)[8][0]
     cdef int verbose = (<int**>params)[9][0]
     cdef int obl_surfgrav_ind = (<int**>params)[10][0]
+    cdef double oblateness_scale = (<double**>params)[11][0]
 
     cdef double mu = cos(theta)
     cdef double radius, f
 
-    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
-    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
+    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
+    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
 
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
@@ -439,6 +445,7 @@ cdef double integrateCell(double theta_a,
                           double epsilon,
                           double zeta,
                           int obl_surfgrav_ind,
+                          double oblateness_scale,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -446,7 +453,7 @@ cdef double integrateCell(double theta_a,
                           double superCentreColat,
                           gsl_cq_work *w) noexcept nogil:
 
-    cdef void *params[11]
+    cdef void *params[12]
     cdef double integral, error
     cdef int verbose = 0
     cdef size_t nevals, i
@@ -462,6 +469,7 @@ cdef double integrateCell(double theta_a,
     params[8] = &phi_b
     params[9] = &verbose
     params[10] = &obl_surfgrav_ind
+    params[11] = &oblateness_scale
 
     cdef gsl_function F
     F.function = &cell_integrand
@@ -746,13 +754,14 @@ cdef double spot_integrand(double theta, void *params) noexcept nogil:
     cdef double R_eq = (<double*>params)[8]
     cdef double Omega = (<double*>params)[9]
     cdef int obl_surfgrav_ind = <int>((<double*>params)[10])
+    cdef double oblateness_scale = (<double*>params)[11]
     cdef double r_s_over_r
 
     cdef double mu = cos(theta)
     cdef double radius, f
 
-    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind)
-    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind)
+    radius = radiusNormalised(mu, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
+    f = f_theta(mu, radius, epsilon, zeta, obl_surfgrav_ind, oblateness_scale)
 
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
@@ -824,6 +833,7 @@ cdef double integrateSpot(double theta_a,
                           double epsilon,
                           double zeta,
                           int obl_surfgrav_ind,
+                          double oblateness_scale,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -834,7 +844,7 @@ cdef double integrateSpot(double theta_a,
                           gsl_cq_work *w) noexcept nogil:
 
 
-    cdef double params[11]
+    cdef double params[12]
     cdef double integral, error
     cdef size_t nevals
 
@@ -849,6 +859,7 @@ cdef double integrateSpot(double theta_a,
     params[8] = R_eq
     params[9] = Omega
     params[10] = <double> obl_surfgrav_ind
+    params[11] = <double> oblateness_scale
 
     cdef gsl_function F
     F.function = &spot_integrand
@@ -904,6 +915,7 @@ def allocate_cells(size_t num_cells,
                    double zeta,
                    double epsilon,
                    int obl_surfgrav_ind,
+                   double oblateness_scale,
                    double superRadius,
                    double cedeRadius,
                    double superColatitude,
@@ -950,6 +962,7 @@ def allocate_cells(size_t num_cells,
                                       epsilon,
                                       zeta,
                                       obl_surfgrav_ind,
+                                      oblateness_scale,
                                       0,
                                       w)
 
@@ -959,6 +972,7 @@ def allocate_cells(size_t num_cells,
                                epsilon,
                                zeta,
                                obl_surfgrav_ind,
+                               oblateness_scale,
                                superColatitude,
                                superRadius,
                                holeRadius,
@@ -1037,6 +1051,7 @@ def allocate_cells(size_t num_cells,
                                           epsilon,
                                           zeta,
                                           obl_surfgrav_ind,
+                                          oblateness_scale,
                                           0,
                                           w)
 
@@ -1051,6 +1066,7 @@ def allocate_cells(size_t num_cells,
                                      epsilon,
                                      zeta,
                                      obl_surfgrav_ind,
+                                     oblateness_scale,
                                      cedeColatitude,
                                      cedeRadius,
                                      superRadius,

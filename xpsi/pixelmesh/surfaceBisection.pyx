@@ -14,9 +14,9 @@ cdef double _pi = M_PI
 cdef double c = 2.99792458e8
 cdef int SUCCESS = 1
 
-cdef double RADIUS(double x, double epsilon, double zeta, int obl_surfgrav_ind) noexcept nogil:
+cdef double RADIUS(double x, double epsilon, double zeta, int obl_surfgrav_ind, double oblateness_scale) noexcept nogil:
 
-    return 1.0 + epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind) * x * x
+    return 1.0 + epsilon * oblateness_func_o2(zeta, obl_surfgrav_ind, oblateness_scale) * x * x
 
 cdef double LINTERP(double t,
                     double t1,
@@ -35,7 +35,8 @@ cdef int BISECT(const double *const y_p,
                 double R_eq,
                 double epsilon,
                 double zeta,
-                int obl_surfgrav_ind) noexcept nogil:
+                int obl_surfgrav_ind,
+                double oblateness_scale) noexcept nogil:
 
     cdef:
         int bisect = 1
@@ -52,7 +53,7 @@ cdef int BISECT(const double *const y_p,
         sin_theta = sin(y_new[4])
         r_sph = sqrt(y_new[2]*y_new[2] + a*a*sin_theta*sin_theta)
         cos_theta_sph = cos(y_new[4]) / sqrt(1.0 + a*a*sin_theta*sin_theta / (y_new[2]*y_new[2]))
-        frac_diff = 1.0 - RADIUS(cos_theta_sph, epsilon, zeta, obl_surfgrav_ind) * R_eq / r_sph
+        frac_diff = 1.0 - RADIUS(cos_theta_sph, epsilon, zeta, obl_surfgrav_ind, oblateness_scale) * R_eq / r_sph
 
         if fabs(frac_diff) < 1.0e-8:
             bisect = 0
@@ -68,7 +69,7 @@ cdef double ZABB(const _GEOM *const GEOM,
                  const double *const y,
                  double b,
                  double *const Z,
-                 double *const ABB, int obl_surfgrav_ind) noexcept nogil:
+                 double *const ABB, int obl_surfgrav_ind, double oblateness_scale) noexcept nogil:
 
     cdef:
         double R = y[2] # BL
@@ -137,7 +138,7 @@ cdef double ZABB(const _GEOM *const GEOM,
                            func_r) / det_metric
 
     #cdef double R_SPH = GEOM.R_eq * RADIUS(cos_theta_SPH, GEOM.epsilon, GEOM.zeta)
-    cdef double R_prime = -2.0 * GEOM.R_eq * GEOM.epsilon * oblateness_func_o2(GEOM.zeta, obl_surfgrav_ind) * cos_v * sin_v
+    cdef double R_prime = -2.0 * GEOM.R_eq * GEOM.epsilon * oblateness_func_o2(GEOM.zeta, obl_surfgrav_ind, oblateness_scale) * cos_v * sin_v
 
     # Outgoing null geodesic has impact parameter -b, where b is that of the
     # null geodesic of the incoming photon

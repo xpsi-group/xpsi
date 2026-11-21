@@ -11,7 +11,8 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
                                       _RAY *const RAY,
                                       RAY_MAP *const MAP,
                                       int force_circular,
-                                      int obl_surfgrav_ind) noexcept nogil:
+                                      int obl_surfgrav_ind,
+                                      double oblateness_scale) noexcept nogil:
 
     # Bisection algorithm to compute an appropriate radial extent for the
     # image plane
@@ -35,7 +36,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         RAY.X_IP = L
         RAY.Y_IP = 0.0
 
-        status = RK(RAY, GEOM, obl_surfgrav_ind)
+        status = RK(RAY, GEOM, obl_surfgrav_ind, oblateness_scale)
 
         if RAY.STATE[2] > 0.0:
             r2 = L
@@ -62,7 +63,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         RAY.X_IP = R
         RAY.Y_IP = 0.0
 
-        status = RK(RAY, GEOM, obl_surfgrav_ind)
+        status = RK(RAY, GEOM, obl_surfgrav_ind, oblateness_scale)
 
         if RAY.STATE[2] > 0.0:
             r1 = R
@@ -106,7 +107,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
             RAY.X_IP = MAP.ORIGIN_X
             RAY.Y_IP = U
 
-            status = RK(RAY, GEOM, obl_surfgrav_ind)
+            status = RK(RAY, GEOM, obl_surfgrav_ind, oblateness_scale)
 
             if RAY.STATE[2] > 0.0:
                 r1 = U
@@ -133,7 +134,7 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
             RAY.X_IP = MAP.ORIGIN_X
             RAY.Y_IP = D
 
-            status = RK(RAY, GEOM, obl_surfgrav_ind)
+            status = RK(RAY, GEOM, obl_surfgrav_ind, oblateness_scale)
 
             if RAY.STATE[2] > 0.0:
                 r2 = D

@@ -13,3 +13,5 @@ ctypedef struct _GEOM:
     double d
     double b_max
     int obl_surfgrav_ind
+    double oblateness_scale
+    double surfgrav_scale

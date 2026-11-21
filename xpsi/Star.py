@@ -29,14 +29,27 @@ class Star(ParameterSubspace):
         The selected prescription is stored in the spacetime and can be read
         from :attr:`~.Spacetime.Spacetime.obl_surfgrav`.
 
+    :param float oblateness_scale:
+        Factor multiplying the oblateness coefficient ``o2`` of the chosen
+        prescription, i.e. ``R(theta) = R_eq [1 + oblateness_scale * o2 *
+        epsilon * cos^2(theta)]``. Default ``1.0`` (the prescription as is);
+        ``0.0`` gives a spherical surface.
+
+    :param float surfgrav_scale:
+        Factor multiplying the rotational correction to the effective surface
+        gravity of the chosen prescription, i.e. ``g = g0 [1 + surfgrav_scale
+        * (g/g0 - 1)]``. Default ``1.0`` (the prescription as is); ``0.0``
+        gives the uniform Schwarzschild gravity ``g0``.
+
     """
-    def __init__(self, spacetime, photospheres, name='universal'):
+    def __init__(self, spacetime, photospheres, name='universal', oblateness_scale=1.0, surfgrav_scale=1.0):
         if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
 
         self._spacetime = spacetime
 
         self._spacetime._set_obl_surfgrav('universal' if name is None else name)
+        self._spacetime._set_scales(oblateness_scale, surfgrav_scale)
 
         try:
             assert isinstance(photospheres, list)
