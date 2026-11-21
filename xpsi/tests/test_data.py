@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from astropy.io import fits
 
 from xpsi.Data import Data
 from xpsi.Instrument import ChannelError
@@ -23,6 +24,27 @@ DATA_DIR = os.path.join( os.path.dirname( os.path.abspath(__file__) ), 'data' )
 def data():
     return Data(counts=COUNTS, channels=CHANNELS, phases=PHASES, 
                 first=FIRST, last=LAST, exposure_time=EXPOSURE)
+
+def write_pha( path, columns, **header_updates ):
+    """ Write a synthetic PHA file, reusing the SPECTRUM header of Data.pha.
+
+    :param columns: dict mapping column name to a (FITS format, array) tuple.
+    :param header_updates: header keywords to add or overwrite.
+    """
+    with fits.open( os.path.join( DATA_DIR, 'Data.pha' ) ) as hdul:
+        header = hdul['SPECTRUM'].header.copy()
+    header.update( header_updates )
+
+    # Column keywords (TTYPEn, TFORMn, ...) are rebuilt from the new columns
+    cols = [ fits.Column( name=name, format=fmt, array=array )
+             for name, (fmt, array) in columns.items() ]
+    hdu = fits.BinTableHDU.from_columns( cols, header=header )
+    fits.HDUList( [ fits.PrimaryHDU(), hdu ] ).writeto( path )
+    return str( path )
+
+# CHANNEL and COUNTS columns identical to Data.pha
+PHA_COLUMNS = { 'CHANNEL' : ( 'J', CHANNELS ),
+                'COUNTS'  : ( 'J', COUNTS.sum(axis=1) ) }
 
 def compare_data( data1, data2, phase_resolved_vs_averaged=False ):
 
@@ -112,6 +134,37 @@ class TestDataProperties( object ):
 
     def test_channel_range_is_deprecated_alias( self , data ):
         assert data.channel_range == data.index_range
+
+
+######################################
+### Check the options of Data.load ###
+######################################
+class TestLoadOptions( object ):
+
+    def test_unknown_hduclas1( self , tmp_path ):
+        path = write_pha( tmp_path / 'unknown.pha', PHA_COLUMNS, HDUCLAS1='UNKNOWN' )
+        with pytest.raises( IOError , match='HDUCLAS1' ):
+            Data.load( path )
+
+    def test_evt_all_channels( self , data ):
+        # Without channels, all channels present in the event list are used
+        data_evt = Data.load( os.path.join( DATA_DIR, 'Data.evt' ), n_phases=2 )
+        compare_data( data, data_evt )
+
+    def test_evt_one_phase_bin( self , data ):
+        data_evt = Data.load( os.path.join( DATA_DIR, 'Data.evt' ),
+                              n_phases=1, channels=CHANNELS )
+        compare_data( data, data_evt, phase_resolved_vs_averaged=True )
+
+    @pytest.mark.parametrize('phase_shift, columns', [ (0.5, [1, 0]), (1.0, [0, 1]) ],
+                             ids=['half_cycle', 'full_cycle'])
+    def test_evt_phase_shift( self , phase_shift, columns ):
+        # No event sits on a bin edge, so a half-cycle shift swaps the two
+        # phase bins and a full-cycle shift changes nothing
+        data_evt = Data.from_evt( os.path.join( DATA_DIR, 'Data.evt' ),
+                                  n_phases=2, channels=CHANNELS,
+                                  phase_shift=phase_shift )
+        np.testing.assert_array_equal( data_evt.counts, COUNTS[:, columns] )
 
 
 #################################
