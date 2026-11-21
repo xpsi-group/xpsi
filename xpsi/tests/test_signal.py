@@ -2,9 +2,20 @@
 
 Run with:  pytest -v test_signal.py
 
-Real xpsi ``Data`` / ``Instrument`` / ``Background`` objects need files on
-disk, so lightweight fakes (subclasses of the real xpsi classes, so the
-``isinstance`` checks in ``Signal.__init__`` pass) are used instead.
+In real use, ``Data`` and ``Instrument`` are usually loaded from files
+(``Data.load``, ``Instrument.from_ogip_fits``). Here no input files are
+needed: the real ``Instrument`` class is built directly from arrays, and the
+data is a ``FakeData`` (below). The writer tests only write to ``tmp_path``.
+The helpers are:
+
+* ``FakeData``: a ``Data`` subclass (so the ``isinstance`` check in
+  ``Signal.__init__`` passes) that skips the ``Data`` constructor and exposes
+  only what ``Signal`` reads (counts, channels, phases, index_range);
+* ``FakeInterstellar``: an ``Interstellar`` with a constant attenuation;
+* ``ConcreteSignal``: ``Signal.__call__`` is abstract, so a trivial one is
+  provided;
+* ``StubSignal``: a bare object with ``energy_edges``, for
+  ``construct_energy_array``.
 
 Toy geometry used throughout
 ----------------------------
@@ -116,19 +127,19 @@ class TestConstructionTypes:
         assert isinstance(sig, ParameterSubspace)
 
     def test_bad_data_type(self):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='Invalid type'):
             ConcreteSignal('not data', make_instrument())
 
     def test_bad_instrument_type(self):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='Invalid type'):
             ConcreteSignal(make_data(), 'not an instrument')
 
     def test_bad_background_type(self):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='Invalid type'):
             make_signal(background='nope')
 
     def test_bad_interstellar_type(self):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='Invalid type'):
             make_signal(interstellar='nope')
 
     def test_no_background_is_none(self, sig):
@@ -145,7 +156,8 @@ class TestConstructionTypes:
 
     def test_channel_size_mismatch_raises(self):
         bad = make_data(channels=np.arange(N_CHAN - 1))
-        with pytest.raises(ChannelError):
+        with pytest.raises(ChannelError,
+                           match='does not match the declared size'):
             make_signal(data=bad)
 
     def test_instrument_name_mismatch_raises(self):
@@ -158,7 +170,7 @@ class TestConstructionTypes:
         d = NamedData(np.ones((N_CHAN, N_PHASE)), np.arange(N_CHAN),
                       np.linspace(0, 1, N_PHASE + 1), (0, N_CHAN))
         i = NamedInstrument(default_matrix(), EDGES.copy(), np.arange(N_CHAN))
-        with pytest.raises(AssertionError):
+        with pytest.raises(AssertionError, match='different instruments'):
             ConcreteSignal(d, i)
 
 
@@ -184,7 +196,7 @@ class TestStokes:
 
     @pytest.mark.parametrize('bad', ['V', 'i', '', 'IQ', None, 1])
     def test_invalid_stokes_raises(self, bad):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='param stokes'):
             make_signal(stokes=bad)
 
     @pytest.mark.parametrize('flag', FLAGS)
@@ -204,6 +216,7 @@ class TestPhaseShift:
         assert 'phase_shift' in sig.names
 
     def test_default_fixed_at_zero(self, sig):
+        assert sig.get_param('phase_shift').fixed is True
         assert sig['phase_shift'] == 0.0
 
     def test_fixed_value_from_values(self):
@@ -212,24 +225,28 @@ class TestPhaseShift:
 
     def test_free_with_bounds(self):
         s = make_signal(bounds={'phase_shift': (0.0, 1.0)})
-        assert 'phase_shift' in s.names
+        p = s.get_param('phase_shift')
+        assert p.fixed is False
+        assert p.bounds == (0.0, 1.0)
+        assert p.value is None
 
     def test_bounds_narrower_than_cycle_ok(self):
-        make_signal(bounds={'phase_shift': (-0.1, 0.1)})
+        s = make_signal(bounds={'phase_shift': (-0.1, 0.1)})
+        assert s.get_param('phase_shift').bounds == (-0.1, 0.1)
 
     @pytest.mark.parametrize('bounds', [(0.0, 1.5), (-1.0, 1.0), (0.5, 0.0)])
     def test_bounds_wider_than_cycle_or_reversed_raises(self, bounds):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='maximum of one cycle'):
             make_signal(bounds={'phase_shift': bounds})
 
     @pytest.mark.parametrize('bounds', [(0.0, np.inf), (-np.inf, 0.0),
                                         (np.nan, 0.5)])
     def test_infinite_bounds_raise(self, bounds):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='must be finite'):
             make_signal(bounds={'phase_shift': bounds})
 
     def test_none_bounds_raise(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='must be specified'):
             make_signal(bounds={'phase_shift': (None, None)})
 
 
@@ -250,7 +267,7 @@ class TestSupport:
         assert make_signal(support=support)._support is support
 
     def test_wrong_support_shape_raises(self):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='same shape'):
             make_signal(support=np.zeros((N_CHAN + 10, 2)))
 
 
@@ -264,10 +281,11 @@ class TestInterstellarCheck:
         assert make_signal(interstellar=ism).interstellar is ism
 
     def test_attenuation_of_one_accepted(self):
-        make_signal(interstellar=FakeInterstellar(1.0))
+        ism = FakeInterstellar(1.0)
+        assert make_signal(interstellar=ism).interstellar is ism
 
     def test_attenuation_above_one_raises(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='lower than 1'):
             make_signal(interstellar=FakeInterstellar(1.5))
 
     def test_unset_parameter_set_to_bounds_midpoint(self):
@@ -359,7 +377,7 @@ class TestDataAccessors:
 
     @pytest.mark.parametrize('bad', ['x', 1, None, np.ones(3)])
     def test_data_setter_rejects_other_types(self, sig, bad):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='invalid type'):
             sig.data = bad
 
 
@@ -376,7 +394,7 @@ class TestCacheFlag:
 
     @pytest.mark.parametrize('bad', [1, 0, 'yes', None])
     def test_constructor_non_bool_raises(self, bad):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='boolean'):
             make_signal(cache=bad)
 
     def test_cache_setter(self, sig):
@@ -393,12 +411,12 @@ class TestCacheFlag:
 
     @pytest.mark.parametrize('bad', [1, 'True', None])
     def test_cache_setter_rejects_non_bool(self, sig, bad):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='boolean activation'):
             sig.cache = bad
 
     @pytest.mark.parametrize('bad', [1, 'True', None])
     def test_store_setter_rejects_non_bool(self, sig, bad):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='boolean activation'):
             sig.store = bad
 
 
@@ -530,12 +548,12 @@ class TestShifts:
 
     def test_shifts_wrong_length_raises(self, sig):
         sig.phases = [np.linspace(0, 1, 5)]
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='1D ndarray'):
             sig.shifts = np.array([0.1, 0.2])
 
     def test_shifts_non_ndarray_raises(self, sig):
         sig.phases = [np.linspace(0, 1, 5)]
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match='1D ndarray'):
             sig.shifts = [0.1]
 
     def test_shifts_delete(self, sig):
@@ -567,11 +585,11 @@ class TestCachingTargets:
     @pytest.mark.parametrize('bad', ['data', ('data',), [1, 2], ['data', 3],
                                      ['no_such_attribute'], None])
     def test_invalid_targets_raise(self, sig, bad):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='Invalid caching targets'):
             sig.caching_targets = bad
 
     def test_custom_cache_instructions_not_implemented(self, sig):
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(NotImplementedError, match='Cache method'):
             sig.execute_custom_cache_instructions()
 
 
@@ -589,7 +607,7 @@ class TestLogLikelihood:
         assert sig.loglikelihood == 0.0
 
     def test_nan_raises(self, sig):
-        with pytest.raises(LikelihoodError):
+        with pytest.raises(LikelihoodError, match='NaN'):
             sig.loglikelihood = np.nan
 
     @pytest.mark.parametrize('bad', [np.inf, -np.inf])
@@ -790,17 +808,19 @@ class TestSynthesiseValidation:
 
     def test_creates_directory(self, sig, tmp_path):
         target = tmp_path / 'newdir'
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError,
+                           match='exposure_time or expected_source_counts'):
             sig.synthesise(directory=str(target))
         assert target.is_dir()
 
     def test_fits_requires_instrument_name(self, sig, tmp_path):
-        with pytest.raises(AssertionError):
+        with pytest.raises(AssertionError, match='Instrument name'):
             sig.synthesise(exposure_time=1.0, format='FITS',
                            directory=str(tmp_path))
 
     def test_requires_exposure_or_counts(self, sig, tmp_path):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError,
+                           match='exposure_time or expected_source_counts'):
             sig.synthesise(directory=str(tmp_path))
 
     def test_base_synthesise_not_the_stub(self, sig):
@@ -941,7 +961,7 @@ class TestWriteDispatch:
 
     @pytest.mark.parametrize('bad', ['fits', 'txt', 'CSV', '', None])
     def test_unknown_format_raises(self, sig, recorded, bad):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='Unknown format'):
             sig._write(bad, counts=np.ones(3), **self.KW)
         assert recorded == []
 
