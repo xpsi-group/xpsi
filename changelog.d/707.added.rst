@@ -1,0 +1,1 @@
+Nautilus sampler was added as a possible sampler in `Sample.py`. `NautilusSampler.py` instantiates and runs sampling. 

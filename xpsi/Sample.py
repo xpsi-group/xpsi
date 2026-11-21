@@ -1,4 +1,4 @@
-__all__ = ["run_multinest", "run_emcee", "run_ptemcee", "run_ultranest"]
+__all__ = ["run_multinest", "run_emcee", "run_ptemcee", "run_ultranest", "run_nautilus"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
@@ -515,3 +515,73 @@ def ultranested(likelihood,
                          use_stepsampler=use_stepsampler,
                          stepsampler_params=stepsampler_params,
                          out_filename=out_filename)
+
+
+def run_nautilus(
+    likelihood,
+    prior,
+    sampler_build_kwargs={},
+    runtime_params={},
+    MPI=False,
+    pool=None,
+    out_filename="weighted_post_nautilus_xpsi"
+):
+    """  Wrapper for the nautilus-sampler (https://nautilus-sampler.readthedocs.io/en/latest/)
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to run the sampler.
+
+    :param bool MPI:
+        Whether to use MPI or not for parallelized sampling.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.NautilusSampler`
+    """
+
+    try:
+        from xpsi.NautilusSampler import NautilusSampler
+    except ImportError as e:
+        raise ImportError("Check your installation of nautilus-sampler "
+                          "(pip install nautilus-sampler).") from e
+    # initialise the sampler
+    if MPI :
+        raise NotImplementedError(" MPI is not available yet for the Nautilus sampler. You need to use only one node, assign 1 task-per-node and put pool as the number of CPUs.")
+        # print('Parallelization')
+        # try:
+        #     from schwimmbad import MPIPool
+        # except ImportError:
+        #     raise ImportError('Check your schwimmbad package installation.')
+
+        # # Initialize the MPI-based pool used for parallelisation.
+        # with MPIPool() as pool_MPI:
+        #     if not pool_MPI.is_master():
+        #         # Wait for instructions from the master process.
+        #         pool_MPI.wait()
+        #         _sys.exit(0)
+
+        #     # Initialise sampler
+        #     sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool = (pool_MPI, pool), filepath=out_filename+'.hdf5')
+        #     # start sampling
+        #     sampler(runtime_params)
+        # # store output
+        # sampler.write_results(out_filename)
+
+    else:
+        # Initialise sampler
+        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool=pool, filepath=out_filename+'.hdf5')
+
+        # start sampling
+        sampler(runtime_params)
+
+        # store output
+        sampler.write_results(out_filename)
+
+    return sampler
