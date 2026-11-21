@@ -456,6 +456,11 @@ class TestInterstellarCheck:
                         interstellar=FakeInterstellar(0.5))
         assert s.interstellar is not None
 
+    def test_attenuation_above_one_raises_twod_edges(self):
+        with pytest.raises(ValueError, match='lower than 1'):
+            make_signal(instrument=make_instrument(twod_edges=True),
+                        interstellar=FakeInterstellar(1.5))
+
 
 # --------------------------------------------------------------------------
 # Photosphere prefix
