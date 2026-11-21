@@ -178,9 +178,9 @@ class TestStokes:
             assert getattr(s, f) == (f == flag)
 
     def test_default_is_I(self, sig):
-        assert sig.isI 
-        assert not sig.isQ and not sig.isU 
-        assert not sig.isQn and not sig.isUn
+        # no ``stokes`` argument: only isI is set
+        for f in self.FLAGS:
+            assert getattr(sig, f) == (f == 'isI')
 
     @pytest.mark.parametrize('bad', ['V', 'i', '', 'IQ', None, 1])
     def test_invalid_stokes_raises(self, bad):
