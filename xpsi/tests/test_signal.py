@@ -316,6 +316,48 @@ class TestChannelSubset:
 
 
 # --------------------------------------------------------------------------
+# min_channel / max_channel trimming of data and response
+# --------------------------------------------------------------------------
+class TestTrimming:
+    """Channels 0..5 trimmed by ``Signal(min_channel=..., max_channel=...)``.
+
+    ``min_channel`` alone is not tested: ``Data.trim_data`` then fails on
+    its default ``max_channel=-1``.
+    """
+
+    def test_trim_both_data(self):
+        s = make_signal(min_channel=2, max_channel=4)
+        np.testing.assert_array_equal(s.data.channels, [2, 3, 4])
+        assert s.data.counts.shape == (3, N_PHASE)
+        assert s.data.index_range == (0, 3)
+
+    def test_trim_both_instrument(self):
+        s = make_signal(min_channel=2, max_channel=4)
+        np.testing.assert_array_equal(s.instrument.channels, [2, 3, 4])
+        np.testing.assert_array_equal(s.instrument.matrix,
+                                      default_matrix()[2:5])
+        assert s._instrument_index_range_channels == (0, 3)
+
+    def test_trim_max_only(self):
+        s = make_signal(max_channel=3)
+        np.testing.assert_array_equal(s.data.channels, [0, 1, 2, 3])
+        np.testing.assert_array_equal(s.instrument.channels, [0, 1, 2, 3])
+
+    def test_original_data_not_trimmed(self):
+        s = make_signal(min_channel=2, max_channel=4)
+        np.testing.assert_array_equal(s.original_data.channels,
+                                      np.arange(N_CHAN))
+        assert s.original_data.counts.shape == (N_CHAN, N_PHASE)
+
+    def test_support_of_original_instrument_size_is_sliced(self):
+        # row i is [i, 10 + i]; after trimming, rows 2..4 must remain
+        support = np.column_stack([np.arange(N_CHAN, dtype=float),
+                                   np.arange(N_CHAN, dtype=float) + 10.0])
+        s = make_signal(min_channel=2, max_channel=4, support=support)
+        np.testing.assert_array_equal(s._support, support[2:5])
+
+
+# --------------------------------------------------------------------------
 # Interstellar integration in the constructor
 # --------------------------------------------------------------------------
 class TestInterstellarCheck:
