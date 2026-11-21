@@ -27,7 +27,7 @@ import pytest
 from astropy.io import fits
 
 from xpsi.Data import Data
-from xpsi.Instrument import Instrument, ChannelError
+from xpsi.Instrument import Instrument, ChannelError, EdgesError
 from xpsi.Interstellar import Interstellar
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
@@ -355,6 +355,70 @@ class TestTrimming:
                                    np.arange(N_CHAN, dtype=float) + 10.0])
         s = make_signal(min_channel=2, max_channel=4, support=support)
         np.testing.assert_array_equal(s._support, support[2:5])
+
+
+# --------------------------------------------------------------------------
+# Quality filtering (data._quality, as set by Data.from_pha(checkqual=True))
+# --------------------------------------------------------------------------
+class TestQualityFiltering:
+    """Instrument channels 0..5, channel 1 flagged bad (quality 1).
+
+    The data keeps the 5 good channels, renumbered 0..4 as ``from_pha``
+    does; ``_quality`` is indexed by channel number.
+    """
+
+    QUALITY = np.array([0, 1, 0, 0, 0, 0])
+    CHANNEL_EDGES = np.array([np.arange(N_CHAN, dtype=float),
+                              np.arange(N_CHAN, dtype=float) + 1.0])
+
+    def _data(self, quality=True, grpdata=False):
+        d = make_data(counts=np.ones((N_CHAN - 1, N_PHASE)),
+                      channels=np.arange(N_CHAN - 1))
+        if quality:
+            d._quality = self.QUALITY.copy()
+        d._grpdata = grpdata
+        return d
+
+    def _instrument(self, matrix=None):
+        matrix = default_matrix() if matrix is None else matrix
+        return Instrument(matrix, np.array([EDGES[:-1], EDGES[1:]]),
+                          np.arange(N_CHAN),
+                          channel_edges=self.CHANNEL_EDGES.copy(),
+                          twod_edges=True)
+
+    def test_quality_requires_2d_edges(self):
+        with pytest.raises(EdgesError, match='good quality'):
+            make_signal(data=self._data())
+
+    def test_grouping_requires_2d_edges(self):
+        with pytest.raises(EdgesError, match='group channels'):
+            make_signal(data=self._data(quality=False, grpdata=True))
+
+    def test_bad_channel_row_removed(self):
+        s = make_signal(data=self._data(), instrument=self._instrument())
+        expected = np.delete(default_matrix(), 1, axis=0)
+        np.testing.assert_array_equal(s.instrument.matrix, expected)
+
+    def test_instrument_takes_data_channels(self):
+        s = make_signal(data=self._data(), instrument=self._instrument())
+        np.testing.assert_array_equal(s.instrument.channels, np.arange(5))
+
+    def test_channel_edges_keep_original_channels(self):
+        s = make_signal(data=self._data(), instrument=self._instrument())
+        np.testing.assert_array_equal(s.instrument.channel_edges[0],
+                                      [0, 2, 3, 4, 5])
+        np.testing.assert_array_equal(s.instrument.channel_edges[1],
+                                      [1, 3, 4, 5, 6])
+
+    def test_empty_input_column_dropped(self):
+        # input interval 0 only reaches the bad channel
+        m = default_matrix()
+        m[:, 0] = 0.0
+        m[1, 0] = 1.0
+        s = make_signal(data=self._data(), instrument=self._instrument(m))
+        assert s.instrument.matrix.shape == (N_CHAN - 1, N_IN - 1)
+        np.testing.assert_allclose(s.instrument.energy_edges,
+                                   [EDGES[1:-1], EDGES[2:]])
 
 
 # --------------------------------------------------------------------------
