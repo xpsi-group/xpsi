@@ -548,9 +548,9 @@ def run_nautilus(
 
     try:
         from xpsi.NautilusSampler import NautilusSampler
-    except ImportError:
-        print("""Check your installation of nautilus-sampler if using the NautilusSampler""")
-
+    except ImportError as e:
+        raise ImportError("Check your installation of nautilus-sampler "
+                          "(pip install nautilus-sampler).") from e
     # initialise the sampler
     if MPI :
         raise NotImplementedError(" MPI is not available yet for the Nautilus sampler. You need to use only one node, assign 1 task-per-node and put pool as the number of CPUs.")
@@ -559,7 +559,7 @@ def run_nautilus(
         #     from schwimmbad import MPIPool
         # except ImportError:
         #     raise ImportError('Check your schwimmbad package installation.')
-            
+
         # # Initialize the MPI-based pool used for parallelisation.
         # with MPIPool() as pool_MPI:
         #     if not pool_MPI.is_master():
