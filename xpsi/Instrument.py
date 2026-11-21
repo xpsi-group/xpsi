@@ -7,7 +7,7 @@ from xpsi.utils import make_verbose
 from xpsi.ParameterSubspace import ParameterSubspace
 
 from xpsi import Parameter
-from xpsi.utils import make_verbose
+from xpsi.utils import make_verbose, fits_column_keyword
 
 from xpsi.PileupModule import XrayPileup
 
@@ -476,14 +476,34 @@ class Instrument(ParameterSubspace):
             ARF_path = _os.path.join( datafolder, ARF_path ) if ARF_path is not None else None
             RMF_path = _os.path.join( datafolder, RMF_path )
 
-        # Open useful values in ARF/RMF/RSP
+        # Open the RMF/RSP. The matrix extension is named MATRIX in RMF files
+        # and can be named SPECRESP MATRIX in RSP files.
         with fits.open( RMF_path ) as RMF_hdul:
-            RMF_header = RMF_hdul['MATRIX'].header
-        RMF_instr = RMF_header['INSTRUME'] 
+            matrix_extnames = [ hdu.name for hdu in RMF_hdul if hdu.name in ('MATRIX', 'SPECRESP MATRIX') ]
+            if not matrix_extnames:
+                raise IOError(f'No MATRIX or SPECRESP MATRIX extension found in {RMF_path}.')
+            MATRIX_hdu = RMF_hdul[ matrix_extnames[0] ]
+            RMF_header = MATRIX_hdu.header
+            RMF_MATRIX = MATRIX_hdu.data
+            RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
+            TLMIN = fits_column_keyword( MATRIX_hdu, 'F_CHAN', 'TLMIN' )
+            TLMAX = fits_column_keyword( MATRIX_hdu, 'F_CHAN', 'TLMAX' )
+        RMF_instr = RMF_header['INSTRUME']
         DETCHANS = RMF_header['DETCHANS']
         NUMGRP = RMF_header['NAXIS2']
-        TLMIN = RMF_header['TLMIN4']
-        TLMAX = RMF_header['TLMAX4']
+
+        # First and last legal channels. If the TLMIN/TLMAX keywords of the
+        # F_CHAN column are missing, use the channels listed in EBOUNDS.
+        if TLMIN is None:
+            TLMIN = int( _np.min( RMF_EBOUNDS['CHANNEL'] ) )
+            print(f'TLMIN keyword not found for the F_CHAN column of {RMF_path}. '
+                  f'Assuming the first channel is {TLMIN} from the EBOUNDS extension.')
+        else:
+            TLMIN = int( TLMIN )
+        if TLMAX is None:
+            TLMAX = TLMIN + DETCHANS - 1
+        else:
+            TLMAX = int( TLMAX )
 
         # Handle the RSP case
         if ARF_path is not None:
@@ -494,18 +514,13 @@ class Instrument(ParameterSubspace):
         if min_channel == 0:
             min_channel = TLMIN
         if max_channel == -1:
-            max_channel = DETCHANS -1
+            max_channel = TLMIN + DETCHANS - 1
         if max_input == -1:
             max_input = NUMGRP
 
         # Perform routine checks
         assert min_channel >= TLMIN and max_channel <= TLMAX
         assert min_input >= 0 and max_input <= NUMGRP
-
-        # If everything in order, get the data
-        with fits.open( RMF_path ) as RMF_hdul:
-            RMF_MATRIX = RMF_hdul['MATRIX'].data
-            RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
 
         # Get all the channels and input energies
         channels = _np.array( RMF_EBOUNDS['CHANNEL'] )
@@ -559,8 +574,8 @@ class Instrument(ParameterSubspace):
 
         # Get the edges of energies for both input and channel
         if twod_edges:
-            energy_edges = _np.array( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs-1]).astype(dtype=_np.double)
-            channel_energy_edges = _np.array(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels-TLMIN])
+            energy_edges = _np.array( [RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs-1]] ).astype(dtype=_np.double)
+            channel_energy_edges = _np.array( [RMF_EBOUNDS['E_MIN'][channels-TLMIN], RMF_EBOUNDS['E_MAX'][channels-TLMIN]] )
         else:
             energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
             channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
