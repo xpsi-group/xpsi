@@ -1440,3 +1440,28 @@ class TestConstructEnergyArray:
         assert np.all(np.diff(e) > 0)
         assert e[0] == pytest.approx(0.3)
         assert e[-1] == pytest.approx(10.0)
+
+    def test_mixed_1d_2d_signals(self):
+        e = construct_energy_array(60, [stub(0.3, 5.0),
+                                        stub(1.0, 10.0, twod_edges=True)])
+        assert len(e) == 60
+        assert e[0] == pytest.approx(0.3)
+        assert e[-1] == pytest.approx(10.0)
+
+    def test_three_overlapping_signals(self):
+        e = construct_energy_array(60, [stub(1.0, 3.0), stub(0.3, 2.0),
+                                        stub(2.5, 10.0)])
+        assert len(e) == 60
+        assert e[0] == pytest.approx(0.3)
+        assert e[-1] == pytest.approx(10.0)
+        assert np.all(np.diff(e) > 0)
+
+    def test_max_energy_inside_gap(self):
+        # max_energy falls in the gap (2.0, 2.5): the upper waveband is
+        # dropped and the grid stops at the gap's lower edge
+        e = construct_energy_array(80, [stub(0.3, 2.0), stub(2.5, 10.0)],
+                                   max_energy=2.2)
+        assert len(e) == 80
+        assert e[0] == pytest.approx(0.3)
+        assert e[-1] == pytest.approx(2.0)
+        assert np.all(e <= 2.0 * (1 + 1e-12))
