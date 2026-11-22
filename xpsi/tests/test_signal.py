@@ -1061,6 +1061,120 @@ class TestSynthesiseValidation:
 
 
 # --------------------------------------------------------------------------
+# synthesise: end to end (uses the compiled synthesis)
+# --------------------------------------------------------------------------
+N_HOT = 32  # GSL aborts the process if the hot-region phase grid is too short
+
+
+@pytest.fixture
+def ready(energies):
+    """Factory of signals ready to synthesise: one flat hot region."""
+    def _make(**kw):
+        s = make_signal(**kw)
+        s.energies = energies
+        s.register([[np.ones((len(energies), N_HOT))]])
+        s.phases = [np.linspace(0.0, 1.0, N_HOT)]
+        s.shifts = np.array([0.0])
+        return s
+    return _make
+
+
+class TestSynthesise:
+
+    T = 10.0
+    BKG_1D = 3.0 * np.ones(N_CHAN)
+
+    def test_txt_files_written(self, ready, tmp_path):
+        ready().synthesise(exposure_time=self.T, directory=str(tmp_path))
+        assert (tmp_path / 'synthetic.dat').is_file()
+        assert (tmp_path / 'synthetic_realisation.dat').is_file()
+
+    def test_expected_counts_total(self, ready, tmp_path):
+        # flat signal: the phase integral over one cycle is its mean value
+        s = ready()
+        s.synthesise(exposure_time=self.T, directory=str(tmp_path))
+        expected = self.T * s.signals[0].sum(axis=0).mean()
+        assert s.expected_counts.sum() == pytest.approx(expected, rel=1e-6)
+
+    def test_expected_counts_file_matches_attribute(self, ready, tmp_path):
+        s = ready()
+        s.synthesise(exposure_time=self.T, directory=str(tmp_path))
+        np.testing.assert_allclose(np.loadtxt(tmp_path / 'synthetic.dat'),
+                                   s.expected_counts, rtol=1e-6)
+
+    def test_seed_reproducible(self, ready, tmp_path):
+        for d in ('a', 'b'):
+            ready().synthesise(exposure_time=self.T, seed=42,
+                               directory=str(tmp_path / d))
+        np.testing.assert_array_equal(
+            np.loadtxt(tmp_path / 'a' / 'synthetic_realisation.dat'),
+            np.loadtxt(tmp_path / 'b' / 'synthetic_realisation.dat'))
+
+    def test_expected_source_counts(self, ready, tmp_path):
+        s = ready()
+        s.synthesise(expected_source_counts=500, directory=str(tmp_path))
+        assert s.expected_counts.sum() == pytest.approx(500, rel=1e-6)
+
+    def test_data_bkg_1d_saved(self, ready, tmp_path):
+        ready().synthesise(exposure_time=self.T, data_BKG=self.BKG_1D,
+                           save_background=True, directory=str(tmp_path))
+        assert (tmp_path / 'synthetic_bkg_realisation.dat').is_file()
+        np.testing.assert_allclose(np.loadtxt(tmp_path / 'synthetic_bkg.dat'),
+                                   self.BKG_1D)
+
+    def test_background_and_data_bkg_raise(self, ready, tmp_path):
+        s = ready(background=FakeBackground())
+        with pytest.raises(ValueError, match='both data_BKG'):
+            s.synthesise(exposure_time=self.T, data_BKG=self.BKG_1D,
+                         directory=str(tmp_path))
+
+    def test_background_requires_expected_counts(self, ready, tmp_path):
+        s = ready(background=FakeBackground())
+        with pytest.raises(ValueError, match='expected_background_counts'):
+            s.synthesise(exposure_time=self.T, directory=str(tmp_path))
+
+    def test_background_three_phase_bins_raise(self, ready, tmp_path):
+        # the default data has 3 phase bins (4 phase edges)
+        s = ready(background=FakeBackground())
+        with pytest.raises(ValueError, match='3 or 4 phases'):
+            s.synthesise(exposure_time=self.T, expected_background_counts=10,
+                         directory=str(tmp_path))
+
+    def test_warning_save_without_background(self, ready, tmp_path,
+                                             monkeypatch, capsys):
+        monkeypatch.setattr('xpsi._verbose', True)
+        ready().synthesise(exposure_time=self.T, save_background=True,
+                           directory=str(tmp_path))
+        assert 'no background file will be saved' in capsys.readouterr().out
+        assert not (tmp_path / 'synthetic_bkg.dat').exists()
+
+    def test_warning_background_not_saved(self, ready, tmp_path,
+                                          monkeypatch, capsys):
+        monkeypatch.setattr('xpsi._verbose', True)
+        ready().synthesise(exposure_time=self.T, data_BKG=self.BKG_1D,
+                           directory=str(tmp_path))
+        assert 'will not be saved' in capsys.readouterr().out
+        assert not (tmp_path / 'synthetic_bkg.dat').exists()
+
+    def test_fits_phase_resolved_writes_evt(self, ready, tmp_path):
+        ready().synthesise(exposure_time=self.T, format='FITS',
+                           instrument_name='X', directory=str(tmp_path))
+        assert (tmp_path / 'synthetic.evt').is_file()
+        assert (tmp_path / 'synthetic_realisation.evt').is_file()
+
+    def test_fits_phase_averaged_writes_pha(self, ready, tmp_path):
+        data = make_data(counts=np.ones((N_CHAN, 1)),
+                         phases=np.array([0.0, 1.0]))
+        ready(data=data).synthesise(exposure_time=self.T, format='FITS',
+                                    instrument_name='X',
+                                    data_BKG=self.BKG_1D, save_background=True,
+                                    directory=str(tmp_path))
+        for stem in ('synthetic', 'synthetic_realisation',
+                     'synthetic_bkg', 'synthetic_bkg_realisation'):
+            assert (tmp_path / (stem + '.pha')).is_file()
+
+
+# --------------------------------------------------------------------------
 # File writers
 # --------------------------------------------------------------------------
 class TestWriteTXT:
