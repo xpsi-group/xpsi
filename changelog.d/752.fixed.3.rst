@@ -1,0 +1,1 @@
+Fixed a crash of ``Instrument.from_ogip_fits`` with ``twod_edges=True``. Response files whose matrix extension is named ``SPECRESP MATRIX`` (RSP files) are now also accepted.
