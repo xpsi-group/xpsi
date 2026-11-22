@@ -245,8 +245,6 @@ parser.add_argument('--XTI-event-file-phase-column', type=int, default=2, help='
                     comment=True)
 parser.add_argument('--XTI-event-file-skiprows', type=int, default=3, help='Number of top rows to skip when loading XTI event list file.',
                     comment=True)
-parser.add_argument('--XTI-events-in-eV', action='store_true', help='XTI event list file lists events by energy in eV?',
-                    comment=True)
 parser.add_argument('--XTI-arf-path', type=str, help='Absolute or relative path to XTI ARF file.',
                     comment_line_above='rule')
 parser.add_argument('--XTI-effective-area-scaling-factor', type=str, default='1.0',
@@ -979,7 +977,6 @@ except ValueError:
                                          phase_averaged=True if args.XTI_number_phase_bins == 1 else False,
                                          channel_edges=XTI.instrument.channel_edges,
                                          skiprows=args.XTI_event_file_skiprows,
-                                         eV=True if args.XTI_events_in_eV else False,
                                          dtype=getattr(np, args.XTI_count_matrix_type),
                                          first=0,
                                          last=len(XTI.instrument.channels) - 1,
