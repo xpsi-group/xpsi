@@ -26,6 +26,7 @@ import numpy as np
 import pytest
 from astropy.io import fits
 
+from xpsi.Background import Background
 from xpsi.Data import Data
 from xpsi.Instrument import Instrument, ChannelError, EdgesError
 from xpsi.Interstellar import Interstellar
@@ -46,6 +47,14 @@ class FakeInterstellar(Interstellar):
 
     def attenuation(self, energies):
         return self.factor * np.ones_like(energies)
+
+
+class FakeBackground(Background):
+    """A background of 1 count per input interval and phase bin."""
+
+    def __call__(self, energy_edges, phases):
+        self.incident_background = np.ones((len(energy_edges) - 1,
+                                            len(phases) - 1))
 
 
 class ConcreteSignal(Signal):
@@ -974,6 +983,52 @@ class TestRegister:
         comp = flux(energies, 2.0)
         sig.register([[comp]])
         assert np.all(comp == 2.0)
+
+    def test_twod_edges_unit_flux(self, energies):
+        # same analytic value as with 1-D edges, through the 2-D integrator
+        s = make_signal(instrument=make_instrument(twod_edges=True))
+        s.energies = energies
+        s.register([[flux(energies, 1.0)]])
+        expected = default_matrix() @ np.diff(EDGES)
+        for k in range(N_PHASE):
+            np.testing.assert_allclose(s.signals[0][:, k], expected,
+                                       rtol=1e-5)
+
+    def test_background_registered(self, energies):
+        bkg = FakeBackground()
+        s = make_signal(background=bkg)
+        s.energies = energies
+        s.register([[flux(energies)]])
+        assert bkg.registered_background.shape == (N_CHAN, N_PHASE)
+        expected = default_matrix() @ np.ones(N_IN)
+        for k in range(N_PHASE):
+            np.testing.assert_allclose(bkg.registered_background[:, k],
+                                       expected)
+
+    def test_background_type_error_reraised(self, energies, capsys):
+        class BrokenBackground(Background):
+            def __call__(self, energy_edges, phases):
+                raise TypeError('broken')
+
+        s = make_signal(background=BrokenBackground())
+        s.energies = energies
+        with pytest.raises(TypeError, match='broken'):
+            s.register([[flux(energies)]])
+        assert 'incident background' in capsys.readouterr().out
+
+    @pytest.mark.parametrize('cache, calls', [(True, 1), (False, 0)])
+    def test_custom_cache_instructions_called_when_caching(self, energies,
+                                                           cache, calls):
+        class CountingSignal(ConcreteSignal):
+            calls = 0
+
+            def execute_custom_cache_instructions(self):
+                CountingSignal.calls += 1
+
+        s = CountingSignal(make_data(), make_instrument(), cache=cache)
+        s.energies = energies
+        s.register([[flux(energies)]])
+        assert CountingSignal.calls == calls
 
 
 # --------------------------------------------------------------------------
