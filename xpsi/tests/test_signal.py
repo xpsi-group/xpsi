@@ -1283,6 +1283,29 @@ class TestWriteEVT:
             assert h['INSTRUME'] == 'FAKE'
 
 
+class TestRoundTrip:
+    """Files written by ``Signal`` are read back by ``Data.load``.
+
+    Only the event file for now: ``_write_PHA`` writes no TLMIN1/TLMAX1,
+    which ``Data.load`` needs for a spectrum.
+    """
+
+    CHANNELS = np.array([10, 11, 12])
+
+    @pytest.mark.parametrize('channels', [CHANNELS, None],
+                             ids=['given', 'from_file'])
+    def test_evt_roundtrip(self, sig, tmp_path, channels):
+        sig._write_EVT(self.CHANNELS, TestWriteEVT.COUNTS,
+                       str(tmp_path / 'ev'), **TestWriteEVT.KW)
+        d = Data.load(str(tmp_path / 'ev.evt'),
+                      n_phases=TestWriteEVT.COUNTS.shape[1],
+                      channels=channels)
+        np.testing.assert_array_equal(d.counts, TestWriteEVT.COUNTS)
+        np.testing.assert_array_equal(d.channels, self.CHANNELS)
+        np.testing.assert_allclose(d.phases, np.linspace(0.0, 1.0, 5))
+        assert d.exposure_time == TestWriteEVT.KW['exposure']
+        assert d.instrument == TestWriteEVT.KW['instrument']
+
 class TestWriteDispatch:
 
     @pytest.fixture
