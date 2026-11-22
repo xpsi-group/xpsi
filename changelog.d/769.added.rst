@@ -1,1 +1,2 @@
 Added more unit tests for the Data, Interstellar, and Signal.
+Bug fix in synthesise.pyx (initialisation of variables at 0.0)
