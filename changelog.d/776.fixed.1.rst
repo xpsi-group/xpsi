@@ -1,0 +1,1 @@
+Fixed the normal curve drawn over the residual distribution of ``ResidualPlot``, which was scaled for a fixed number of 8640 channel-phase bins and therefore had the wrong height for other data sets, and the cluster-size distribution, which counted the background as a cluster.

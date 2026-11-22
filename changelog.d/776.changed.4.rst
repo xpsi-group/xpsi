@@ -1,0 +1,1 @@
+``ResidualPlot``, ``Residual1DPlot`` and ``ResidualStructurePlot`` now raise a ``RuntimeError`` when an instance that has already been plotted is passed to ``SignalPlotter.plot`` again. Previously the second call drew a second set of curves (e.g. a second histogram or pulse profile) on top of the first figure. Create a new plot instance for each plotting call.

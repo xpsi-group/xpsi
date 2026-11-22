@@ -212,14 +212,14 @@ class TestPostProcessing(object):
                 plots = plots)
 
     def test_pulse_plotting_works(self):
-        'Testing that the pulse plotter does not fail when it should not.'
+       'Testing that the pulse plotter does not fail when it should not.'
 
-        pp3 = xpsi.SignalPlotter([self.ST.runs])
-        pp3.plot(IDs=OrderedDict([('ST', ['run',]),]),  
-                nsamples=2,
-                plots = {'ST': xpsi.PulsePlot(use_fgivenx=True,
-                         num_phases=5,
-                         root_filename= 'ST_model_signal',),})
+       pp3 = xpsi.SignalPlotter([self.ST.runs])
+       pp3.plot(IDs=OrderedDict([('ST', ['run',]),]),
+               nsamples=2,
+               plots = {'ST': xpsi.PulsePlot(use_fgivenx=True,
+                        num_phases=5,
+                        root_filename= 'ST_model_signal',),})
 
     def test_spectrum_plotting_fails(self):
         'Testing that the spectrum plotter fails if providing negative number of phases.'

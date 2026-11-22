@@ -1,0 +1,1 @@
+``ResidualPlot`` no longer uses the deprecated ``scipy.ndimage.measurements`` module, which will be removed in SciPy 2.0.
