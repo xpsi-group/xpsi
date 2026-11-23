@@ -22,7 +22,6 @@ class XrayPileup:
 
         # Load data files
         self.rmf_data = np.ascontiguousarray( np.maximum(Instrument.RMF, 0) ) 
-        self.arf_data = Instrument.ARF
         self.energies = Instrument.energies
         self.instrument = Instrument
 
