@@ -38,8 +38,10 @@ cdef extern from "math.h":
 
 # Large-r series for F1, F2 and their derivatives
 ## WHY: the closed forms below (GB06 Eqs. A.9, A.10) subtract two terms that
-## are each ~ (r/r_s)^2 to leave a result ~ (r_s/r)^3. The cancellation
-## loses ~5 digits per decade in r: in double precision the relative error is
+## are each ~ (15/4)(r/r_s) to leave a result ~ (r_s/r)^3. That cancellation
+## costs ~4 digits per decade in r, and evaluating log(r/(r - r_s)) for an
+## argument this close to 1 costs about one more, so the closed forms
+## lose ~5 digits per decade in r: in double precision the relative error is
 ## ~1e-12 at 5 r_s, ~1e-7 at 50 r_s, and at the image plane (~3.6e4 r_s)
 ## F1 comes out ~1e8 times too large with the wrong sign. That noise, times
 ## kappa, made the adaptive integrator shrink its step to ~1 m and run out of
@@ -54,7 +56,7 @@ cdef extern from "math.h":
 ## F1 -> -(M/r)^3 as required for Q = Q^K - kappa M^3 (GB06 Eq. 2.3).
 ## Checked against 60-digit arithmetic: maximum relative error ~5e-16 for
 ## F1, F2 and both derivatives over 4 r_s < r < 1e6 r_s. Below 4 r_s the
-## closed forms are kept; their double-precision error there is < 1e-12.
+## closed forms are kept; their double-precision error there is at most ~1e-12.
 ## The series is evaluated in Horner form (as flat statements); coefficients
 ## are generated, not typed by hand.
 
