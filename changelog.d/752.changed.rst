@@ -1,0 +1,1 @@
+The default ``max_channel`` of ``Instrument.from_ogip_fits`` is now the last channel of the response, ``TLMIN + DETCHANS - 1``, instead of ``DETCHANS - 1``. This only changes the result for responses whose channels start at 1 (e.g. Chandra), where the last channel was dropped. PHA files written by ``Signal`` now include the ``TLMIN1`` and ``TLMAX1`` keywords.

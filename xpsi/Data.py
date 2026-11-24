@@ -2,11 +2,46 @@
 __all__ = ["Data"]
 
 from xpsi.global_imports import *
-from xpsi.utils import make_verbose
+from xpsi.utils import make_verbose, fits_column_keyword
 
 from xpsi.Instrument import ChannelError
 
 from astropy.io import fits
+
+
+def _group_good_channels(counts, grouping, quality):
+    """ Filter out bad channels and sum the remaining ones into groups.
+
+    This follows the OGIP convention, as for PHA files: channels with a
+    non-zero ``quality`` are discarded first, then the remaining channels are
+    summed into groups, each group starting at a channel with ``grouping == 1``
+    and continuing over the following channels with ``grouping == -1``.
+
+    :param ndarray[n,m] counts:
+        Counts per channel (rows) and phase bin (columns).
+
+    :param ndarray[n] grouping:
+        Grouping flag of each channel (1: start of a group, -1: continuation).
+
+    :param ndarray[n] quality:
+        Quality flag of each channel (0: good).
+
+    :returns:
+        The grouped counts, one row per group.
+    """
+    good = _np.asarray(quality) == 0
+    counts = _np.asarray(counts)[good]
+    grouping = _np.asarray(grouping)[good]
+
+    starts = _np.where(grouping == 1)[0]
+    if starts.size == 0:
+        raise ValueError('No group of good quality channels could be formed.')
+    if starts[0] != 0:
+        print(f'The first {starts[0]} good channels belong to a group starting before the '
+              'requested channel range, and will be ignored.')
+
+    return _np.add.reduceat(counts, starts, axis=0)
+
 
 class Data(object):
     r""" A container for event data.
@@ -467,17 +502,24 @@ class Data(object):
         :param int | None minbincnt:
             Prepare a customized grouping of the extracted event channels, by determining a minimal amount of counts 
             required for each new large channel. New channels with not enough counts shall be ignored. 
-            If None, keep the original event list.
+            If None, keep the original event list. Ignored for the grouping if ``checkdatasrc`` is given,
+            since the grouping of ``checkdatasrc`` is then used.
         
         :param xpsi.Data | None checkdatasrc:
             Seek for QUALITY and GROUPING information from another PHA file. Should lead to the source file when
             the background support is used. 
+
+        .. note::
+
+            The quality and grouping arrays (``_quality`` and ``_grouping``) are indexed by channel
+            number, as the QUALITY and GROUPING columns of a PHA file whose first channel is 0.
         """
 
         # Read the fits file
         with fits.open( path ) as hdul:
             Header = hdul['EVENTS'].header
             EvtList = hdul['EVENTS'].data
+            TLMAX = fits_column_keyword( hdul['EVENTS'], channel_column, 'TLMAX' )
 
         # Extract useful data
         exposure = Header['EXPOSURE']
@@ -507,100 +549,87 @@ class Data(object):
         origevt = None
         
         if checkdatasrc is not None:
-            if hasattr(checkdatasrc, '_quality'):
-                qualchans = checkdatasrc._quality
-            else:
+            if not hasattr(checkdatasrc, '_quality'):
                 raise IOError('QUALITY information cannot be found in the Source Data module')
-            
-            if hasattr(checkdatasrc, '_grouping'):
-                groupcha = checkdatasrc._grouping
-                origevt=counts_histogram.astype(dtype=_np.double)
-                print('Counts will be grouped into larger channels')
-                binline=_np.array([])
-                binchan=origevt[0]
-                for i in range(len(groupcha)-1):
-                    if groupcha[i+1]!=1:
-                        binchan=binchan+origevt[i+1]
-                    else:
-                        if binline.ndim==1:
-                            binline=_np.array([binchan])
-                        else:
-                            binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
-                        binchan=origevt[i+1]
-                if groupcha[-1]==-1:
-                    binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
-                counts_histogram = binline
-                print(r'Counts grouped on {} new channels'.format(len(counts_histogram[:,0])))
-                qualcha=qualchans[min_channel:min_channel+len(qualcha)]
-                qualgrpchannels = qualcha[_np.where(groupcha==1)]
-                counts_histogram = counts_histogram[_np.where(qualgrpchannels==0)]
-                print(r'Spectrum reduced to {} channels'.format(_np.shape(counts_histogram)[0]))
-                groupchans=_np.arange(_np.shape(counts_histogram)[0])
-                min_channel = _np.min( groupchans )
-                max_channel = _np.max( groupchans )
-                first = 0
-                last = max_channel - min_channel
-                channels = _np.arange(min_channel,max_channel+1)
-                grpevdata = True
-                
-            else:
+            if not hasattr(checkdatasrc, '_grouping'):
                 raise IOError('GROUPING information cannot be found in the Source Data module')
-        
-        if minbincnt is not None:
-            evtcnts=counts_histogram.sum(axis=1)
+
+            # Quality and grouping of the source, indexed by channel number
+            qualchans = _np.asarray( checkdatasrc._quality )
+            grpchans = _np.asarray( checkdatasrc._grouping )
+            if max_channel >= len(qualchans):
+                raise ValueError(f'The channels of the event list go up to {max_channel}, beyond the '
+                                 f'{len(qualchans)} channels with QUALITY information in the Source Data module.')
+
+            # Grouping of the good channels only. It is stored for good channels only when the
+            # source PHA file was loaded with checkqual=True, and for all channels otherwise.
+            good_channels = _np.where( qualchans == 0 )[0]
+            if len(grpchans) == len(qualchans):
+                good_grouping = grpchans[good_channels]
+            elif len(grpchans) == len(good_channels):
+                good_grouping = grpchans
+            else:
+                raise ValueError('The GROUPING and QUALITY information of the Source Data module do not match in size.')
+
+            # Restrict to the channels of the event list and group them
+            in_range = ( good_channels >= min_channel ) & ( good_channels <= max_channel )
+            origevt = counts_histogram.astype( dtype=_np.double )
+            print('Counts will be grouped into larger channels')
+            counts_histogram = _group_good_channels( origevt[ good_channels[in_range] - min_channel ],
+                                                     good_grouping[in_range],
+                                                     _np.zeros( in_range.sum() ) )
+            print(r'Counts grouped on {} new channels'.format(_np.shape(counts_histogram)[0]))
+
+            channels = _np.arange( _np.shape(counts_histogram)[0] )
+            min_channel, max_channel = channels[0], channels[-1]
+            first = 0
+            last = max_channel - min_channel
+            grpevdata = True
+            if minbincnt is None:
+                minbincnt = getattr( checkdatasrc, '_minbincnt', None )
+
+        elif minbincnt is not None:
+            evtcnts = counts_histogram.sum(axis=1)
             if (evtcnts<minbincnt).any():
-                qualchans=_np.ones(_np.max(channel_data)-_np.min(channel_data))
-                grpchans=_np.ones(_np.max(channel_data)-_np.min(channel_data))
-                origevt=counts_histogram.astype(dtype=_np.double)
+                origevt = counts_histogram.astype(dtype=_np.double)
                 print('Counts will be grouped into larger channels')
-                groupcha=_np.ones_like(evtcnts)
-                qualcha=_np.zeros_like(evtcnts)
-                binline=_np.array([])
-                binchan=origevt[0]
-                bincnt=evtcnts[0]
-                for i in range(len(groupcha)-1):
-                    if bincnt<minbincnt:
-                        bincnt=bincnt+evtcnts[i+1]
-                        binchan=binchan+origevt[i+1]
-                        groupcha[i+1]=-1
+
+                # Build groups of consecutive channels with at least minbincnt counts
+                groupcha = _np.ones( len(evtcnts) )
+                qualcha = _np.zeros( len(evtcnts) )
+                bincnt = evtcnts[0]
+                for i in range(1, len(evtcnts)):
+                    if bincnt < minbincnt:
+                        groupcha[i] = -1
+                        bincnt += evtcnts[i]
                     else:
-                        if binline.ndim==1:
-                            binline=_np.array([binchan])
-                        else:
-                            binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
-                        bincnt=evtcnts[i+1]
-                        binchan=origevt[i+1]
-                
-                if bincnt>minbincnt:
-                    binline=_np.concatenate((binline, _np.array([binchan])), axis=0)
-                elif groupcha[-1] == 1 and bincnt<minbincnt:
+                        bincnt = evtcnts[i]
+
+                # The last group may not have enough counts: flag all its channels as bad
+                if bincnt < minbincnt:
                     print('Large channels with less counts than required will be ignored')
-                    qualcha[-1]=1
-                else:
-                    print('Large channels with less counts than required will be ignored')
-                    qualcha[-1]=1
-                    jqual=1
-                    while groupcha[-jqual]!=1:
-                        jqual=jqual+1
-                        qualcha[-jqual]=1
-                
-                qualchans[min_channel:min_channel+len(qualcha)]=qualcha
-                grpchans[min_channel:min_channel+len(groupcha)]=groupcha
-                counts_histogram = binline
-                print(r'Counts grouped on {} new channels'.format(len(counts_histogram[:,0])))
-                qualgrpchannels = qualcha[_np.where(groupcha==1)]
-                counts_histogram = counts_histogram[_np.where(qualgrpchannels==0)]
-                print(r'Spectrum reduced to {} channels'.format(_np.shape(counts_histogram)[0]))
-                groupchans=_np.arange(_np.shape(counts_histogram)[0])
-                min_channel = _np.min( groupchans )
-                max_channel = _np.max( groupchans )
+                    qualcha[ _np.where(groupcha == 1)[0][-1]: ] = 1
+
+                counts_histogram = _group_good_channels( origevt, groupcha, qualcha )
+                print(r'Counts grouped on {} new channels'.format(_np.shape(counts_histogram)[0]))
+
+                # Quality and grouping over all channels, indexed by channel number as for a PHA file.
+                # Channels outside the event list range are flagged as bad.
+                n_channels = max( int(max_channel), int(_np.max(channel_data)), int(TLMAX) if TLMAX is not None else 0 ) + 1
+                qualchans = _np.ones( n_channels )
+                grpchans = _np.ones( n_channels )
+                qualchans[ min_channel:max_channel+1 ] = qualcha
+                grpchans[ min_channel:max_channel+1 ] = groupcha
+
+                channels = _np.arange( _np.shape(counts_histogram)[0] )
+                min_channel, max_channel = channels[0], channels[-1]
                 first = 0
                 last = max_channel - min_channel
-                channels = _np.arange(min_channel,max_channel+1)
                 grpevdata = True
             
             else:
                 print('No need for grouping! We have enough counts for each channel!')
+
         # Instatiate the class
         Data=cls( counts_histogram.astype( dtype=_np.double ),           
                     channels=channels,
@@ -612,7 +641,7 @@ class Data(object):
                     origdata=origevt )
         
         if checkdatasrc is not None:
-            Data._srcdata = checkdatasrc
+            Data._srcdata = checkdatasrc._origdata
         
         if grpevdata:
             Data._quality=qualchans
@@ -661,12 +690,23 @@ class Data(object):
 
         # Read the fits files
         with fits.open( path ) as hdul:
-            Header = hdul['SPECTRUM'].header 
+            Header = hdul['SPECTRUM'].header
             spectrum = hdul['SPECTRUM'].data
+            TLMIN = fits_column_keyword( hdul['SPECTRUM'], 'CHANNEL', 'TLMIN' )
 
         # Extract useful data
         exposure = _np.double( Header['EXPOSURE'] )
         channel_data = spectrum['CHANNEL']
+
+        # First legal channel number. If the TLMINn keyword of the CHANNEL
+        # column is missing (e.g. synthetic PHA files), use the first channel
+        # of the file, as OGIP PHA files list all channels from the first one.
+        if TLMIN is None:
+            TLMIN = int( _np.min( channel_data ) )
+            print(f'TLMIN keyword not found for the CHANNEL column of {path}. '
+                  f'Assuming the first channel is {TLMIN}.')
+        else:
+            TLMIN = int( TLMIN )
         try:
             counts_data = spectrum['COUNTS']
         except KeyError:
@@ -687,9 +727,7 @@ class Data(object):
         else:
             min_channel = channels[0]
             max_channel = channels[-1]
-       
-        TLMIN= _np.int32(Header['TLMIN1'])
-        
+
         if checkqual:
             if checkdatasrc is not None:
                 assert hasattr(checkdatasrc, '_quality')

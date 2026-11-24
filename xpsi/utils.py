@@ -1,5 +1,5 @@
 
-__all__ = ["make_verbose", "verbose", "fragile"]
+__all__ = ["make_verbose", "verbose", "fragile", "fits_column_keyword"]
 
 from inspect import isgeneratorfunction as _isgeneratorfunction
 import wrapt
@@ -79,3 +79,35 @@ class fragile(object):
         if etype == self.Break:
             return True
         return error
+
+
+def fits_column_keyword(hdu, column, keyword):
+    """ Get a column-indexed keyword (e.g. ``TLMIN``, ``TLMAX``) of a FITS table column.
+
+    In FITS binary tables, keywords such as ``TLMINn`` and ``TLMAXn`` refer to
+    the ``n``-th column (1-based), so the keyword name depends on the position
+    of the column in the table (e.g. ``TLMIN1`` for ``CHANNEL`` in OGIP PHA
+    files, ``TLMIN4`` for ``F_CHAN`` in OGIP RMF files).
+
+    :param hdu:
+        A FITS binary table HDU (e.g. ``hdul['SPECTRUM']``).
+
+    :param str column:
+        Name of the column (case-insensitive).
+
+    :param str keyword:
+        Root of the keyword, without the column number (e.g. ``'TLMIN'``).
+
+    :returns:
+        The keyword value, or ``None`` if the keyword is absent from the header.
+
+    :raises KeyError:
+        If the column does not exist in the table.
+    """
+    names = [ name.upper() for name in hdu.columns.names ]
+    try:
+        n = names.index( column.upper() ) + 1
+    except ValueError:
+        raise KeyError(f'Column {column} not found in the {hdu.name} extension.')
+
+    return hdu.header.get( f'{keyword.upper()}{n}' )
