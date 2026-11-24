@@ -92,7 +92,7 @@ def synthesise_exposure(double exposure_time,
 
     # Prepare variables
     cdef:
-        double BACKGROUND, SCALE_BACKGROUND
+        double BACKGROUND = 0.0, SCALE_BACKGROUND
         double[:,::1] EXPEC, SYNTHETIC, background_count_rate
         size_t i,j
 
@@ -217,7 +217,7 @@ def synthesise_given_total_count_number(double[::1] phases,
 
     # Prepare variables
     cdef:
-        double BACKGROUND, SCALE_BACKGROUND, SCALE_STAR, STAR_total
+        double BACKGROUND = 0.0, SCALE_BACKGROUND, SCALE_STAR, STAR_total = 0.0
         double[:,::1] EXPEC, SYNTHETIC
         size_t i,j
 
