@@ -8,6 +8,9 @@
    finish. It used to hang because of catastrophic cancellation in the
    quasi-Kerr metric functions F1, F2 at large r. It runs in a subprocess so
    that a regression fails the test rather than stalling the test suite.
+
+These tests assume X-PSI is compiled with the default ``local_variables.pyx``;
+they fail if it has been replaced by a custom extension.
 """
 
 import os
@@ -138,7 +141,10 @@ def test_flux_equals_sum_of_cached_sky_map(uniform_image):
     assert np.array_equal(hit, cached)
 
 
-# Self-contained, so that it does not depend on xpsi.tests being importable.
+# Code for the subprocess in test_imaging_with_quadrupole_finishes, which a
+# fresh Python process runs so that a hanging ray can be killed by a timeout.
+# It repeats the contents of _star and _UniformStarPlotter (with the constants
+# written out), because it cannot import them from this file.
 _QUADRUPOLE_SCRIPT = textwrap.dedent("""
     import numpy as np
     import xpsi
@@ -179,16 +185,19 @@ def test_imaging_with_quadrupole_finishes(tmp_path):
     the uncompiled source tree that would be found first if it ran in the
     repository root. So it runs in a temporary directory, with the directory
     containing this process's xpsi package put first on its path. """
+    timeout = 200  # seconds
     env = dict(os.environ)
     xpsi_parent = os.path.dirname(os.path.dirname(os.path.abspath(xpsi.__file__)))
     env["PYTHONPATH"] = os.pathsep.join(
         [xpsi_parent] + [p for p in env.get("PYTHONPATH", "").split(os.pathsep) if p])
     try:
         proc = subprocess.run([sys.executable, "-c", _QUADRUPOLE_SCRIPT],
-                              capture_output=True, text=True, timeout=300,
+                              capture_output=True, text=True, timeout=timeout,
                               env=env, cwd=tmp_path)
     except subprocess.TimeoutExpired:
         pytest.fail("Imaging a 600 Hz star with a quadrupole did not finish "
-                    "within 300 s (see METRIC_qK.pyx, large-r series).")
+                    f"within {timeout} s.")
     assert proc.returncode == 0, proc.stderr[-3000:]
     assert "FLUX" in proc.stdout
+    assert "Steps exceeded" not in proc.stdout, \
+        "Some rays ran out of integration steps (max_steps)."
