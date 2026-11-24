@@ -553,26 +553,8 @@ def run_nautilus(
                           "(pip install nautilus-sampler).") from e
     # initialise the sampler
     if MPI :
+        
         raise NotImplementedError(" MPI is not available yet for the Nautilus sampler. You need to use only one node, assign 1 task-per-node and put pool as the number of CPUs.")
-        # print('Parallelization')
-        # try:
-        #     from schwimmbad import MPIPool
-        # except ImportError:
-        #     raise ImportError('Check your schwimmbad package installation.')
-
-        # # Initialize the MPI-based pool used for parallelisation.
-        # with MPIPool() as pool_MPI:
-        #     if not pool_MPI.is_master():
-        #         # Wait for instructions from the master process.
-        #         pool_MPI.wait()
-        #         _sys.exit(0)
-
-        #     # Initialise sampler
-        #     sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool = (pool_MPI, pool), filepath=out_filename+'.hdf5')
-        #     # start sampling
-        #     sampler(runtime_params)
-        # # store output
-        # sampler.write_results(out_filename)
 
     else:
         # Initialise sampler
