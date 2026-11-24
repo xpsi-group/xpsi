@@ -34,10 +34,12 @@ cdef int SUCCESS = 1
 cdef int MAX_BISECT_ITERATIONS = 100
 
 ## Surface shape R(theta)/R_eq = 1 + o2 cos^2(theta): AM14 Eq. (20).
-## o2 = Omega-bar^2 * oblateness_func_o2(zeta, obl_surfgrav_ind); for the
-## 'universal' relation (index 0) that is AM14 Eq. (21) with o20 = -0.788 and
-## o21 = 1.030 (AM14 Table 1). Other indices select the relations in
-## effective_gravity_universal.pyx (index 1, 'sphere', gives o2 = 0).
+## o2 = Omega-bar^2 * oblateness_func_o2(zeta, obl_surfgrav_ind), where
+## obl_surfgrav_ind is the index of the oblateness relation chosen in Star
+## (Spacetime.STAR_OBLATENESS_SURFGRAV_CANONICAL). For 'universal'
+## (index 0) this is AM14 Eq. (21) with o20 = -0.788 and o21 = 1.030
+## (AM14 Table 1); 'sphere' (index 1) gives o2 = 0. The other relations are
+## in effective_gravity_universal.pyx.
 ## Arguments: x = cos(theta), epsilon = Omega-bar^2 = Omega^2 R_eq^3/(GM),
 ## zeta = compactness GM/(R_eq c^2), obl_surfgrav_ind = Spacetime.obl_surfgrav_ind.
 ##
@@ -171,13 +173,12 @@ cdef double SURFACE_SCALE(const _GEOM *const GEOM) noexcept nogil:
 ## emission angle ABB, measured in the comoving frame of the surface from
 ## the local surface normal, for a ray that has hit the star at state y.
 ## b is the ray's impact parameter (RAY.IMPACT, with E = 1).
-## Results go into Z[0] and ABB[0]. (The function is declared double but has
-## no return statement; callers ignore the return value.)
-cdef double ZABB(const _GEOM *const GEOM,
-                 const double *const y,
-                 double b,
-                 double *const Z,
-                 double *const ABB, int obl_surfgrav_ind) noexcept nogil:
+## Results go into Z[0] and ABB[0].
+cdef void ZABB(const _GEOM *const GEOM,
+               const double *const y,
+               double b,
+               double *const Z,
+               double *const ABB, int obl_surfgrav_ind) noexcept nogil:
 
     cdef:
         ## Position in BL (R, theta) and in spherical (u, v) coordinates
