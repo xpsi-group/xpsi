@@ -96,6 +96,100 @@ class NautilusSampler:
 
         self._sampler.run(**runtime_params)
 
+    @make_verbose('Commencing sampling (with temporary output)', 'Sampling completed')
+    def run_with_checkpoints(self, runtime_params, out_filename,
+                             checkpoint_every=None, checkpoint_interval=None):
+        """ Run the sampler in chunks and write a temporary posterior file
+        (``<out_filename>_temp.txt``, same format as :meth:`write_results`)
+        after each chunk, similar to the intermediate output of MultiNest or
+        the ``checkpoint`` option of the PTMC sampler.
+
+        The ``.hdf5`` file is still written by Nautilus itself after every
+        batch and is what is used to resume. Splitting the run into chunks
+        does not change the sampling, it only adds file writes.
+
+        :param runtime_params: Dictionary of keyword arguments for :func:`run`.
+            ``n_like_max`` and ``timeout`` are respected as overall limits.
+
+        :param out_filename: Root of the output files.
+
+        :param int checkpoint_every: Write the temporary file every
+            ``checkpoint_every`` likelihood evaluations (rounded up to whole
+            batches by Nautilus).
+
+        :param float checkpoint_interval: Write the temporary file every
+            ``checkpoint_interval`` seconds. Can be combined with
+            ``checkpoint_every`` (whichever is reached first).
+
+        :returns: ``True`` if the run converged, ``False`` if it stopped
+            because of ``n_like_max`` or ``timeout``.
+        """
+        if checkpoint_every is None and checkpoint_interval is None:
+            return self._sampler.run(**runtime_params)
+
+        params = dict(runtime_params)
+        n_like_max = params.pop('n_like_max', np.inf)
+        timeout = params.pop('timeout', np.inf)
+
+        import time
+        t_start = time.time()
+        temp_root = f"{out_filename}_temp"
+
+        while True:
+            target = n_like_max
+            if checkpoint_every is not None:
+                target = min(n_like_max, self._sampler.n_like + int(checkpoint_every))
+            remaining = timeout - (time.time() - t_start)
+            chunk_timeout = remaining
+            if checkpoint_interval is not None:
+                chunk_timeout = min(remaining, float(checkpoint_interval))
+
+            success = self._sampler.run(n_like_max=target,
+                                        timeout=chunk_timeout,
+                                        **params)
+
+            self.write_temp_results(temp_root)
+
+            if success:
+                return True
+            if self._sampler.n_like >= n_like_max or time.time() - t_start >= timeout:
+                return False
+
+    def write_temp_results(self, temp_root):
+        """ Write the current (unconverged) posterior to ``<temp_root>.txt``,
+        overwriting the previous temporary file. Failures are reported but do
+        not stop the run. """
+        try:
+            if self._sampler.n_like == 0:
+                return
+            data, weights, logl = self._sampler.posterior()
+            output = np.column_stack((np.exp(weights), -2 * logl, data))
+            tmp = f"{temp_root}.txt.part"
+            with open(tmp, 'w') as f:  # write then rename: never a half-written file
+                np.savetxt(f, output)
+            os.replace(tmp, f"{temp_root}.txt")
+            if _verbose:
+                print(f'Temporary results written to {temp_root}.txt '
+                      f'({self._sampler.n_like} likelihood calls, '
+                      f'log Z = {self._sampler.log_z:.3f}).')
+        except Exception as e:
+            print(f'Could not write temporary Nautilus results: {e}')
+
+    def close_pool(self):
+        """ Close the multiprocessing pool(s) Nautilus created when ``pool``
+        was given as an integer. Without this the pool is only cleaned up at
+        interpreter shutdown, which prints a harmless but noisy
+        ``OSError: [Errno 9] Bad file descriptor`` from ``Pool.__del__``. """
+        from multiprocessing.pool import Pool
+        seen = set()
+        for npool in (getattr(self._sampler, 'pool_l', None),
+                      getattr(self._sampler, 'pool_s', None)):
+            inner = getattr(npool, 'pool', None)
+            if isinstance(inner, Pool) and id(inner) not in seen:
+                seen.add(id(inner))
+                inner.close()
+                inner.join()
+
     def likelihood_wrapper(self, params):
         """Calculate the loglikelihood value for a given set of parameter values.
         Copy-pasted from UltraNestSampler interface.
