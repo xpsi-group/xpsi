@@ -1,4 +1,4 @@
-__all__ = ["run_multinest", "run_emcee", "run_ptemcee", "run_ultranest"]
+__all__ = ["run_multinest", "run_emcee", "run_ptemcee", "run_ultranest", "run_nautilus"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
@@ -515,3 +515,72 @@ def ultranested(likelihood,
                          use_stepsampler=use_stepsampler,
                          stepsampler_params=stepsampler_params,
                          out_filename=out_filename)
+
+
+def run_nautilus(
+    likelihood,
+    prior,
+    sampler_build_kwargs={},
+    runtime_params={},
+    MPI=False,
+    pool=None,
+    out_filename="weighted_post_nautilus_xpsi",
+    checkpoint_every=None, # e.g every 50k likelihood calls
+    checkpoint_interval=None, ##checkpoint_interval=3600   # every hour
+):
+    """  Wrapper for the nautilus-sampler (https://nautilus-sampler.readthedocs.io/en/latest/)
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.NautilusSampler` to run the sampler.
+
+    :param bool MPI:
+        Whether to use MPI or not for parallelized sampling.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :param int checkpoint_every: If given, write a temporary posterior file
+        ``<out_filename>_temp.txt`` every ``checkpoint_every`` likelihood
+        evaluations (same format as the final ``.txt``).
+
+    :param float checkpoint_interval: If given, write the temporary file every
+        ``checkpoint_interval`` seconds. Can be combined with ``checkpoint_every``.
+
+    :returns: An instance of :class:`~.NautilusSampler`
+    """
+
+    try:
+        from xpsi.NautilusSampler import NautilusSampler
+    except ImportError as e:
+        raise ImportError("Check your installation of nautilus-sampler "
+                          "(pip install nautilus-sampler).") from e
+    # initialise the sampler
+    if MPI :
+        
+        raise NotImplementedError(" MPI is not available yet for the Nautilus sampler. You need to use only one node, assign 1 task-per-node and put pool as the number of CPUs.")
+    else:
+        # Initialise sampler
+        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool=pool, filepath=out_filename+'.hdf5')
+
+        # start sampling
+        if checkpoint_every is None and checkpoint_interval is None:
+            sampler(runtime_params)
+        else:
+            sampler.run_with_checkpoints(runtime_params, out_filename,
+                                         checkpoint_every=checkpoint_every,
+                                         checkpoint_interval=checkpoint_interval)
+
+        # store output
+        sampler.write_results(out_filename)
+
+        # close the pool Nautilus created (avoids an OSError at shutdown)
+        if isinstance(pool, int):
+            sampler.close_pool()
+
+    return sampler
