@@ -170,7 +170,7 @@ cdef int compute_globalRayMap(size_t numThreads,
 
     ## Centre ray: the reference for time delays. NOTE: ZABB is called on it
     ## without checking that it hit the star; if it failed, ORIGIN holds
-    ## failure flags. (After the 2026-11 fixes this should not happen.)
+    ## failure flags.
     RAYS[0].X_IP = MAP.ORIGIN_X
     RAYS[0].Y_IP = MAP.ORIGIN_Y
     # Compute centre ray; (X,Y)=(0,0) shifted
@@ -196,7 +196,7 @@ cdef int compute_globalRayMap(size_t numThreads,
     ##   t = [ (d - R_eq) + r_s ln((d - r_s)/(R_eq - r_s)) ] / c.
     ## Otherwise use the numerically traced centre ray, whose integration error
     ## then largely cancels against that of the other rays.
-    ## (Check, 2026-11: for a 12 km, 1.4 Msun star the numerical centre ray
+    ## (Check: for a 12 km, 1.4 Msun star the numerical centre ray
     ## differs from this formula by 6.8 m (2.3e-8 s) at tolerance 1e-12 and
     ## 1.4 m at 1e-13, i.e. ~1e-4 rad of phase at 600 Hz: negligible.)
     if are_equal(GEOM.a, 0.0) and are_equal(GEOM.kappa, 0.0):
@@ -236,7 +236,7 @@ cdef int compute_globalRayMap(size_t numThreads,
             MAP.PHI[INDEX] = RAYS[T].STATE[1]
             MAP.RADIAL[INDEX] = RAYS[T].STATE[2]
             MAP.THETA[INDEX] = RAYS[T].STATE[4]
-            ## Accuracy diagnostic (added 2026-11): the last value of the null
+            ## Accuracy diagnostic: the last value of the null
             ## check for this ray. Normally the norm g_uv k^u k^v from IS_NULL
             ## (RK_IP2S_tracer.pyx) at the ray's last checked step, which should
             ## be ~0 (the tracer rejects steps with |norm| > 1e-6). It is NOT

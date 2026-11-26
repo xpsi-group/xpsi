@@ -48,21 +48,21 @@ cdef int MAX_BISECT_ITERATIONS = 100
 ## X-PSI takes as input everywhere else (e.g. the effective gravity in
 ## surface_radiation_field, which reads GEOM.R_eq). The ray tracer works in
 ## Boyer-Lindquist coordinates of the quasi-Kerr metric and imposes the
-## shape on u = r_sph (see header). Since 2026-11 the surface is
+## shape on u = r_sph (see header). The surface is
 ##   r_sph(v) = R_eq_sph * RADIUS(cos v),
 ## where R_eq_sph (GEOM.R_eq_sph, set by SURFACE_SCALE below) is chosen so
 ## that the CIRCUMFERENTIAL equatorial radius, sqrt(g_phph) at theta = pi/2,
 ## equals the input R_eq exactly. GEOM.R_eq itself is left as the physical
-## radius. Previously R_eq was used directly as the r_sph scale. For
-## 1.4 Msun, R_eq = 12 km, 600 Hz (a = 651 m, kappa = 0.40) that made the
-## circumferential equatorial radius 12026.9 m: 0.22% (27 m) too large,
+## radius. The alternative, using R_eq directly as the r_sph scale, makes the
+## circumferential equatorial radius too large: for 1.4 Msun, R_eq = 12 km,
+## 600 Hz (a = 651 m, kappa = 0.40) it is 12026.9 m, 0.22% (27 m) too large,
 ## about 3% of the oblateness R_eq - R_pole = 969 m.
 ## What this does NOT do: match AM14's shape exactly away from the equator.
 ## That would need AM14's (Butterworth-Ipser) colatitude mapped onto
 ## Boyer-Lindquist theta, which differ at O(Omega-bar^2). The residual
 ## mismatch is expected to be a fraction of the 0.22% equatorial correction.
-## To restore the old behaviour, set GEOM.R_eq_sph = GEOM.R_eq in
-## integrator.pyx.
+## To use R_eq directly as the r_sph scale instead, set
+## GEOM.R_eq_sph = GEOM.R_eq in integrator.pyx.
 ## B12 also impose the shape in 'spherical coordinates' without saying
 ## which radius they mean.
 cdef double RADIUS(double x, double epsilon, double zeta, int obl_surfgrav_ind) noexcept nogil:
@@ -123,7 +123,7 @@ cdef int BISECT(const double *const y_p,
         if fabs(frac_diff) < 1.0e-8:
             bisect = 0
         elif iterations >= MAX_BISECT_ITERATIONS:
-            ## Safety cap (added 2026-11). The crossing is always bracketed, so
+            ## Safety cap. The crossing is always bracketed, so
             ## bisection normally converges in ~30 iterations; reaching the cap
             ## means the tolerance cannot be met in double precision, and the
             ## current midpoint is kept.
@@ -253,11 +253,10 @@ cdef void ZABB(const _GEOM *const GEOM,
     ## R'(v) = dR_surface/dv for r_sph(v) = R_eq_sph (1 + o2 cos^2 v)
     cdef double R_prime = -2.0 * GEOM.R_eq_sph * GEOM.epsilon * oblateness_func_o2(GEOM.zeta, obl_surfgrav_ind) * cos_v * sin_v
 
-    ## (The original comment below is misleading: the code uses +b. k_t and
-    ## k_phi are the FORWARD photon's contravariant components with E = 1,
-    ## from PJ12 Eqs. (9)-(10), as in IS_NULL in RK_IP2S_tracer.pyx.)
-    # Outgoing null geodesic has impact parameter -b, where b is that of the
-    # null geodesic of the incoming photon
+    ## k_t and k_phi: contravariant t and phi components of the photon
+    ## wavevector for the forward (outgoing) photon, with E = 1 and impact
+    ## parameter b = L/E (PJ12 Eqs. 9-10); the same expressions as in IS_NULL
+    ## in RK_IP2S_tracer.pyx.
     cdef double k_t, k_phi
 
     k_t = (G_44 + b*G_14) / (-G_11*G_44 + G_14*G_14)
@@ -315,9 +314,8 @@ cdef void ZABB(const _GEOM *const GEOM,
     dtdv /= -sin_theta
 
     ## (u, v) metric components pulled back from the BL (r, theta) block,
-    ## including the cross term g_uv, which is non-zero when a != 0. (Before
-    ## 2026-11 g_uv was dropped and the (u, v) metric treated as diagonal; for
-    ## the 600 Hz example above that changed cos(alpha) by up to ~7e-4.)
+    ## including the cross term g_uv, which is non-zero when a != 0 (for the
+    ## 600 Hz example above, omitting it changes cos(alpha) by up to ~7e-4).
     g_uu = drdu * drdu * G_22 + dtdu * dtdu * G_33
     g_vv = dtdv * dtdv * G_33 + drdv * drdv * G_22
     g_uv = drdu * drdv * G_22 + dtdu * dtdv * G_33
@@ -325,7 +323,7 @@ cdef void ZABB(const _GEOM *const GEOM,
 
     ## Contravariant normal n^i = g^ij n_j with n_j = (1, -R'), where
     ## g^uu = g_vv/det, g^uv = -g_uv/det, g^vv = g_uu/det; then normalise
-    ## with |n|^2 = n^i n_i = n^u - R' n^v. Reduces to the old diagonal form
+    ## with |n|^2 = n^i n_i = n^u - R' n^v. Reduces to the diagonal form
     ## when g_uv = 0.
     n_u = (g_vv + g_uv * R_prime) / det_uv
     n_v = (-g_uv - g_uu * R_prime) / det_uv
@@ -333,17 +331,15 @@ cdef void ZABB(const _GEOM *const GEOM,
     n_u /= norm
     n_v /= norm
 
+    ## cos(alpha) = k.n / (-k.u) (C07 Eq. 19), with -k.u = Z for E = 1.
     ## k.n = k_r n^r + k_theta n^theta, with k_r = g_rr dr/dlambda,
     ## k_theta = g_thth dtheta/dlambda, and n^r = (dr/du) n^u + (dr/dv) n^v,
-    ## n^theta likewise, through the Jacobian. The state's dr/dlambda,
-    ## dtheta/dlambda are for the
-    ## backward-traced (ingoing) ray, hence the extra minus sign (the original
-    ## comment's 'factor of pi': the angle is pi - alpha before the flip).
+    ## n^theta likewise. The state's dr/dlambda and dtheta/dlambda belong to
+    ## the backward-traced ray, which points into the surface; the emitted
+    ## photon has the opposite spatial direction, hence the minus sign.
     ABB[0] = G_22 * y[3] * (drdu * n_u + drdv * n_v)
     ABB[0] += G_33 * y[5] * (dtdu * n_u + dtdv * n_v)
     ABB[0] /= -1.0 * Z[0]
-    # the factor of \pi is required because the traced photon wavevector is
-    # ingoing at the NS surface
 
     #ABB[0] = -1.0 * sqrt(G_22)*(r_dot - theta_dot*R_prime) / (Z[0]*sqrt(1.0 + R_prime*R_prime / (R*R)))
 

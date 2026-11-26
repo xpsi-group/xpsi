@@ -43,10 +43,9 @@ cdef extern from "math.h":
 ## argument this close to 1 costs about one more, so the closed forms
 ## lose ~5 digits per decade in r: in double precision the relative error is
 ## ~1e-12 at 5 r_s, ~1e-7 at 50 r_s, and at the image plane (~3.6e4 r_s)
-## F1 comes out ~1e8 times too large with the wrong sign. That noise, times
-## kappa, made the adaptive integrator shrink its step to ~1 m and run out of
-## steps unless 1 - 3cos^2(theta) ~ 0, so imaging with kappa != 0 failed at
-## most inclinations. (Found and fixed 2026-11.)
+## F1 comes out ~1e8 times too large with the wrong sign. Times kappa, that
+## noise makes the adaptive integrator shrink its step to ~1 m and run out of
+## steps (or stall) unless 1 - 3cos^2(theta) ~ 0.
 ##
 ## FIX: for r > _SERIES_SWITCH * r_s use the Taylor series in u = r_s/r,
 ##   F(u) = sum_{n=3}^{40} a_n u^n,   r_s dF/dr = -sum_{n=3}^{40} n a_n u^(n+1),

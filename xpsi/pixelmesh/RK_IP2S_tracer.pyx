@@ -311,8 +311,9 @@ cdef int RK(_RAY *const RAY,
                 RAY.STATE[4] = -103.0
                 RAY.STATE[5] = -103.0
 
-            ## Surface test. The surface shape R(theta) (AlGendy & Morsink 2014, see
-            ## surfaceBisection.RADIUS) is applied in spherical coordinates built from
+            ## Surface test. The surface shape R(theta) (the oblateness relation selected
+            ## by obl_surfgrav_ind; see surfaceBisection.RADIUS) is applied in
+            ## spherical coordinates built from
             ## Boyer-Lindquist (r, theta) via the Kerr-Schild embedding:
             ##   r_sph = sqrt(r^2 + a^2 sin^2 theta),
             ##   cos(theta_sph) = cos(theta) / sqrt(1 + a^2 sin^2(theta) / r^2)
@@ -405,8 +406,6 @@ cdef int RK(_RAY *const RAY,
 
             if temp > 0.0:
                 RAY.SINGULARITY_AFFINE_STEP_SIZE = 1.0 / temp
-            ## Fallback ran out of steps (NUM_SINGULARITY_STEPS == MAXSTEPS):
-            ## terminate the ray and flag it (-105) so it is not shaded as a surface hit.
             else:
                 RAY.SINGULARITY_AFFINE_STEP_SIZE = RAY.PREVIOUS_STEP
 
@@ -444,11 +443,10 @@ cdef int RK(_RAY *const RAY,
                     if RAY.STATE[5] > 0.0:
                         RAY.STATE[5] *= -1.0
 
-                # only pass pole first time the RK evolution failed
-                # this does not account for two or more interesctions of a
-                # ray with poles at affine values with finite separation
-                ## Crossing the axis shifts phi by pi (C13 Eq. 3). As the original comment
-                ## says, this is only applied the first time the fallback is used.
+                ## Crossing the polar axis shifts phi by pi (C13 Eq. 3). This is
+                ## applied only the first time the fallback is used, so a ray
+                ## that crosses the axis twice, at well-separated affine
+                ## parameters, is not handled.
                 if RAY.NUM_SINGULARITIES < 2:
                     RAY.STATE[1] = RAY.PREVIOUS[1] + _pi
 
@@ -519,6 +517,9 @@ cdef int RK(_RAY *const RAY,
                         RAY.dSTATEdAFFINE[3]/GEOM.R_eq,
                         RAY.dSTATEdAFFINE[4]/_pi,
                         RAY.dSTATEdAFFINE[5]/_pi)
+            ## The fallback ran out of steps (NUM_SINGULARITY_STEPS reached MAXSTEPS,
+            ## so RAY.EVOLVE = 0): terminate the ray and flag it (-105) so it is not
+            ## shaded as a surface hit.
             else:
                 printf("\nCannot handle polar singularity... terminating ray.")
                 RAY.STATE[0] = -105.0
@@ -528,9 +529,7 @@ cdef int RK(_RAY *const RAY,
                 RAY.STATE[4] = -105.0
                 RAY.STATE[5] = -105.0
         ## GSL failed again after MAX_SINGULARITIES fallbacks: terminate the ray
-        ## and flag it (-105) so it is not shaded as a surface hit. (Before
-        ## 2026-11 this branch was unreachable, because the fallback condition did
-        ## not include the NUM_SINGULARITIES limit.)
+        ## and flag it (-105) so it is not shaded as a surface hit.
         else:
             printf("\n\nMultiple singularities encountered... terminating ray.")
             printf("\n\nRay state upon re-encountering polar singularity:")

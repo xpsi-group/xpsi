@@ -189,11 +189,11 @@ cdef double dg_14dtheta(double r,
 
     return -2.0*r_s*r*a*a*a*cos_theta*sin_theta / (Delta*Sigma*Sigma)
 
-# quasi-Kerr connection coefficients (Christoffel symbols of the second kind)
-## Derivatives of the COVARIANT metric components.
+## Derivatives of the covariant quasi-Kerr metric components, used to build
+## the Christoffel symbols in the geodesic equations.
 ##
-## NOTE ON NAMING: despite the names, the Gamma_XYZ functions do NOT return
-## Christoffel symbols. Gamma_XYZ returns the one covariant-metric derivative
+## Naming: the Gamma_XYZ functions do not return Christoffel symbols.
+## Gamma_XYZ returns the one covariant-metric derivative
 ## that the Christoffel symbol Gamma^X_YZ depends on (labels 1-4 = t, r, th, ph).
 ## For most this is d_X g_YZ, e.g. Gamma_211 = d g_tt / dr. The two mixed
 ## r-theta ones differ: Gamma_232 = d g_rr / d theta (for Gamma^r_rth) and

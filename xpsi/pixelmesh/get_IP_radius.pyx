@@ -21,7 +21,7 @@
 ## R_eq / sqrt(1 - r_s/R_eq); the search brackets [0.5, 1.75] b_max allow
 ## for the shift and distortion of the image by rotation.
 ##
-## Checked (2026-11) for 1.4 Msun, 12 km, 600 Hz at inclinations 30, 60 and
+## Checked for 1.4 Msun, 12 km, 600 Hz at inclinations 30, 60 and
 ## 85 deg: the ellipse contains the whole star, which reaches at most
 ## 0.9986 of the ellipse radius (at 85 deg). So the 0.5% margin is
 ## sufficient there, but leaves only ~0.15% to spare; for faster spins or
@@ -31,10 +31,8 @@
 ##   - The edges are found along two lines only; the true extreme of the
 ##     image need not lie on them (hence the margin).
 ##   - A ray that FAILS (flags -102 to -105) counts as a miss, so failures
-##     near the limb shrink the screen. (Before the 2026-11 fix to F1/F2 in
-##     METRIC_qK.pyx, every ray failed for kappa != 0 at most inclinations,
-##     which would have collapsed these bisections onto the inner bracket
-##     0.5 b_max.)
+##     near the limb shrink the screen; if every ray failed, these
+##     bisections would collapse onto the inner bracket 0.5 b_max.
 ##   - The function is declared double but returns nothing; the caller
 ##     ignores the return value.
 from libc.math cimport fabs, sqrt, sin, cos
@@ -60,11 +58,8 @@ cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
         double L, R, U, D
         size_t terminate = 1000
         ## Stop each bisection once the bracket is narrower than 1e-12 b_max
-        ## (~41 iterations). Before 2026-11 every bisection ran a fixed 1000
-        ## iterations, i.e. 4000 ray traces for the four edges, even though the
-        ## bracket reaches double precision after ~55; with the default
-        ## 100 x 100 pixel grid that was ~40% extra cost. 'terminate' is kept as a
-        ## safety cap.
+        ## (~41 iterations); the bracket reaches double precision after ~55, so
+        ## further iterations only cost ray traces. 'terminate' is a safety cap.
         double tolerance = 1.0e-12 * b_max
 
     num_bisections = 0

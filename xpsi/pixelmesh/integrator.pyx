@@ -143,14 +143,13 @@ def integrate(size_t numThreads,
     GEOM.inclination = inclination
     GEOM.obl_surfgrav_ind = obl_surfgrav_ind
 
-    ## Surface scale for the ray tracer (added 2026-11). GEOM.R_eq stays the
-    ## physical equatorial circumferential radius (it is also used for the
-    ## effective gravity in surface_radiation_field). GEOM.R_eq_sph is the
-    ## equatorial radius of the surface in the spherical coordinate r_sph
-    ## built from Boyer-Lindquist r, chosen so that the circumferential
-    ## equatorial radius equals R_eq. See the MODELLING CHOICE note at
-    ## surfaceBisection.RADIUS. To restore the pre-2026-11 behaviour, use
-    ## GEOM.R_eq_sph = GEOM.R_eq instead.
+    ## Surface scale for the ray tracer. GEOM.R_eq stays the physical
+    ## equatorial circumferential radius (it is also used for the effective
+    ## gravity in surface_radiation_field). GEOM.R_eq_sph is the equatorial
+    ## radius of the surface in the spherical coordinate r_sph built from
+    ## Boyer-Lindquist r, chosen so that the circumferential equatorial radius
+    ## equals R_eq. See the MODELLING CHOICE note at surfaceBisection.RADIUS;
+    ## setting GEOM.R_eq_sph = GEOM.R_eq instead uses R_eq as the r_sph scale.
     GEOM.R_eq_sph = SURFACE_SCALE(&GEOM)
 
     if R_eq > 1.5 * r_s: # compare to Schwarzschild photon sphere
@@ -274,8 +273,7 @@ def integrate(size_t numThreads,
         int ORIGIN_HIT
         ## HIT: per-thread flags, 1 if pixel INDEX (1..N*N) sees radiation at the
         ## current phase. Pixels run 1..N*N, so each thread needs N*N + 1 slots.
-        ## (Before 2026-11 this was N_T * N*N, so the last pixel of the last thread
-        ## wrote one element past the end; it was also never freed.)
+        ## Freed at the end of the function.
         int *HIT = <int*> calloc(N_T * (NSQ + 1), sizeof(int))
         double area, r1, r2
         double *r_FULL = <double*> malloc((NGR + 1) * sizeof(double))
@@ -316,18 +314,15 @@ def integrate(size_t numThreads,
     ## r_MESH (returned to Python, and passed back in via reuse_ray_map) holds
     ## only r_0 .. r_(N-1): the outer ring r_N = 1 by construction
     ## (globalRayMap.init_RAY_MAP). The area weights below need r_(i+2) for
-    ## ring i, i.e. up to r_N, so the full set is rebuilt here.
-    ## (Before 2026-11 the loop read r_MESH[N], one element past the end of
-    ## the array; see the note at the area calculation.)
+    ## ring i, i.e. up to r_N, so the full set is rebuilt here; r_MESH itself
+    ## must not be indexed beyond N - 1.
     for i in range(NGR):
         r_FULL[i] = r_MESH[i]
     r_FULL[NGR] = 1.0
 
     if cache_intensities == 1:
         if single_precision_cache == 0:
-            ## BUG FIXED 2026-11: the double-precision cache was allocated with
-            ## dtype np.single, so the assignment to the double memoryview raised
-            ## 'Buffer dtype mismatch' and single_precision_cache = 0 always failed.
+            ## The dtype must match the double memoryview IMAGE_DUB.
             ## (-1.0 * zeros is simply zeros: pixels with no radiation stay 0.)
             IMAGE_DUB = -1.0 * np.zeros((N_CP, N_CE, NGR_SQ), dtype = np.double)
         else:
@@ -400,20 +395,16 @@ def integrate(size_t numThreads,
                     ## Area weight of ring i (pixel radius r_(i+1)): the annulus between the
                     ## midpoints to the neighbouring rings, times the azimuthal width Delta_t:
                     ##   area = 0.5 (r2^2 - r1^2) Delta_t   (in units of SEMI_MAJOR * SEMI_MINOR).
-                    ## The outermost ring's outer edge is placed symmetrically.
-                    ## BUG FIXED 2026-11: this used r_MESH[i+2] and r_MESH[i+1] directly, but
-                    ## r_MESH has only N entries, so ring N-2 read r_MESH[N], one element past
-                    ## the end of the array (uninitialised memory). That ring lies just inside
-                    ## the limb (radius 0.995 with the defaults), so whenever the limb radiates
-                    ## its area weight was garbage. For a uniformly hot, non-rotating star the
-                    ## total flux came out at 0.25 of the analytic value; it now agrees with
-                    ## the analytic value to 0.5%.
+                    ## The outermost ring's outer edge is placed symmetrically, which is why
+                    ## the ring radii are taken from r_FULL (r_0 .. r_N) rather than r_MESH.
                     ##
                     ## LIMB ACCURACY: a pixel counts with its full area if its central ray
-                    ## hits the star, so the area just outside the limb is over-counted by up
-                    ## to one ring width. With the defaults (N = 100, p = 1/2) the limb falls
-                    ## just outside ring N-1, the worst case, and a uniformly bright disc comes
-                    ## out 0.5% too bright; the error scales with the ring spacing at the limb.
+                    ## hits the star, so up to half a ring width outside the limb is counted.
+                    ## The screen edge r_N = 1 is the limb (to the bisection tolerance), so the
+                    ## outermost ring (i = N-1, radius r_N = 1) always hits and the outer half
+                    ## of its annulus lies outside the star. With the defaults (N = 100,
+                    ## p = 1/2) that half-annulus runs from r = 0.9975 to 1.0025, and a
+                    ## uniformly bright disc comes out 0.5% too bright (0.25% at N = 200).
                     r1 = 0.5 * (r_FULL[i+1] + r_FULL[i])
                     if i < NGR - 1:
                         r2 = 0.5 * (r_FULL[i+2] + r_FULL[i+1])
@@ -459,9 +450,7 @@ def integrate(size_t numThreads,
                             ## Sky-map cache: I_obs / E (photon specific intensity, unnormalised) for
                             ## the requested phases and energies, stored at the pixel's own INDEX so
                             ## that it lines up with X[INDEX], Y[INDEX] (PhotospherePlotter plots them
-                            ## together). BUG FIXED 2026-11: it was stored at INDEX + 1, which shifted
-                            ## every sky map by one pixel in azimuth (3.6 deg about the screen centre
-                            ## for N = 100), wrapping from the end of each ring onto the next.
+                            ## together).
                             if cache_intensities == 1:
                                 for search in range(N_CP):
                                     if k == <size_t> cache_phase_indices[search]:
