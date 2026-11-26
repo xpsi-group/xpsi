@@ -301,11 +301,12 @@ def integrate(size_t numThreads,
                         # does not change with time, without binning photons by
                         # arrival time. The extra factor
                         # 1/superlum = delta * gamma in the phase-resolved
-                        # integrators comes from that arrival-time binning of
+                        # integrators comes from the arrival-time binning of
                         # moving emitting elements (Cadeau et al. 2007, ApJ
-                        # 654, 458, Sect. 2.7) together with the comoving-area
-                        # factor gamma (Lo et al. 2018); neither applies to a
-                        # steady, azimuthally symmetric surface.
+                        # 654, 458, Sect. 2.7, Eqs. 33 and 40; their Eq. 41
+                        # omits the factor gamma, see Lo et al. 2018, ApJ 854,
+                        # 187). This does not apply to a steady, azimuthally
+                        # symmetric surface summed at a single instant.
                         _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta #/ superlum
 
                         for e in range(N_E):
