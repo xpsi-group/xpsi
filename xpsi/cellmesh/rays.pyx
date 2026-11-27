@@ -55,9 +55,14 @@ cdef int ERROR = 1
 # For each surface radius R and emission angle alpha (from the radial
 # direction) we compute the light-bending angle psi (M07 Eqs. 19-20) and the
 # arrival-time delay relative to a radial photon from the same R (M07
-# Eq. 38). The integrands below are written in a substituted variable x in
-# [0, 1] so that they stay finite at the turning point; inDef/inLag are
-# parametrised by the turning radius r_c, outDef/outLag by sin^2(alpha) and R.
+# Eq. 38). The integrands below are those of Salmi et al. (2018, A&A 618,
+# A161; hereafter S18), Appendix A, which substitutes y = R/r and then
+# x = sqrt(1 - y), so that they stay finite at the turning point. Their
+# constant prefactors are applied in rayIntegrator, lengths are in units of
+# r_s, and u/(1 - u) in S18 (u = r_s/R) appears as 1/(R/r_s - 1). As in
+# S18 Eq. (9), each lag integral is relative to a radial photon emitted from
+# the radius at its lower integration limit; the shift to a common reference
+# radius (S18 Eq. 10) is applied in HotRegion.__calibrate_lag.
 
 # Map the primary-image deflection psi in [0, pi] to the deflection of image
 # order `order` (photons bent by more than pi; order 0 is the primary image).
@@ -69,11 +74,30 @@ cdef double eval_image_deflection(int order, double psi) noexcept nogil:
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
+# inDef and inLag are outDef and outLag with the emission radius R replaced by
+# the turning radius r_c, where alpha = pi/2 (cos alpha = 0), i.e. with
+# y = r_c/r (r_c is p, the distance of closest approach, in S18 Eq. 4).
+# Integrating from x = 0 gives psi_p(r_c, pi/2) and Delta t_p(r_c, pi/2),
+# used for alpha > pi/2 (S18 Eqs. 3 and 12); integrating from
+# x = sqrt(1 - r_c/R) covers R -> infinity, i.e. the same as outDef/outLag
+# for the same impact parameter, but without their steep rise near x = 0 as
+# alpha -> pi/2. This second use is not in S18, which uses Eqs. (A.2) and
+# (A.7) at R for all alpha <= pi/2. The r_c form is used whenever
+# b > b_photon-sphere, i.e. whenever the geodesic has a turning point r_c
+# (reached by the photon only if alpha > pi/2).
+
+# Deflection integrand: that of S18 Eq. (A.2) with cos alpha = 0, which
+# reduces to 1/sqrt(q), with q = 2 - x^2 - u(1 - x^2)^2/(1 - u) and
+# u = r_s/r_c (S18 Eq. A.3 with sin alpha = 1).
 cdef double inDef(double x, void *params) noexcept nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
     return 1.0 / sqrt(2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (r_c_over_r_s - 1.0))
 
+# Lag integrand: that of S18 Eq. (A.7) with cos alpha = 0, which reduces to
+# 1/(q x + sqrt(q)), written as X^2/(x + X) with X = 1/sqrt(q), and with
+# q = 2 - x^2 - u(1 - x^2)^2/(1 - u) and u = r_s/r_c (S18 Eq. A.3 with
+# sin alpha = 1).
 cdef double inLag(double x, void *params) noexcept nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
@@ -82,6 +106,8 @@ cdef double inLag(double x, void *params) noexcept nogil:
 
     return X * X / (x + X)
 
+# Deflection integrand: S18 Eqs. (A.2)-(A.3), x/sqrt(cos^2 alpha + x^2 q),
+# with sas = sin^2 alpha and q = sas * [2 - x^2 - u(1 - x^2)^2/(1 - u)].
 cdef double outDef(double x, void *params) noexcept nogil:
 
     cdef double sas = (<double*> params)[0]
@@ -89,6 +115,8 @@ cdef double outDef(double x, void *params) noexcept nogil:
 
     return x / sqrt(1.0 - sas + x * x * sas * (2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (R_over_r_s - 1.0)))
 
+# Lag integrand: S18 Eq. (A.7), x/(f + f^2) with f = sqrt(cos^2 alpha + x^2 q),
+# sas = sin^2 alpha and q = sas * [2 - x^2 - u(1 - x^2)^2/(1 - u)].
 cdef double outLag(double x, void *params) noexcept nogil:
 
     cdef double sas = (<double*> params)[0]
@@ -135,10 +163,12 @@ cdef void rayIntegrator(size_t thread,
     #    surface (M07 Sect. 3.1). It moves inwards to r_c and then out, so
     #    psi = 2 * (r_c -> infinity) - (R -> infinity), i.e.
     #    2 Delta-psi + psi(b, R) as in M07 Eq. 44; likewise for the lag
-    #    (M07 Eq. 45). These are evaluated numerically, not with the series
-    #    approximations of M07 Eqs. 46-47.
+    #    (M07 Eq. 45); equivalently S18 Eqs. (3) and (12). These are
+    #    evaluated numerically, not with the series approximations of M07
+    #    Eqs. 46-47.
     # r_c is the largest root of r_c^3 - b^2 r_c + b^2 r_s = 0, i.e.
-    # r_c = b sqrt(1 - r_s/r_c) (M07 Eq. 41), from the trigonometric solution.
+    # r_c = b sqrt(1 - r_s/r_c) (M07 Eq. 41), from the trigonometric solution
+    # (S18 Eq. 4, in an equivalent form).
     if (b_over_r_s <= b_phsph_over_r_s):
 
         outParams[0] = sin_alpha_sq
@@ -168,7 +198,10 @@ cdef void rayIntegrator(size_t thread,
                 rayParams[4 * thread] = NAN
 
         if (status != GSL_EFAILED):
+            # S18 Eq. (A.2) prefactor 2 sin(alpha)/sqrt(1 - u) = 2 b/R.
             rayParams[4 * thread] *= 2.0 * b_over_r_s * r_s_over_R
+            # S18 Eq. (A.7) prefactor 2 R sin^2(alpha)/(1 - u) = 2 b^2/R
+            # (its 1/c is applied later in this function).
             rayParams[4 * thread + 2] *= 2.0 * b_over_r_s * b_over_r_s * r_s_over_R * r_s
 
     elif (alpha <= _pi / 2.0):
@@ -209,6 +242,10 @@ cdef void rayIntegrator(size_t thread,
                 rayParams[4 * thread] = NAN
 
         if (status != GSL_EFAILED):
+            # Prefactors of S18 Eqs. (A.2) and (A.7) with R -> r_c and
+            # sin(alpha) = 1: 2/sqrt(1 - r_s/r_c) = 2 b/r_c and
+            # 2 r_c/(1 - r_s/r_c) = 2 b^2/r_c (the 1/c of Eq. (A.7) is
+            # applied later in this function).
             rayParams[4 * thread] *= 2.0 * b_over_r_s / r_c_over_r_s
 
             rayParams[4 * thread + 2] *= 2.0 * b_over_r_s * b_over_r_s * r_s / r_c_over_r_s
@@ -262,13 +299,15 @@ cdef void rayIntegrator(size_t thread,
                 rayParams[4 * thread] = NAN
 
         if (status != GSL_EFAILED):
+            # r_c-form prefactors 2 b/r_c and 2 b^2/r_c, as above.
             rayParams[4 * thread] = 2.0 * b_over_r_s * (2.0 * DeltaDef[1] - DeltaDef[0]) / r_c_over_r_s
 
             rayParams[4 * thread + 2] = 2.0 * b_over_r_s * b_over_r_s * r_s * (2.0 * DeltaLag[1] - DeltaLag[0]) / r_c_over_r_s
 
             # Radial light-travel time between r_c and R (in units of
             # r_s/c), added twice so that the lag stays relative to a radial
-            # photon emitted from R.
+            # photon emitted from R. This is 2 delta t(r_c, R) of S18
+            # Eq. (10), i.e. with r_ref = R.
             DeltaLagCor = 1.0/r_s_over_R - r_c_over_r_s + log((1.0/r_s_over_R - 1.0) / (r_c_over_r_s - 1.0))
 
             rayParams[4 * thread + 2] += 2.0 * r_s * DeltaLagCor
