@@ -21,7 +21,8 @@ cdef double radiusNormalised(double mu,
                              int obl_surfgrav_ind) noexcept nogil:
     """
     Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy &
-    Morsink (2014) (see Eq. 20 and Table 1 for coefficient values), or assuming a spherical star.
+    Morsink (2014) (see Eqs. 20-21 and Table 1 for coefficient values), a pulsar-specific
+    relation, or a spherical star. The coefficient o2 comes from ``oblateness_func_o2``.
     In the former case, this function models the shape of a rotating neutron star based on its spin and compactness.
     It uses the colatitude (`mu`), the dimensionless spin parameter (`epsilon`), and the compactness
     (`zeta`) to compute the normalised radius.
@@ -90,8 +91,9 @@ cdef double f_theta(double mu,
           - 2, 3, 4, 6 : reserved (not implemented yet)
 
     :return:
-            The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
-            from the center of the star at a given colatitude, scaled by the equatorial radius.
+            f(theta) = (1 - 2GM/(R c^2))^(-1/2) (1/R) dR/dtheta (Morsink et al. 2007, Eq. 3),
+            which describes the tilt of the surface: the angle gamma between the surface
+            normal and the radial direction has cos(gamma) = (1 + f^2)^(-1/2) (Eq. 13).
     :rtype: double
     """
 
@@ -117,6 +119,8 @@ cdef double integrand(double theta, void *params) noexcept nogil:
     radius = radiusNormalised(mu, epsilon, zeta,  obl_surfgrav_ind)
     f = f_theta(mu, radius, epsilon, zeta,  obl_surfgrav_ind)
 
+    # Proper surface area element R^2 (1 + f^2)^(1/2) sin(theta) (Morsink et
+    # al. 2007, Eq. 2), in units of R_eq^2; av = 1 weights it by theta.
     if (av == 0):
         eval_integrand = radius * radius * sqrt(1.0 + f * f) * sin(theta)
     else:

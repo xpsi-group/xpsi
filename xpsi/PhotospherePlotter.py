@@ -601,8 +601,8 @@ class PhotospherePlotter( Photosphere ):
                                 self.photosphere['mode_frequency'],
                                 ref.zeta,
                                 ref.epsilon,
-                                ref.a, # dimensionless spin
-                                ref.q, # mass quadrupole
+                                ref.a, # spin parameter a = J/(Mc), in metres
+                                ref.q, # quadrupole deviation kappa from Kerr (see Spacetime.q)
                                 ref.d,
                                 ref.i,
                                 sqrt_num_rays,

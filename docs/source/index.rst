@@ -8,6 +8,7 @@
 
    install
    overview
+   spacetime_models
    FAQ
    applications
    HPC_systems
