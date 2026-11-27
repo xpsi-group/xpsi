@@ -210,10 +210,12 @@ azimuth (for example a uniform surface modelled with
 time-invariant emission), X-PSI sums the whole surface at a single instant and
 uses a flux weight :math:`\delta^3\cos\sigma` instead of
 :math:`\delta^3\cos\sigma/(1 - v\cos\xi)`. The extra factor
-:math:`1/(1 - v\cos\xi) = \delta\gamma` for moving, localised emission
-arises from binning photons by their arrival time
-(`Cadeau et al. 2007 <C07_>`__, Sect. 2.7) together with the comoving area,
-and does not apply to a steady, azimuthally symmetric surface.
+:math:`1/(1 - v\cos\xi) = \delta\gamma` for moving, localised emission is the
+arrival-time factor of `Cadeau et al. (2007) <C07_>`__, Sect. 2.7, Eqs. 33
+and 40 (their Eq. 41 omits the :math:`\gamma`, see
+`Lo et al. 2018 <Lo18_>`__); it is the same factor that appears above as the
+comoving area combined with the aberrated emission angle. It does not apply to
+a steady, azimuthally symmetric surface summed at a single instant. 
 
 ..
    In integrator.pyx the flux weight is mu * eta**3 / superlum, with
