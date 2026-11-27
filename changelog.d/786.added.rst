@@ -1,0 +1,2 @@
+MPI parallelisation for the Nautilus sampler: ``xpsi.Sample.run_nautilus(..., MPI=True)``
+runs across several nodes when the script is launched with ``mpiexec`` or ``srun``.

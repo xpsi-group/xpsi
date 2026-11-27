@@ -17,6 +17,26 @@ else:
         print('Imported Nautilus.')
 
 
+# Module-level likelihood and log-likelihood function. A module-level function
+# is pickled by reference (module + name only), so with an MPI pool only the
+# parameter vectors are sent to the workers, never the X-PSI likelihood object.
+# Every MPI rank must call ``set_likelihood`` before the pool is created
+# (``run_nautilus`` does this).
+_likelihood = None
+
+def set_likelihood(likelihood):
+    """ Register the likelihood used by :func:`loglike` on this process. """
+    global _likelihood
+    _likelihood = likelihood
+
+def loglike(params):
+    """ Log-likelihood of the registered X-PSI likelihood for one point. """
+    value = _likelihood(p=list(params), reinitialise=True)
+    if isinstance(value, np.ndarray):
+        value = value[0]
+    return value
+
+
 class NautilusSampler:
     """ Wrapper for the Nautilus (https://nautilus-sampler.readthedocs.io/) package (Lange 2023).
 
@@ -38,7 +58,10 @@ class NautilusSampler:
 
     :param pool: Pool used for parallelization of likelihood calls and sampler calculations. 
                 If None, no parallelization is performed. Default is None
-                If an integer, the sampler will use a multiprocessing.Pool object with the specified number of processes.
+                If an integer, the sampler will use a multiprocessing.Pool object with the specified number of processes
+                (one node only).
+                For several nodes pass an MPI pool (e.g. ``schwimmbad.MPIPool``);
+                ``run_nautilus(..., MPI=True)`` does this.
 
     :param filepath: Path to the file where results are saved. If None, no results are written.
                     If not None, two files will be written: '.hdf5' file used to resume run, and '.txt' file with results for PostProcessing.                                                   
@@ -64,12 +87,16 @@ class NautilusSampler:
 
         self._param_names = self._likelihood.names
 
-        if pool is not None:
-            print('Attention: NautilusSampler does not work yet on more than one node. Make sure that `pool` corresponds to the cpu-per-node.')
+        if isinstance(pool, int):
+            print('Attention: an integer `pool` uses multiprocessing and only works on '
+                  'one node. Use run_nautilus(..., MPI=True) under mpiexec/srun for '
+                  'several nodes.')
+
+        set_likelihood(self._likelihood)
 
         self._sampler = nautilus.Sampler(
             self._prior.inverse_sample, # prior
-            self.likelihood_wrapper,
+            loglike,                    # module-level: cheap to pickle (MPI and multiprocessing)
             n_dim=len(self._param_names),
             pass_dict=False,
             pool=pool,
@@ -191,24 +218,15 @@ class NautilusSampler:
                 inner.join()
 
     def likelihood_wrapper(self, params):
-        """Calculate the loglikelihood value for a given set of parameter values.
-        Copy-pasted from UltraNestSampler interface.
+        """ Log-likelihood for a given set of parameter values.
 
         :param params: List of parameter values.
 
         :returns: Float with loglikelihood value for given set of parameter values.
 
         """
-
-        arg1, *args = params
-
-        # calculate the log-likelihood
-        nautilus_likelihood = self._likelihood(p=[arg1, *args], reinitialise=True)
-
-        if isinstance(nautilus_likelihood, np.ndarray):  # hackish way around: need to find better solution for this
-            nautilus_likelihood = nautilus_likelihood[0]
-
-        return nautilus_likelihood
+        set_likelihood(self._likelihood)
+        return loglike(params)
 
     def write_results(self, out_filename):
         """ Get output txt file with columns containing weights, -2*loglikelihood,

@@ -534,14 +534,20 @@ def run_nautilus(
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param sampler_params: A dictionary of the keyword arguments passed to the
+    :param sampler_build_kwargs: A dictionary of the keyword arguments passed to the
         instance of :class:`~.NautilusSampler` to initialise the sampler.
 
     :param runtime_params:  A dictionary of the keyword arguments passed to the
         instance of :class:`~.NautilusSampler` to run the sampler.
 
     :param bool MPI:
-        Whether to use MPI or not for parallelized sampling.
+        Parallelise over MPI (several nodes). Launch the script with e.g.
+        ``mpiexec -n N python main.py`` or ``srun python main.py``: rank 0 runs
+        Nautilus, the other ranks evaluate the likelihood and exit when sampling
+        is done. Used automatically when more than one MPI process is running.
+
+    :param pool: Integer number of processes (multiprocessing, one node only)
+        when MPI is not used. Ignored with MPI.
 
     :param out_filename: String specifying the name of the output file.
 
@@ -560,24 +566,52 @@ def run_nautilus(
     except ImportError as e:
         raise ImportError("Check your installation of nautilus-sampler "
                           "(pip install nautilus-sampler).") from e
-    # initialise the sampler
-    if MPI :
-        
-        raise NotImplementedError(" MPI is not available yet for the Nautilus sampler. You need to use only one node, assign 1 task-per-node and put pool as the number of CPUs.")
-    else:
-        # Initialise sampler
-        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs, pool=pool, filepath=out_filename+'.hdf5')
-
-        # start sampling
+    def _run(sampler):
         if checkpoint_every is None and checkpoint_interval is None:
             sampler(runtime_params)
         else:
             sampler.run_with_checkpoints(runtime_params, out_filename,
                                          checkpoint_every=checkpoint_every,
                                          checkpoint_interval=checkpoint_interval)
-
-        # store output
         sampler.write_results(out_filename)
+
+    if MPI or _size > 1:
+        try:
+            from schwimmbad import MPIPool
+        except ImportError:
+            raise ImportError('MPI with Nautilus needs mpi4py and schwimmbad '
+                              '(pip install mpi4py schwimmbad).')
+        if _size < 2:
+            raise ValueError('MPI=True needs at least 2 MPI processes '
+                             '(1 master + workers). Launch with mpiexec/srun.')
+        if pool is not None and _rank == 0:
+            print('run_nautilus: MPI is used, so the `pool` argument is ignored.')
+
+        # Every rank holds its own likelihood; only parameter vectors and
+        # log-likelihood values travel over MPI.
+        from xpsi.NautilusSampler import set_likelihood
+        set_likelihood(likelihood)
+
+        with MPIPool() as mpi_pool:
+            if not mpi_pool.is_master():
+                # workers evaluate the likelihood until the master closes the pool
+                mpi_pool.wait()
+                _sys.exit(0)
+
+            n_workers = mpi_pool.size
+            n_batch = sampler_build_kwargs.get('n_batch')
+            if n_batch is not None and n_batch % n_workers != 0:
+                print(f'run_nautilus: n_batch={n_batch} is not a multiple of the '
+                      f'{n_workers} MPI workers; some workers will sit idle each batch.')
+            print(f'run_nautilus: running with {n_workers} MPI workers.')
+
+            sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs,
+                                      pool=mpi_pool, filepath=out_filename + '.hdf5')
+            _run(sampler)
+    else:
+        sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs,
+                                  pool=pool, filepath=out_filename + '.hdf5')
+        _run(sampler)
 
         # close the pool Nautilus created (avoids an OSError at shutdown)
         if isinstance(pool, int):

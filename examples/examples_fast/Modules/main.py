@@ -155,29 +155,24 @@ p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 likelihood.check(None, [-3.2552616905e+04], 1.0e-5, physical_points=[p])
 
 if __name__ == '__main__':
+    # Run on one node or several with MPI, e.g. (SLURM):
+    #   export OMP_NUM_THREADS=1
+    #   srun python main.py        # or: mpiexec -n 64 python main.py
+    # Every rank builds the likelihood above; rank 0 runs Nautilus and the
+    # other ranks evaluate the likelihood.
 
     start = time.time()
-    wrapped_params = [0] * len(likelihood)
-    wrapped_params[likelihood.index('p__phase_shift')] = 1
 
-    #The original (more accurate) run settings shown as commented.
-    runtime_params = {'resume': False,
-                      'importance_nested_sampling': False,
-                      'multimodal': False,
-                      'n_clustering_params': None,
-                      'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
-                      'n_iter_before_update': 50, #100,
-                      'n_live_points': 50, #1000,
-                      'sampling_efficiency': 0.3,
-                      'const_efficiency_mode': False,
-                      'wrapped_params': wrapped_params,
-                      'evidence_tolerance': 0.1,
-                      'max_iter': 100, #-1,
-                      'seed' : 0, # Fixing the seed
-                      'LHS_seed': 42, # Fixing the LHS seed for hypercube fraction estimation
-                      'verbose': True}
+    likelihood.threads = 1
+    sampler_build_kwargs = {"n_live": 4000, "seed": 0}
+    # n_batch unset: Nautilus picks a multiple of the number of workers (>= 100)
+    runtime_params = {"discard_exploration": True, "verbose": True}
 
+    xpsi.Sample.run_nautilus(likelihood, prior,
+                             out_filename='../Outputs/ST_nautilus_live_4000_seed0_MPI',
+                             MPI=True,
+                             sampler_build_kwargs=sampler_build_kwargs,
+                             runtime_params=runtime_params,
+                             checkpoint_interval=300)  # temporary results every 5 min
 
-    xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)
-
-    print('Sampling took', (time.time()-start)/60, 'minutes')
+    print('Sampling took', (time.time() - start) / 60, 'minutes')
