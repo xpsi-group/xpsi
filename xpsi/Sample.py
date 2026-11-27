@@ -606,7 +606,7 @@ def run_nautilus(
             print(f'run_nautilus: running with {n_workers} MPI workers.')
 
             sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs,
-                                      pool=mpi_pool, filepath=out_filename + '.hdf5')
+                                      pool=(mpi_pool, None), filepath=out_filename + '.hdf5')
             _run(sampler)
     else:
         sampler = NautilusSampler(likelihood, prior, sampler_build_kwargs,
