@@ -399,12 +399,15 @@ def integrate(size_t numThreads,
                     ## the ring radii are taken from r_FULL (r_0 .. r_N) rather than r_MESH.
                     ##
                     ## LIMB ACCURACY: a pixel counts with its full area if its central ray
-                    ## hits the star, so up to half a ring width outside the limb is counted.
-                    ## The screen edge r_N = 1 is the limb (to the bisection tolerance), so the
-                    ## outermost ring (i = N-1, radius r_N = 1) always hits and the outer half
-                    ## of its annulus lies outside the star. With the defaults (N = 100,
-                    ## p = 1/2) that half-annulus runs from r = 0.9975 to 1.0025, and a
-                    ## uniformly bright disc comes out 0.5% too bright (0.25% at N = 200).
+                    ## hits the star, so the counted edge of the disc can be off by up to half
+                    ## a ring width either way. get_IP_radius.pyx places the screen edge
+                    ## (r_N = 1) 0.5% outside the limb, so the outermost ring (i = N-1) misses
+                    ## the star. With p = 1/2 the ring radii are r = sqrt(k/N), and the limb of
+                    ## a non-rotating star is at r = 1/1.005 = 0.99502, just outside
+                    ## r = sqrt(0.99) = 0.99499, which is a ring radius whenever N is a multiple
+                    ## of 100. With the defaults (N = 100) that is ring i = N-2: it hits, and its
+                    ## annulus extends to 0.99749, so a uniformly bright disc comes out 0.5% too
+                    ## bright (0.25% at N = 200, where the ring just inside the limb is i = N-3).
                     r1 = 0.5 * (r_FULL[i+1] + r_FULL[i])
                     if i < NGR - 1:
                         r2 = 0.5 * (r_FULL[i+2] + r_FULL[i+1])
