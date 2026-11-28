@@ -13,8 +13,10 @@ cdef int BISECT(const double *const y_p,
                 double zeta,
                 int obl_surfgrav_ind) noexcept nogil
 
-cdef double ZABB(const _GEOM *const GEOM,
-                 const double *const y,
-                 double b,
-                 double *const Z,
-                 double *const ABB, int obl_surfgrav_ind) noexcept nogil
+cdef double SURFACE_SCALE(const _GEOM *const GEOM) noexcept nogil
+
+cdef void ZABB(const _GEOM *const GEOM,
+               const double *const y,
+               double b,
+               double *const Z,
+               double *const ABB, int obl_surfgrav_ind) noexcept nogil
