@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.Posterior &mdash; x-psi 3.5.0b1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=97082fbc"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_policy.html">Use of generative AI in contributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Other_Emission_Models.html">Other emission models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Synthetic_data.html">Synthetic data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.Posterior</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.Posterior</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Posterior"</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Likelihood</span><span class="w"> </span><span class="kn">import</span> <span class="n">Likelihood</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">LikelihoodError</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Prior</span><span class="w"> </span><span class="kn">import</span> <span class="n">Prior</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.ParameterSubspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterSubspace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xpsi.Parameter</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrictBoundsError</span>
+
+<div class="viewcode-block" id="PriorError">
+<a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.PriorError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PriorError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" Raised if there is a problem with the value of the log-prior. """</span></div>
+
+
+<div class="viewcode-block" id="Posterior">
+<a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Posterior</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" The (joint) posterior distribution.</span>
+
+<span class="sd">    A callable instance is required by `emcee &lt;http://dfm.io/emcee/current/&gt;`_</span>
+<span class="sd">    (but is not required for nested sampling).</span>
+
+<span class="sd">    :param likelihood:</span>
+<span class="sd">        An instance of :class:`~.Likelihood.Likelihood`.</span>
+
+<span class="sd">    :param prior:</span>
+<span class="sd">        An instance of :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    """</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">likelihood</span><span class="p">,</span>
+                 <span class="n">prior</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">Likelihood</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Invalid type for likelihood object.'</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span> <span class="o">=</span> <span class="n">likelihood</span>
+        <span class="c1"># no inverse sampling but best to update before prior check</span>
+        <span class="c1"># and then revert if not in prior support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># we do not need to the likelihood object to call the prior for</span>
+        <span class="c1"># this type of sampling because it is handled in the present class</span>
+        <span class="c1"># instead; for nested sampling we want to call the prior from the</span>
+        <span class="c1"># likelihood object in order to check inclusion in the prior support</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">prior</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Invalid type for prior object.'</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">prior</span>
+
+        <span class="c1"># single-point cache for the split log-likelihood/log-prior evaluation</span>
+        <span class="c1"># used by parallel-tempered sampling (see :meth:`_evaluate_split`)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_point</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_values</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Get the likelihood object. """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Get the prior object. """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span>
+
+<div class="viewcode-block" id="Posterior.__call__">
+<a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior.__call__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Special method to make callable instances to feed to ``emcee``.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            The logarithm of the posterior density (up to a normalising</span>
+<span class="sd">            constant), evaluated at :obj:`p`.</span>
+
+<span class="sd">        """</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">vector</span> <span class="c1"># make our own cache here</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">StrictBoundsError</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="n">lp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PriorError</span><span class="p">(</span><span class="s1">'Log-prior is not a number.'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ll</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">LikelihoodError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'Parameter vector: '</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+            <span class="n">ll</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">return</span> <span class="n">ll</span> <span class="o">+</span> <span class="n">lp</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Evaluate the log-likelihood and log-prior together at :obj:`p`.</span>
+
+<span class="sd">        Parallel-tempered sampling (e.g. `ptemcee`_) requires the prior and</span>
+<span class="sd">        likelihood as distinct callables rather than the combined posterior in</span>
+<span class="sd">        :meth:`__call__`, and it evaluates a point by calling :meth:`logprior`</span>
+<span class="sd">        immediately followed by :meth:`loglikelihood` for the *same* ``p``.</span>
+
+<span class="sd">        The parameter vector must be pushed into the likelihood object only</span>
+<span class="sd">        *once* per point: the X-PSI likelihood detects a change by comparing a</span>
+<span class="sd">        parameter's value with its cached previous value, and pushing the same</span>
+<span class="sd">        vector a second time would make them equal again, clearing the</span>
+<span class="sd">        update flag and leaving the likelihood stale (returning the previously</span>
+<span class="sd">        computed value). This method therefore does the single update, computes</span>
+<span class="sd">        both quantities, and caches them so the paired call reuses the result</span>
+<span class="sd">        instead of updating the vector again.</span>
+
+<span class="sd">        .. _ptemcee: https://github.com/willvousden/ptemcee</span>
+
+<span class="sd">        :returns: The tuple ``(loglikelihood, logprior)``.</span>
+
+<span class="sd">        """</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_point</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_values</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">vector</span> <span class="c1"># make our own cache here</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">StrictBoundsError</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_split_point</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_split_values</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_values</span>
+
+        <span class="n">lp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PriorError</span><span class="p">(</span><span class="s1">'Log-prior is not a number.'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ll</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">LikelihoodError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'Parameter vector: '</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+            <span class="n">ll</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_point</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">ll</span><span class="p">,</span> <span class="n">lp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_values</span>
+
+<div class="viewcode-block" id="Posterior.logprior">
+<a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior.logprior">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logprior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" The logarithm of the prior density, evaluated at :obj:`p`.</span>
+
+<span class="sd">        Companion to :meth:`loglikelihood` for parallel-tempered sampling; see</span>
+<span class="sd">        :meth:`_evaluate_split`.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            The logarithm of the prior density (up to a normalising constant),</span>
+<span class="sd">            or minus infinity if :obj:`p` lies outside the strict parameter</span>
+<span class="sd">            bounds.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_split</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Posterior.loglikelihood">
+<a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior.loglikelihood">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loglikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" The logarithm of the likelihood function, evaluated at :obj:`p`.</span>
+
+<span class="sd">        Companion to :meth:`logprior` for parallel-tempered sampling; see</span>
+<span class="sd">        :meth:`_evaluate_split`.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            The logarithm of the likelihood. ``ptemcee`` only requires it where</span>
+<span class="sd">            the log-prior is finite.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_split</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

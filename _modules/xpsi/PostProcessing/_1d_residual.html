@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.PostProcessing._1d_residual &mdash; x-psi 3.5.0b1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=97082fbc"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ai_policy.html">Use of generative AI in contributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Other_Emission_Models.html">Other emission models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Synthetic_data.html">Synthetic data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.PostProcessing._1d_residual</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.PostProcessing._1d_residual</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">._global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._signalplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">SignalPlot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">kstest</span>
+
+<div class="viewcode-block" id="Residual1DPlot">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Residual1DPlot">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Residual1DPlot</span><span class="p">(</span><span class="n">SignalPlot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" Plot the distribution of the standardised residuals.</span>
+
+<span class="sd">    The figure contains one panel: the histogram (density) of the</span>
+<span class="sd">    standardised residuals :math:`(c_{ik}-d_{ik})/\\sqrt{c_{ik}}` between the</span>
+<span class="sd">    posterior-expected count signal :math:`c_{ik}` and the data :math:`d_{ik}`</span>
+<span class="sd">    over all joint channel-phase intervals, with a reference normal</span>
+<span class="sd">    distribution (by default N(0,1), dashed line) and the p-value of a</span>
+<span class="sd">    one-sample Kolmogorov-Smirnov test of the residuals against it, and</span>
+<span class="sd">    optionally a normal distribution fitted to the residuals.</span>
+
+<span class="sd">    Each instance draws one figure: create a new instance for each call of</span>
+<span class="sd">    :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that</span>
+<span class="sd">    has already been plotted raises a ``RuntimeError``).</span>
+
+<span class="sd">    :param int nbins:</span>
+<span class="sd">         Number of histogram bins, spanning the range of the residuals.</span>
+<span class="sd">         Default 20.</span>
+
+<span class="sd">    :param bool plot_fit:</span>
+<span class="sd">         Overlay a maximum-likelihood normal distribution fitted to the</span>
+<span class="sd">         residuals (solid line), with a dashed vertical line at its mean?</span>
+
+<span class="sd">    :param float mu:</span>
+<span class="sd">         Mean of the reference normal distribution (dashed line). Default 0,</span>
+<span class="sd">         as expected for standardised residuals. A one-sample</span>
+<span class="sd">         Kolmogorov-Smirnov test of the residuals against the reference is</span>
+<span class="sd">         reported in the legend; its statistic and p-value are stored in</span>
+<span class="sd">         :attr:`residual_ref_ks_stat` and :attr:`residual_ref_ks_pvalue`.</span>
+
+<span class="sd">    :param float sigma:</span>
+<span class="sd">         Standard deviation of the reference normal distribution. Default 1,</span>
+<span class="sd">         as expected for standardised residuals.</span>
+
+<span class="sd">    :param list parameters_vector:</span>
+<span class="sd">         If given, the plot is made for this single vector of model parameter</span>
+<span class="sd">         values (in the order of the likelihood parameters) instead of for</span>
+<span class="sd">         posterior samples. :class:`~xpsi.PostProcessing.SignalPlotter` only</span>
+<span class="sd">         looks at the first plot passed for a posterior, so this then applies</span>
+<span class="sd">         to all plots passed together.</span>
+
+<span class="sd">    :param kwargs:</span>
+<span class="sd">         Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,</span>
+<span class="sd">         ``fig_dir``, ``root_filename``).</span>
+
+<span class="sd">    """</span>
+
+    <span class="n">__figtype__</span> <span class="o">=</span> <span class="s1">'signalplot_1dresiduals'</span>
+
+    <span class="c1"># do not change at runtime (see base class comments):</span>
+    <span class="n">__caching_targets__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'expected_counts'</span><span class="p">]</span>
+
+    <span class="n">__rows__</span>          <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">__columns__</span>       <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">__ax_rows__</span>       <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">__ax_columns__</span>    <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">__height_ratios__</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">__width_ratios__</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># second column for colorbars</span>
+    <span class="n">__wspace__</span>        <span class="o">=</span> <span class="mf">0.025</span>
+    <span class="n">__hspace__</span>        <span class="o">=</span> <span class="mf">0.125</span>
+
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">'Instantiating a 1D residual plotter for residual distribution checking'</span><span class="p">,</span>
+                  <span class="s1">'Residual plotter instantiated'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                 <span class="n">plot_fit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                 <span class="n">parameters_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Constructor method for plotting the 1D residual distribution.</span>
+
+<span class="sd">        See the class docstring for the parameters.</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Residual1DPlot</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Get the input parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">nbins</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_fit</span> <span class="o">=</span> <span class="n">plot_fit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters_vector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters_vector</span> <span class="o">=</span> <span class="n">parameters_vector</span>
+
+         <span class="c1"># Get on plotting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$(c_</span><span class="si">{ik}</span><span class="s1">-d_</span><span class="si">{ik}</span><span class="s1">)/\sqrt{c_</span><span class="si">{ik}</span><span class="s1">}$'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Occurence'</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Residual1DPlot.execute">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Residual1DPlot.execute">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">'Residual1DPlot object iterating over samples'</span><span class="p">,</span>
+                  <span class="s1">'Residual1DPlot object finished iterating'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thetas</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Loop over posterior samples. """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_reused</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span> <span class="o">=</span> <span class="n">thetas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'model_sum'</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span><span class="p">):</span>
+            <span class="n">wrapped</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">thetas</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Update posterior expected model given the updated signal.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            You cannot make an iterator from an instance of this class.</span>
+
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">expected_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Get the current posterior sum of the count numbers. """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+
+    <span class="nd">@model_sum</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Get the estimated posterior expectation of the count numbers. """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_not_reused</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Raise if this instance has already been plotted.</span>
+
+<span class="sd">        The figure is created once, in the constructor, and every run draws</span>
+<span class="sd">        onto it, so a second run would overlay a second set of curves and</span>
+<span class="sd">        reuse results stored by the first run.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'_finalized'</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">'Residual1DPlot instance has already been plotted; create a new '</span>
+                <span class="s1">'Residual1DPlot instance for each plotting call (e.g. instantiate the '</span>
+                <span class="s1">'plot in the same notebook cell as the plotting call).'</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Residual1DPlot.finalize">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.Residual1DPlot.finalize">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">'ResidualPlot object finalizing'</span><span class="p">,</span>
+                  <span class="s1">'ResidualPlot object finalized'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_reused</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_1d_residuals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finalized</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_1d_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Display the residuals in the third panel. """</span>
+
+        <span class="c1"># Get the residuals </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="o">/=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="c1"># Plot them</span>
+        <span class="n">rdens</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nbins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="p">)</span> <span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+        <span class="n">ytop</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rdens</span><span class="p">)</span>
+
+        <span class="c1"># Add the fit if needed</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_fit</span><span class="p">:</span>
+
+            <span class="n">mean</span><span class="p">,</span><span class="n">std</span><span class="o">=</span><span class="n">norm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span>
+            <span class="n">ytop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ytop</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">x</span> <span class="p">,</span> <span class="n">y</span> <span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">'Fitted Normal $\sigma=$'</span><span class="o">+</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">std</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'darkblue'</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'dashed'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">'$\mu=$'</span><span class="o">+</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+        <span class="c1"># Reference normal expected for well-modelled standardised residuals,</span>
+        <span class="c1"># with a one-sample KS test of the (unbinned) residuals against it.</span>
+        <span class="c1"># A frozen CDF is passed because scipy maps the string 'norm' to a</span>
+        <span class="c1"># function that does not accept loc/scale arguments.</span>
+        <span class="n">ks_stat</span><span class="p">,</span> <span class="n">ks_p</span> <span class="o">=</span> <span class="n">kstest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span>
+                               <span class="n">norm</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="p">)</span><span class="o">.</span><span class="n">cdf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_ref_ks_stat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ks_stat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_ref_ks_pvalue</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ks_p</span><span class="p">)</span>
+        <span class="n">ks_p_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">ks_p</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span> <span class="k">if</span> <span class="n">ks_p</span> <span class="o">&gt;=</span> <span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">ks_p</span><span class="si">:</span><span class="s1">.1e</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">y_ref</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="p">)</span>
+        <span class="n">ytop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ytop</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_ref</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_ref</span><span class="p">,</span>
+                                   <span class="n">color</span><span class="o">=</span><span class="s1">'m'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span>
+                                   <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="sa">r</span><span class="s1">'Reference $\mathcal</span><span class="si">{N}</span><span class="s1">$('</span>
+                                          <span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">), '</span>
+                                          <span class="o">+</span> <span class="sa">f</span><span class="s1">'KS test p-value = </span><span class="si">{</span><span class="n">ks_p_str</span><span class="si">}</span><span class="s1">'</span><span class="p">))</span>
+
+        <span class="c1"># Leave headroom above the histogram and curves for the legend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">ytop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">'small'</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'upper left'</span><span class="p">)</span>
+
+
+        <span class="c1"># Do the nice plotting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Residual histogram'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$(c_</span><span class="si">{ik}</span><span class="s1">-d_</span><span class="si">{ik}</span><span class="s1">)/\sqrt{c_</span><span class="si">{ik}</span><span class="s1">}$'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_1d_residuals</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Density'</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

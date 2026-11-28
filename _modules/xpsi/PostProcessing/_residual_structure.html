@@ -1,0 +1,1273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xpsi.PostProcessing._residual_structure &mdash; x-psi 3.5.0b1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=97082fbc"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            x-psi
+              <img src="../../../_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ai_policy.html">Use of generative AI in contributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../XPSI_101.html">X-PSI 101 - For Beginners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Accretion_disk.html">Accretion disk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Other_Emission_Models.html">Other emission models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Multiple_imaging.html">Multiple imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Synthetic_data.html">Synthetic data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_api.html">Likelihood API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extension_modules.html">Extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior_api.html">Posterior API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xpsi.PostProcessing._residual_structure</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xpsi.PostProcessing._residual_structure</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">._global_imports</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span> <span class="k">as</span> <span class="n">_stats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._signalplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">SignalPlot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.font_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontProperties</span> <span class="k">as</span> <span class="n">_FontProperties</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.textpath</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextToPath</span> <span class="k">as</span> <span class="n">_TextToPath</span>
+
+<span class="c1"># Optional heavy dependency for Moran's I – graceful fallback if absent</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">lat2W</span> <span class="k">as</span> <span class="n">_lat2W</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">esda.moran</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran</span> <span class="k">as</span> <span class="n">_Moran</span>
+    <span class="n">_HAS_ESDA</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_HAS_ESDA</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Optional statsmodels for Ljung-Box test</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.diagnostic</span><span class="w"> </span><span class="kn">import</span> <span class="n">acorr_ljungbox</span> <span class="k">as</span> <span class="n">_acorr_ljungbox</span>
+    <span class="n">_HAS_STATSMODELS</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_HAS_STATSMODELS</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="ResidualStructurePlot">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualStructurePlot">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResidualStructurePlot</span><span class="p">(</span><span class="n">SignalPlot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" Test whether the 2D residuals contain structure, and plot the tests.</span>
+
+<span class="sd">    Computes the standardised residuals between the data and the</span>
+<span class="sd">    posterior-expected count signal over joint channel-phase intervals,</span>
+<span class="sd">    :math:`(c_{ik}-d_{ik})/\\sqrt{c_{ik}}`, and runs six complementary tests</span>
+<span class="sd">    of whether they exhibit 2D structure or are consistent with random noise:</span>
+
+<span class="sd">        1. **2D power spectrum** – periodic and smooth structure from the</span>
+<span class="sd">           2D periodogram (calibrated with white-noise simulations).</span>
+<span class="sd">        2. **Variogram** – how the correlation decays with pixel distance on</span>
+<span class="sd">           the phase-channel grid (calibrated with white-noise simulations).</span>
+<span class="sd">        3. **2D autocorrelation-function (ACF) scan** – correlation at every</span>
+<span class="sd">           lag vector up to ``structure_acf2d_max_lag``, at any orientation.</span>
+<span class="sd">        4. **KS + Ljung–Box** – Gaussianity of the residuals and serial</span>
+<span class="sd">           autocorrelation of the flattened residuals (Ljung–Box requires</span>
+<span class="sd">           ``statsmodels``; KS always runs).</span>
+<span class="sd">        5. **Moran's I** – global spatial autocorrelation (requires ``esda``</span>
+<span class="sd">           and ``libpysal``; skipped if absent).</span>
+<span class="sd">        6. **Runs test** – Wald–Wolfowitz test applied per channel and per</span>
+<span class="sd">           phase bin.</span>
+
+<span class="sd">    A summary of the tests and a combined verdict (``STRUCTURED`` if at</span>
+<span class="sd">    least three tests flag structure, ``RANDOM`` if none does,</span>
+<span class="sd">    ``INCONCLUSIVE`` otherwise) is printed when the plot is finalised. The</span>
+<span class="sd">    per-test results are stored in :attr:`residual_structure_results` and</span>
+<span class="sd">    the verdict in :attr:`residual_structure_verdict`.</span>
+
+<span class="sd">    The figure contains:</span>
+
+<span class="sd">        * in the first two columns, one panel per test for tests 1 to 4: the</span>
+<span class="sd">          2D power spectrum and the normalised variogram (top row), the 2D</span>
+<span class="sd">          ACF map with the strongest lag marked and a normal Q-Q plot</span>
+<span class="sd">          (bottom row);</span>
+<span class="sd">        * in the third column, a summary of all six tests (including tests 5</span>
+<span class="sd">          and 6, which have no panel): for each test, a short description</span>
+<span class="sd">          of what it looks for and how to read its panel, and the values</span>
+<span class="sd">          and threshold that decide its verdict; then the combined verdict.</span>
+
+<span class="sd">    The residual map itself is shown by</span>
+<span class="sd">    :class:`~xpsi.PostProcessing.ResidualPlot`.</span>
+
+<span class="sd">    This plot is independent of :class:`~xpsi.PostProcessing.ResidualPlot`.</span>
+<span class="sd">    Both use the posterior-expected counts, so they can be passed together</span>
+<span class="sd">    for the same posterior, e.g.::</span>
+
+<span class="sd">        plots = {'ST': [xpsi.ResidualPlot(plot_clusters=True),</span>
+<span class="sd">                        xpsi.ResidualStructurePlot()]}</span>
+
+<span class="sd">    They then use the same posterior samples, and with caching (the default</span>
+<span class="sd">    of :meth:`~xpsi.PostProcessing.SignalPlotter.plot`) the model is</span>
+<span class="sd">    evaluated only once for both.</span>
+
+<span class="sd">    Each instance draws one figure: create a new instance for each call of</span>
+<span class="sd">    :meth:`~xpsi.PostProcessing.SignalPlotter.plot` (reusing an instance that</span>
+<span class="sd">    has already been plotted raises a ``RuntimeError``).</span>
+
+<span class="sd">    :param list parameters_vector:</span>
+<span class="sd">         If given, the residuals are computed for this single vector of model</span>
+<span class="sd">         parameter values (in the order of the likelihood parameters) instead</span>
+<span class="sd">         of for posterior samples. :class:`~xpsi.PostProcessing.SignalPlotter`</span>
+<span class="sd">         only looks at the first plot passed for a posterior, so this then</span>
+<span class="sd">         applies to all plots passed together.</span>
+
+<span class="sd">    :param int structure_power_n_null:</span>
+<span class="sd">         Number of white-noise simulations used to calibrate the null</span>
+<span class="sd">         distribution of the 2D power spectrum test (test 1).  Default</span>
+<span class="sd">         1000; the smallest reportable p-value is ``1/(n_null+1)``.</span>
+
+<span class="sd">    :param float structure_power_alpha:</span>
+<span class="sd">         Significance level of the 2D power spectrum test, before the</span>
+<span class="sd">         internal Bonferroni factor of 2 over its two statistics.</span>
+<span class="sd">         Default 0.05.</span>
+
+<span class="sd">    :param float structure_power_low_k_fraction:</span>
+<span class="sd">         Radial-frequency cut (as a fraction of the Nyquist radius)</span>
+<span class="sd">         defining the low-k region for the smooth-structure statistic</span>
+<span class="sd">         of the 2D power spectrum test.  Default 0.15.</span>
+
+<span class="sd">    :param int structure_power_random_seed:</span>
+<span class="sd">         Seed for the power spectrum null simulations (reproducibility).</span>
+
+<span class="sd">    :param int structure_variogram_max_lag:</span>
+<span class="sd">         Maximum pixel lag used for the variogram test (test 2).</span>
+<span class="sd">         Default 20.</span>
+
+<span class="sd">    :param int structure_variogram_n_null:</span>
+<span class="sd">         Number of white-noise simulations used to calibrate the null</span>
+<span class="sd">         distribution of the variogram test.  Default 1000.</span>
+
+<span class="sd">    :param float structure_variogram_alpha:</span>
+<span class="sd">         Significance level of the variogram test, before the internal</span>
+<span class="sd">         Bonferroni factor of 2 over its two statistics.  Default 0.05.</span>
+
+<span class="sd">    :param int structure_variogram_random_seed:</span>
+<span class="sd">         Seed for the variogram null simulations (reproducibility).</span>
+
+<span class="sd">    :param int structure_acf2d_max_lag:</span>
+<span class="sd">         Maximum pixel lag along each axis for the 2D ACF scan (test 3).</span>
+<span class="sd">         Default 8.</span>
+
+<span class="sd">    :param kwargs:</span>
+<span class="sd">         Keyword arguments for :class:`SignalPlot` (e.g. ``write``, ``dpi``,</span>
+<span class="sd">         ``fig_dir``, ``root_filename``).</span>
+
+<span class="sd">    """</span>
+
+    <span class="n">__figtype__</span> <span class="o">=</span> <span class="s1">'signalplot_residual_structure'</span>
+
+    <span class="c1"># do not change at runtime (see base class comments):</span>
+    <span class="n">__caching_targets__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'expected_counts'</span><span class="p">]</span>
+
+    <span class="n">__rows__</span>          <span class="o">=</span> <span class="mf">3.25</span>
+    <span class="n">__columns__</span>       <span class="o">=</span> <span class="mf">2.5</span>
+    <span class="n">__ax_rows__</span>       <span class="o">=</span> <span class="mi">2</span>
+    <span class="c1"># Three columns of panels separated by two empty spacer columns, so the</span>
+    <span class="c1"># two gaps can be sized independently (wspace is then 0): the second</span>
+    <span class="c1"># gap holds the y-axis labels of the middle column, which are on the</span>
+    <span class="c1"># right of its panels.  The third column, for the summary, is wider.</span>
+    <span class="n">__ax_columns__</span>    <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">__height_ratios__</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span>
+    <span class="c1"># wider third column for the summary text</span>
+    <span class="n">__width_ratios__</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="n">__wspace__</span>        <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">__hspace__</span>        <span class="o">=</span> <span class="mf">0.42</span>
+
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">'Instantiating a residual structure plotter for posterior checking'</span><span class="p">,</span>
+                  <span class="s1">'Residual structure plotter instantiated'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">parameters_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">structure_power_n_null</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                 <span class="n">structure_power_alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                 <span class="n">structure_power_low_k_fraction</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+                 <span class="n">structure_power_random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">structure_variogram_max_lag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                 <span class="n">structure_variogram_n_null</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                 <span class="n">structure_variogram_alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                 <span class="n">structure_variogram_random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">structure_acf2d_max_lag</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Constructor method for the residual structure tests and their plot.</span>
+
+<span class="sd">        See the class docstring for the parameters.</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResidualStructurePlot</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_n_null</span> <span class="o">=</span> <span class="n">structure_power_n_null</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_alpha</span> <span class="o">=</span> <span class="n">structure_power_alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_low_k_fraction</span> <span class="o">=</span> <span class="n">structure_power_low_k_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_random_seed</span> <span class="o">=</span> <span class="n">structure_power_random_seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_max_lag</span> <span class="o">=</span> <span class="n">structure_variogram_max_lag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_n_null</span> <span class="o">=</span> <span class="n">structure_variogram_n_null</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_alpha</span> <span class="o">=</span> <span class="n">structure_variogram_alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_random_seed</span> <span class="o">=</span> <span class="n">structure_variogram_random_seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_acf2d_max_lag</span> <span class="o">=</span> <span class="n">structure_acf2d_max_lag</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters_vector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters_vector</span> <span class="o">=</span> <span class="n">parameters_vector</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure</span><span class="p">()</span>
+        <span class="c1"># Extend the grid towards the right edge of the figure (matplotlib's</span>
+        <span class="c1"># default leaves 10% of the width empty there), for the summary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.98</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ResidualStructurePlot.execute">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualStructurePlot.execute">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">'ResidualStructurePlot object iterating over samples'</span><span class="p">,</span>
+                  <span class="s1">'ResidualStructurePlot object finished iterating'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thetas</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Loop over posterior samples. """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_reused</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span> <span class="o">=</span> <span class="n">thetas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'model_sum'</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span><span class="p">):</span>
+            <span class="n">wrapped</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">thetas</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Update posterior expected model given the updated signal.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            You cannot make an iterator from an instance of this class.</span>
+
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">expected_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Get the current posterior sum of the count numbers. """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+
+    <span class="nd">@model_sum</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Get the estimated posterior expectation of the count numbers. """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_not_reused</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Raise if this instance has already been plotted.</span>
+
+<span class="sd">        The figure is created once, in the constructor, and every run draws</span>
+<span class="sd">        onto it, so a second run would overlay a second set of curves and</span>
+<span class="sd">        reuse results stored by the first run.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'_finalized'</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">'ResidualStructurePlot instance has already been plotted; create a new '</span>
+                <span class="s1">'ResidualStructurePlot instance for each plotting call (e.g. instantiate the '</span>
+                <span class="s1">'plot in the same notebook cell as the plotting call).'</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ResidualStructurePlot.finalize">
+<a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualStructurePlot.finalize">[docs]</a>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">'ResidualStructurePlot object finalizing'</span><span class="p">,</span>
+                  <span class="s1">'ResidualStructurePlot object finalized'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_reused</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_residuals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_structure_analysis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_diagnostics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finalized</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Compute and store the standardised residuals</span>
+<span class="sd">        :math:`(c_{ik}-d_{ik})/\\sqrt{c_{ik}}` in ``self._residuals``. """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="p">)</span>
+                           <span class="o">/</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_structure_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Run all 2-D structure tests on ``self._residuals`` and print a</span>
+<span class="sd">        summary.  Results are stored in :attr:`residual_structure_results`</span>
+<span class="sd">        and :attr:`residual_structure_verdict`.</span>
+
+<span class="sd">        Called automatically from :meth:`finalize`.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'_residuals'</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_residuals</span><span class="p">()</span>
+
+        <span class="c1"># NOTE: the order of this list defines the test numbering used in</span>
+        <span class="c1"># the printed report AND in the figure: tests with a diagnostic</span>
+        <span class="c1"># panel come first (in panel order), followed by the tests without</span>
+        <span class="c1"># a panel.</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># -- tests with a diagnostic panel --</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_structure_test_power_spectrum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span>
+                <span class="n">n_null</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_n_null</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_alpha</span><span class="p">,</span>
+                <span class="n">low_k_fraction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_low_k_fraction</span><span class="p">,</span>
+                <span class="n">random_seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_power_random_seed</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_structure_test_variogram</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span>
+                <span class="n">max_lag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_max_lag</span><span class="p">,</span>
+                <span class="n">n_null</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_n_null</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_alpha</span><span class="p">,</span>
+                <span class="n">random_seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_structure_variogram_random_seed</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_structure_test_acf2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structure_acf2d_max_lag</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_structure_test_normality_ljungbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">),</span>
+            <span class="c1"># -- tests without a diagnostic panel --</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_structure_test_morans_i</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_structure_test_runs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Aggregate verdict: &gt;=3 of the definitive tests flag structure</span>
+        <span class="n">definitive</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">n_structured</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">definitive</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]])</span>
+        <span class="n">n_total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">definitive</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_structured</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">verdict</span> <span class="o">=</span> <span class="s1">'STRUCTURED'</span>
+        <span class="k">elif</span> <span class="n">n_structured</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">verdict</span> <span class="o">=</span> <span class="s1">'RANDOM'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">verdict</span> <span class="o">=</span> <span class="s1">'INCONCLUSIVE'</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_structure_results</span> <span class="o">=</span> <span class="n">results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_structure_verdict</span> <span class="o">=</span> <span class="n">verdict</span>
+
+        <span class="c1"># -- Pretty-print summary ------------------------------------------</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span> <span class="o">+</span> <span class="s1">'='</span> <span class="o">*</span> <span class="mi">65</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'  XPSI 2-D RESIDUAL STRUCTURE ANALYSIS'</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'  Axes: phase [cycles] x channel'</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'='</span> <span class="o">*</span> <span class="mi">65</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="s1">'x STRUCTURED'</span>
+            <span class="k">elif</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="s1">'v random    '</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="s1">'- skipped   '</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">]  Test </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">t</span><span class="p">[</span><span class="s1">'test'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"                </span><span class="si">{</span><span class="n">t</span><span class="p">[</span><span class="s1">'interpretation'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'-'</span> <span class="o">*</span> <span class="mi">65</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  VERDICT : </span><span class="si">{</span><span class="n">verdict</span><span class="si">}</span><span class="s2">  "</span>
+              <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">n_structured</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_total</span><span class="si">}</span><span class="s2"> tests flagged structure)"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'='</span> <span class="o">*</span> <span class="mi">65</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="c1"># -- Individual tests ---------------------------------------------------</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_structure_test_power_spectrum</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">n_null</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                                       <span class="n">low_k_fraction</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""2-D power spectrum test, Monte-Carlo calibrated against white noise.</span>
+
+<span class="sd">        Two complementary statistics are computed from the 2-D periodogram</span>
+<span class="sd">        (DC component excluded):</span>
+
+<span class="sd">        * ``g_max`` - Fisher's g statistic: maximum power / total power.</span>
+<span class="sd">          Sensitive to PERIODIC structure, whose power concentrates in a</span>
+<span class="sd">          few Fourier modes.</span>
+<span class="sd">        * ``f_lowk`` - fraction of total power at low spatial frequencies</span>
+<span class="sd">          (radial frequency below ``low_k_fraction`` of the Nyquist</span>
+<span class="sd">          radius).  Sensitive to SMOOTH, blobby structure, whose power</span>
+<span class="sd">          concentrates at low k.</span>
+
+<span class="sd">        The null distributions of both statistics depend on the grid</span>
+<span class="sd">        shape, so they are calibrated empirically by simulating</span>
+<span class="sd">        ``n_null`` white-noise fields of the same shape and standard</span>
+<span class="sd">        deviation.  One-sided empirical p-values (with an add-one</span>
+<span class="sd">        correction, so the smallest reportable p is ``1/(n_null+1)``)</span>
+<span class="sd">        are combined with a Bonferroni factor of 2: structure is flagged</span>
+<span class="sd">        when ``min(p) &lt; alpha / 2``.</span>
+
+<span class="sd">        Unlike a fixed peak/median-ratio threshold, ``alpha`` is a</span>
+<span class="sd">        genuine significance level (default 0.05), consistent with the</span>
+<span class="sd">        other tests in the suite, and requires no per-dataset tuning.</span>
+
+<span class="sd">        :param residuals: 2-D array of standardised residuals.</span>
+<span class="sd">        :param int n_null: Number of white-noise simulations for the</span>
+<span class="sd">            null calibration.  Default 500.</span>
+<span class="sd">        :param float alpha: Significance level before the Bonferroni</span>
+<span class="sd">            factor of 2.  Default 0.05.</span>
+<span class="sd">        :param float low_k_fraction: Radial-frequency cut (as a fraction</span>
+<span class="sd">            of the Nyquist radius) defining the "low-k" region for the</span>
+<span class="sd">            smooth-structure statistic.  Default 0.15.</span>
+<span class="sd">        :param int random_seed: Seed for the null simulations, for</span>
+<span class="sd">            reproducibility.</span>
+<span class="sd">        :returns: dict with keys ``test``, ``g_max``, ``g_null_q95``,</span>
+<span class="sd">            ``p_periodic``, ``f_lowk``, ``f_null_q95``, ``p_smooth``,</span>
+<span class="sd">            ``min_p``, ``alpha_bonferroni``, ``n_null``, ``power_map``,</span>
+<span class="sd">            ``structured`` (bool), and ``interpretation`` (str).</span>
+<span class="sd">        """</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_spectrum_stats</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">field</span><span class="p">)))</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">ny</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">nx</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>          <span class="c1"># remove DC</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">ky</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">ny</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">kx</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">nx</span><span class="p">))[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">kr</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ky</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">kx</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># 0..1</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="p">(</span><span class="n">kr</span> <span class="o">&lt;=</span> <span class="n">low_k_fraction</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">kr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="n">total</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">low</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">total</span><span class="p">,</span> <span class="n">p</span>
+
+        <span class="n">g_obs</span><span class="p">,</span> <span class="n">f_obs</span><span class="p">,</span> <span class="n">power_map</span> <span class="o">=</span> <span class="n">_spectrum_stats</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+
+        <span class="n">g_null</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_null</span><span class="p">)</span>
+        <span class="n">f_null</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_null</span><span class="p">)</span>
+        <span class="n">sd</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_null</span><span class="p">):</span>
+            <span class="n">g_null</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">f_null</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_spectrum_stats</span><span class="p">(</span>
+                <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)))</span>
+
+        <span class="c1"># one-sided empirical p-values (add-one correction avoids p = 0)</span>
+        <span class="n">p_g</span> <span class="o">=</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">g_null</span> <span class="o">&gt;=</span> <span class="n">g_obs</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_null</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">p_f</span> <span class="o">=</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">f_null</span> <span class="o">&gt;=</span> <span class="n">f_obs</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_null</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="n">min_p</span>      <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p_g</span><span class="p">,</span> <span class="n">p_f</span><span class="p">)</span>
+        <span class="n">alpha_bonf</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">min_p</span> <span class="o">&lt;</span> <span class="n">alpha_bonf</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'test'</span>             <span class="p">:</span> <span class="s1">'2D Power Spectrum (MC-calibrated)'</span><span class="p">,</span>
+            <span class="s1">'g_max'</span>            <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">g_obs</span><span class="p">),</span>
+            <span class="s1">'g_null_q95'</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">g_null</span><span class="p">,</span> <span class="mi">95</span><span class="p">)),</span>
+            <span class="s1">'p_periodic'</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_g</span><span class="p">),</span>
+            <span class="s1">'f_lowk'</span>           <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">f_obs</span><span class="p">),</span>
+            <span class="s1">'f_null_q95'</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">f_null</span><span class="p">,</span> <span class="mi">95</span><span class="p">)),</span>
+            <span class="s1">'p_smooth'</span>         <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_f</span><span class="p">),</span>
+            <span class="s1">'min_p'</span>            <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_p</span><span class="p">),</span>
+            <span class="s1">'alpha_bonferroni'</span> <span class="p">:</span> <span class="n">alpha_bonf</span><span class="p">,</span>
+            <span class="s1">'n_null'</span>           <span class="p">:</span> <span class="n">n_null</span><span class="p">,</span>
+            <span class="s1">'power_map'</span>        <span class="p">:</span> <span class="n">power_map</span><span class="p">,</span>
+            <span class="s1">'structured'</span>       <span class="p">:</span> <span class="n">structured</span><span class="p">,</span>
+            <span class="s1">'interpretation'</span>   <span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'periodic: g = </span><span class="si">{</span><span class="n">g_obs</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> (p = </span><span class="si">{</span><span class="n">p_g</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">);  '</span>
+                <span class="sa">f</span><span class="s1">'smooth: f_lowk = </span><span class="si">{</span><span class="n">f_obs</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (p = </span><span class="si">{</span><span class="n">p_f</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">);  '</span>
+                <span class="sa">f</span><span class="s1">'alpha/2 = </span><span class="si">{</span><span class="n">alpha_bonf</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">  '</span>
+                <span class="sa">f</span><span class="s1">'-&gt; </span><span class="si">{</span><span class="s2">"structured"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">structured</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"random"</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_structure_test_morans_i</span><span class="p">(</span><span class="n">residuals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Global Moran's I spatial autocorrelation test.</span>
+
+<span class="sd">        Moran's I quantifies how similar neighbouring cells are to one</span>
+<span class="sd">        another.  Under the null hypothesis of complete spatial</span>
+<span class="sd">        randomness, I ~ 0.  A significantly positive I indicates positive</span>
+<span class="sd">        autocorrelation (nearby residuals tend to have the same sign).</span>
+
+<span class="sd">        Queen contiguity weights (8-connected neighbourhood) are used so</span>
+<span class="sd">        that row/column AND diagonal neighbours are all considered.</span>
+
+<span class="sd">        :param residuals: 2-D array of standardised residuals.</span>
+<span class="sd">        :returns: dict with keys ``test``, ``I``, ``p_value``,</span>
+<span class="sd">            ``structured`` (bool or None if skipped), and</span>
+<span class="sd">            ``interpretation`` (str).</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Requires the optional packages ``esda`` and ``libpysal``</span>
+<span class="sd">            (``pip install esda libpysal``).  Skipped if unavailable.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_HAS_ESDA</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">'test'</span><span class="p">:</span> <span class="s2">"Moran's I (spatial autocorrelation)"</span><span class="p">,</span>
+                <span class="s1">'structured'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">'interpretation'</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s1">'skipped - install esda + libpysal to enable '</span>
+                    <span class="s1">'(pip install esda libpysal)'</span>
+                <span class="p">),</span>
+            <span class="p">}</span>
+
+        <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">_lat2W</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># queen contiguity (8-connected)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">'r'</span>  <span class="c1"># row-standardise</span>
+        <span class="n">mi</span> <span class="o">=</span> <span class="n">_Moran</span><span class="p">(</span><span class="n">residuals</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'test'</span><span class="p">:</span> <span class="s2">"Moran's I (spatial autocorrelation)"</span><span class="p">,</span>
+            <span class="s1">'I'</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="p">),</span>
+            <span class="s1">'p_value'</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">p_sim</span><span class="p">),</span>
+            <span class="s1">'structured'</span><span class="p">:</span> <span class="n">structured</span><span class="p">,</span>
+            <span class="s1">'interpretation'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"I = </span><span class="si">{</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  p = </span><span class="si">{</span><span class="n">mi</span><span class="o">.</span><span class="n">p_sim</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  "</span>
+                <span class="sa">f</span><span class="s2">"-&gt; </span><span class="si">{</span><span class="s1">'structured'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">structured</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'random'</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_structure_test_variogram</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_null</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Empirical isotropic variogram test, Monte-Carlo calibrated.</span>
+
+<span class="sd">        For a random residual field the normalised variogram sits at the</span>
+<span class="sd">        sill (``gamma(h)/sigma^2 ~ 1``) for every lag - a *pure nugget*</span>
+<span class="sd">        model.  Spatial structure pulls it away from the sill: smooth</span>
+<span class="sd">        short-range correlation depresses it at small lags, while</span>
+<span class="sd">        periodic or banded structure produces a "hole effect" (the</span>
+<span class="sd">        variogram rises above and/or falls below the sill at larger</span>
+<span class="sd">        lags).</span>
+
+<span class="sd">        Two complementary statistics are therefore computed:</span>
+
+<span class="sd">        * ``nugget_deficit`` = ``1 - gamma(1)/sigma^2``.  One-sided:</span>
+<span class="sd">          a large positive value means strong lag-1 correlation, the</span>
+<span class="sd">          most common signature of misfit structure.</span>
+<span class="sd">        * ``max_abs_dev`` = ``max_h |1 - gamma(h)/sigma^2|`` over all</span>
+<span class="sd">          lags.  Catches hole-effect and longer-range departures that a</span>
+<span class="sd">          lag-1 (or slope) statistic dilutes or misses entirely.</span>
+
+<span class="sd">        Both null distributions depend on the grid shape, so they are</span>
+<span class="sd">        calibrated by simulating ``n_null`` white-noise fields of the</span>
+<span class="sd">        same shape.  Empirical p-values (add-one corrected, so the</span>
+<span class="sd">        smallest reportable p is ``1/(n_null+1)``) are combined with a</span>
+<span class="sd">        Bonferroni factor of 2: structure is flagged when</span>
+<span class="sd">        ``min(p) &lt; alpha / 2``.  ``alpha`` is a genuine significance</span>
+<span class="sd">        level, consistent with the 2D power spectrum test, and replaces</span>
+<span class="sd">        the earlier fixed slope threshold.</span>
+
+<span class="sd">        :param residuals: 2-D array of standardised residuals.</span>
+<span class="sd">        :param int max_lag: Maximum pixel lag.  Defaults to 20.</span>
+<span class="sd">        :param int n_null: Number of white-noise simulations for the</span>
+<span class="sd">            null calibration.  Default 500.</span>
+<span class="sd">        :param float alpha: Significance level before the Bonferroni</span>
+<span class="sd">            factor of 2.  Default 0.05.</span>
+<span class="sd">        :param int random_seed: Seed for the null simulations.</span>
+<span class="sd">        :returns: dict with keys ``test``, ``lags``, ``semivariance``</span>
+<span class="sd">            (raw), ``semivariance_norm``, ``sample_variance``,</span>
+<span class="sd">            ``nugget_deficit``, ``p_nugget``, ``max_abs_dev``,</span>
+<span class="sd">            ``p_maxdev``, ``min_p``, ``alpha_bonferroni``, ``n_null``,</span>
+<span class="sd">            ``structured`` (bool), and ``interpretation`` (str).</span>
+<span class="sd">        """</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_variogram_curve</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">lags</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_lag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">sv</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lags</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">lag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lags</span><span class="p">):</span>
+                <span class="n">h_diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">field</span><span class="p">[:,</span> <span class="n">lag</span><span class="p">:]</span> <span class="o">-</span> <span class="n">field</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">lag</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="n">v_diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="n">lag</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">field</span><span class="p">[:</span><span class="o">-</span><span class="n">lag</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="n">sv</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                    <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">h_diffs</span><span class="p">,</span> <span class="n">v_diffs</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">lags</span><span class="p">,</span> <span class="n">sv</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_stats_pair</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">sv</span> <span class="o">=</span> <span class="n">_variogram_curve</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">svn</span> <span class="o">=</span> <span class="n">sv</span> <span class="o">/</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-12</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">svn</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">svn</span><span class="p">))</span>
+
+        <span class="n">lags</span><span class="p">,</span> <span class="n">semivariance</span> <span class="o">=</span> <span class="n">_variogram_curve</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+        <span class="n">sample_variance</span>    <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span>
+        <span class="n">semivariance_norm</span>  <span class="o">=</span> <span class="n">semivariance</span> <span class="o">/</span> <span class="p">(</span><span class="n">sample_variance</span> <span class="o">+</span> <span class="mf">1e-12</span><span class="p">)</span>
+
+        <span class="n">d_obs</span><span class="p">,</span> <span class="n">m_obs</span> <span class="o">=</span> <span class="n">_stats_pair</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+
+        <span class="n">rng</span>    <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="n">d_null</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_null</span><span class="p">)</span>
+        <span class="n">m_null</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_null</span><span class="p">)</span>
+        <span class="n">sd</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_null</span><span class="p">):</span>
+            <span class="n">d_null</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">m_null</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_stats_pair</span><span class="p">(</span>
+                <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">residuals</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="c1"># one-sided empirical p-values (add-one correction avoids p = 0)</span>
+        <span class="n">p_d</span> <span class="o">=</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">d_null</span> <span class="o">&gt;=</span> <span class="n">d_obs</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_null</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">p_m</span> <span class="o">=</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">m_null</span> <span class="o">&gt;=</span> <span class="n">m_obs</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_null</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="n">min_p</span>      <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p_d</span><span class="p">,</span> <span class="n">p_m</span><span class="p">)</span>
+        <span class="n">alpha_bonf</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">min_p</span> <span class="o">&lt;</span> <span class="n">alpha_bonf</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'test'</span>              <span class="p">:</span> <span class="s1">'Variogram (MC-calibrated)'</span><span class="p">,</span>
+            <span class="s1">'lags'</span>              <span class="p">:</span> <span class="n">lags</span><span class="p">,</span>
+            <span class="s1">'semivariance'</span>      <span class="p">:</span> <span class="n">semivariance</span><span class="p">,</span>
+            <span class="s1">'semivariance_norm'</span> <span class="p">:</span> <span class="n">semivariance_norm</span><span class="p">,</span>
+            <span class="s1">'sample_variance'</span>   <span class="p">:</span> <span class="n">sample_variance</span><span class="p">,</span>
+            <span class="s1">'nugget_deficit'</span>    <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">d_obs</span><span class="p">),</span>
+            <span class="s1">'p_nugget'</span>          <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_d</span><span class="p">),</span>
+            <span class="s1">'max_abs_dev'</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">m_obs</span><span class="p">),</span>
+            <span class="s1">'p_maxdev'</span>          <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_m</span><span class="p">),</span>
+            <span class="s1">'min_p'</span>             <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_p</span><span class="p">),</span>
+            <span class="s1">'alpha_bonferroni'</span>  <span class="p">:</span> <span class="n">alpha_bonf</span><span class="p">,</span>
+            <span class="s1">'n_null'</span>            <span class="p">:</span> <span class="n">n_null</span><span class="p">,</span>
+            <span class="s1">'structured'</span>        <span class="p">:</span> <span class="n">structured</span><span class="p">,</span>
+            <span class="s1">'interpretation'</span>    <span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'lag-1 nugget deficit = </span><span class="si">{</span><span class="n">d_obs</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (p = </span><span class="si">{</span><span class="n">p_d</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">);  '</span>
+                <span class="sa">f</span><span class="s1">'max |sill deviation| = </span><span class="si">{</span><span class="n">m_obs</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (p = </span><span class="si">{</span><span class="n">p_m</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">);  '</span>
+                <span class="sa">f</span><span class="s1">'alpha/2 = </span><span class="si">{</span><span class="n">alpha_bonf</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">  '</span>
+                <span class="sa">f</span><span class="s1">'-&gt; </span><span class="si">{</span><span class="s2">"structured"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">structured</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"random"</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_structure_test_runs</span><span class="p">(</span><span class="n">residuals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Wald-Wolfowitz runs test applied per-row and per-column.</span>
+
+<span class="sd">        A *run* is a maximal sequence of values all above or all below the</span>
+<span class="sd">        row/column median.  Too few runs imply positive autocorrelation</span>
+<span class="sd">        along that axis.  We flag structure when more than 15 % of rows</span>
+<span class="sd">        *or* columns individually reject randomness at the 5 % level</span>
+<span class="sd">        (~5 % would be expected by chance).</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This test scans the horizontal and vertical directions only.</span>
+<span class="sd">            Structure aligned with the grid diagonals is targeted by</span>
+<span class="sd">            :meth:`_structure_test_acf2d`.</span>
+
+<span class="sd">        :param residuals: 2-D array of standardised residuals.</span>
+<span class="sd">        :returns: dict with keys ``test``, ``frac_rows_significant``,</span>
+<span class="sd">            ``frac_cols_significant``, ``threshold``, ``structured``</span>
+<span class="sd">            (bool), and ``interpretation`` (str).</span>
+<span class="sd">        """</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_runs_pvalue</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">"""One-sided p-value for too-few runs (positive autocorrelation)."""</span>
+            <span class="n">median</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">signs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span>
+            <span class="n">signs</span> <span class="o">=</span> <span class="n">signs</span><span class="p">[</span><span class="n">signs</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="n">n1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">signs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">n2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">signs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            <span class="n">runs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">signs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">signs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">mu_r</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">/</span> <span class="n">n</span> <span class="o">+</span> <span class="mf">1.0</span>
+            <span class="n">var_r</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span>
+                     <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">var_r</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">runs</span> <span class="o">-</span> <span class="n">mu_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var_r</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">_stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>  <span class="c1"># left tail: few runs -&gt; small p</span>
+
+        <span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">row_pvals</span> <span class="o">=</span> <span class="p">[</span><span class="n">_runs_pvalue</span><span class="p">(</span><span class="n">residuals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)]</span>
+        <span class="n">col_pvals</span> <span class="o">=</span> <span class="p">[</span><span class="n">_runs_pvalue</span><span class="p">(</span><span class="n">residuals</span><span class="p">[:,</span> <span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cols</span><span class="p">)]</span>
+
+        <span class="n">frac_rows</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">row_pvals</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">))</span>
+        <span class="n">frac_cols</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_pvals</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">))</span>
+
+        <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.15</span>
+        <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">((</span><span class="n">frac_rows</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frac_cols</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'test'</span><span class="p">:</span> <span class="s1">'Runs test (per row &amp; column)'</span><span class="p">,</span>
+            <span class="s1">'frac_rows_significant'</span><span class="p">:</span> <span class="n">frac_rows</span><span class="p">,</span>
+            <span class="s1">'frac_cols_significant'</span><span class="p">:</span> <span class="n">frac_cols</span><span class="p">,</span>
+            <span class="s1">'threshold'</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+            <span class="s1">'structured'</span><span class="p">:</span> <span class="n">structured</span><span class="p">,</span>
+            <span class="s1">'interpretation'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'rows with structure: </span><span class="si">{</span><span class="n">frac_rows</span><span class="si">:</span><span class="s1">.1%</span><span class="si">}</span><span class="s1">,  '</span>
+                <span class="sa">f</span><span class="s1">'cols with structure: </span><span class="si">{</span><span class="n">frac_cols</span><span class="si">:</span><span class="s1">.1%</span><span class="si">}</span><span class="s1">  '</span>
+                <span class="sa">f</span><span class="s1">'(threshold </span><span class="si">{</span><span class="n">threshold</span><span class="si">:</span><span class="s1">.0%</span><span class="si">}</span><span class="s1">)  '</span>
+                <span class="sa">f</span><span class="s1">'-&gt; </span><span class="si">{</span><span class="s2">"structured"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">structured</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"random"</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_structure_test_acf2d</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Two-dimensional autocorrelation-function (ACF) scan.</span>
+
+<span class="sd">        Generalises a directional lag-1 test to EVERY lag vector</span>
+<span class="sd">        ``(dy, dx)`` with ``0 &lt;= dy &lt;= max_lag`` and ``|dx| &lt;= max_lag``</span>
+<span class="sd">        (upper half-plane only, since the ACF is symmetric under</span>
+<span class="sd">        ``(dy, dx) -&gt; (-dy, -dx)``).  This makes the test sensitive to</span>
+<span class="sd">        clustered residuals at ANY orientation - horizontal, vertical,</span>
+<span class="sd">        diagonal, or any oblique angle - and at any separation up to</span>
+<span class="sd">        ``max_lag`` pixels, so it also catches structure whose</span>
+<span class="sd">        correlation appears only at larger lags (e.g. regularly spaced</span>
+<span class="sd">        blobs).</span>
+
+<span class="sd">        For each lag vector, the Pearson correlation ``r`` between the</span>
+<span class="sd">        residual field and its shifted copy is computed.  Under the</span>
+<span class="sd">        white-noise null hypothesis ``r * sqrt(N)`` is asymptotically</span>
+<span class="sd">        standard normal, giving a two-sided p-value per lag.  A</span>
+<span class="sd">        Bonferroni correction over the total number of lags tested is</span>
+<span class="sd">        applied: structure is flagged when ``min(p) &lt; 0.05 / n_lags``.</span>
+
+<span class="sd">        :param residuals: 2-D array of standardised residuals.</span>
+<span class="sd">        :param int max_lag: Maximum lag in pixels along each axis.</span>
+<span class="sd">            Default 8, giving ``max_lag * (2 * max_lag + 1) + max_lag``</span>
+<span class="sd">            = 144 tested lag vectors.</span>
+<span class="sd">        :returns: dict with keys ``test``, ``acf_map`` (2-D array of</span>
+<span class="sd">            ``r`` values, NaN where untested), ``max_lag``, ``best_lag``</span>
+<span class="sd">            (tuple ``(dy, dx)`` of the most significant lag),</span>
+<span class="sd">            ``best_r``, ``best_angle_deg`` (orientation of the</span>
+<span class="sd">            strongest correlation, degrees from the +phase axis),</span>
+<span class="sd">            ``min_p``, ``alpha_bonferroni``, ``n_lags_tested``,</span>
+<span class="sd">            ``structured`` (bool), and ``interpretation`` (str).</span>
+<span class="sd">        """</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">acf_map</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">max_lag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">max_lag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">p_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">'dy'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'dx'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">dy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_lag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">dx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">max_lag</span><span class="p">,</span> <span class="n">max_lag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">dy</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">dx</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>  <span class="c1"># skip (0,0) and mirror duplicates</span>
+                <span class="k">if</span> <span class="n">dx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">residuals</span><span class="p">[</span><span class="n">dy</span><span class="p">:,</span> <span class="n">dx</span><span class="p">:]</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">residuals</span><span class="p">[:</span><span class="n">m</span> <span class="o">-</span> <span class="n">dy</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span> <span class="o">-</span> <span class="n">dx</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">residuals</span><span class="p">[</span><span class="n">dy</span><span class="p">:,</span> <span class="p">:</span><span class="n">n</span> <span class="o">+</span> <span class="n">dx</span><span class="p">]</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">residuals</span><span class="p">[:</span><span class="n">m</span> <span class="o">-</span> <span class="n">dy</span><span class="p">,</span> <span class="o">-</span><span class="n">dx</span><span class="p">:]</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="n">npairs</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span>
+                <span class="k">if</span> <span class="n">npairs</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">npairs</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">_stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)))</span>
+                <span class="n">acf_map</span><span class="p">[</span><span class="n">dy</span><span class="p">,</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">max_lag</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="n">p_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]):</span>
+                    <span class="n">best</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span> <span class="n">z</span><span class="p">,</span> <span class="s1">'dy'</span><span class="p">:</span> <span class="n">dy</span><span class="p">,</span> <span class="s1">'dx'</span><span class="p">:</span> <span class="n">dx</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">:</span> <span class="n">r</span><span class="p">}</span>
+
+        <span class="n">n_lags</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
+        <span class="n">alpha_bonf</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="o">/</span> <span class="n">n_lags</span>
+        <span class="n">min_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
+        <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">min_p</span> <span class="o">&lt;</span> <span class="n">alpha_bonf</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">],</span> <span class="n">best</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">])))</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'test'</span><span class="p">:</span> <span class="s1">'2D ACF scan (all orientations &amp; lags)'</span><span class="p">,</span>
+            <span class="s1">'acf_map'</span><span class="p">:</span> <span class="n">acf_map</span><span class="p">,</span>
+            <span class="s1">'max_lag'</span><span class="p">:</span> <span class="n">max_lag</span><span class="p">,</span>
+            <span class="s1">'best_lag'</span><span class="p">:</span> <span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">],</span> <span class="n">best</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">]),</span>
+            <span class="s1">'best_r'</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s1">'r'</span><span class="p">]),</span>
+            <span class="s1">'best_angle_deg'</span><span class="p">:</span> <span class="n">angle</span><span class="p">,</span>
+            <span class="s1">'min_p'</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_p</span><span class="p">),</span>
+            <span class="s1">'alpha_bonferroni'</span><span class="p">:</span> <span class="n">alpha_bonf</span><span class="p">,</span>
+            <span class="s1">'n_lags_tested'</span><span class="p">:</span> <span class="n">n_lags</span><span class="p">,</span>
+            <span class="s1">'structured'</span><span class="p">:</span> <span class="n">structured</span><span class="p">,</span>
+            <span class="s1">'interpretation'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"strongest r = </span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="s1">'r'</span><span class="p">]</span><span class="si">:</span><span class="s2">+.3f</span><span class="si">}</span><span class="s2"> at lag "</span>
+                <span class="sa">f</span><span class="s2">"(dchan=</span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">]</span><span class="si">}</span><span class="s2">, dphase=</span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">]</span><span class="si">}</span><span class="s2">), "</span>
+                <span class="sa">f</span><span class="s2">"orientation ~ </span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg;  "</span>
+                <span class="sa">f</span><span class="s2">"min-p = </span><span class="si">{</span><span class="n">min_p</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> over </span><span class="si">{</span><span class="n">n_lags</span><span class="si">}</span><span class="s2"> lags "</span>
+                <span class="sa">f</span><span class="s2">"(Bonferroni alpha = </span><span class="si">{</span><span class="n">alpha_bonf</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">)  "</span>
+                <span class="sa">f</span><span class="s2">"-&gt; </span><span class="si">{</span><span class="s1">'structured'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">structured</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'random'</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_structure_test_normality_ljungbox</span><span class="p">(</span><span class="n">residuals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Kolmogorov-Smirnov normality test + Ljung-Box autocorrelation test.</span>
+
+<span class="sd">        * **KS test** - compares the marginal distribution of the</span>
+<span class="sd">          standardised residuals against a fitted normal.</span>
+<span class="sd">        * **Ljung-Box test** - detects autocorrelation at lags 1-20 in the</span>
+<span class="sd">          residuals flattened in row-major (phase-fast) order.</span>
+
+<span class="sd">        :param residuals: 2-D array of standardised residuals.</span>
+<span class="sd">        :returns: dict with keys ``test``, ``ks_stat``, ``ks_pvalue``,</span>
+<span class="sd">            ``ljungbox_min_pvalue`` (``None`` if statsmodels absent),</span>
+<span class="sd">            ``structured`` (bool), and ``interpretation`` (str).</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            The Ljung-Box test requires ``statsmodels``.  If absent, only</span>
+<span class="sd">            the KS test contributes to the verdict.</span>
+<span class="sd">        """</span>
+        <span class="n">flat</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">mu_hat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="n">sd_hat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+
+        <span class="c1"># Pass a frozen CDF rather than ``'norm', args=(mu, sd)``: scipy 1.18</span>
+        <span class="c1"># maps the string 'norm' to ``special.ndtr``, which takes no</span>
+        <span class="c1"># loc/scale and raises a TypeError when ``args`` are supplied.</span>
+        <span class="n">ks_stat</span><span class="p">,</span> <span class="n">ks_p</span> <span class="o">=</span> <span class="n">_stats</span><span class="o">.</span><span class="n">kstest</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">_stats</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">mu_hat</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd_hat</span><span class="p">)</span><span class="o">.</span><span class="n">cdf</span><span class="p">)</span>
+        <span class="n">ks_stat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ks_stat</span><span class="p">)</span>
+        <span class="n">ks_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ks_p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_HAS_STATSMODELS</span><span class="p">:</span>
+            <span class="n">lb_result</span> <span class="o">=</span> <span class="n">_acorr_ljungbox</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">lags</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">lb_min_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lb_result</span><span class="p">[</span><span class="s1">'lb_pvalue'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+            <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">((</span><span class="n">ks_p</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">lb_min_p</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">))</span>
+            <span class="n">lb_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'Ljung-Box min-p = </span><span class="si">{</span><span class="n">lb_min_p</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lb_min_p</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">structured</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ks_p</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">)</span>
+            <span class="n">lb_str</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Ljung-Box skipped '</span>
+                      <span class="s1">'(pip install statsmodels to enable)'</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'test'</span><span class="p">:</span> <span class="s1">'KS normality + Ljung-Box autocorr.'</span><span class="p">,</span>
+            <span class="s1">'ks_stat'</span><span class="p">:</span> <span class="n">ks_stat</span><span class="p">,</span>
+            <span class="s1">'ks_pvalue'</span><span class="p">:</span> <span class="n">ks_p</span><span class="p">,</span>
+            <span class="s1">'ljungbox_min_pvalue'</span><span class="p">:</span> <span class="n">lb_min_p</span><span class="p">,</span>
+            <span class="s1">'structured'</span><span class="p">:</span> <span class="n">structured</span><span class="p">,</span>
+            <span class="s1">'interpretation'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'KS p = </span><span class="si">{</span><span class="n">ks_p</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">,  </span><span class="si">{</span><span class="n">lb_str</span><span class="si">}</span><span class="s1">  '</span>
+                <span class="sa">f</span><span class="s1">'-&gt; </span><span class="si">{</span><span class="s2">"structured"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">structured</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"random"</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="c1"># -- Diagnostic figure --------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_draw_diagnostics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Draw the diagnostic figure of the structure tests.</span>
+
+<span class="sd">        Called automatically from :meth:`finalize`, after the tests.  Tests</span>
+<span class="sd">        1 to 4 occupy the first two columns (tests 1 and 2 on the top row,</span>
+<span class="sd">        tests 3 and 4 on the bottom row), and the summary the full third</span>
+<span class="sd">        column.  The panels follow the numbering of the printed report:</span>
+
+<span class="sd">        * **Test 1** - 2-D power spectrum (log scale).</span>
+<span class="sd">        * **Test 2** - normalised empirical variogram with a dashed</span>
+<span class="sd">          pure-nugget reference line.</span>
+<span class="sd">        * **Test 3** - 2D autocorrelation-function map over all lag</span>
+<span class="sd">          vectors, with the most significant lag marked.</span>
+<span class="sd">        * **Test 4** - normal Q-Q plot of the flattened residuals</span>
+<span class="sd">          (KS normality + Ljung-Box test).</span>
+<span class="sd">        * **Summary** - all six test verdicts in report order: first the</span>
+<span class="sd">          tests shown in panels (1-4), then the tests without a panel</span>
+<span class="sd">          (5: Moran's I, 6: runs test), followed by the overall verdict.</span>
+<span class="sd">        """</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_structure_results</span>
+        <span class="n">results_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="s1">'test'</span><span class="p">]:</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">results</span><span class="p">}</span>
+        <span class="n">verdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_structure_verdict</span>
+        <span class="n">colour_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'STRUCTURED'</span><span class="p">:</span> <span class="s1">'#d62728'</span><span class="p">,</span>
+            <span class="s1">'RANDOM'</span><span class="p">:</span> <span class="s1">'#2ca02c'</span><span class="p">,</span>
+            <span class="s1">'INCONCLUSIVE'</span><span class="p">:</span> <span class="s1">'#ff7f0e'</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'XPSI Residual Structure Analysis - Verdict: </span><span class="si">{</span><span class="n">verdict</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colour_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">verdict</span><span class="p">,</span> <span class="s1">'black'</span><span class="p">))</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gs</span>
+
+        <span class="n">residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span>
+
+        <span class="c1"># -- Panel (0,0): Test 1 - 2-D power spectrum ----------------------</span>
+        <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">ps_t</span> <span class="o">=</span> <span class="n">results_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'2D Power Spectrum (MC-calibrated)'</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="s1">'power_map'</span> <span class="ow">in</span> <span class="n">ps_t</span><span class="p">:</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">ps_t</span><span class="p">[</span><span class="s1">'power_map'</span><span class="p">]),</span>
+                       <span class="n">aspect</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">'lower'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'inferno'</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Test 1: 2D Power Spectrum (log)</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"p_periodic = </span><span class="si">{</span><span class="n">ps_t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'p_periodic'</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"p_smooth = </span><span class="si">{</span><span class="n">ps_t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'p_smooth'</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">'No data'</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span>
+                     <span class="n">transform</span><span class="o">=</span><span class="n">ax2</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Test 1: 2D Power Spectrum'</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$k_\phi$'</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$k_\mathrm</span><span class="si">{ch}</span><span class="s1">$'</span><span class="p">)</span>
+
+        <span class="c1"># -- Panel (0,1): Test 2 - variogram (normalised) ------------------</span>
+        <span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">vg_t</span> <span class="o">=</span> <span class="n">results_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Variogram (MC-calibrated)'</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="s1">'lags'</span> <span class="ow">in</span> <span class="n">vg_t</span><span class="p">:</span>
+            <span class="n">ax3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vg_t</span><span class="p">[</span><span class="s1">'lags'</span><span class="p">],</span> <span class="n">vg_t</span><span class="p">[</span><span class="s1">'semivariance_norm'</span><span class="p">],</span>
+                     <span class="s1">'o-'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#1f77b4'</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'empirical'</span><span class="p">)</span>
+            <span class="n">ax3</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="s1">'pure nugget (random)'</span><span class="p">)</span>
+            <span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+                <span class="s1">'Test 2: Variogram (normalised)</span><span class="se">\n</span><span class="s1">'</span>
+                <span class="sa">f</span><span class="s2">"p_nugget = </span><span class="si">{</span><span class="n">vg_t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'p_nugget'</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"p_maxdev = </span><span class="si">{</span><span class="n">vg_t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'p_maxdev'</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax3</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">'No data'</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span>
+                     <span class="n">transform</span><span class="o">=</span><span class="n">ax3</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+            <span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Test 2: Variogram (normalised)'</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'Lag (pixels)'</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Normalised semivariance'</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_axis_right</span><span class="p">(</span><span class="n">ax3</span><span class="p">)</span>
+
+        <span class="c1"># -- Panel (1,0): Test 3 - 2D ACF scan ------------------------------</span>
+        <span class="n">ax4</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">acf_t</span> <span class="o">=</span> <span class="n">results_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'2D ACF scan (all orientations &amp; lags)'</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="s1">'acf_map'</span> <span class="ow">in</span> <span class="n">acf_t</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">acf_t</span><span class="p">[</span><span class="s1">'max_lag'</span><span class="p">]</span>
+            <span class="n">amap</span> <span class="o">=</span> <span class="n">acf_t</span><span class="p">[</span><span class="s1">'acf_map'</span><span class="p">]</span>
+            <span class="n">amax</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">amap</span><span class="p">))</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="n">ax4</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">amap</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">'lower'</span><span class="p">,</span>
+                            <span class="n">cmap</span><span class="o">=</span><span class="s1">'RdBu_r'</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">amax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">amax</span><span class="p">,</span>
+                            <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">L</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">])</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax4</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">'Pearson $r$'</span><span class="p">)</span>
+            <span class="n">bdy</span><span class="p">,</span> <span class="n">bdx</span> <span class="o">=</span> <span class="n">acf_t</span><span class="p">[</span><span class="s1">'best_lag'</span><span class="p">]</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bdx</span><span class="p">,</span> <span class="n">bdy</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                     <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">'strongest lag (</span><span class="si">{</span><span class="n">bdy</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">bdx</span><span class="si">}</span><span class="s1">)'</span><span class="p">)</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Test 3: 2D ACF scan</span><span class="se">\n</span><span class="s1">'</span>
+                          <span class="sa">f</span><span class="s2">"min-p = </span><span class="si">{</span><span class="n">acf_t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'min_p'</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\Delta$ phase bin'</span><span class="p">)</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\Delta$ channel bin'</span><span class="p">)</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'upper right'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">'No data'</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span>
+                     <span class="n">transform</span><span class="o">=</span><span class="n">ax4</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+            <span class="n">ax4</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Test 3: 2D ACF scan'</span><span class="p">)</span>
+
+        <span class="c1"># -- Panel (1,1): Test 4 - Q-Q plot --------------------------------</span>
+        <span class="n">ax5</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">flat</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">osm</span><span class="p">,</span> <span class="n">osr</span><span class="p">),</span> <span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">_stats</span><span class="o">.</span><span class="n">probplot</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s1">'norm'</span><span class="p">)</span>
+        <span class="n">ax5</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">osm</span><span class="p">,</span> <span class="n">osr</span><span class="p">,</span> <span class="s1">'.'</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#1f77b4'</span><span class="p">)</span>
+        <span class="n">ax5</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">osm</span><span class="p">,</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">osm</span><span class="p">)</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">,</span>
+                 <span class="s1">'r-'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'normal reference'</span><span class="p">)</span>
+        <span class="n">ks_t</span> <span class="o">=</span> <span class="n">results_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'KS normality + Ljung-Box autocorr.'</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">ks_p</span> <span class="o">=</span> <span class="n">ks_t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'ks_pvalue'</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">))</span>
+        <span class="n">ax5</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Test 4: Normal Q-Q  (KS p = </span><span class="si">{</span><span class="n">ks_p</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">)'</span><span class="p">)</span>
+        <span class="n">ax5</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'Theoretical quantiles'</span><span class="p">)</span>
+        <span class="n">ax5</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Sample quantiles'</span><span class="p">)</span>
+        <span class="n">ax5</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_axis_right</span><span class="p">(</span><span class="n">ax5</span><span class="p">)</span>
+
+        <span class="c1"># -- Right column: summary of ALL tests in report order ------------</span>
+        <span class="n">ax6</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">])</span>
+        <span class="n">ax6</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
+        <span class="n">ax6</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Summary'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_summary</span><span class="p">(</span><span class="n">ax6</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">verdict</span><span class="p">,</span>
+                           <span class="n">colour_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">verdict</span><span class="p">,</span> <span class="s1">'black'</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_y_axis_right</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Put the y ticks, tick labels and axis label on the right. """</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">'right'</span><span class="p">)</span>
+
+    <span class="c1"># Plain-language description of each test, shown in grey in the summary</span>
+    <span class="c1"># column (keyed by the 'test' name returned by each test).  For the</span>
+    <span class="c1"># tests with a panel, the description says how to read the panel.</span>
+    <span class="n">_TEST_DESCRIPTIONS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'2D Power Spectrum (MC-calibrated)'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'Splits the residual map into spatial frequencies (k_</span><span class="se">\u03c6</span><span class="s1"> and '</span>
+            <span class="s1">'k_ch); bins with zero frequency at the centre; '</span>
+            <span class="s1">'colour = log of the power. Noise spreads power evenly over the '</span>
+            <span class="s1">'map. A repeating pattern gives isolated bright spots, and smooth '</span>
+            <span class="s1">'blobs a bright centre.'</span><span class="p">),</span>
+        <span class="s1">'Variogram (MC-calibrated)'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'Compares how different two residuals are, as a function of '</span>
+            <span class="s1">'their distance. Distance between pixels (lag) as a function '</span>
+            <span class="s1">'of mean squared difference divided by its noise value '</span>
+            <span class="s1">'(normalised semi-variance). For noise, the curve stays on the '</span>
+            <span class="s1">'dashed line at 1 at every distance. Structure makes nearby '</span>
+            <span class="s1">'residuals more alike, so the curve drops below 1 at small lags.'</span><span class="p">),</span>
+        <span class="s1">'2D ACF scan (all orientations &amp; lags)'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'Correlates the residual map with copies of itself shifted in '</span>
+            <span class="s1">'phase and channel. Panel: x = shift in phase bins, y = shift in '</span>
+            <span class="s1">'channel bins; colour = correlation r (red positive, blue '</span>
+            <span class="s1">'negative); </span><span class="se">\u00d7</span><span class="s1"> = strongest shift. Noise gives r </span><span class="se">\u2248</span><span class="s1"> 0 '</span>
+            <span class="s1">'everywhere. Structure gives a red patch around the origin, '</span>
+            <span class="s1">'elongated in the direction of the structure.'</span><span class="p">),</span>
+        <span class="s1">'KS normality + Ljung-Box autocorr.'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'KS compares the shape of the residual distribution with a normal '</span>
+            <span class="s1">'distribution of the same mean and width. Panel (Q-Q plot): '</span>
+            <span class="s1">'x = values expected for a normal distribution (theoretical '</span>
+            <span class="s1">'quantiles), y = sorted residuals (sample quantiles). If the shape '</span>
+            <span class="s1">'is normal, the points follow the red line; tails bending away '</span>
+            <span class="s1">'from it mean too many or too few large residuals. Ljung-Box (no '</span>
+            <span class="s1">'panel) checks whether consecutive residuals along phase are '</span>
+            <span class="s1">'correlated.'</span><span class="p">),</span>
+        <span class="s2">"Moran's I (spatial autocorrelation)"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'Checks whether each residual resembles its 8 neighbours. '</span>
+            <span class="s1">'I </span><span class="se">\u2248</span><span class="s1"> 0 for noise; I &gt; 0 when similar residuals sit together.'</span><span class="p">),</span>
+        <span class="s1">'Runs test (per row &amp; column)'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'Along each channel and each phase bin, counts the runs of '</span>
+            <span class="s1">'residuals above or below the median. Noise switches side often; '</span>
+            <span class="s1">'too few runs means neighbouring residuals are correlated.'</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_p</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n_null</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Format a p-value for the summary. With a Monte-Carlo p-value</span>
+<span class="sd">        at its smallest possible value ``1/(n_null+1)``, show an upper</span>
+<span class="sd">        bound. """</span>
+        <span class="k">if</span> <span class="n">n_null</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_null</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'p </span><span class="se">\u2264</span><span class="s1"> </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s1">.2g</span><span class="si">}</span><span class="s1">'</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">'p &lt; 1e-300'</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'p = </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s1">.1e</span><span class="si">}</span><span class="s1">'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'p = </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_summary_quantification</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Values of a test and the threshold that decides its verdict,</span>
+<span class="sd">        as shown in the summary column. """</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'test'</span><span class="p">]</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_format_p</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'2D Power Spectrum'</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'n_null'</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">'Strongest single frequency: </span><span class="si">{}</span><span class="s1">.</span><span class="se">\n</span><span class="s1"> Low-frequency power: '</span>
+                    <span class="s1">'</span><span class="si">{:.0%}</span><span class="s1"> (95</span><span class="si">% o</span><span class="s1">f noise: </span><span class="se">\u2264</span><span class="s1"> </span><span class="si">{:.0%}</span><span class="s1">), </span><span class="si">{}</span><span class="s1">.</span><span class="se">\n</span><span class="s1"> Structured if '</span>
+                    <span class="s1">'either p &lt; </span><span class="si">{:.3g}</span><span class="s1">.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'p_periodic'</span><span class="p">],</span> <span class="n">n</span><span class="p">),</span> <span class="n">t</span><span class="p">[</span><span class="s1">'f_lowk'</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="s1">'f_null_q95'</span><span class="p">],</span>
+                        <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'p_smooth'</span><span class="p">],</span> <span class="n">n</span><span class="p">),</span> <span class="n">t</span><span class="p">[</span><span class="s1">'alpha_bonferroni'</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'Variogram'</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'n_null'</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">'Value at lag 1: </span><span class="si">{:.2f}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">).</span><span class="se">\n</span><span class="s1"> Largest departure from 1 '</span>
+                    <span class="s1">'over lags 1</span><span class="se">\u2013</span><span class="si">{}</span><span class="s1">: </span><span class="si">{:.2f}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">).</span><span class="se">\n</span><span class="s1"> Structured if either '</span>
+                    <span class="s1">'p &lt; </span><span class="si">{:.3g}</span><span class="s1">.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="mf">1.0</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="s1">'nugget_deficit'</span><span class="p">],</span> <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'p_nugget'</span><span class="p">],</span> <span class="n">n</span><span class="p">),</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'lags'</span><span class="p">]),</span> <span class="n">t</span><span class="p">[</span><span class="s1">'max_abs_dev'</span><span class="p">],</span> <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'p_maxdev'</span><span class="p">],</span> <span class="n">n</span><span class="p">),</span>
+                        <span class="n">t</span><span class="p">[</span><span class="s1">'alpha_bonferroni'</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'2D ACF'</span><span class="p">):</span>
+            <span class="n">dy</span><span class="p">,</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'best_lag'</span><span class="p">]</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="s1">'</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> bin</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="s1">''</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">'s'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">'Strongest correlation: r = </span><span class="si">{:+.2f}</span><span class="s1"> for a shift of </span><span class="si">{}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> and '</span>
+                    <span class="s1">'</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">.</span><span class="se">\n</span><span class="s1"> Structured if p &lt; </span><span class="si">{:.1e}</span><span class="s1"> (0.05 divided by the </span><span class="si">{}</span><span class="s1"> '</span>
+                    <span class="s1">'shifts tested).'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">t</span><span class="p">[</span><span class="s1">'best_r'</span><span class="p">],</span> <span class="n">bins</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="s1">'phase'</span><span class="p">),</span> <span class="n">bins</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="s1">'channel'</span><span class="p">),</span>
+                        <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'min_p'</span><span class="p">]),</span> <span class="n">t</span><span class="p">[</span><span class="s1">'alpha_bonferroni'</span><span class="p">],</span>
+                        <span class="n">t</span><span class="p">[</span><span class="s1">'n_lags_tested'</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'KS normality'</span><span class="p">):</span>
+            <span class="n">lb</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'ljungbox_min_pvalue'</span><span class="p">]</span>
+            <span class="n">lb_str</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Ljung-Box: smallest </span><span class="si">{}</span><span class="s1"> over lags 1</span><span class="se">\u2013</span><span class="s1">20 (structured '</span>
+                      <span class="s1">'if &lt; 0.05).'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fp</span><span class="p">(</span><span class="n">lb</span><span class="p">))</span> <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                      <span class="s1">'</span><span class="se">\n</span><span class="s1"> Ljung-Box: skipped (install statsmodels).'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">'KS: </span><span class="si">{}</span><span class="s1"> (structured if &lt; 0.01). </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'ks_pvalue'</span><span class="p">]),</span> <span class="n">lb_str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"Moran"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">'Skipped: install esda and libpysal.'</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">'I = </span><span class="si">{:.2f}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">, from 999 random reshufflings of the map.</span><span class="se">\n</span><span class="s1"> '</span>
+                    <span class="s1">'Structured if p &lt; 0.05.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">t</span><span class="p">[</span><span class="s1">'I'</span><span class="p">],</span> <span class="n">fp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'p_value'</span><span class="p">],</span> <span class="mi">999</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'Runs test'</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">'</span><span class="si">{:.0%}</span><span class="s1"> of channels and </span><span class="si">{:.0%}</span><span class="s1"> of phase bins have too few '</span>
+                    <span class="s1">'runs</span><span class="se">\n</span><span class="s1"> (about 5</span><span class="si">% e</span><span class="s1">xpected by chance).</span><span class="se">\n</span><span class="s1"> Structured if either '</span>
+                    <span class="s1">'exceeds </span><span class="si">{:.0%}</span><span class="s1">.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">t</span><span class="p">[</span><span class="s1">'frac_rows_significant'</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="s1">'frac_cols_significant'</span><span class="p">],</span>
+                        <span class="n">t</span><span class="p">[</span><span class="s1">'threshold'</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'interpretation'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">max_width_pt</span><span class="p">,</span> <span class="n">fontsize</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Wrap ``text`` into lines no wider than ``max_width_pt`` points</span>
+<span class="sd">        when drawn at ``fontsize``, keeping explicit line breaks.</span>
+
+<span class="sd">        The width of each candidate line is measured with the actual font</span>
+<span class="sd">        (the default font of :mod:`matplotlib`), so the lines use the</span>
+<span class="sd">        available width.  Each line of ``text`` (split on ``\\n``) is wrapped</span>
+<span class="sd">        separately, without the spaces around the line break, and an empty</span>
+<span class="sd">        line gives a blank line.  A single word wider than the limit is put</span>
+<span class="sd">        on its own line.</span>
+<span class="sd">        """</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">_FontProperties</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="n">measure</span> <span class="o">=</span> <span class="n">_TextToPath</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">width</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">measure</span><span class="o">.</span><span class="n">get_text_width_height_descent</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span>
+                                                         <span class="n">ismath</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">paragraph</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">):</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="n">paragraph</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">words</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="n">width</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="n">word</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_width_pt</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">+=</span> <span class="s1">' '</span> <span class="o">+</span> <span class="n">word</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">word</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lines</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_draw_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">verdict</span><span class="p">,</span> <span class="n">verdict_colour</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">""" Write the summary of the tests in the (axis-less) column ``ax``.</span>
+
+<span class="sd">        For each test: its number, name and verdict (font size 11), a</span>
+<span class="sd">        plain-language description (grey, size ``fs_text``) and the</span>
+<span class="sd">        values that decide the verdict (size ``fs_text``); then the combined verdict.  Text is</span>
+<span class="sd">        laid out from the top of the column with line heights in physical</span>
+<span class="sd">        units, so it keeps its size whatever the column height.  Explicit</span>
+<span class="sd">        line breaks (``\\n``) in the texts are kept (see :meth:`_wrap`).</span>
+<span class="sd">        """</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+        <span class="n">w_in</span><span class="p">,</span> <span class="n">h_in</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+        <span class="n">ax_w_pt</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">w_in</span> <span class="o">*</span> <span class="mf">72.0</span>
+        <span class="n">ax_h_pt</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">h_in</span> <span class="o">*</span> <span class="mf">72.0</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">line_h</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>                       <span class="c1"># line height, axes fraction</span>
+            <span class="k">return</span> <span class="mf">1.18</span> <span class="o">*</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">ax_h_pt</span>
+
+
+        <span class="n">x0</span> <span class="o">=</span> <span class="mf">0.02</span>
+        <span class="n">fs_text</span> <span class="o">=</span> <span class="mi">10</span>                          <span class="c1"># descriptions and values</span>
+        <span class="c1"># full width of the column, less 2% because the measured width</span>
+        <span class="c1"># slightly underestimates the drawn one</span>
+        <span class="n">max_width</span> <span class="o">=</span> <span class="mf">0.98</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ax_w_pt</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">line_h</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">mark</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">'STRUCTURED'</span><span class="p">,</span> <span class="s1">'#d62728'</span>
+            <span class="k">elif</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">mark</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">'RANDOM'</span><span class="p">,</span> <span class="s1">'#2ca02c'</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mark</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">'skipped'</span><span class="p">,</span> <span class="s1">'gray'</span>
+
+            <span class="c1"># Extra space before each test, then its name followed by the</span>
+            <span class="c1"># verdict, the whole title in the colour of the verdict</span>
+            <span class="n">y</span> <span class="o">-=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">line_h</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'test'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' ('</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Test </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">mark</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+                                   <span class="n">max_width</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+                        <span class="n">va</span><span class="o">=</span><span class="s1">'top'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">-=</span> <span class="n">line_h</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">colour</span> <span class="ow">in</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_TEST_DESCRIPTIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">'test'</span><span class="p">],</span> <span class="s1">''</span><span class="p">),</span>
+                                  <span class="s1">'0.45'</span><span class="p">),</span>
+                                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_summary_quantification</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="s1">'black'</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">max_width</span><span class="p">,</span> <span class="n">fs_text</span><span class="p">):</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs_text</span><span class="p">,</span>
+                            <span class="n">va</span><span class="o">=</span><span class="s1">'top'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
+                    <span class="n">y</span> <span class="o">-=</span> <span class="n">line_h</span><span class="p">(</span><span class="n">fs_text</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">-=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">line_h</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+
+        <span class="n">definitive</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">n_structured</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">definitive</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s1">'structured'</span><span class="p">]])</span>
+        <span class="n">y</span> <span class="o">-=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">line_h</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>               <span class="c1"># extra space</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'VERDICT: </span><span class="si">{</span><span class="n">verdict</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'top'</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">verdict_colour</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">-=</span> <span class="n">line_h</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+        <span class="n">rule</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1"> tests flagged structure. </span><span class="se">\n</span><span class="s1"> STRUCTURED if </span><span class="se">\u2265</span><span class="s1"> 3, '</span>
+                <span class="s1">'RANDOM if 0, otherwise INCONCLUSIVE.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">n_structured</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">definitive</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">max_width</span><span class="p">,</span> <span class="n">fs_text</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs_text</span><span class="p">,</span>
+                    <span class="n">va</span><span class="o">=</span><span class="s1">'top'</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">-=</span> <span class="n">line_h</span><span class="p">(</span><span class="n">fs_text</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
